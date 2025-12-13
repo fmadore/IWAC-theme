@@ -7,18 +7,18 @@ html, body {
 }
 
 html {
-    scroll-padding-top: 133px;
+    scroll-padding-top: var(--header-height);
 }
 
 body {
-    padding-block-start: 133px;
+    padding-block-start: var(--header-height);
 
     @media (min-width: $lg) {
-        padding-block-start: 160px;
+        padding-block-start: var(--header-height-lg);
     }
 
     &.main-header--center {
-        padding-block-start: 230px;
+        padding-block-start: var(--header-height-center);
     }
 }
 

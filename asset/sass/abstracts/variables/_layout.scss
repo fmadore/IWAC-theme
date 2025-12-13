@@ -1,2 +1,18 @@
-$header-min-height: 133px; // Used to calculate positioning of the menu-drawer on mobile
+// ==========================================================================
+// Layout Variables
+// ==========================================================================
+
+// Sass variables (for use in Sass calculations)
+$header-min-height: 133px;
+$header-lg-height: 160px;
+$header-center-height: 230px;
 $wrap-max-width: 1300px;
+
+// CSS Custom Properties (for use in CSS)
+:root {
+  --header-height: #{$header-min-height};
+  --header-height-lg: #{$header-lg-height};
+  --header-height-center: #{$header-center-height};
+  --content-max-width: #{$wrap-max-width};
+  --sidebar-width: 27%;
+}

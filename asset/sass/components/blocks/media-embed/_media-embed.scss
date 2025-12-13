@@ -7,20 +7,23 @@
         .item.resource {
             width: 100%;
             max-width: 325px;
-            background-color: var(--bg-surface);
-            box-shadow: var(--shadow-md);
+            background: var(--panel-bg);
+            border: var(--panel-border);
+            box-shadow: var(--panel-shadow);
             border-radius: var(--radius-md);
             padding: 0;
             overflow: hidden;
-            transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+            transition: 
+                box-shadow var(--transition-fast), 
+                transform var(--transition-fast);
 
             &:hover {
-                box-shadow: var(--shadow-lg);
+                box-shadow: var(--shadow-lg), var(--glow-sm);
                 transform: translateY(var(--lift-xs));
             }
 
             h3 {
-                color: var(--text-heading);
+                color: var(--ink);
                 font-family: $font__body;
                 font-weight: 600;
                 margin: var(--space-4);

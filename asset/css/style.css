@@ -300,6 +300,14 @@ body[data-theme=light] {
 }
 
 :root {
+  --header-height: 133px;
+  --header-height-lg: 160px;
+  --header-height-center: 230px;
+  --content-max-width: 1300px;
+  --sidebar-width: 27%;
+}
+
+:root {
   --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
   --text-sm: clamp(0.875rem, 0.84rem + 0.18vw, 0.9375rem);
   --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
@@ -874,9 +882,9 @@ i {
 
 blockquote {
   display: flex;
-  background-color: var(--bg-surface);
-  border-inline-start: 3px solid var(--primary);
-  box-shadow: var(--shadow-md);
+  background-color: var(--blockquote-bg);
+  border-inline-start: 3px solid var(--blockquote-border);
+  box-shadow: var(--shadow-sm);
   font-style: italic;
   padding: var(--space-5) var(--space-6) var(--space-5) var(--space-16);
   position: relative;
@@ -891,7 +899,7 @@ blockquote {
 blockquote::before {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
-  color: var(--primary);
+  color: var(--blockquote-quote);
   content: "\f10d";
   font-size: 2rem;
   inset-inline-start: 10px;
@@ -908,16 +916,16 @@ address {
 }
 
 pre {
-  background: var(--bg-muted);
+  background: var(--surface-raised);
   font-family: "Courier 10 Pitch", courier, monospace;
   line-height: 1.6;
-  color: var(--text-primary);
+  color: var(--ink);
   margin-block-end: var(--space-6);
   max-width: 100%;
   overflow: auto;
   padding: var(--space-6);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
 }
 
 code,
@@ -925,10 +933,11 @@ kbd,
 tt,
 var {
   font-family: monaco, consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
-  background-color: var(--bg-muted);
+  background-color: var(--surface-raised);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
   font-size: 0.9em;
+  color: var(--ink);
 }
 
 pre code {
@@ -939,14 +948,14 @@ pre code {
 
 abbr,
 acronym {
-  border-block-end: 1px dotted var(--border-color);
+  border-block-end: 1px dotted var(--border);
   cursor: help;
   text-decoration: none;
 }
 
 mark,
 ins {
-  background: color-mix(in srgb, var(--primary) 25%, transparent);
+  background: var(--selection-bg);
   color: inherit;
   text-decoration: none;
   padding-inline: var(--space-1);
@@ -1935,7 +1944,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   gap: var(--space-16);
   margin-block-end: var(--space-12);
   padding-block-end: var(--space-12);
-  border-block-end: 1px solid var(--border-color);
+  border-block-end: 1px solid var(--border);
 }
 @media (min-width: 768px) {
   .regions-container {
@@ -1965,15 +1974,15 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   content: "";
   position: absolute;
   width: 1px;
-  height: calc(100% + 100px);
-  background-color: var(--border-color);
-  top: -50px;
+  height: calc(100% + var(--space-24));
+  background-color: var(--border);
+  top: calc(-1 * var(--space-12));
 }
 .regions-container .sidebar-region--left::after {
-  inset-inline-end: -30px;
+  inset-inline-end: calc(-1 * var(--space-8));
 }
 .regions-container .sidebar-region--right::after {
-  inset-inline-start: -30px;
+  inset-inline-start: calc(-1 * var(--space-8));
 }
 .regions-container--all {
   flex-direction: column !important;
@@ -2022,19 +2031,19 @@ html, body {
 }
 
 html {
-  scroll-padding-top: 133px;
+  scroll-padding-top: var(--header-height);
 }
 
 body {
-  padding-block-start: 133px;
+  padding-block-start: var(--header-height);
 }
 @media (min-width: 1024px) {
   body {
-    padding-block-start: 160px;
+    padding-block-start: var(--header-height-lg);
   }
 }
 body.main-header--center {
-  padding-block-start: 230px;
+  padding-block-start: var(--header-height-center);
 }
 
 .container {
@@ -3962,19 +3971,20 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   padding-inline: 45px;
 }
 .carousel-block .slick-arrow {
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
   height: 40px;
   width: 40px;
-  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .carousel-block .slick-arrow:hover {
   background-color: var(--primary);
   border-color: var(--primary);
+  box-shadow: var(--glow-sm);
 }
 .carousel-block .slick-arrow:hover .slick-prev-icon::before,
 .carousel-block .slick-arrow:hover .slick-next-icon::before {
-  color: var(--primary-contrast);
+  color: white;
 }
 .carousel-block .slick-arrow.slick-next {
   padding-inline-start: 3px;
@@ -3988,7 +3998,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .carousel-block .slick-arrow .slick-next-icon::before {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
-  color: var(--text-secondary);
+  color: var(--muted);
   font-size: 25px;
   line-height: 1;
   transition: color var(--transition-fast);
@@ -4011,8 +4021,9 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   margin-block-start: var(--space-6);
 }
 .collecting-block-form form {
-  background-color: var(--bg-surface);
-  box-shadow: var(--shadow-md);
+  background-color: var(--panel-bg);
+  border: var(--panel-border);
+  box-shadow: var(--panel-shadow);
   border-radius: var(--radius-md);
   padding: var(--space-5) var(--space-6);
   margin-block-end: var(--space-6);
@@ -4054,14 +4065,15 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   margin-block-end: var(--space-12) !important;
 }
 .item-with-metadata__container {
-  background-color: var(--bg-surface);
-  box-shadow: var(--shadow-md);
+  background: var(--panel-bg);
+  border: var(--panel-border);
+  box-shadow: var(--panel-shadow);
   border-radius: var(--radius-md);
   margin-block-end: var(--space-6);
   overflow: hidden;
 }
 .item-with-metadata__header {
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-inline-start: none;
   padding: var(--space-4);
   position: relative;
@@ -4086,7 +4098,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .item-with-metadata__content {
   display: flex;
   align-items: center;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-block-start: none;
   flex-direction: column;
   flex-wrap: wrap;
@@ -4168,8 +4180,9 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .item-showcase .resource.item {
   width: 100% !important;
   max-width: 325px;
-  background-color: var(--bg-surface);
-  box-shadow: var(--shadow-md);
+  background: var(--panel-bg);
+  border: var(--panel-border);
+  box-shadow: var(--panel-shadow);
   border-radius: var(--radius-md);
   padding: 0 !important;
   display: flex;
@@ -4178,11 +4191,11 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   transition: box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 .item-showcase .resource.item:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-lg), var(--glow-sm);
   transform: translateY(var(--lift-xs));
 }
 .item-showcase .resource.item h3 {
-  color: var(--text-heading);
+  color: var(--ink);
   font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-weight: 600;
   margin: 0 0 var(--space-4) !important;
@@ -4223,19 +4236,20 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .media-embed.media-display-thumbnail .item.resource {
   width: 100%;
   max-width: 325px;
-  background-color: var(--bg-surface);
-  box-shadow: var(--shadow-md);
+  background: var(--panel-bg);
+  border: var(--panel-border);
+  box-shadow: var(--panel-shadow);
   border-radius: var(--radius-md);
   padding: 0;
   overflow: hidden;
   transition: box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 .media-embed.media-display-thumbnail .item.resource:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-lg), var(--glow-sm);
   transform: translateY(var(--lift-xs));
 }
 .media-embed.media-display-thumbnail .item.resource h3 {
-  color: var(--text-heading);
+  color: var(--ink);
   font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-weight: 600;
   margin: var(--space-4);

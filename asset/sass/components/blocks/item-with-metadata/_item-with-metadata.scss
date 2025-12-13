@@ -5,15 +5,16 @@
     margin-block-end: var(--space-12) !important;
     
     &__container {
-        background-color: var(--bg-surface);
-        box-shadow: var(--shadow-md);
+        background: var(--panel-bg);
+        border: var(--panel-border);
+        box-shadow: var(--panel-shadow);
         border-radius: var(--radius-md);
         margin-block-end: var(--space-6);
         overflow: hidden;
     }
 
     &__header {
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--border);
         border-inline-start: none;
         padding: var(--space-4);
         position: relative;
@@ -42,7 +43,7 @@
     &__content {
         display: flex;
         align-items: center;
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--border);
         border-block-start: none;
         flex-direction: column;
         flex-wrap: wrap;

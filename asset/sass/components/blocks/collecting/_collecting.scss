@@ -4,8 +4,9 @@
     margin-block-start: var(--space-6);
 
     form {
-        background-color: var(--bg-surface);
-        box-shadow: var(--shadow-md);
+        background-color: var(--panel-bg);
+        border: var(--panel-border);
+        box-shadow: var(--panel-shadow);
         border-radius: var(--radius-md);
         padding: var(--space-5) var(--space-6);
         margin-block-end: var(--space-6);

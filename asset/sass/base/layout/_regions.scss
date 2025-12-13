@@ -6,7 +6,7 @@
     gap: var(--space-16);
     margin-block-end: var(--space-12);
     padding-block-end: var(--space-12);
-    border-block-end: 1px solid var(--border-color);
+    border-block-end: 1px solid var(--border);
 
     @media (min-width: $md) {
         flex-direction: row;
@@ -34,20 +34,20 @@
             content: "";
             position: absolute;
             width: 1px;
-            height: calc(100% + 100px);
-            background-color: var(--border-color);
-            top: -50px;
+            height: calc(100% + var(--space-24));
+            background-color: var(--border);
+            top: calc(-1 * var(--space-12));
         }
 
         &--left {
             &::after {
-                inset-inline-end: -30px;
+                inset-inline-end: calc(-1 * var(--space-8));
             }
         }
     
         &--right {
             &::after {
-                inset-inline-start: -30px;
+                inset-inline-start: calc(-1 * var(--space-8));
             }
         }
     }
