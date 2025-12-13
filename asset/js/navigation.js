@@ -279,6 +279,8 @@ function openMenuDrawer() {
 	mmDrawer.classList.add( 'toggled' );
 	mmDrawer.removeAttribute('aria-hidden');
 	mmDrawer.removeAttribute('inert');
+	// Remove inline display:none that was set for progressive enhancement
+	mmDrawer.style.display = '';
 	mmToggli.classList.add( 'open' );
 
 	const focusable = getFocusableElements(mmDrawer);

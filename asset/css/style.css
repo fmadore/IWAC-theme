@@ -46,11 +46,11 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --lift-xxs: -0.0625rem;
   --lift-xs: -0.125rem;
   --lift-sm: -0.25rem;
-  --shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.08);
-  --shadow-sm: 0 2px 4px -1px rgb(15 23 42 / 0.12);
-  --shadow-md: 0 8px 16px -4px rgb(15 23 42 / 0.14);
-  --shadow-lg: 0 15px 30px -10px rgb(15 23 42 / 0.18);
-  --shadow-xl: 0 25px 50px -12px rgb(15 23 42 / 0.22);
+  --shadow-xs: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
+  --shadow-sm: 0 2px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.06);
+  --shadow-md: 0 6px 16px -4px rgb(15 23 42 / 0.1), 0 4px 8px -4px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 12px 28px -8px rgb(15 23 42 / 0.12), 0 8px 16px -8px rgb(15 23 42 / 0.08);
+  --shadow-xl: 0 20px 40px -12px rgb(15 23 42 / 0.16), 0 12px 24px -8px rgb(15 23 42 / 0.1);
   --panel-bg: var(--surface-raised);
   --panel-border-color: var(--border);
   --panel-border: 1px solid var(--panel-border-color);
@@ -68,31 +68,31 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme=light]) {
-    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.1);
-    --shadow-sm: 0 2px 4px 0 rgb(0 0 0 / 0.2);
-    --shadow-md: 0 4px 8px -1px rgb(0 0 0 / 0.3);
-    --shadow-lg: 0 10px 20px -3px rgb(0 0 0 / 0.4);
-    --shadow-xl: 0 20px 40px -8px rgb(0 0 0 / 0.5);
+    --shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 0.18), 0 2px 4px -2px rgb(0 0 0 / 0.12);
+    --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.25), 0 4px 8px -4px rgb(0 0 0 / 0.15);
+    --shadow-lg: 0 12px 28px -8px rgb(0 0 0 / 0.35), 0 8px 16px -8px rgb(0 0 0 / 0.2);
+    --shadow-xl: 0 20px 40px -12px rgb(0 0 0 / 0.45), 0 12px 24px -8px rgb(0 0 0 / 0.25);
     --panel-bg: var(--surface-raised);
     --panel-border-color: var(--border);
   }
 }
 body[data-theme=dark] {
-  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.1);
-  --shadow-sm: 0 2px 4px 0 rgb(0 0 0 / 0.2);
-  --shadow-md: 0 4px 8px -1px rgb(0 0 0 / 0.3);
-  --shadow-lg: 0 10px 20px -3px rgb(0 0 0 / 0.4);
-  --shadow-xl: 0 20px 40px -8px rgb(0 0 0 / 0.5);
+  --shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 0.18), 0 2px 4px -2px rgb(0 0 0 / 0.12);
+  --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.25), 0 4px 8px -4px rgb(0 0 0 / 0.15);
+  --shadow-lg: 0 12px 28px -8px rgb(0 0 0 / 0.35), 0 8px 16px -8px rgb(0 0 0 / 0.2);
+  --shadow-xl: 0 20px 40px -12px rgb(0 0 0 / 0.45), 0 12px 24px -8px rgb(0 0 0 / 0.25);
   --panel-bg: var(--surface-raised);
   --panel-border-color: var(--border);
 }
 
 body[data-theme=light] {
-  --shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.08);
-  --shadow-sm: 0 2px 4px -1px rgb(15 23 42 / 0.12);
-  --shadow-md: 0 8px 16px -4px rgb(15 23 42 / 0.14);
-  --shadow-lg: 0 15px 30px -10px rgb(15 23 42 / 0.18);
-  --shadow-xl: 0 25px 50px -12px rgb(15 23 42 / 0.22);
+  --shadow-xs: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
+  --shadow-sm: 0 2px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.06);
+  --shadow-md: 0 6px 16px -4px rgb(15 23 42 / 0.1), 0 4px 8px -4px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 12px 28px -8px rgb(15 23 42 / 0.12), 0 8px 16px -8px rgb(15 23 42 / 0.08);
+  --shadow-xl: 0 20px 40px -12px rgb(15 23 42 / 0.16), 0 12px 24px -8px rgb(15 23 42 / 0.1);
   --panel-bg: var(--surface-raised);
   --panel-border-color: var(--border);
 }
