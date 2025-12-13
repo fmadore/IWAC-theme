@@ -8,7 +8,7 @@
 .menu-drawer {
     display: block !important;
     position: fixed;
-    height: calc( 100% - #{$header-min-height} );
+    height: calc( 100vh - #{$header-min-height} );
     width: 100%;
     transform: translateX( -100% );
     z-index: var(--z-modal);

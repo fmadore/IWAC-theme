@@ -2591,7 +2591,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .menu-drawer {
   display: block !important;
   position: fixed;
-  height: calc(100% - 133px);
+  height: calc(100vh - 133px);
   width: 100%;
   transform: translateX(-100%);
   z-index: var(--z-modal);
