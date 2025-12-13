@@ -7,10 +7,11 @@
 			overflow: hidden;
 			padding: var(--space-3);
 			border-radius: var(--radius-sm);
-			transition: background-color var(--transition-fast);
+			transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
 
 			&:hover {
-				background-color: var(--bg-muted);
+				background-color: var(--surface-raised);
+				box-shadow: var(--shadow-xs);
 			}
 		}
 

@@ -13,20 +13,27 @@ body.search {
         .result {
             padding: var(--space-4);
             border-radius: var(--radius-md);
-            transition: background-color var(--transition-fast);
+            border: 1px solid transparent;
+            transition: 
+                background-color var(--transition-fast), 
+                border-color var(--transition-fast),
+                box-shadow var(--transition-fast);
 
             &:hover {
-                background-color: var(--bg-muted);
+                background-color: var(--surface-raised);
+                border-color: var(--border-light);
+                box-shadow: var(--shadow-xs);
             }
         }
 
         // Highlight matching terms
         mark,
         .highlight {
-            background-color: color-mix(in srgb, var(--primary) 25%, transparent);
+            background-color: color-mix(in srgb, var(--primary) 20%, transparent);
             color: inherit;
-            padding-inline: 2px;
+            padding-inline: 3px;
             border-radius: var(--radius-sm);
+            font-weight: 500;
         }
     }
 }

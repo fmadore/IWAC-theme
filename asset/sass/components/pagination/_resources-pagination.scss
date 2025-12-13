@@ -8,7 +8,7 @@
 .pagination {
     display: flex;
     align-items: center;
-    border-block: 1px solid var(--border-color);
+    border-block: 1px solid var(--border);
     flex-wrap: wrap;
     gap: var(--space-6);
     justify-content: center;
@@ -36,7 +36,7 @@
     }
 
     .row-count {
-        color: var(--text-secondary);
+        color: var(--muted);
         font-size: var(--text-sm);
         margin-inline-end: var(--space-4);
     }
@@ -44,7 +44,7 @@
     .pager {
         label,
         .page-count {
-            color: var(--text-secondary);
+            color: var(--muted);
         }
 
         .gotopage-btn {
@@ -68,16 +68,20 @@
 
         &:hover:not(.disabled),
         &:active:not(.disabled) {
+            transform: translateY(var(--lift-xxs));
+
             &::before {
-                color: var(--text-on-primary);
+                color: var(--primary-contrast);
             }
         }
 
         &.disabled {
-            border-color: var(--text-tertiary);
-            color: var(--text-tertiary);
+            background-color: var(--surface-raised);
+            border-color: var(--border-light);
+            color: var(--muted);
             cursor: default;
             pointer-events: none;
+            opacity: 0.6;
         }
     }
 }

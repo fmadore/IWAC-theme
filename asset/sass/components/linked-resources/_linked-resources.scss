@@ -22,7 +22,7 @@
         &:hover,
         &:focus {
             background-color: transparent !important;
-            color: var(--primary-dark) !important;
+            color: var(--primary-hover) !important;
         }
     }
 
@@ -35,8 +35,9 @@
         align-items: flex-start;
         flex-direction: column-reverse;
         justify-content: space-between;
-        padding: var(--space-3) 0;
-        border-block-end: 1px solid var(--border-color);
+        padding: var(--space-3) var(--space-2);
+        border-block-end: 1px solid var(--border);
+        border-radius: var(--radius-sm);
         transition: background-color var(--transition-fast);
 
         @media (min-width: $lg) {
@@ -49,7 +50,7 @@
         }
 
         &:hover {
-            background-color: var(--bg-muted);
+            background-color: var(--surface-raised);
         }
 
         .resource-tags {

@@ -162,7 +162,7 @@
         transition: color var(--transition-fast);
 
         &:hover {
-            color: var(--primary-dark);
+            color: var(--primary-hover);
         }
 
         &::before {

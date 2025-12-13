@@ -7,7 +7,7 @@
 
 .site-page-pagination {
     display: flex;
-    border-block: 1px solid var(--border-color);
+    border-block: 1px solid var(--border);
     gap: var(--space-4);
     justify-content: center;
     margin-block: var(--space-8);
@@ -17,5 +17,9 @@
         @include secondary-button;
         font-size: var(--text-xs);
         padding: var(--space-3) var(--space-4);
+
+        &:hover {
+            transform: translateY(var(--lift-xxs));
+        }
     }
 }

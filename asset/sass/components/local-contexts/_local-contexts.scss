@@ -2,14 +2,15 @@
 
 #local-contexts-content {
     @include container;
-    color: var(--text-primary);
+    color: var(--ink);
     padding-block: var(--space-8) !important;
 
     .local-contexts-notice {
         padding: var(--space-4);
-        background-color: var(--bg-surface);
-        border: 1px solid var(--border-color);
+        background-color: var(--surface);
+        border: 1px solid var(--border);
         border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
     }
 
     .notice-name {

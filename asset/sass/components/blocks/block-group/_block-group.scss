@@ -87,11 +87,9 @@
     }
 
     // Block groups that are just containers (no special styling)
-    &.block-group-grid {
-        // When it's a pure grid container without asset cards, keep it simple
-        &:not(:has(.block-asset)) {
-            // No card styling for pure layout containers
-        }
+    &.block-group-grid:not(:has(.block-asset)) {
+        // Pure grid container - inherits default styles
+        display: grid;
     }
 }
 

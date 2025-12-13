@@ -333,6 +333,7 @@ body[data-theme=light] {
 html {
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* Sections
@@ -649,17 +650,27 @@ html {
 
 /* Collapse
 --------------------------------------------- */
-.expand:after,
-.collapse:after {
+.expand,
+.collapse {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.expand::after,
+.collapse::after {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
+  margin-inline-start: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--primary);
+  transition: transform var(--transition-fast);
 }
 
-.expand:after {
+.expand::after {
   content: "\f0da";
 }
 
-.collapse:after {
+.collapse::after {
   content: "\f0d7";
 }
 
@@ -669,12 +680,23 @@ html {
 
 .collapse + .collapsible {
   display: block;
-  border-inline-start: 3px solid var(--border-color);
+  border-inline-start: 3px solid var(--primary);
   padding: 0 0 0 var(--space-4);
-  margin: 0 0 var(--space-4);
+  margin: var(--space-2) 0 var(--space-4);
   width: 100%;
+  animation: fadeIn var(--transition-base);
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 /*--------------------------------------------------------------
 # Base
 --------------------------------------------------------------*/
@@ -3432,7 +3454,8 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-2);
-  background-color: var(--bg-muted);
+  background-color: var(--surface-raised);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
   font-size: var(--text-xs);
   padding: var(--space-2) var(--space-3);
@@ -3441,7 +3464,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   width: auto;
 }
 .breadcrumbs a {
-  color: var(--text-secondary);
+  color: var(--muted);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
@@ -3450,11 +3473,11 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 }
 .breadcrumbs span:not(:last-child)::after {
   content: "/";
-  color: var(--text-muted);
+  color: var(--border);
   margin-inline-start: var(--space-2);
 }
 .breadcrumbs span:last-child {
-  color: var(--text-primary);
+  color: var(--ink);
   font-weight: 600;
 }
 
@@ -3495,7 +3518,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 }
 .resources-linked__expand-collapse-btn:hover, .resources-linked__expand-collapse-btn:focus {
   background-color: transparent !important;
-  color: var(--primary-dark) !important;
+  color: var(--primary-hover) !important;
 }
 .resources-linked .resource-tag {
   margin-block-end: 0;
@@ -3505,8 +3528,9 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   align-items: flex-start;
   flex-direction: column-reverse;
   justify-content: space-between;
-  padding: var(--space-3) 0;
-  border-block-end: 1px solid var(--border-color);
+  padding: var(--space-3) var(--space-2);
+  border-block-end: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   transition: background-color var(--transition-fast);
 }
 @media (min-width: 1024px) {
@@ -3519,7 +3543,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   border-block-end: none;
 }
 .resources-linked .linked-resource:hover {
-  background-color: var(--bg-muted);
+  background-color: var(--surface-raised);
 }
 .resources-linked .linked-resource .resource-tags {
   margin-block-end: var(--space-4);
@@ -3563,14 +3587,15 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   }
 }
 #local-contexts-content {
-  color: var(--text-primary);
+  color: var(--ink);
   padding-block: var(--space-8) !important;
 }
 #local-contexts-content .local-contexts-notice {
   padding: var(--space-4);
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-color);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 #local-contexts-content .notice-name {
   display: flex;
@@ -3586,8 +3611,9 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 }
 .mapping-map .mapping-marker-popup-heading {
   font-size: var(--text-lg);
+  font-weight: 600;
   margin-block-end: var(--space-3);
-  color: var(--text-heading);
+  color: var(--ink);
 }
 .mapping-map .mapping-marker-popup-content {
   display: flex;
@@ -3820,6 +3846,10 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .block-blockGroup:has(.block-asset) .block-html p:last-child {
   margin-block-end: 0;
 }
+.block-blockGroup.block-group-grid:not(:has(.block-asset)) {
+  display: grid;
+}
+
 .block-asset:not(.block-blockGroup .block-asset) .asset {
   background: var(--panel-bg);
   border: var(--panel-border);
@@ -4396,7 +4426,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .pagination {
   display: flex;
   align-items: center;
-  border-block: 1px solid var(--border-color);
+  border-block: 1px solid var(--border);
   flex-wrap: wrap;
   gap: var(--space-6);
   justify-content: center;
@@ -4423,13 +4453,13 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   width: auto;
 }
 .pagination .row-count {
-  color: var(--text-secondary);
+  color: var(--muted);
   font-size: var(--text-sm);
   margin-inline-end: var(--space-4);
 }
 .pagination .pager label,
 .pagination .pager .page-count {
-  color: var(--text-secondary);
+  color: var(--muted);
 }
 .pagination .pager .gotopage-btn {
   margin-inline-start: var(--space-1);
@@ -4487,14 +4517,19 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   position: relative;
   width: 37px;
 }
+.pagination .button:hover:not(.disabled), .pagination .button:active:not(.disabled) {
+  transform: translateY(var(--lift-xxs));
+}
 .pagination .button:hover:not(.disabled)::before, .pagination .button:active:not(.disabled)::before {
-  color: var(--text-on-primary);
+  color: var(--primary-contrast);
 }
 .pagination .button.disabled {
-  border-color: var(--text-tertiary);
-  color: var(--text-tertiary);
+  background-color: var(--surface-raised);
+  border-color: var(--border-light);
+  color: var(--muted);
   cursor: default;
   pointer-events: none;
+  opacity: 0.6;
 }
 
 /*
@@ -4516,7 +4551,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 --------------------------------------------------------------*/
 .site-page-pagination {
   display: flex;
-  border-block: 1px solid var(--border-color);
+  border-block: 1px solid var(--border);
   gap: var(--space-4);
   justify-content: center;
   margin-block: var(--space-8);
@@ -4565,6 +4600,9 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .site-page-pagination a {
   font-size: var(--text-xs);
   padding: var(--space-3) var(--space-4);
+}
+.site-page-pagination a:hover {
+  transform: translateY(var(--lift-xxs));
 }
 
 /* Facets
@@ -4754,7 +4792,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 }
 .faceted-browse-page #categories-return:hover,
 .block-facetedBrowsePreview #categories-return:hover {
-  color: var(--primary-dark);
+  color: var(--primary-hover);
 }
 .faceted-browse-page #categories-return::before,
 .block-facetedBrowsePreview #categories-return::before {
@@ -4865,10 +4903,11 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   overflow: hidden;
   padding: var(--space-3);
   border-radius: var(--radius-sm);
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .hierarchy-module .resource-list .resource:hover {
-  background-color: var(--bg-muted);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-xs);
 }
 .hierarchy-module .resource-list .resource-link {
   display: inline;
@@ -4921,7 +4960,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .browse-controls {
   display: flex;
   align-items: center;
-  border-block-end: 1px solid var(--border-color);
+  border-block-end: 1px solid var(--border);
   flex-wrap: wrap;
   gap: var(--space-6);
   justify-content: space-between;
@@ -5133,31 +5172,49 @@ body.search .results .resource__content {
 body.search .results .result {
   padding: var(--space-4);
   border-radius: var(--radius-md);
-  transition: background-color var(--transition-fast);
+  border: 1px solid transparent;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 body.search .results .result:hover {
-  background-color: var(--bg-muted);
+  background-color: var(--surface-raised);
+  border-color: var(--border-light);
+  box-shadow: var(--shadow-xs);
 }
 body.search .results mark,
 body.search .results .highlight {
-  background-color: color-mix(in srgb, var(--primary) 25%, transparent);
+  background-color: color-mix(in srgb, var(--primary) 20%, transparent);
   color: inherit;
-  padding-inline: 2px;
+  padding-inline: 3px;
   border-radius: var(--radius-sm);
+  font-weight: 500;
 }
 
 /* URI Dereferencer
 --------------------------------------------- */
 .uri-dereferencer-toggle, .uri-dereferencer-fetch {
   margin-inline-start: var(--space-2);
+  color: var(--primary);
+  font-size: var(--text-xs);
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.uri-dereferencer-toggle:hover, .uri-dereferencer-fetch:hover {
+  color: var(--primary-hover);
 }
 .uri-dereferencer-markup {
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  padding: var(--space-2) var(--space-3);
-  margin-block-start: var(--space-2);
-  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-block-start: var(--space-3);
+  background: var(--surface-raised);
   font-size: var(--text-sm);
+  box-shadow: var(--shadow-xs);
+  overflow-x: auto;
+}
+.uri-dereferencer-markup code, .uri-dereferencer-markup pre {
+  background: transparent;
+  padding: 0;
 }
 .uri-dereferencer-fetch + .uri-dereferencer-toggle + .uri-dereferencer-markup {
   display: none;
