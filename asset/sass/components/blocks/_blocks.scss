@@ -1,5 +1,9 @@
 @use "../../abstracts/abstracts" as *;
 
+/* Block Group
+--------------------------------------------- */
+@forward "block-group/block-group";
+
 /* Assets
 --------------------------------------------- */
 @forward "assets/assets";

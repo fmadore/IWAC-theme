@@ -3642,6 +3642,95 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 /*--------------------------------------------------------------
 # Variables and mixins
 --------------------------------------------------------------*/
+/* Block Group
+--------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
+.block-blockGroup:has(.block-asset) {
+  background: var(--panel-bg);
+  border: var(--panel-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow);
+  padding: var(--space-lg);
+  margin-block-end: var(--space-lg);
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+.block-blockGroup:has(.block-asset):hover {
+  transform: translateY(var(--lift-xxs));
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+}
+.block-blockGroup:has(.block-asset) .block {
+  margin-block-end: 0;
+}
+.block-blockGroup:has(.block-asset) .block-asset {
+  margin-block-end: 0;
+}
+.block-blockGroup:has(.block-asset) .block-asset .asset {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.block-blockGroup:has(.block-asset) .block-asset .asset img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform var(--transition-slow);
+}
+.block-blockGroup:has(.block-asset):hover .asset img {
+  transform: scale(1.03);
+}
+.block-blockGroup:has(.block-asset) .block-html h3 {
+  margin-block-start: 0;
+  color: var(--ink);
+  font-size: var(--text-lg);
+}
+.block-blockGroup:has(.block-asset) .block-html p {
+  color: var(--ink-light);
+  margin-block-end: 0;
+}
+.block-blockGroup:has(.block-asset) .block-html p:last-child {
+  margin-block-end: 0;
+}
+.block-asset:not(.block-blockGroup .block-asset) .asset {
+  background: var(--panel-bg);
+  border: var(--panel-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow);
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.block-asset:not(.block-blockGroup .block-asset) .asset:hover {
+  transform: translateY(var(--lift-xxs));
+  box-shadow: var(--shadow-md);
+}
+.block-asset:not(.block-blockGroup .block-asset) .asset img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.block-html h3:first-child:only-child {
+  color: var(--primary);
+  font-size: var(--text-base);
+  font-weight: 600;
+  margin-block: var(--space-sm) var(--space-xs);
+}
+
 /* Assets
 --------------------------------------------- */
 /*

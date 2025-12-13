@@ -1,0 +1,119 @@
+@use "../../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Block Group
+// Card-like container for grouped blocks (news items, announcements, etc.)
+// ==========================================================================
+
+// News-style block groups (contain asset + html blocks)
+// Target block groups that have .block-asset as a direct child
+.block-blockGroup {
+    // When block group contains an asset and text (news item pattern)
+    &:has(.block-asset) {
+        background: var(--panel-bg);
+        border: var(--panel-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--panel-shadow);
+        padding: var(--space-lg);
+        margin-block-end: var(--space-lg);
+        transition: 
+            transform var(--transition-base), 
+            box-shadow var(--transition-base),
+            border-color var(--transition-base);
+
+        &:hover {
+            transform: translateY(var(--lift-xxs));
+            box-shadow: var(--shadow-md);
+            border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+        }
+
+        // Reset child block margins inside card
+        .block {
+            margin-block-end: 0;
+        }
+
+        // Style the asset image inside the card
+        .block-asset {
+            margin-block-end: 0;
+
+            .asset {
+                border-radius: var(--radius-md);
+                overflow: hidden;
+
+                img {
+                    width: 100%;
+                    height: auto;
+                    display: block;
+                    transition: transform var(--transition-slow);
+                }
+            }
+        }
+
+        // Image zoom on card hover
+        &:hover .asset img {
+            transform: scale(1.03);
+        }
+
+        // Text content styling
+        .block-html {
+            h3 {
+                margin-block-start: 0;
+                color: var(--ink);
+                font-size: var(--text-lg);
+            }
+
+            p {
+                color: var(--ink-light);
+                margin-block-end: 0;
+
+                &:last-child {
+                    margin-block-end: 0;
+                }
+            }
+        }
+    }
+
+    // Block groups that are just containers (no special styling)
+    &.block-group-grid {
+        // When it's a pure grid container without asset cards, keep it simple
+        &:not(:has(.block-asset)) {
+            // No card styling for pure layout containers
+        }
+    }
+}
+
+// Standalone asset blocks (not in a block group with text)
+.block-asset:not(.block-blockGroup .block-asset) {
+    .asset {
+        background: var(--panel-bg);
+        border: var(--panel-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--panel-shadow);
+        overflow: hidden;
+        transition: 
+            transform var(--transition-base), 
+            box-shadow var(--transition-base);
+
+        &:hover {
+            transform: translateY(var(--lift-xxs));
+            box-shadow: var(--shadow-md);
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    }
+}
+
+// Date headers for news sections
+.block-html h3:first-child {
+    &:only-child {
+        // Likely a date header
+        color: var(--primary);
+        font-size: var(--text-base);
+        font-weight: 600;
+        margin-block: var(--space-sm) var(--space-xs);
+    }
+}
