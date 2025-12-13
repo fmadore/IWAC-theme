@@ -54,7 +54,7 @@
         inset-inline-end: var(--space-5);
         top: 50%;
         transform: translateY(-50%) rotate(0);
-        transition: transform var(--transition-normal);
+        transition: transform var(--transition-base);
         width: 34px;
 
         .accordion__trigger.expanded & {

@@ -1,12 +1,18 @@
 // ==========================================================================
 // Abstracts Index
-// Forward all variables and mixins for use in other files
+// Forward Sass-only variables and mixins for use in other files
+// NOTE: Files with :root blocks (tokens, colors, layout, typography) 
+//       are imported directly in style.scss to avoid duplication
 // ==========================================================================
 
+// Sass-only variables (no CSS output)
 @forward "variables/breakpoints";
-@forward "variables/tokens";
-@forward "variables/colors";
+
+// These files have both Sass variables AND :root CSS output
+// We need to forward them for the Sass variables, but the CSS 
+// is only output once via style.scss direct imports
 @forward "variables/layout";
 @forward "variables/typography";
 
+// Mixins
 @forward "mixins/mixins";

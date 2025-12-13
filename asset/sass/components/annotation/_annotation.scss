@@ -24,7 +24,7 @@
         position: absolute;
         inset-inline-start: 0;
         bottom: 10px;
-        transition: opacity var(--transition-normal);
+        transition: opacity var(--transition-base);
         z-index: var(--z-dropdown);
 
         @media (min-width: $lg) {
