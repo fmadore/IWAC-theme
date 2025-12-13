@@ -89,6 +89,18 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --z-modal: 300;
   --z-popover: 400;
   --z-tooltip: 500;
+  --content-max-width: 1200px;
+  --content-max-width-narrow: 800px;
+  --content-max-width-wide: 1400px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.7;
+  --text-shadow-dark: 0 2px 4px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+  --text-shadow-dark-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -140,9 +152,14 @@ body[data-theme=light] {
   --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 52%);
   --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 47%);
   --primary-active: hsl(var(--primary-hue), var(--primary-sat), 42%);
-  --ink: hsl(222, 24%, 14%);
+  --ink-hue: 222;
+  --ink-sat: 24%;
+  --ink-lum: 14%;
+  --ink: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum));
   --ink-light: hsl(222, 18%, 36%);
   --muted: hsl(222, 14%, 52%);
+  --white: #fff;
+  --black: #000;
   --surface: hsl(0, 0%, 100%);
   --surface-raised: hsl(210, 33%, 97%);
   --surface-overlay: hsla(0, 0%, 100%, 0.94);
@@ -187,7 +204,10 @@ body[data-theme=light] {
     --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 55%);
     --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 60%);
     --primary-active: hsl(var(--primary-hue), var(--primary-sat), 39%);
-    --ink: hsl(210, 25%, 96%);
+    --ink-hue: 210;
+    --ink-sat: 25%;
+    --ink-lum: 96%;
+    --ink: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum));
     --ink-light: hsl(210, 15%, 75%);
     --muted: hsl(215, 12%, 65%);
     --surface: hsl(220, 18%, 12%);
@@ -3039,6 +3059,7 @@ body.menu-drawer-toggled {
   display: flex;
   align-items: center;
   position: relative;
+  overflow: hidden;
 }
 .banner.container {
   padding: 0;
@@ -3046,11 +3067,17 @@ body.menu-drawer-toggled {
 .banner.has-text::before {
   content: "";
   position: absolute;
-  background-color: #000;
-  opacity: 0.6;
-  width: 100%;
-  height: 100%;
+  inset: 0;
+  background: linear-gradient(180deg, hsl(var(--ink-hue), var(--ink-sat), var(--ink-lum), 0.3) 0%, hsl(var(--ink-hue), var(--ink-sat), var(--ink-lum), 0.5) 40%, hsl(var(--ink-hue), var(--ink-sat), var(--ink-lum), 0.75) 100%);
   z-index: 1;
+}
+.banner.has-text::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, hsl(var(--primary-hue), 70%, 50%, 0.15) 0%, transparent 50%, hsl(var(--primary-hue), 70%, 40%, 0.1) 100%);
+  z-index: 1;
+  pointer-events: none;
 }
 .banner img {
   position: absolute;
@@ -3060,6 +3087,12 @@ body.menu-drawer-toggled {
   top: 0;
   inset-inline-start: 0;
   z-index: 0;
+  transform: scale(1.02);
+  transition: transform var(--transition-slow) ease-out;
+  transition-duration: 8s;
+}
+.banner:hover img {
+  transform: scale(1);
 }
 .banner__content {
   display: flex;
@@ -3067,14 +3100,21 @@ body.menu-drawer-toggled {
   justify-content: center;
   position: relative;
   margin-inline: auto;
-  width: 80%;
-  color: white;
+  width: 90%;
+  max-width: var(--content-max-width, 1200px);
+  color: var(--white, #fff);
   z-index: 2;
   padding: var(--space-12) var(--space-4);
 }
 @media (min-width: 768px) {
   .banner__content {
-    padding: var(--space-12) var(--space-8);
+    width: 85%;
+    padding: var(--space-16) var(--space-8);
+  }
+}
+@media (min-width: 1024px) {
+  .banner__content {
+    padding: var(--space-20) var(--space-12);
   }
 }
 .banner__content--left {
@@ -3083,27 +3123,98 @@ body.menu-drawer-toggled {
 .banner__content--center {
   text-align: center;
   align-items: center;
-  max-width: 1000px;
 }
 .banner__content--center .banner__heading,
 .banner__content--center .banner__description {
   max-width: none !important;
 }
+.banner__content--center .banner__heading::after {
+  inset-inline: 0;
+  margin-inline: auto;
+}
 .banner__content--right {
   text-align: end;
   align-items: flex-end;
 }
+.banner__content--right .banner__heading::after {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
 .banner__heading {
-  color: white;
-  font-size: var(--text-3xl);
-  max-width: 800px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: var(--white, #fff);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-medium, 500);
+  max-width: 900px;
+  margin-block-end: var(--space-4);
+  position: relative;
+  text-shadow: var(--text-shadow-dark, 0 2px 4px rgba(0, 0, 0, 0.3));
+  letter-spacing: -0.01em;
+}
+@media (min-width: 768px) {
+  .banner__heading {
+    font-size: var(--text-3xl);
+    margin-block-end: var(--space-6);
+  }
+}
+@media (min-width: 1024px) {
+  .banner__heading {
+    font-size: var(--text-4xl);
+  }
+}
+.banner__heading::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--gradient-primary);
+  margin-block-start: var(--space-4);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--glow-sm);
+}
+@media (min-width: 768px) {
+  .banner__heading::after {
+    width: 100px;
+    margin-block-start: var(--space-6);
+  }
 }
 .banner__description {
-  font-size: var(--text-xl);
-  max-width: 800px;
+  font-size: var(--text-base);
+  line-height: var(--line-height-relaxed, 1.7);
+  max-width: 700px;
   margin-block-end: 0;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  margin-block-start: var(--space-2);
+  color: hsla(0, 0%, 100%, 0.92);
+  text-shadow: var(--text-shadow-dark, 0 1px 3px rgba(0, 0, 0, 0.4));
+}
+@media (min-width: 768px) {
+  .banner__description {
+    font-size: var(--text-lg);
+    margin-block-start: var(--space-4);
+  }
+}
+@media (min-width: 1024px) {
+  .banner__description {
+    font-size: var(--text-xl);
+  }
+}
+
+@keyframes bannerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.banner__heading,
+.banner__description {
+  animation: bannerFadeIn var(--transition-slow) ease-out both;
+}
+
+.banner__description {
+  animation-delay: 0.15s;
 }
 
 /* Breadcrumbs

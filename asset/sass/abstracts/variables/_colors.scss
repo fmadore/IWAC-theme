@@ -16,10 +16,17 @@
   --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 47%);
   --primary-active: hsl(var(--primary-hue), var(--primary-sat), 42%);
 
-  // Semantic ink colors (text)
-  --ink: hsl(222, 24%, 14%);
+  // Semantic ink colors (text) - with HSL components for derived colors
+  --ink-hue: 222;
+  --ink-sat: 24%;
+  --ink-lum: 14%;
+  --ink: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum));
   --ink-light: hsl(222, 18%, 36%);
   --muted: hsl(222, 14%, 52%);
+
+  // Pure colors for overlays
+  --white: #fff;
+  --black: #000;
 
   // Surface colors (backgrounds)
   --surface: hsl(0, 0%, 100%);
@@ -83,7 +90,11 @@
     --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 60%);
     --primary-active: hsl(var(--primary-hue), var(--primary-sat), 39%);
 
-    --ink: hsl(210, 25%, 96%);
+    // Ink colors for dark theme - with HSL components
+    --ink-hue: 210;
+    --ink-sat: 25%;
+    --ink-lum: 96%;
+    --ink: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum));
     --ink-light: hsl(210, 15%, 75%);
     --muted: hsl(215, 12%, 65%);
 

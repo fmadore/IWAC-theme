@@ -12,6 +12,10 @@ $bannerHeading = $this->themeSetting('banner_heading');
 $bannerDescription = $this->themeSetting('banner_description');
 $bannerContentPosition = $this->themeSetting('banner_content_position') ?? 'left';
 
+// Default banner image path (included with theme)
+$defaultBannerUrl = $this->assetUrl('img/banner.webp');
+$hasCustomBanner = (bool) $banner;
+
 $bannerHeightProperty = $bannerHeading || $bannerDescription ? 'min-height' : 'height';
 
 $bannerInlineStyles = '';
@@ -32,18 +36,25 @@ if ($bannerHeading || $bannerDescription) {
 }
 ?>
 
-<?php if ($banner) : ?>
-    <div class="<?php echo implode(' ', $class); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>">
+<div class="<?php echo implode(' ', $class); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>">
 
+    <?php if ($hasCustomBanner): ?>
         <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true']); ?>
+    <?php else: ?>
+        <img src="<?php echo $escAttr($defaultBannerUrl); ?>" 
+             style="<?php echo $escAttr($imageInlineStyles); ?>" 
+             role="presentation" 
+             aria-hidden="true" 
+             alt=""
+             loading="lazy">
+    <?php endif; ?>
 
-        <div class="banner__content banner__content--<?php echo $bannerContentPosition; ?>">
-            <?php if($bannerHeading) : ?>
-                <h2 class="banner__heading"><?php echo $escHtml($bannerHeading); ?></h2>
-            <?php endif; ?>
-            <?php if($bannerDescription) : ?>
-                <p class="banner__description"><?php echo $escHtml($bannerDescription); ?></p>
-            <?php endif; ?>
-        </div>
+    <div class="banner__content banner__content--<?php echo $bannerContentPosition; ?>">
+        <?php if($bannerHeading) : ?>
+            <h2 class="banner__heading"><?php echo $escHtml($bannerHeading); ?></h2>
+        <?php endif; ?>
+        <?php if($bannerDescription) : ?>
+            <p class="banner__description"><?php echo $escHtml($bannerDescription); ?></p>
+        <?php endif; ?>
     </div>
-<?php endif; ?>
+</div>

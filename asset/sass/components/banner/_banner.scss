@@ -1,24 +1,51 @@
 @use "../../abstracts/abstracts" as *;
 
+// ==========================================================================
+// Banner Component
+// Hero banner with modern overlay effects and enhanced typography
+// Uses global CSS custom properties for consistency with design system
+// ==========================================================================
+
 .banner {
     display: flex;
     align-items: center;
     position: relative;
+    overflow: hidden;
 
     &.container {
         padding: 0;
     }
 
+    // Modern gradient overlay using ink color for consistency
     &.has-text::before {
         content: "";
         position: absolute;
-        background-color: #000;
-        opacity: 0.6;
-        width: 100%;
-        height: 100%;
+        inset: 0;
+        background: linear-gradient(
+            180deg,
+            hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum) / 0.3) 0%,
+            hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum) / 0.5) 40%,
+            hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum) / 0.75) 100%
+        );
         z-index: 1;
     }
+    
+    // Subtle color accent overlay for brand presence
+    &.has-text::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            135deg,
+            hsl(var(--primary-hue) 70% 50% / 0.15) 0%,
+            transparent 50%,
+            hsl(var(--primary-hue) 70% 40% / 0.1) 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+    }
 
+    // Banner image with subtle zoom on load
     img {
         position: absolute;
         object-fit: cover;
@@ -27,21 +54,36 @@
         top: 0;
         inset-inline-start: 0;
         z-index: 0;
+        transform: scale(1.02);
+        transition: transform var(--transition-slow) ease-out;
+        transition-duration: 8s; // Extended duration for Ken Burns effect
+    }
+    
+    // Subtle Ken Burns effect when banner is in view
+    &:hover img {
+        transform: scale(1);
     }
 
+    // Content container
     &__content {
         display: flex;
         flex-direction: column;
         justify-content: center;
         position: relative;
         margin-inline: auto;
-        width: 80%;
-        color: white;
+        width: 90%;
+        max-width: var(--content-max-width, 1200px);
+        color: var(--white, #fff);
         z-index: 2;
         padding: var(--space-12) var(--space-4);
     
         @media (min-width: $md) {
-            padding: var(--space-12) var(--space-8);
+            width: 85%;
+            padding: var(--space-16) var(--space-8);
+        }
+        
+        @media (min-width: $lg) {
+            padding: var(--space-20) var(--space-12);
         }
 
         &--left {
@@ -51,31 +93,105 @@
         &--center {
             text-align: center;
             align-items: center;
-            max-width: 1000px;
 
             .banner__heading,
             .banner__description {
                 max-width: none !important;
+            }
+            
+            .banner__heading::after {
+                inset-inline: 0;
+                margin-inline: auto;
             }
         }
 
         &--right {
             text-align: end;
             align-items: flex-end;
+            
+            .banner__heading::after {
+                inset-inline-start: auto;
+                inset-inline-end: 0;
+            }
         }
     }
 
+    // Heading with decorative accent line
     &__heading {
-        color: white;
-        font-size: var(--text-3xl);
-        max-width: 800px;
-        text-shadow: 0 2px 4px rgb(0 0 0 / 30%);
+        color: var(--white, #fff);
+        font-size: var(--text-2xl);
+        font-weight: var(--font-weight-medium, 500);
+        max-width: 900px;
+        margin-block-end: var(--space-4);
+        position: relative;
+        text-shadow: var(--text-shadow-dark, 0 2px 4px rgba(0, 0, 0, 0.3));
+        letter-spacing: -0.01em;
+        
+        @media (min-width: $md) {
+            font-size: var(--text-3xl);
+            margin-block-end: var(--space-6);
+        }
+        
+        @media (min-width: $lg) {
+            font-size: var(--text-4xl);
+        }
+        
+        // Decorative accent line under heading
+        &::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--gradient-primary);
+            margin-block-start: var(--space-4);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--glow-sm);
+            
+            @media (min-width: $md) {
+                width: 100px;
+                margin-block-start: var(--space-6);
+            }
+        }
     }
 
+    // Description with improved readability
     &__description {
-        font-size: var(--text-xl);
-        max-width: 800px;
+        font-size: var(--text-base);
+        line-height: var(--line-height-relaxed, 1.7);
+        max-width: 700px;
         margin-block-end: 0;
-        text-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+        margin-block-start: var(--space-2);
+        color: hsl(0 0% 100% / 0.92);
+        text-shadow: var(--text-shadow-dark, 0 1px 3px rgba(0, 0, 0, 0.4));
+        
+        @media (min-width: $md) {
+            font-size: var(--text-lg);
+            margin-block-start: var(--space-4);
+        }
+        
+        @media (min-width: $lg) {
+            font-size: var(--text-xl);
+        }
     }
+}
+
+// Animation for banner content entrance
+@keyframes bannerFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.banner__heading,
+.banner__description {
+    animation: bannerFadeIn var(--transition-slow) ease-out both;
+}
+
+.banner__description {
+    animation-delay: 0.15s;
 }
