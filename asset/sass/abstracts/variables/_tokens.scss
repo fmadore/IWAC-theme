@@ -63,7 +63,8 @@
   // Panel/Card Elevation Helpers
   // ========================================================================
   --panel-bg: var(--surface-raised);
-  --panel-border-color: var(--border);
+  // Use lighter border in light mode - shadow provides main visual separation
+  --panel-border-color: var(--border-light);
   --panel-border: 1px solid var(--panel-border-color);
   --panel-radius: var(--radius-md);
   --panel-shadow: var(--shadow-sm);
@@ -118,7 +119,8 @@ body[data-theme="light"] {
   --shadow-lg: 0 12px 28px -8px rgb(15 23 42 / 0.12), 0 8px 16px -8px rgb(15 23 42 / 0.08);
   --shadow-xl: 0 20px 40px -12px rgb(15 23 42 / 0.16), 0 12px 24px -8px rgb(15 23 42 / 0.1);
   --panel-bg: var(--surface-raised);
-  --panel-border-color: var(--border);
+  // Subtle border for light mode - shadow provides main definition
+  --panel-border-color: var(--border-light);
 }
 
 // ==========================================================================
