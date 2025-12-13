@@ -37,6 +37,13 @@
   --focus-ring: hsla(var(--primary-hue), var(--primary-sat), 49%, 0.25);
   --selection-bg: hsla(var(--primary-hue), var(--primary-sat), 49%, 0.15);
 
+  // Semantic aliases for text and backgrounds
+  --text-primary: var(--ink);
+  --text-heading: var(--ink);
+  --bg-surface: var(--surface);
+  --bg-muted: var(--surface-raised);
+  --border-color: var(--border);
+
   // Blockquote theming
   --blockquote-bg: color-mix(in srgb, var(--surface-raised) 88%, var(--primary) 12%);
   --blockquote-border: color-mix(in srgb, var(--primary) 60%, var(--border) 40%);
@@ -74,6 +81,13 @@
     --border: hsl(220, 12%, 22%);
     --border-light: hsl(220, 12%, 18%);
 
+    // Semantic aliases for text and backgrounds
+    --text-primary: var(--ink);
+    --text-heading: var(--ink);
+    --bg-surface: var(--surface);
+    --bg-muted: var(--surface-raised);
+    --border-color: var(--border);
+
     --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
     --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
     --blockquote-quote: color-mix(in srgb, var(--primary) 75%, white 25%);
@@ -109,6 +123,13 @@ body[data-theme="dark"] {
   --border: hsl(220, 12%, 22%);
   --border-light: hsl(220, 12%, 18%);
 
+  // Semantic aliases for text and backgrounds
+  --text-primary: var(--ink);
+  --text-heading: var(--ink);
+  --bg-surface: var(--surface);
+  --bg-muted: var(--surface-raised);
+  --border-color: var(--border);
+
   --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
   --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
   --blockquote-quote: color-mix(in srgb, var(--primary) 75%, white 25%);
@@ -142,6 +163,13 @@ body[data-theme="light"] {
 
   --border: hsl(210, 24%, 86%);
   --border-light: hsl(210, 24%, 92%);
+
+  // Semantic aliases for text and backgrounds
+  --text-primary: var(--ink);
+  --text-heading: var(--ink);
+  --bg-surface: var(--surface);
+  --bg-muted: var(--surface-raised);
+  --border-color: var(--border);
 
   --blockquote-bg: color-mix(in srgb, var(--surface-raised) 88%, var(--primary) 12%);
   --blockquote-border: color-mix(in srgb, var(--primary) 60%, var(--border) 40%);
