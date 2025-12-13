@@ -50,7 +50,7 @@ foreach ( $socialNetworks as $social_network ) {
 							<img
 								src="<?php echo $this->themeSettingAssetUrl( 'footer_logo' ); ?>"
 								alt="<?php echo $escHtml( $site->title() ); ?>"
-								style="<?php echo $footerSiteInfo ? 'margin-bottom: 30px;' : ''; ?>" />
+								class="<?php echo $footerSiteInfo ? 'main-footer__logo--with-info' : ''; ?>" />
 						<?php endif; ?>
 
 						<div class="footer_site_info">

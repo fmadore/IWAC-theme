@@ -151,6 +151,10 @@
             height: auto;
             border-radius: var(--radius-sm);
             box-shadow: var(--shadow-sm);
+
+            &.main-footer__logo--with-info {
+                margin-block-end: var(--space-8);
+            }
         }
     }
 
