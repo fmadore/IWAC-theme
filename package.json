@@ -1,7 +1,7 @@
 {
-  "name": "freedom-theme",
-  "version": "1.0.7",
-  "description": "An Omeka S Theme.",
+  "name": "iwac-theme",
+  "version": "1.0.0",
+  "description": "Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive.",
   "main": "gulpfile.js",
   "scripts": {
     "start": "gulp",
@@ -9,18 +9,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nelsonamaya82/theme-freedom.git"
+    "url": "git+https://github.com/fmadore/IWAC-theme.git"
   },
   "keywords": [
     "omeka-s",
-    "theme"
+    "theme",
+    "islam",
+    "west-africa",
+    "digital-archive"
   ],
-  "author": "RRCHNM",
+  "author": "Frédérick Madore",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/nelsonamaya82/theme-freedom/issues"
+    "url": "https://github.com/fmadore/IWAC-theme/issues"
   },
-  "homepage": "https://github.com/nelsonamaya82/theme-freedom#readme",
+  "homepage": "https://github.com/fmadore/IWAC-theme#readme",
   "devDependencies": {
     "autoprefixer": "^9.2.1",
     "gulp": "^4.0.2",

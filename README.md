@@ -1,18 +1,35 @@
-# Freedom S: An Omeka S Theme
+# IWAC Theme: An Omeka S Theme for the Islam West Africa Collection
 
-This is an Omeka S theme that offers some custom options and a clean design.
-![Freedom Theme](https://github.com/omeka-s-themes/freedom/blob/master/theme.jpg?raw=true)
+> **Fork Notice**: This theme is a fork of the [Freedom theme](https://github.com/omeka-s-themes/freedom) by the [Omeka Team](https://omeka.org) at the Corporation for Digital Scholarship. We gratefully acknowledge their work as the foundation for this theme.
+
+This is a customized Omeka S theme for the [Islam West Africa Collection](https://islam.zmo.de/s/westafrica/page/home) digital archive at ZMO Berlin. It extends the Freedom theme with modern enhancements including light/dark mode toggle and multilingual support.
+
+![IWAC Theme](https://github.com/fmadore/IWAC-theme/blob/master/theme.jpg?raw=true)
+
+## Features
+
+- **Light/Dark Mode Toggle** - User-selectable theme with system preference detection
+- **Language Switcher** - Integration with the [Internationalisation module](https://github.com/Daniel-KM/Omeka-S-module-Internationalisation)
+- **Modern Design** - Clean, accessible interface optimized for academic content
+- **Customizable** - Extensive theme settings and Sass-based styling
+- **Responsive** - Mobile-first approach with flexible layouts
 
 ## Installation
 
 For basic out-of-the-box use of the theme, follow the [Omeka S User Manual instructions for installing themes](https://omeka.org/s/docs/user-manual/sites/site_theme/#installing-themes).
 
-For more advanced use, such as customizing the theme with Sass, you'll need to install the tools with [NodeJS](https://nodejs.org/en/) (0.12 or greater). Navigate to your theme directory and run `npm install`.
+For more advanced use, such as customizing the theme with Sass, you'll need to install the tools with [NodeJS](https://nodejs.org/en/) (16.x or greater). Navigate to your theme directory and run:
 
-## Theme settings
+```bash
+npm install
+```
 
-### Theme's Primary Color
-The color to be used as the theme's primary color. The default value is #e77f11 (RGB 231, 127, 17).
+## Theme Settings
+
+### General Settings
+- **Primary Color** - The theme's primary color (default: #e77f11)
+- **Secondary Color** - Background and secondary elements color
+- **Accent Color** - Links and accent elements color
 
 ### Header Layout
 - Inline logo and menu
@@ -150,8 +167,9 @@ sass
         └── clearfix
 ```
 
-## Utility classes
-Freedom S offers a set of predefined utiliy classes that will help you to add styles to certain elements by just assigning them these classes.
+## Utility Classes
+
+IWAC Theme offers a set of predefined utility classes that will help you to add styles to certain elements by just assigning them these classes.
 
 You can even combine multiple utility classes.
 
@@ -168,9 +186,27 @@ You can even combine multiple utility classes.
 - `clearfix`
 - `screen-reader-text`
 
+## Module Integration
+
+### Internationalisation Module
+
+This theme is designed to work with the [Internationalisation module](https://github.com/Daniel-KM/Omeka-S-module-Internationalisation) for language switching. The language switcher is automatically displayed in the header when the module is installed and configured.
+
+## Credits & Acknowledgments
+
+This theme is a **fork** of the [Freedom theme](https://github.com/omeka-s-themes/freedom) (v1.1.0) developed by the Omeka Team at the [Corporation for Digital Scholarship](https://digitalscholar.org). The original theme provided the foundation, architecture, and many of the features present in this customized version.
+
+**Original Freedom Theme Authors:**
+- Omeka Team / Corporation for Digital Scholarship
+- Nelson Amaya (Out of the Bugs)
+
+We extend our sincere thanks for their excellent work on creating such a well-structured and customizable theme.
 
 ## Copyright
-Freedom S is Copyright © 2023-present Corporation for Digital Scholarship, Vienna, Virginia, USA http://digitalscholar.org
+
+IWAC Theme is Copyright © 2024-present Frédérick Madore / ZMO Berlin
+
+**Based on Freedom S**, Copyright © 2023-present Corporation for Digital Scholarship, Vienna, Virginia, USA http://digitalscholar.org
 
 The Corporation for Digital Scholarship distributes the Omeka source code
 under the GNU General Public License, version 3 (GPLv3). The full text
