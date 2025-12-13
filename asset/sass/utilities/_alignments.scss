@@ -1,10 +1,15 @@
+// ==========================================================================
+// Alignment Utilities
+// Float, text alignment, and width utilities
+// ==========================================================================
+
 .alignleft {
     /*rtl:ignore*/
     float: left;
 
     /*rtl:ignore*/
-    margin-right: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-right: var(--space-6);
+    margin-bottom: var(--space-6);
 }
 
 .alignright {
@@ -12,23 +17,23 @@
     float: right;
 
     /*rtl:ignore*/
-    margin-left: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-left: var(--space-6);
+    margin-bottom: var(--space-6);
 }
 
 .aligncenter {
     clear: both;
     @include center-block;
-    margin-bottom: 1.5em;
+    margin-bottom: var(--space-6);
 }
 
 .alignfull {
-    margin: 0 0 1.5rem;
+    margin: 0 0 var(--space-6);
     max-width: 100%;
 }
 
 .alignwide {
-    margin: 0 calc(25% - 25vw) 1.5rem;
+    margin: 0 calc(25% - 25vw) var(--space-6);
     max-width: 100vw;
 }
 
@@ -39,11 +44,11 @@
 }
 
 .textleft {
-    text-align: left;
+    text-align: start;
 }
 
 .textright {
-    text-align: right;
+    text-align: end;
 }
 
 .textcenter {

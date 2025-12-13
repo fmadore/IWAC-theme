@@ -7,24 +7,25 @@
 
     &__expand-collapse-btn {
         background-color: transparent;
-        color: $color__primary;
+        color: var(--primary);
         flex-shrink: 0;
-        font-size: $font__xs-size;
+        font-size: var(--text-xs);
         font-weight: 600;
-        margin-bottom: 1.875rem;
-        margin-left: auto;
-        padding: 0 0 0 20px;
+        margin-block-end: var(--space-8);
+        margin-inline-start: auto;
+        padding: 0 0 0 var(--space-5);
         text-decoration: underline;
+        transition: color var(--transition-fast);
 
         &:hover,
         &:focus {
             background-color: transparent !important;
-            color: $color__primary !important;
+            color: var(--primary-dark) !important;
         }
     }
 
     .resource-tag {
-        margin-bottom: 0;
+        margin-block-end: 0;
     }
 
     .linked-resource {
@@ -32,8 +33,9 @@
         align-items: flex-start;
         flex-direction: column-reverse;
         justify-content: space-between;
-        padding: 0.7rem 0;
-        border-bottom: 1px solid $color__hr;
+        padding: var(--space-3) 0;
+        border-block-end: 1px solid var(--border-color);
+        transition: background-color var(--transition-fast);
 
         @media (min-width: $lg) {
             align-items: center;
@@ -41,12 +43,16 @@
         }
 
         &:last-child {
-            border-bottom: none;
+            border-block-end: none;
+        }
+
+        &:hover {
+            background-color: var(--bg-muted);
         }
 
         .resource-tags {
-            margin-bottom: 1rem;
-            margin-left: -10px;
+            margin-block-end: var(--space-4);
+            margin-inline-start: calc(var(--space-3) * -1);
 
             @media (min-width: $lg) {
                 margin: 0;

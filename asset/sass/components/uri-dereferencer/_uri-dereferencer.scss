@@ -1,13 +1,21 @@
+// ==========================================================================
+// URI Dereferencer
+// Linked data display for dereferenced URIs
+// ==========================================================================
+
 .uri-dereferencer {
     &-toggle,
     &-fetch {
-        margin-left: 0.5rem;
+        margin-inline-start: var(--space-2);
     }
 
     &-markup {
-        border: 1px solid $color__hr;
-        padding: 0.5rem 0.8rem;
-        margin-top: 0.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        padding: var(--space-2) var(--space-3);
+        margin-block-start: var(--space-2);
+        background: var(--bg-muted);
+        font-size: var(--text-sm);
     }
 
     &-fetch + &-toggle + &-markup {

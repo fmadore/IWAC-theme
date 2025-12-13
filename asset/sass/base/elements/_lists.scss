@@ -1,53 +1,53 @@
 ul,
 ol {
     margin: 0;
-    padding-left: 2rem;
+    padding-inline-start: var(--space-8);
 }
 
 ul {
-    margin-bottom: 1.5rem;
+    margin-block-end: var(--space-6);
 
     li {
-        margin-bottom: 0.5rem;
+        margin-block-end: var(--space-2);
 
         &::marker {
-            color: $color__primary;
+            color: var(--primary);
         }
     }
 }
 
 ol {
     list-style: decimal;
-    margin-bottom: 1.5rem;
+    margin-block-end: var(--space-6);
 
     li {
-        margin-bottom: 0.5rem;
+        margin-block-end: var(--space-2);
 
         &::marker {
-            color: $color__primary;
+            color: var(--primary);
             font-weight: 600;
-            margin-right: 15px;
+            margin-inline-end: var(--space-4);
         }
     }
 }
 
 li > ul,
 li > ol {
-    margin-bottom: 0;
-    margin-left: 1.5em;
+    margin-block-end: 0;
+    margin-inline-start: var(--space-6);
 }
 
 dt {
-    color: $color__black;
-    font-size: $font__h6-sm-size; //18px
+    color: var(--text-heading);
+    font-size: var(--text-lg);
     font-weight: 600;
 
     @media (min-width: $md) {
-        font-size: $font__h6-base-size; //30px
+        font-size: var(--text-xl);
     }
 }
 
 dd {
-    margin: 0 1rem 1rem 0;
+    margin: 0 var(--space-4) var(--space-4) 0;
     @include clearfix();
 }

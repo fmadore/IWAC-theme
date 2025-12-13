@@ -1,12 +1,12 @@
 .assets,
 .block-asset {
-    margin-bottom: 3rem;
+    margin-block-end: var(--space-12);
 
     &.inline {
         .assets {
             display: flex;
             flex-direction: column;
-            gap: 40px;
+            gap: var(--space-10);
 
             @media(min-width: $md) {
                 flex-direction: row;

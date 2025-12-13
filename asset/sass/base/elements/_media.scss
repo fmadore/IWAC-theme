@@ -11,12 +11,19 @@ img {
 }
 
 figure {
-    margin: 1em 0; // Extra wide images within figure tags don't overflow the content area.
+    margin: var(--space-4) 0; // Extra wide images within figure tags don't overflow the content area.
+}
+
+figcaption {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    font-style: italic;
+    margin-block-start: var(--space-2);
 }
 
 .decoration {
     img {
-        outline: 1px solid $color__white;
+        outline: 1px solid var(--bg-surface);
         outline-offset: -10px;
 
         @media(min-width: $md) {

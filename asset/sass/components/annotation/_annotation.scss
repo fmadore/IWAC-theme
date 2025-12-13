@@ -1,18 +1,18 @@
 .annotation-btn {
     display: inline-block;
-    padding: 0 5px;
+    padding: 0 var(--space-2);
     position: relative;
 
     &:hover {
         .annotation-tooltip {
             height: auto;
             opacity: 1;
-            padding: 18px;
+            padding: var(--space-5);
         }
     }
 
     .has-annotation {
-        color: $color__link;
+        color: var(--primary);
     }
 
     .annotation-tooltip {
@@ -20,58 +20,59 @@
         opacity: 0;
         overflow: hidden;
         position: absolute;
-        left: 0;
+        inset-inline-start: 0;
         bottom: 10px;
-        transition: opacity 0.3s ease-out;
-        z-index: 2;
+        transition: opacity var(--transition-normal);
+        z-index: var(--z-dropdown);
 
         @media (min-width: $lg) {
             bottom: 5px;
         }
 
         &__wrapper {
-            background-color: $color__white;
-            border: 1px solid $color__hr;
-            border-radius: 10px 10px 10px 0;
-            box-shadow: 0px 1px 20px rgba($color__black, 0.25);
-            font-size: $font__xs-size;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0;
+            box-shadow: var(--shadow-lg);
+            font-size: var(--text-xs);
             width: 230px;
             height: auto;
-            padding: 15px 15px 30px;
+            padding: var(--space-4) var(--space-4) var(--space-8);
 
             @media (min-width: $lg) {
-                padding: 15px;
+                padding: var(--space-4);
             }
 
             &.below-button {
-                border-radius: 0 10px 10px 10px;
+                border-radius: 0 var(--radius-lg) var(--radius-lg) var(--radius-lg);
             }
         }
 
         &__heading {
-            font-size: $font__sm-size;
+            font-size: var(--text-sm);
         }
 
         .property:not(:last-child) {
-            margin-bottom: 1rem;
+            margin-block-end: var(--space-4);
         }
 
         dt {
             float: left;
-            font-size: $font__xs-size;
-            margin-bottom: 0.5rem;
-            padding-right: 10px;
+            font-size: var(--text-xs);
+            margin-block-end: var(--space-2);
+            padding-inline-end: var(--space-3);
             width: 70px !important;
         }
 
         dd {
-            font-size: $font__xs-size;
+            font-size: var(--text-xs);
             margin: 0;
-            margin-left: 70px !important;
+            margin-inline-start: 70px !important;
 
             &.resource.media img {
                 display: block;
                 max-width: 80px;
+                border-radius: var(--radius-sm);
             }
         }
     }

@@ -1,11 +1,12 @@
 .list-of-sites {
-    margin-bottom: 3rem;
+    margin-block-end: var(--space-12);
 
     .site {
-        margin-bottom: 1.5rem !important;
+        margin-block-end: var(--space-6) !important;
 
         .site-thumbnail-image {
-            margin-right: 1.5rem !important;
+            margin-inline-end: var(--space-6) !important;
+            border-radius: var(--radius-sm);
         }
     }
 }

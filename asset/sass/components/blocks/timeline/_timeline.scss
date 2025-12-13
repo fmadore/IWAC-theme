@@ -1,6 +1,7 @@
 .tl-timeline {
     .tl-slidenav-next:focus,
     .tl-slidenav-previous:focus {
-        outline: none;
+        outline: 2px solid var(--focus-color);
+        outline-offset: 2px;
     }
 }

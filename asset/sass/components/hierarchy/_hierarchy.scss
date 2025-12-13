@@ -3,9 +3,15 @@
 		.resource {
 			clear: both;
 			flex-wrap: wrap;
-			margin: 0 0 1em;
+			margin: 0 0 var(--space-4);
 			overflow: hidden;
-			padding: .75rem;
+			padding: var(--space-3);
+			border-radius: var(--radius-sm);
+			transition: background-color var(--transition-fast);
+
+			&:hover {
+				background-color: var(--bg-muted);
+			}
 		}
 
 		.resource-link {
@@ -14,9 +20,10 @@
 
 			img {
 				float: right;
-				margin-left: 1em;
+				margin-inline-start: var(--space-4);
 				max-height: 3rem;
 				max-width: 3rem;
+				border-radius: var(--radius-sm);
 			}
 		}
 	}

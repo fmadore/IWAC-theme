@@ -1,17 +1,19 @@
 #local-contexts-content {
     @include container;
-    color: $color__main-text;
-    padding-bottom: 2rem !important;
-    padding-top: 2rem !important;
+    color: var(--text-primary);
+    padding-block: var(--space-8) !important;
 
     .local-contexts-notice {
-        padding: 1rem;
+        padding: var(--space-4);
+        background-color: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
     }
 
     .notice-name {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 10px;
+        gap: var(--space-3);
+        margin-block-end: var(--space-3);
     }
 }

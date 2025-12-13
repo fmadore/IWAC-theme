@@ -1,4 +1,5 @@
 .caption {
     font-style: italic;
-    font-size: $font__sm-size;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
 }

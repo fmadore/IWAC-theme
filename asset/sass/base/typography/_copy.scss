@@ -1,6 +1,6 @@
 p {
-    margin-bottom: 1.5rem;
-    margin-top: 0;
+    margin-block-end: var(--space-6);
+    margin-block-start: 0;
 }
 
 dfn,
@@ -12,26 +12,28 @@ i {
 
 blockquote {
     display: flex;
-    background-color: $color__white;
-    border-left: 3px solid $color__primary;
-    box-shadow: 0px 1px 8px rgba($color__black, 0.25);
+    background-color: var(--bg-surface);
+    border-inline-start: 3px solid var(--primary);
+    box-shadow: var(--shadow-md);
     font-style: italic;
-    padding: 20px 25px 20px 60px;
+    padding: var(--space-5) var(--space-6) var(--space-5) var(--space-16);
     position: relative;
-    margin: 1rem 0 1.5rem;
+    margin: var(--space-4) 0 var(--space-6);
+    border-radius: var(--radius-md);
 
     @media (min-width: $md) {
-        margin: 1rem 2.5rem 1.5rem;
+        margin: var(--space-4) var(--space-10) var(--space-6);
     }
 
     &::before {
         @include font-awesome;
-        color: $color__primary;
+        color: var(--primary);
         content: "\f10d";
         font-size: 2rem;
-        left: 10px;
+        inset-inline-start: 10px;
         position: absolute;
         top: 0px;
+        opacity: 0.7;
     }
 
     a[rel="footnote"] {
@@ -40,18 +42,20 @@ blockquote {
 }
 
 address {
-    margin: 0 0 1.5em;
+    margin: 0 0 var(--space-6);
 }
 
 pre {
-    background: $color__gray-87;
+    background: var(--bg-muted);
     font-family: $font__pre;
     line-height: $font__pre-base-line-height;
-    color: $color__gray-33;
-    margin-bottom: 1.6em;
+    color: var(--text-primary);
+    margin-block-end: var(--space-6);
     max-width: 100%;
     overflow: auto;
-    padding: 1.6em;
+    padding: var(--space-6);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
 }
 
 code,
@@ -59,18 +63,32 @@ kbd,
 tt,
 var {
     font-family: $font__code;
+    background-color: var(--bg-muted);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: 0.9em;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
 }
 
 abbr,
 acronym {
-    border-bottom: 1px dotted $color__hr;
+    border-block-end: 1px dotted var(--border-color);
     cursor: help;
+    text-decoration: none;
 }
 
 mark,
 ins {
-    background: $color__gray-87;
+    background: color-mix(in srgb, var(--primary) 25%, transparent);
+    color: inherit;
     text-decoration: none;
+    padding-inline: var(--space-1);
+    border-radius: var(--radius-sm);
 }
 
 big {

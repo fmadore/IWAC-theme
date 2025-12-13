@@ -1,3 +1,8 @@
+// ==========================================================================
+// Collapse
+// Expand/collapse functionality for hierarchical content
+// ==========================================================================
+
 .expand:after,
 .collapse:after {
 	font-family: "Font Awesome 5 Free";
@@ -9,7 +14,7 @@
 }
 
 .collapse:after {
-	content: "\f0d7"
+	content: "\f0d7";
 }
 
 .collapsible {
@@ -18,8 +23,8 @@
 
 .collapse + .collapsible {
 	display: block;
-	border-left: 3px solid $color__hr;
-	padding: 0 0 0 1rem;
-	margin: 0 0 1rem;
+	border-inline-start: 3px solid var(--border-color);
+	padding: 0 0 0 var(--space-4);
+	margin: 0 0 var(--space-4);
 	width: 100%;
 }
