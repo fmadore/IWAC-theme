@@ -8,11 +8,39 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 
 ## Features
 
-- **Light/Dark Mode Toggle** - User-selectable theme with system preference detection
-- **Language Switcher** - Integration with the [Internationalisation module](https://github.com/Daniel-KM/Omeka-S-module-Internationalisation)
-- **Modern Design** - Clean, accessible interface optimized for academic content
-- **Customizable** - Extensive theme settings and Sass-based styling
+### Light/Dark Mode Toggle
+- User-selectable theme with toggle button in the header
+- Respects system preference (`prefers-color-scheme`) as default
+- Persists user choice in `localStorage`
+- Smooth transitions between themes
+- Accessible keyboard navigation and ARIA labels
+
+### Language Switcher
+- Integration with the [Internationalisation module](https://github.com/Daniel-KM/Omeka-S-module-Internationalisation)
+- Displays current language with flag-style abbreviation (EN/FR)
+- Dropdown menu for switching between available translations
+- Only visible when module is installed and page has translations
+
+### Modern Design System
+- **CSS Custom Properties** - Comprehensive design token system for colors, spacing, typography
+- **HSL Color System** - Dynamic color generation from admin settings
+- **Fluid Typography** - Responsive text sizing with `clamp()`
+- **Logical Properties** - RTL-ready with `margin-inline`, `padding-block`, etc.
+
+### Additional Features
 - **Responsive** - Mobile-first approach with flexible layouts
+- **Accessible** - WCAG 2.1 AA compliant with proper contrast ratios
+- **Customizable** - Extensive theme settings and Sass-based styling
+- **Modular Sass** - Modern `@use`/`@forward` syntax (no deprecated `@import`)
+
+## Requirements
+
+- **Omeka S**: 4.1.0 or higher
+- **PHP**: 7.4 or higher
+- **Node.js**: 16.x or higher (for Sass compilation)
+
+### Optional Modules
+- [Internationalisation](https://github.com/Daniel-KM/Omeka-S-module-Internationalisation) - For language switching functionality
 
 ## Installation
 
@@ -89,8 +117,26 @@ For advanced CSS and Sass users, this theme includes variables and mixins for ma
 Run these commands within the theme's root directory.
 
 * **npm run start**: While this task runs, it watches for changes to sass files and recompiles the CSS.
-* **gulp css**: This is the one-off task for compiling the current Sass/CSS.
+* **npm run build**: One-off task for compiling the current Sass/CSS.
+* **gulp css**: Alias for `npm run build`.
 * **gulp css:watch**: This task watches for changes in the Sass, then compiles the CSS.
+
+### Sass Module System
+
+This theme uses the modern Sass module system with `@use` and `@forward` (not deprecated `@import`).
+
+```scss
+// In component files, import abstracts:
+@use "../../abstracts/abstracts" as *;
+
+// In index files, forward sub-modules:
+@forward "component-name";
+```
+
+**Key rules:**
+- `@forward` rules must come before any other rules
+- Each file using variables/mixins needs its own `@use` statement
+- Use `as *` to access members without namespace prefix
 
 ### Sass File Structure
 
@@ -190,7 +236,48 @@ You can even combine multiple utility classes.
 
 ### Internationalisation Module
 
-This theme is designed to work with the [Internationalisation module](https://github.com/Daniel-KM/Omeka-S-module-Internationalisation) for language switching. The language switcher is automatically displayed in the header when the module is installed and configured.
+This theme is designed to work with the [Internationalisation module](https://github.com/Daniel-KM/Omeka-S-module-Internationalisation) for language switching.
+
+**Setup:**
+1. Install and configure the Internationalisation module
+2. Create translated versions of your site pages
+3. The language switcher will automatically appear in the header
+
+The language switcher displays:
+- Current language code (e.g., "EN" or "FR")
+- Dropdown with available translations for the current page
+- Links styled consistently with the theme
+
+### Other Supported Modules
+
+The theme includes styling for:
+- **Mapping** - Interactive maps on resource pages
+- **Collecting** - User submission forms
+- **Faceted Browse** - Advanced search with facets
+- **Numeric Data Types** - Date/time and number fields
+- **URI Dereferencer** - External linked data display
+
+## Design Tokens
+
+The theme uses CSS custom properties for consistent theming:
+
+```css
+/* Spacing scale */
+--space-1 through --space-40
+
+/* Typography scale */
+--text-xs, --text-sm, --text-base, --text-lg, --text-xl, --text-2xl, --text-3xl, --text-4xl
+
+/* Colors (auto-generated from admin settings) */
+--primary, --primary-hue, --primary-sat, --primary-light
+--secondary, --accent
+--bg-body, --bg-surface, --text-primary, --text-secondary
+
+/* Shadows, borders, transitions */
+--shadow-sm, --shadow-md, --shadow-lg
+--radius-sm, --radius-md, --radius-lg
+--transition-fast, --transition-base
+```
 
 ## Credits & Acknowledgments
 
