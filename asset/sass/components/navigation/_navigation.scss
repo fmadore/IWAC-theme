@@ -204,7 +204,7 @@
                 transition: opacity var(--transition-slow);
                 opacity: 0;
                 height: 0;
-                overflow: hidden;
+                overflow: visible; // Changed from hidden to allow pseudo-element bridge
                 justify-content: center;
                 flex-wrap: wrap;
                 background: var(--panel-bg);
@@ -217,6 +217,17 @@
                 width: 100vw;
                 inset-inline-start: 0;
                 top: 100%;
+                
+                // Bridge the gap between menu item and submenu to prevent mouseout
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: -1.5rem; // Bridge the gap above the submenu
+                    left: 0;
+                    right: 0;
+                    height: 1.5rem;
+                    background: transparent;
+                }
 
                 // Glassmorphism for mega menu
                 @supports ((-webkit-backdrop-filter: blur(0.5rem)) or (backdrop-filter: blur(0.5rem))) {

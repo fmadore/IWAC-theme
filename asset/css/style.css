@@ -2515,7 +2515,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   transition: opacity var(--transition-slow);
   opacity: 0;
   height: 0;
-  overflow: hidden;
+  overflow: visible;
   justify-content: center;
   flex-wrap: wrap;
   background: var(--panel-bg);
@@ -2528,6 +2528,15 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   width: 100vw;
   inset-inline-start: 0;
   top: 100%;
+}
+.main-navigation .navigation > li > ul::before {
+  content: "";
+  position: absolute;
+  top: -1.5rem;
+  left: 0;
+  right: 0;
+  height: 1.5rem;
+  background: transparent;
 }
 @supports (backdrop-filter: blur(0.5rem)) {
   .main-navigation .navigation > li > ul {
@@ -3661,6 +3670,15 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 /*--------------------------------------------------------------
 # Variables and mixins
 --------------------------------------------------------------*/
+.block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle)) {
+  background: var(--panel-bg);
+  border: var(--panel-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow);
+  padding: var(--space-lg);
+  margin-block-end: var(--space-lg);
+}
+
 .block-blockGroup:has(.block-asset) {
   background: var(--panel-bg);
   border: var(--panel-border);

@@ -5,6 +5,19 @@
 // Card-like container for grouped blocks (news items, announcements, etc.)
 // ==========================================================================
 
+// Block groups containing HTML blocks (text content cards)
+// Excludes: page title blocks, blocks with assets (handled separately)
+// Includes: blocks with line breaks (spacing elements are fine)
+.block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle)) {
+    // Text content blocks get card styling
+    background: var(--panel-bg);
+    border: var(--panel-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--panel-shadow);
+    padding: var(--space-lg);
+    margin-block-end: var(--space-lg);
+}
+
 // News-style block groups (contain asset + html blocks)
 // Target block groups that have .block-asset as a direct child
 .block-blockGroup {
