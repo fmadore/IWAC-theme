@@ -14,12 +14,14 @@
 
     #section-sidebar {
         width: 100%;
+        overflow: hidden;
 
         @media (min-width: $xl) {
             border-inline-end: 1px solid var(--border-color);
             padding-inline-end: var(--space-6);
             width: 25%;
             z-index: auto !important;
+            overflow: visible;
         }
 
         &.open {
@@ -36,6 +38,21 @@
 
         button.close-button {
             background-color: var(--primary);
+        }
+    }
+
+    // Facet container overflow handling
+    .facet {
+        overflow: hidden;
+
+        ul {
+            overflow: hidden;
+        }
+
+        label {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 
@@ -120,25 +137,6 @@
 
             &::before {
                 content: none !important;
-            }
-
-            label {
-                display: flex;
-                align-items: flex-start;
-                gap: var(--space-2);
-                max-width: 100%;
-                overflow: hidden;
-
-                input[type="radio"],
-                input[type="checkbox"] {
-                    flex-shrink: 0;
-                }
-
-                // Text content after the input
-                &:not(:has(input)) {
-                    overflow-wrap: break-word;
-                    word-break: break-word;
-                }
             }
         }
 

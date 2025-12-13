@@ -51,11 +51,11 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --shadow-md: 0 6px 16px -4px rgb(15 23 42 / 0.1), 0 4px 8px -4px rgb(15 23 42 / 0.06);
   --shadow-lg: 0 12px 28px -8px rgb(15 23 42 / 0.12), 0 8px 16px -8px rgb(15 23 42 / 0.08);
   --shadow-xl: 0 20px 40px -12px rgb(15 23 42 / 0.16), 0 12px 24px -8px rgb(15 23 42 / 0.1);
-  --panel-bg: var(--surface-raised);
-  --panel-border-color: var(--border-light);
+  --panel-bg: var(--surface);
+  --panel-border-color: transparent;
   --panel-border: 1px solid var(--panel-border-color);
   --panel-radius: var(--radius-md);
-  --panel-shadow: var(--shadow-sm);
+  --panel-shadow: var(--shadow-md);
   --transition-fast: 150ms ease;
   --transition-base: 200ms ease;
   --transition-slow: 300ms ease;
@@ -88,13 +88,14 @@ body[data-theme=dark] {
 }
 
 body[data-theme=light] {
-  --shadow-xs: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
-  --shadow-sm: 0 2px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.06);
-  --shadow-md: 0 6px 16px -4px rgb(15 23 42 / 0.1), 0 4px 8px -4px rgb(15 23 42 / 0.06);
-  --shadow-lg: 0 12px 28px -8px rgb(15 23 42 / 0.12), 0 8px 16px -8px rgb(15 23 42 / 0.08);
-  --shadow-xl: 0 20px 40px -12px rgb(15 23 42 / 0.16), 0 12px 24px -8px rgb(15 23 42 / 0.1);
-  --panel-bg: var(--surface-raised);
-  --panel-border-color: var(--border-light);
+  --shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
+  --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.08), 0 4px 6px -4px rgb(15 23 42 / 0.05);
+  --shadow-xl: 0 20px 25px -5px rgb(15 23 42 / 0.08), 0 8px 10px -6px rgb(15 23 42 / 0.05);
+  --panel-bg: var(--surface);
+  --panel-border-color: transparent;
+  --panel-shadow: var(--shadow-md);
 }
 
 :root {
@@ -4469,6 +4470,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .faceted-browse-page #section-sidebar,
 .block-facetedBrowsePreview #section-sidebar {
   width: 100%;
+  overflow: hidden;
 }
 @media (min-width: 1200px) {
   .faceted-browse-page #section-sidebar,
@@ -4477,6 +4479,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
     padding-inline-end: var(--space-6);
     width: 25%;
     z-index: auto !important;
+    overflow: visible;
   }
 }
 .faceted-browse-page #section-sidebar.open,
@@ -4495,6 +4498,20 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .faceted-browse-page #section-sidebar button.close-button,
 .block-facetedBrowsePreview #section-sidebar button.close-button {
   background-color: var(--primary);
+}
+.faceted-browse-page .facet,
+.block-facetedBrowsePreview .facet {
+  overflow: hidden;
+}
+.faceted-browse-page .facet ul,
+.block-facetedBrowsePreview .facet ul {
+  overflow: hidden;
+}
+.faceted-browse-page .facet label,
+.block-facetedBrowsePreview .facet label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .faceted-browse-page #section-content,
 .block-facetedBrowsePreview #section-content {
@@ -4585,25 +4602,6 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .faceted-browse-page .select-list-item::before,
 .block-facetedBrowsePreview .select-list-item::before {
   content: none !important;
-}
-.faceted-browse-page .select-list-item label,
-.block-facetedBrowsePreview .select-list-item label {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-2);
-  max-width: 100%;
-  overflow: hidden;
-}
-.faceted-browse-page .select-list-item label input[type=radio],
-.faceted-browse-page .select-list-item label input[type=checkbox],
-.block-facetedBrowsePreview .select-list-item label input[type=radio],
-.block-facetedBrowsePreview .select-list-item label input[type=checkbox] {
-  flex-shrink: 0;
-}
-.faceted-browse-page .select-list-item label:not(:has(input)),
-.block-facetedBrowsePreview .select-list-item label:not(:has(input)) {
-  overflow-wrap: break-word;
-  word-break: break-word;
 }
 .faceted-browse-page .select-list-expand, .faceted-browse-page .select-list-collapse,
 .block-facetedBrowsePreview .select-list-expand,
