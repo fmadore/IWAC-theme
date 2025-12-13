@@ -225,6 +225,7 @@
     table {
         border-collapse: separate;
         border-spacing: 0 var(--space-4);
+        table-layout: auto;
 
         thead {
             background-color: var(--bg-muted);
@@ -234,6 +235,11 @@
                 padding: var(--space-3);
                 font-weight: 600;
                 text-align: start;
+
+                // Date column - prevent breaking
+                &:nth-child(2) {
+                    white-space: nowrap;
+                }
             }
         }
 
@@ -250,6 +256,11 @@
 
                 td {
                     padding: var(--space-3);
+
+                    // Date column - prevent breaking
+                    &:nth-child(2) {
+                        white-space: nowrap;
+                    }
 
                     .resource-link {
                         display: flex;

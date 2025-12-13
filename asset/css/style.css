@@ -4687,6 +4687,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .block-facetedBrowsePreview table {
   border-collapse: separate;
   border-spacing: 0 var(--space-4);
+  table-layout: auto;
 }
 .faceted-browse-page table thead,
 .block-facetedBrowsePreview table thead {
@@ -4698,6 +4699,10 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   padding: var(--space-3);
   font-weight: 600;
   text-align: start;
+}
+.faceted-browse-page table thead th:nth-child(2),
+.block-facetedBrowsePreview table thead th:nth-child(2) {
+  white-space: nowrap;
 }
 .faceted-browse-page table tbody tr,
 .block-facetedBrowsePreview table tbody tr {
@@ -4712,6 +4717,10 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .faceted-browse-page table tbody tr td,
 .block-facetedBrowsePreview table tbody tr td {
   padding: var(--space-3);
+}
+.faceted-browse-page table tbody tr td:nth-child(2),
+.block-facetedBrowsePreview table tbody tr td:nth-child(2) {
+  white-space: nowrap;
 }
 .faceted-browse-page table tbody tr td .resource-link,
 .block-facetedBrowsePreview table tbody tr td .resource-link {
