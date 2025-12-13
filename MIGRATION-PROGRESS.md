@@ -96,3 +96,32 @@ Migrating `cssoverride-modern.css` (1,400+ lines) into the existing Sass archite
 3. **Browser Testing**: Verify dark/light toggle works correctly
 4. **RTL Support**: Test with RTL languages (Arabic)
 5. **Performance Audit**: Check for unused CSS with PurgeCSS
+
+---
+
+## Build Pipeline Improvements (TODO)
+
+### High Priority
+
+- [ ] **Add CSS minification** to the Gulp build for production
+  - Currently outputting unminified CSS (~126KB)
+  - Use `cssnano` or `gulp-clean-css` for minification
+  - Consider separate dev/prod builds
+
+- [ ] **Add autoprefixer** to automatically add vendor prefixes
+  - Install `gulp-autoprefixer` or use PostCSS with autoprefixer
+  - Fixes browser compatibility warnings (Safari, Firefox)
+  - Target browsers via `.browserslistrc` file
+
+### Nice to Have
+
+- [ ] **Split print styles** into separate stylesheet for performance
+  - Create `print.css` loaded with `media="print"`
+  - Reduces main CSS payload for screen users
+
+- [ ] **Add source maps** for development debugging
+  - Easier debugging in browser DevTools
+
+- [ ] **Consider PurgeCSS** for production builds
+  - Removes unused CSS selectors
+  - Could significantly reduce file size
