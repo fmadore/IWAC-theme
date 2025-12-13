@@ -33,8 +33,12 @@
             }
     
             dt {
-                color: var(--text-secondary);
+                // Override base dt styles - metadata labels should be smaller
+                color: var(--muted);
+                font-size: var(--text-sm);
                 font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.025em;
                 margin-block-end: var(--space-2);
                 padding-inline-end: var(--space-4);
 

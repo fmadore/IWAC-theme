@@ -3556,8 +3556,11 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   clear: both;
 }
 .metadata dl > .property dt {
-  color: var(--text-secondary);
+  color: var(--muted);
+  font-size: var(--text-sm);
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
   margin-block-end: var(--space-2);
   padding-inline-end: var(--space-4);
 }
@@ -4570,6 +4573,8 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .faceted-browse-page .select-list-item,
 .block-facetedBrowsePreview .select-list-item {
   margin-inline-start: var(--space-4);
+  max-width: 100%;
+  overflow: hidden;
 }
 @media (min-width: 1200px) {
   .faceted-browse-page .select-list-item,
@@ -4580,6 +4585,25 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 .faceted-browse-page .select-list-item::before,
 .block-facetedBrowsePreview .select-list-item::before {
   content: none !important;
+}
+.faceted-browse-page .select-list-item label,
+.block-facetedBrowsePreview .select-list-item label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  max-width: 100%;
+  overflow: hidden;
+}
+.faceted-browse-page .select-list-item label input[type=radio],
+.faceted-browse-page .select-list-item label input[type=checkbox],
+.block-facetedBrowsePreview .select-list-item label input[type=radio],
+.block-facetedBrowsePreview .select-list-item label input[type=checkbox] {
+  flex-shrink: 0;
+}
+.faceted-browse-page .select-list-item label:not(:has(input)),
+.block-facetedBrowsePreview .select-list-item label:not(:has(input)) {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .faceted-browse-page .select-list-expand, .faceted-browse-page .select-list-collapse,
 .block-facetedBrowsePreview .select-list-expand,
