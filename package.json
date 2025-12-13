@@ -13,10 +13,7 @@
   },
   "keywords": [
     "omeka-s",
-    "theme",
-    "islam",
-    "west-africa",
-    "digital-archive"
+    "theme"
   ],
   "author": "Frédérick Madore",
   "license": "GPL-3.0",
@@ -25,17 +22,14 @@
   },
   "homepage": "https://github.com/fmadore/IWAC-theme#readme",
   "devDependencies": {
-    "autoprefixer": "^9.2.1",
-    "gulp": "^4.0.2",
-    "gulp-postcss": "^8.0.0",
-    "gulp-sass": "^5.0.0"
+    "autoprefixer": "^10.4.22",
+    "gulp": "^5.0.1",
+    "gulp-postcss": "^10.0.0",
+    "gulp-sass": "^6.0.1",
+    "sass": "^1.96.0"
   },
   "browserslist": [
     "> 5%",
     "> 1% in US"
-  ],
-  "dependencies": {
-    "minimist": "^1.2.6",
-    "sass": "^1.58.3"
-  }
+  ]
 }
