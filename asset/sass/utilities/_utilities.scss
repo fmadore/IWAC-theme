@@ -1,15 +1,22 @@
+// ==========================================================================
+// Utilities Index
+// Forward all utility styles
+// ==========================================================================
+
+@use "../abstracts/abstracts" as *;
+
 /* Accessibility
 --------------------------------------------- */
-@import "accessibility";
+@forward "accessibility";
 
 /* Alignments
 --------------------------------------------- */
-@import "alignments";
+@forward "alignments";
 
 /* Clearfix
 --------------------------------------------- */
-@import "clearfix";
+@forward "clearfix";
 
 /* Print Styles
 --------------------------------------------- */
-@import "print";
+@forward "print";

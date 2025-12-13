@@ -1,39 +1,41 @@
+@use "../../abstracts/abstracts" as *;
+
 /* Assets
 --------------------------------------------- */
-@import "assets/assets";
+@forward "assets/assets";
 
 /* Browse Preview
 --------------------------------------------- */
-@import "browse-preview/browse-preview";
+@forward "browse-preview/browse-preview";
 
 /* Carousel
 --------------------------------------------- */
-@import "carousel/carousel";
+@forward "carousel/carousel";
 
 /* Collecting
 --------------------------------------------- */
-@import "collecting/collecting";
+@forward "collecting/collecting";
 
 /* Item With metadata
 --------------------------------------------- */
-@import "item-with-metadata/item-with-metadata";
+@forward "item-with-metadata/item-with-metadata";
 
 /* Item Showcase
 --------------------------------------------- */
-@import "item-showcase/item-showcase";
+@forward "item-showcase/item-showcase";
 
 /* Media Embed
 --------------------------------------------- */
-@import "media-embed/media-embed";
+@forward "media-embed/media-embed";
 
 /* Table of contents
 --------------------------------------------- */
-@import "table-of-contents/table-of-contents";
+@forward "table-of-contents/table-of-contents";
 
 /* List of sites
 --------------------------------------------- */
-@import "list-of-sites/list-of-sites";
+@forward "list-of-sites/list-of-sites";
 
 /* Timeline
 --------------------------------------------- */
-@import "timeline/timeline";
+@forward "timeline/timeline";

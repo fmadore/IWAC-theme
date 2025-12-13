@@ -1,82 +1,89 @@
+// ==========================================================================
+// Components Index
+// Forward all component styles
+// ==========================================================================
+
+@use "../abstracts/abstracts" as *;
+
 /* Header
 --------------------------------------------- */
-@import "header/header";
-@import "header/theme-toggle";
-@import "header/language-switcher";
+@forward "header/header";
+@forward "header/theme-toggle";
+@forward "header/language-switcher";
 
 /* Navigation
 --------------------------------------------- */
-@import "navigation/navigation";
-@import "navigation/menu-drawer";
+@forward "navigation/navigation";
+@forward "navigation/menu-drawer";
 
 /* Accordion
 --------------------------------------------- */
-@import "accordion/accordion";
+@forward "accordion/accordion";
 
 /* Advanced Search
 --------------------------------------------- */
-@import "advanced-search/advanced-search";
+@forward "advanced-search/advanced-search";
 
 /* Annotation
 --------------------------------------------- */
-@import "annotation/annotation";
+@forward "annotation/annotation";
 
 /* Banner
 --------------------------------------------- */
-@import "banner/banner";
+@forward "banner/banner";
 
 /* Breadcrumbs
 --------------------------------------------- */
-@import "breadcrumbs/breadcrumbs";
+@forward "breadcrumbs/breadcrumbs";
 
 /* Linked Resources
 --------------------------------------------- */
-@import "linked-resources/linked-resources";
+@forward "linked-resources/linked-resources";
 
 /* Local Contexts
 --------------------------------------------- */
-@import "local-contexts/local-contexts";
+@forward "local-contexts/local-contexts";
 
 /* Mapping
 --------------------------------------------- */
-@import "mapping/mapping-map";
+@forward "mapping/mapping-map";
 
 /* Metadata
 --------------------------------------------- */
-@import "metadata/metadata";
+@forward "metadata/metadata";
 
 /* Blocks
 --------------------------------------------- */
-@import "blocks/blocks";
+@forward "blocks/blocks";
 
 /* Pagination
 --------------------------------------------- */
-@import "pagination/pagination";
+@forward "pagination/pagination";
 
 /* Facets
 --------------------------------------------- */
-@import "facets/facets";
+@forward "facets/facets";
 
 /* Hierarchy
 --------------------------------------------- */
-@import "hierarchy/hierarchy";
+@forward "hierarchy/hierarchy";
 
 /* Resources
 --------------------------------------------- */
-@import "resources/resources";
+@forward "resources/resources";
 
 /* Search Results
 --------------------------------------------- */
-@import "search-results/search-results";
+@forward "search-results/search-results";
 
 /* URI Dereferencer
 --------------------------------------------- */
-@import "uri-dereferencer/uri-dereferencer";
+@forward "uri-dereferencer/uri-dereferencer";
 
 /* User Bar
 --------------------------------------------- */
-@import "user-bar/user-bar";
+@forward "user-bar/user-bar";
 
 /* Footer
 --------------------------------------------- */
-@import "footer/footer";
+@forward "footer/footer";

@@ -1,3 +1,5 @@
+@use "../../../abstracts/abstracts" as *;
+
 .media-embed {
     &.media-display-thumbnail {
         margin-block-end: var(--space-12);

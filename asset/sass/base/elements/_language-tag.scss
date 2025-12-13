@@ -1,3 +1,5 @@
+@use "../../abstracts/abstracts" as *;
+
 .language {
     display: inline-block;
     background-color: var(--primary);

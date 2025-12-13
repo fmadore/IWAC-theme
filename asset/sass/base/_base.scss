@@ -1,35 +1,42 @@
+// ==========================================================================
+// Base Index
+// Forward all base styles, elements, and layout
+// ==========================================================================
+
+@use "../abstracts/abstracts" as *;
+
 /* Theme Infrastructure
 --------------------------------------------- */
-@import "theme";
+@forward "theme";
 
 /* Typography
 --------------------------------------------- */
-@import "typography/typography";
+@forward "typography/typography";
 
 /* Elements
 --------------------------------------------- */
-@import "elements/body";
-@import "elements/hr";
-@import "elements/icons";
-@import "elements/language-tag";
-@import "elements/lists";
-@import "elements/media";
-@import "elements/resource-description";
-@import "elements/resource-tag";
-@import "elements/tables";
-@import "elements/titles";
-@import "elements/caption";
-@import "elements/tooltip";
+@forward "elements/body";
+@forward "elements/hr";
+@forward "elements/icons";
+@forward "elements/language-tag";
+@forward "elements/lists";
+@forward "elements/media";
+@forward "elements/resource-description";
+@forward "elements/resource-tag";
+@forward "elements/tables";
+@forward "elements/titles";
+@forward "elements/caption";
+@forward "elements/tooltip";
 
 /* Links
 --------------------------------------------- */
-@import "elements/links";
+@forward "elements/links";
 
 /* Forms
 --------------------------------------------- */
-@import "elements/buttons";
-@import "elements/fields";
+@forward "elements/buttons";
+@forward "elements/fields";
 
 /* Layouts
 --------------------------------------------------------------*/
-@import "layout/layout";
+@forward "layout/layout";

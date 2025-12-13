@@ -1,3 +1,7 @@
+@forward "regions";
+
+@use "../../abstracts/abstracts" as *;
+
 html, body {
     width: 100%;
 }
@@ -41,5 +45,3 @@ body {
         }
     }
 }
-
-@import "regions";

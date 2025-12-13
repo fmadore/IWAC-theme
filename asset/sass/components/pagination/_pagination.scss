@@ -1,2 +1,4 @@
-@import "resources-pagination";
-@import "page-pagination";
+@use "../../abstracts/abstracts" as *;
+
+@forward "resources-pagination";
+@forward "page-pagination";

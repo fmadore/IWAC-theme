@@ -1,3 +1,5 @@
+@use "../../abstracts/abstracts" as *;
+
 #local-contexts-content {
     @include container;
     color: var(--text-primary);

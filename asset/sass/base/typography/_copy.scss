@@ -1,3 +1,5 @@
+@use "../../abstracts/abstracts" as *;
+
 p {
     margin-block-end: var(--space-6);
     margin-block-start: 0;

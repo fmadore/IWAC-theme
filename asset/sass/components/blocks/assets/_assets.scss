@@ -1,3 +1,5 @@
+@use "../../../abstracts/abstracts" as *;
+
 .assets,
 .block-asset {
     margin-block-end: var(--space-12);

@@ -16,7 +16,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 /*--------------------------------------------------------------
 # Variables and mixins
 --------------------------------------------------------------*/
-@import "abstracts/abstracts";
+@use "abstracts/abstracts" as *;
 
 /*--------------------------------------------------------------
 # Generic
@@ -24,27 +24,27 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 
 /* Normalize
 --------------------------------------------- */
-@import "generic/normalize";
+@use "generic/normalize";
 
 /* Box sizing
 --------------------------------------------- */
-@import "generic/box-sizing";
+@use "generic/box-sizing";
 
 /* Collapse
 --------------------------------------------- */
-@import "generic/collapse";
+@use "generic/collapse" as *;
 
 /*--------------------------------------------------------------
 # Base
 --------------------------------------------------------------*/
-@import "base/base";
+@use "base/base" as *;
 
 /*--------------------------------------------------------------
 # Components
 --------------------------------------------------------------*/
-@import "components/components";
+@use "components/components" as *;
 
 /*--------------------------------------------------------------
 # Utilities
 --------------------------------------------------------------*/
-@import "utilities/utilities";
+@use "utilities/utilities" as *;

@@ -58,9 +58,26 @@ IWAC-theme/
 - Use **SCSS syntax** (not indented Sass)
 - Follow **BEM naming convention**: `.block__element--modifier`
 - Use **CSS custom properties** (CSS variables) for theming support
+- Use **`@use`/`@forward`** syntax (not deprecated `@import`)
 - Define colors in `asset/sass/abstracts/variables/_colors.scss`
 - Define breakpoints in `asset/sass/abstracts/variables/_breakpoints.scss`
 - Create mixins in `asset/sass/abstracts/mixins/_mixins.scss`
+
+#### Sass Module System
+The project uses the modern Sass module system with `@use` and `@forward`:
+
+```scss
+// In leaf files (files with actual styles), import abstracts:
+@use "../../abstracts/abstracts" as *;
+
+// In index files, forward sub-modules:
+@forward "sub-module";
+```
+
+**Key rules:**
+- `@forward` rules must come before any other rules in a file
+- Each file that uses Sass variables/mixins needs its own `@use` statement
+- Use `as *` to access members without namespace prefix
 
 #### Color Variables Pattern
 ```scss
@@ -289,8 +306,9 @@ Always check for module availability before using their helpers:
 
 ### Adding a New Sass Component
 1. Create file: `asset/sass/components/component-name/_component-name.scss`
-2. Import in: `asset/sass/components/_components.scss`
-3. Run build: `npm run build`
+2. Add `@use "../../abstracts/abstracts" as *;` at the top if using variables/mixins
+3. Forward in index: Add `@forward "component-name/component-name";` to `asset/sass/components/_components.scss`
+4. Run build: `npm run build`
 
 ### Adding a New Theme Setting
 1. Add element definition in `config/theme.ini`

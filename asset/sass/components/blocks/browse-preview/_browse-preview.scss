@@ -1,3 +1,5 @@
+@use "../../../abstracts/abstracts" as *;
+
 .preview-block {
     margin: var(--space-4) 0 var(--space-16) !important;
     overflow: visible !important;

@@ -1,3 +1,5 @@
+@use "../../abstracts/abstracts" as *;
+
 .annotation-btn {
     display: inline-block;
     padding: 0 var(--space-2);

@@ -1,7 +1,12 @@
-@import "variables/breakpoints";
-@import "variables/tokens";
-@import "variables/colors";
-@import "variables/layout";
-@import "variables/typography";
+// ==========================================================================
+// Abstracts Index
+// Forward all variables and mixins for use in other files
+// ==========================================================================
 
-@import "mixins/mixins";
+@forward "variables/breakpoints";
+@forward "variables/tokens";
+@forward "variables/colors";
+@forward "variables/layout";
+@forward "variables/typography";
+
+@forward "mixins/mixins";

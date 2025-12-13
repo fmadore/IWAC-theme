@@ -561,6 +561,23 @@ html {
 /*--------------------------------------------------------------
 # Base
 --------------------------------------------------------------*/
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 /* Theme Infrastructure
 --------------------------------------------- */
 *,
@@ -610,18 +627,23 @@ html {
 }
 /* Typography
 --------------------------------------------- */
-body,
-button,
-input,
-select,
-optgroup,
-textarea {
-  color: var(--text-primary);
-  font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 h1,
 h2,
 h3,
@@ -712,6 +734,23 @@ h6 {
   }
 }
 
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 p {
   margin-block-end: var(--space-6);
   margin-block-start: 0;
@@ -809,8 +848,54 @@ big {
   font-size: 125%;
 }
 
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
+body,
+button,
+input,
+select,
+optgroup,
+textarea {
+  color: var(--text-primary);
+  font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
 /* Elements
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 body {
   background: var(--background);
   margin: 0;
@@ -845,6 +930,23 @@ hr {
   content: "\f078";
 }
 
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .language {
   display: inline-block;
   background-color: var(--primary);
@@ -860,6 +962,23 @@ hr {
   transition: background-color var(--transition-fast);
 }
 
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 ul,
 ol {
   margin: 0;
@@ -915,6 +1034,23 @@ dd::after {
   display: table;
 }
 
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 /* Make sure embeds and iframes fit their containers. */
 embed,
 iframe,
@@ -1060,6 +1196,23 @@ table.bordered td {
   color: var(--text-secondary);
 }
 
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .tooltip {
   display: inline-block;
   color: var(--text-secondary);
@@ -1379,6 +1532,23 @@ button.remove-value:focus {
   box-shadow: none;
 }
 
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 input[type=text],
 input[type=email],
 input[type=url],
@@ -1624,60 +1794,23 @@ fieldset .field .field-meta label {
 
 /* Layouts
 --------------------------------------------------------------*/
-html, body {
-  width: 100%;
-}
-
-html {
-  scroll-padding-top: 133px;
-}
-
-body {
-  padding-block-start: 133px;
-}
-@media (min-width: 1024px) {
-  body {
-    padding-block-start: 160px;
-  }
-}
-body.main-header--center {
-  padding-block-start: 230px;
-}
-
-.container {
-  width: 100%;
-  max-width: 1440px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 15px;
-}
-@media (min-width: 768px) {
-  .container {
-    padding: 0 30px;
-  }
-}
-
-#main-content {
-  padding-block: var(--space-8) var(--space-12);
-}
-@media (min-width: 1024px) {
-  #main-content {
-    padding-block: var(--space-12) var(--space-16);
-  }
-}
-@media (min-width: 1024px) {
-  body.items.search #main-content {
-    max-width: 1160px;
-    padding: var(--space-12) var(--space-40) var(--space-16) var(--space-16);
-  }
-}
-@media (min-width: 1200px) {
-  body.items.search #main-content {
-    max-width: 1160px;
-    padding: var(--space-12) var(--space-40) var(--space-16);
-  }
-}
-
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .regions-container {
   display: flex;
   flex-direction: column;
@@ -1749,11 +1882,116 @@ body.main-header--center {
   }
 }
 
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
+html, body {
+  width: 100%;
+}
+
+html {
+  scroll-padding-top: 133px;
+}
+
+body {
+  padding-block-start: 133px;
+}
+@media (min-width: 1024px) {
+  body {
+    padding-block-start: 160px;
+  }
+}
+body.main-header--center {
+  padding-block-start: 230px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 15px;
+}
+@media (min-width: 768px) {
+  .container {
+    padding: 0 30px;
+  }
+}
+
+#main-content {
+  padding-block: var(--space-8) var(--space-12);
+}
+@media (min-width: 1024px) {
+  #main-content {
+    padding-block: var(--space-12) var(--space-16);
+  }
+}
+@media (min-width: 1024px) {
+  body.items.search #main-content {
+    max-width: 1160px;
+    padding: var(--space-12) var(--space-40) var(--space-16) var(--space-16);
+  }
+}
+@media (min-width: 1200px) {
+  body.items.search #main-content {
+    max-width: 1160px;
+    padding: var(--space-12) var(--space-40) var(--space-16);
+  }
+}
+
 /*--------------------------------------------------------------
 # Components
 --------------------------------------------------------------*/
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 /* Header
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .main-header {
   background: var(--panel-bg);
   position: sticky;
@@ -2057,6 +2295,23 @@ body.main-header--center {
 
 /* Navigation
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .main-navigation__container {
   display: none;
 }
@@ -2282,6 +2537,23 @@ body.main-header--center {
   display: block;
 }
 
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .menu-drawer {
   display: block !important;
   position: fixed;
@@ -2558,6 +2830,23 @@ body.menu-drawer-toggled {
 
 /* Advanced Search
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 #advanced-search {
   max-width: 840px;
   margin-inline: auto;
@@ -2823,6 +3112,23 @@ body.menu-drawer-toggled {
 
 /* Annotation
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .annotation-btn {
   display: inline-block;
   padding: 0 var(--space-2);
@@ -2895,6 +3201,23 @@ body.menu-drawer-toggled {
 
 /* Banner
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .banner {
   display: flex;
   align-items: center;
@@ -3001,6 +3324,23 @@ body.menu-drawer-toggled {
 
 /* Linked Resources
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .resources-linked__header {
   display: flex;
   align-items: flex-end;
@@ -3057,6 +3397,23 @@ body.menu-drawer-toggled {
 
 /* Local Contexts
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 #local-contexts-content {
   width: 100%;
   max-width: 1440px;
@@ -3109,6 +3466,23 @@ body.menu-drawer-toggled {
 
 /* Metadata
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .metadata {
   width: 100%;
 }
@@ -3217,8 +3591,42 @@ body.menu-drawer-toggled {
 
 /* Blocks
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 /* Assets
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .assets,
 .block-asset {
   margin-block-end: var(--space-12);
@@ -3238,6 +3646,23 @@ body.menu-drawer-toggled {
 
 /* Browse Preview
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .preview-block {
   margin: var(--space-4) 0 var(--space-16) !important;
   overflow: visible !important;
@@ -3277,6 +3702,23 @@ body.menu-drawer-toggled {
 
 /* Carousel
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .carousel-block {
   padding-inline: 45px;
 }
@@ -3351,6 +3793,23 @@ body.menu-drawer-toggled {
 
 /* Item With metadata
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .item-with-metadata {
   overflow: initial !important;
   margin-block-end: var(--space-12) !important;
@@ -3433,6 +3892,23 @@ body.menu-drawer-toggled {
 
 /* Item Showcase
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .item-showcase {
   border-top: none !important;
   border-bottom: none !important;
@@ -3485,6 +3961,23 @@ body.menu-drawer-toggled {
 
 /* Media Embed
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .media-embed.media-display-thumbnail {
   margin-block-end: var(--space-12);
 }
@@ -3538,6 +4031,23 @@ body.menu-drawer-toggled {
 
 /* Table of contents
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .toc-block > ul {
   border-inline-start: none !important;
 }
@@ -3596,6 +4106,40 @@ body.menu-drawer-toggled {
 
 /* Pagination
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .pagination {
   display: flex;
   align-items: center;
@@ -3689,6 +4233,23 @@ body.menu-drawer-toggled {
   pointer-events: none;
 }
 
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .site-page-pagination {
   display: flex;
   border-block: 1px solid var(--border-color);
@@ -3733,6 +4294,23 @@ body.menu-drawer-toggled {
 
 /* Facets
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .faceted-browse-page #container,
 .block-facetedBrowsePreview #container {
   flex-wrap: wrap;
@@ -4004,6 +4582,40 @@ body.menu-drawer-toggled {
 
 /* Resources
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .browse-controls {
   display: flex;
   align-items: center;
@@ -4240,6 +4852,23 @@ body.search .results .highlight {
 
 /* User Bar
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 #user-bar {
   gap: var(--space-4);
 }
@@ -4299,6 +4928,23 @@ body.search .results .highlight {
 
 /* Footer
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .main-footer {
   clear: both;
   color: var(--footer-text);
@@ -4616,6 +5262,23 @@ body.search .results .highlight {
 /*--------------------------------------------------------------
 # Utilities
 --------------------------------------------------------------*/
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 /* Accessibility
 --------------------------------------------- */
 #skipnav {
@@ -4670,6 +5333,23 @@ body.search .results .highlight {
 
 /* Alignments
 --------------------------------------------- */
+/*
+Theme Name: IWAC Theme
+Theme URI: https://github.com/fmadore/IWAC-theme
+Author: Frédérick Madore
+Author URI: https://www.frederickmadore.com/
+Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
+Version: 1.0.0
+Omeka Version Constraint: ^4.1.0
+Requires PHP: 7.4
+License: GNU General Public License v3 or later
+License URI: LICENSE
+Text Domain: iwac-theme
+Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom)
+*/
+/*--------------------------------------------------------------
+# Variables and mixins
+--------------------------------------------------------------*/
 .alignleft {
   /*rtl:ignore*/
   float: left;

@@ -1,3 +1,5 @@
-@import "browse-controls";
-@import "resource-grid";
-@import "resource-list";
+@use "../../abstracts/abstracts" as *;
+
+@forward "browse-controls";
+@forward "resource-grid";
+@forward "resource-list";
