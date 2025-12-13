@@ -1,50 +1,56 @@
+// ==========================================================================
+// Accessibility Utilities
+// Skip links, screen reader text, and focus states
+// ==========================================================================
+
 #skipnav {
-    position: fixed;
-    top: $font__base-line-height;
-    left: 50%;
-    border: 1px solid $color__gray-67;
-    transform: translateX(-50%);
-    z-index: -5;
-    padding: 1rem;
-    background-color: $color__white;
-    opacity: 0;
+    position: absolute;
+    inset-block-start: -100%;
+    inset-inline-start: var(--space-md);
+    background: var(--primary);
+    color: white;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    text-decoration: none;
+    z-index: var(--z-tooltip);
+    transition: inset-block-start var(--transition-base);
     
     &:focus {
-        z-index: 1000;
-        opacity: 1;
+        inset-block-start: var(--space-md);
     }
 }
 
-/* Text meant only for screen readers. */
-.screen-reader-text {
-    border: 0;
-    clip: rect(1px, 1px, 1px, 1px);
-    clip-path: inset(50%);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute !important;
+// Screen reader only - hidden but accessible
+.screen-reader-text,
+.sr-only {
+    position: absolute;
     width: 1px;
-    word-wrap: normal !important; // Many screen reader and browser combinations announce broken words as they would appear visually.
+    height: 1px;
+    padding: 0;
+    margin: var(--lift-xxs);
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 
     &:focus {
-        background-color: $color__gray-80;
-        border-radius: 3px;
-        box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+        background: var(--panel-bg);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
         clip: auto !important;
         clip-path: none;
-        color: $color__gray-33;
+        color: var(--ink);
         display: block;
-        font-size: 0.875rem;
+        font-size: var(--text-sm);
         font-weight: 700;
         height: auto;
-        left: 5px;
+        inset-inline-start: var(--space-xs);
         line-height: normal;
-        padding: 15px 23px 14px;
+        padding: var(--space-md) var(--space-lg);
         text-decoration: none;
-        top: 5px;
+        inset-block-start: var(--space-xs);
         width: auto;
-        z-index: 100000; // Above WP toolbar.
+        z-index: var(--z-tooltip);
     }
 }

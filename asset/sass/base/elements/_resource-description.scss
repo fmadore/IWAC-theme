@@ -1,11 +1,7 @@
 .resource .description {
-    white-space: -moz-pre-wrap; /* Mozilla */
-    white-space: -hp-pre-wrap; /* HP printers */
-    white-space: -o-pre-wrap; /* Opera 7 */
-    white-space: -pre-wrap; /* Opera 4-6 */
-    white-space: pre-wrap; /* CSS 2.1 */
-    white-space: pre-line; /* CSS 3 (and 2.1 as well, actually) */
-    word-wrap: break-word; /* IE */
+    white-space: pre-wrap;
+    white-space: pre-line;
+    word-wrap: break-word;
     word-break: break-word;
 
     &.fadeout {
@@ -15,11 +11,15 @@
         
         &::after {
             content: "";
-            background: linear-gradient(to right, rgba($color__white, 0), rgba($color__white, 1) 60%);
+            background: linear-gradient(
+                to right,
+                transparent,
+                var(--bg-body) 60%
+            );
             height: 1.7rem;
-            left: 50%;
+            inset-inline-start: 50%;
+            inset-inline-end: 0;
             position: absolute;
-            right: 0;
             top: 4.5rem;
         }
     }

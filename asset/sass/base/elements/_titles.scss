@@ -1,17 +1,17 @@
 .title {
     display: block;
-    border-bottom: 1px solid $color__hr;
-    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-block-end: var(--space-4);
     position: relative;
     width: 100%;
 
     &::after {
         display: block;
         content: "";
-        background-color: $color__primary;
+        background-color: var(--primary);
         bottom: -1px;
         height: 3px;
-        left: 0;
+        inset-inline-start: 0;
         position: absolute;
         width: 64px;
     }

@@ -1,0 +1,79 @@
+// ==========================================================================
+// Print Styles
+// Optimized styles for printed output
+// ==========================================================================
+
+@media print {
+    // Hide non-essential elements
+    .main-header,
+    .main-footer,
+    .main-navigation,
+    #user-bar,
+    .pagination,
+    .browse-controls,
+    .theme-toggle,
+    .menu-drawer,
+    #skipnav {
+        display: none !important;
+    }
+    
+    // Reset colors for print
+    body {
+        background: white;
+        color: black;
+        font-size: 12pt;
+        line-height: 1.5;
+    }
+    
+    // Ensure readable links
+    a {
+        color: black;
+        text-decoration: underline;
+    }
+
+    // Show link URLs after links in content
+    main a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #666;
+    }
+
+    // Don't show URL for internal anchors or javascript links
+    main a[href^="#"]::after,
+    main a[href^="javascript:"]::after {
+        content: "";
+    }
+
+    // Ensure images don't overflow
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+
+    // Avoid page breaks inside important elements
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+
+    p, blockquote, ul, ol, dl, table, pre {
+        page-break-inside: avoid;
+    }
+
+    // Ensure blockquotes are readable
+    blockquote {
+        border-left: 2px solid #999;
+        margin-left: 0;
+        padding-left: 1rem;
+    }
+
+    // Tables
+    table {
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #999;
+        padding: 0.5rem;
+    }
+}

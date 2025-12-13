@@ -6,7 +6,7 @@
 
         @media (min-width: $xl) {
             flex-wrap: nowrap;
-            gap: 3rem;
+            gap: var(--space-12);
         }
     }
 
@@ -14,18 +14,18 @@
         width: 100%;
 
         @media (min-width: $xl) {
-            border-right: 1px solid #ececec;
-            padding-right: 1.6rem;
+            border-inline-end: 1px solid var(--border-color);
+            padding-inline-end: var(--space-6);
             width: 25%;
             z-index: auto !important;
         }
 
         &.open {
-            z-index: 1050 !important;
+            z-index: var(--z-modal) !important;
         }
 
         &-modal-toggle {
-            margin-bottom: 25px;
+            margin-block-end: var(--space-6);
         }
 
         .field, fieldset {
@@ -33,7 +33,7 @@
         }
 
         button.close-button {
-            background-color: $color__primary;
+            background-color: var(--primary);
         }
     }
 
@@ -45,11 +45,11 @@
         }
 
         .browse-controls {
-            border-bottom: none;
-            margin-bottom: 0;
+            border-block-end: none;
+            margin-block-end: 0;
 
             .pagination {
-                margin-top: 0;
+                margin-block-start: 0;
             }
         }
     }
@@ -59,12 +59,13 @@
         img {
             max-height: 3rem;
             max-width: 3rem;
+            border-radius: var(--radius-sm);
         }
     }
 
     .faceted-results {
         img {
-            margin-right: 1rem;
+            margin-inline-end: var(--space-4);
         }
 
         a {
@@ -74,12 +75,12 @@
     }
 
     #facets {
-        margin-bottom: 1rem;
+        margin-block-end: var(--space-4);
         overflow: hidden;
 
         @media (min-width: $xl) {
             height: auto;
-            margin-bottom: 0;
+            margin-block-end: 0;
             overflow: initial;
         }
 
@@ -98,19 +99,19 @@
     .select-list {
         display: flex;
         flex-wrap: wrap;
-        margin-left: 0 !important;
+        margin-inline-start: 0 !important;
         width: 100%;
 
         @media (min-width: $xl) {
             display: block;
-            margin-left: 1rem !important;
+            margin-inline-start: var(--space-4) !important;
         }
 
         &-item {
-            margin-left: 1rem;
+            margin-inline-start: var(--space-4);
 
             @media (min-width: $xl) {
-                margin-left: 0;
+                margin-inline-start: 0;
             }
 
             &::before {
@@ -120,13 +121,13 @@
 
         &-expand,
         &-collapse {
-            margin-left: 1rem;
+            margin-inline-start: var(--space-4);
         }
     }
 
     #categories {
         li {
-            border-bottom: none;
+            border-block-end: none;
 
             &::before {
                 content: none !important;
@@ -136,37 +137,43 @@
 
     #categories-return {
         display: inline-block;
+        color: var(--primary);
+        transition: color var(--transition-fast);
+
+        &:hover {
+            color: var(--primary-dark);
+        }
 
         &::before {
             @include font-awesome;
             content: "\f053";
             display: inline-block;
-            font-size: .8rem;
-            padding-right: 5px;
+            font-size: 0.8rem;
+            padding-inline-end: 5px;
             text-decoration: none;
         }
     }
 
     .categories-container legend,
     .facets-container legend {
-        color: $color__headings;
+        color: var(--text-heading);
         font-family: $font__headings;
-        font-weight: 400;
+        font-weight: 500;
         line-height: $font__headings-line-height;
     }
 
     .categories-container legend {
-        font-size: $font__h3-sm-size;
-        margin-bottom: 1.1rem;
+        font-size: var(--text-lg);
+        margin-block-end: var(--space-4);
     }
 
     .facets-container legend {
-        font-size: $font__h4-sm-size;
-        margin-bottom: 1rem;
+        font-size: var(--text-base);
+        margin-block-end: var(--space-4);
     }
 
     label input {
-        margin: 0 0.6rem 0 0 !important;
+        margin: 0 var(--space-2) 0 0 !important;
     }
 
     .resource-name {
@@ -174,11 +181,11 @@
     }
 
     .resource-list {
-        padding-top: 5px;
+        padding-block-start: 5px;
 
         .resource {
             flex-wrap: wrap;
-            padding: 0.75rem !important;
+            padding: var(--space-3) !important;
         }
 
         .resource-link {
@@ -194,26 +201,32 @@
 
     table {
         border-collapse: separate;
-        border-spacing: 0 15px;
+        border-spacing: 0 var(--space-4);
 
         thead {
-            background-color: $color__gray-93;
-            color: $color__black;
+            background-color: var(--bg-muted);
+            color: var(--text-primary);
 
             th {
-                padding: 0.75rem;
+                padding: var(--space-3);
                 font-weight: 600;
-                text-align: left;
+                text-align: start;
             }
         }
 
         tbody {
 
             tr {
-                box-shadow: 0px 1px 6px rgba($color__black, 0.2);
+                background-color: var(--bg-surface);
+                box-shadow: var(--shadow-sm);
+                transition: box-shadow var(--transition-fast);
+
+                &:hover {
+                    box-shadow: var(--shadow-md);
+                }
 
                 td {
-                    padding: 0.75rem;
+                    padding: var(--space-3);
 
                     .resource-link {
                         display: flex;

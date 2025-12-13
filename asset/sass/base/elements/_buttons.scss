@@ -1,51 +1,96 @@
+// ==========================================================================
+// Buttons
+// Modern button styles with elevation and micro-interactions
+// ==========================================================================
+
 button,
 .button,
 input[type="button"],
 input[type="reset"],
 input[type="submit"] {
-    @include primary-button;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: white;
+    background: var(--primary);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    box-shadow: 0 2px 4px -1px color-mix(in srgb, var(--primary) 35%, transparent);
+
+    &:hover {
+        background: var(--primary-hover);
+        transform: translateY(var(--lift-xxs));
+        box-shadow: 0 4px 8px -2px color-mix(in srgb, var(--primary) 45%, transparent);
+    }
+
+    &:active {
+        background: var(--primary-active);
+        transform: translateY(0);
+        box-shadow: 0 1px 2px 0 color-mix(in srgb, var(--primary) 30%, transparent);
+    }
 
     &.btn--secondary {
-        @include secondary-button;
+        background: transparent;
+        color: var(--primary);
+        border: 1px solid var(--primary);
+        box-shadow: none;
+
+        &:hover {
+            background: var(--selection-bg);
+            box-shadow: none;
+        }
     }
 
     &.link-style {
         background-color: transparent !important;
-        color: $color__link;
-        padding-left: 0;
-        padding-right: 0;
+        color: var(--accent);
+        padding-inline: 0;
         text-transform: none;
         text-decoration: underline;
+        box-shadow: none;
+
+        &:hover {
+            transform: none;
+            box-shadow: none;
+        }
     }
 
     &.icon-btn {
         padding: 0;
         background-color: transparent !important;
-        color: $color__buttons;
+        color: var(--primary);
         font-size: 1.7rem;
         line-height: 1;
+        box-shadow: none;
 
         &:hover,
         &:active,
         &:focus {
-            color: $color__primary-dark;
+            color: var(--primary-hover);
+            transform: none;
+            box-shadow: none;
         }
 
         &:disabled,
-        &[disabled]
+        &[disabled],
         &.disabled {
-            color: $color__disabled;
+            color: var(--muted);
         }
     }
 }
 
 button.add-value,
 button.remove-value {
-    background-color: $color__white;
-    border: 1px solid $color__hr;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 50%;
     cursor: pointer;
-    color: $color__primary;
+    color: var(--primary);
     width: 35px;
     height: 35px;
     padding: 5px 9px;
@@ -53,14 +98,86 @@ button.remove-value {
     -webkit-appearance: none;
     -moz-appearance: none;
     flex-shrink: 0;
+    box-shadow: none;
 
     &:hover,
     &:focus {
-        background-color: $color__primary !important;
-        color: $color__white;
+        background-color: var(--primary) !important;
+        color: var(--surface);
+        transform: none;
     }
 }
 
 .button {
     cursor: pointer;
+}
+
+// ==========================================================================
+// IIIF Button Exception
+// ==========================================================================
+.iiif-copy,
+.iiif-copy.button {
+    width: 2.8125rem;
+    height: 2.8125rem;
+    background: url(/modules/IiifServer/asset/img/iiif.png) no-repeat center/cover;
+    filter: grayscale(1);
+    border-radius: var(--radius-sm);
+    padding: 0;
+    box-shadow: none;
+    transition: filter var(--transition-fast);
+
+    &:hover {
+        filter: grayscale(0);
+        background: url(/modules/IiifServer/asset/img/iiif.png) no-repeat center/cover;
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+// ==========================================================================
+// Universal Viewer (UV) - Reset global button styles
+// ==========================================================================
+.uv button,
+.uv .button,
+.uv-iiif-extension-host button,
+.uv-iiif-extension-host .button {
+    all: revert;
+    box-sizing: border-box;
+}
+
+.uv-iiif-extension-host button {
+    border: 0;
+    background-color: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    cursor: pointer;
+}
+
+.uv .expandButton,
+.uv .collapseButton,
+.uv .btn,
+.uv [class*="Button"],
+.uv-iiif-extension-host .expandButton,
+.uv-iiif-extension-host .collapseButton,
+.uv-iiif-extension-host .btn,
+.uv-iiif-extension-host [class*="Button"] {
+    display: block;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    color: inherit;
+    transform: none;
+    transition: none;
+}
+
+.uv button:hover,
+.uv .button:hover,
+.uv-iiif-extension-host button:hover,
+.uv-iiif-extension-host .button:hover {
+    background-color: transparent;
+    transform: none;
+    box-shadow: none;
 }

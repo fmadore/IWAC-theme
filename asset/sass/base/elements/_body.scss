@@ -1,3 +1,21 @@
+// ==========================================================================
+// Body Element
+// Base body styles with theme-aware properties
+// ==========================================================================
+
 body {
-    background: $color__bg-body; // Fallback for when there is no custom background color defined.
+  background: var(--background);
+  margin: 0;
+  color: var(--ink);
+  font-family: $font__body;
+  font-size: var(--text-base);
+  line-height: $font__base-line-height;
+  font-feature-settings: "kern" 1, "liga" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  // Reset problematic padding from upstream theme
+  padding-top: 0 !important;
+  margin-top: 0 !important;
 }

@@ -1,34 +1,65 @@
+// ==========================================================================
+// Resource Grid
+// Card-based grid layout with hover effects and modern styling
+// ==========================================================================
+
 .resource-grid {
 	list-style: none;
-    padding-left: 0;
+    padding-inline-start: 0;
     position: relative;
 
     .resource {
-        background-color: $color__white;
-        border: $color__hr;
-        box-shadow: 0px 1px 6px rgba($color__black, 0.25);
+        background: var(--panel-bg);
+        border: var(--panel-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--panel-shadow);
         position: absolute;
+        overflow: hidden;
+        transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
 
         &::before {
             content: none !important;
         }
 
+        &:hover {
+            transform: translateY(var(--lift-xs));
+            box-shadow: var(--shadow-md);
+            border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+        }
+
         &__thumbnail {
             line-height: 1;
+            overflow: hidden;
 
             img {
                 max-height: 324px;
                 object-fit: cover;
                 width: 100%;
+                transition: transform var(--transition-slow);
             }
         }
 
+        &:hover &__thumbnail img {
+            transform: scale(1.05);
+        }
+
         &__content {
-            padding: 15px;
+            padding: var(--space-md);
         }
 
         &__meta {
-            padding: 5px 10px;
+            padding: var(--space-xs) var(--space-sm);
+        }
+
+        .title a {
+            color: var(--ink);
+            font-weight: 500;
+            text-decoration: none;
+            transition: color var(--transition-fast);
+
+            &:hover {
+                color: var(--primary);
+            }
         }
     }
 }

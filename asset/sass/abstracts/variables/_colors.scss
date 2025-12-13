@@ -1,19 +1,200 @@
-// Colors
+// ==========================================================================
+// Color System
+// HSL-based with CSS custom properties for light/dark theme support
+// ==========================================================================
+
+// ==========================================================================
+// Light Theme (Default)
+// ==========================================================================
+:root {
+  color-scheme: light;
+
+  // Primary color (IWAC orange) - HSL base
+  --primary-hue: 28;
+  --primary-sat: 86%;
+  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 52%);
+  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 47%);
+  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 42%);
+
+  // Semantic ink colors (text)
+  --ink: hsl(222, 24%, 14%);
+  --ink-light: hsl(222, 18%, 36%);
+  --muted: hsl(222, 14%, 52%);
+
+  // Surface colors (backgrounds)
+  --surface: hsl(0, 0%, 100%);
+  --surface-raised: hsl(210, 33%, 97%);
+  --surface-overlay: hsla(0, 0%, 100%, 0.94);
+  --background: hsl(210, 40%, 96%);
+
+  // Border colors
+  --border: hsl(210, 24%, 86%);
+  --border-light: hsl(210, 24%, 92%);
+
+  // Semantic colors
+  --accent: var(--primary);
+  --focus-color: var(--primary);
+  --focus-ring: hsla(var(--primary-hue), var(--primary-sat), 49%, 0.25);
+  --selection-bg: hsla(var(--primary-hue), var(--primary-sat), 49%, 0.15);
+
+  // Blockquote theming
+  --blockquote-bg: color-mix(in srgb, var(--surface-raised) 88%, var(--primary) 12%);
+  --blockquote-border: color-mix(in srgb, var(--primary) 60%, var(--border) 40%);
+  --blockquote-quote: color-mix(in srgb, var(--primary) 80%, var(--ink) 20%);
+
+  // Footer theme
+  --footer-surface: hsl(214, 32%, 17%);
+  --footer-surface-alt: hsl(214, 32%, 14%);
+  --footer-divider: hsl(214, 28%, 30%);
+  --footer-text: hsl(210, 20%, 96%);
+  --footer-text-muted: hsl(214, 22%, 80%);
+  --footer-glow: hsla(var(--primary-hue), 70%, 60%, 0.22);
+}
+
+// ==========================================================================
+// Dark Theme - System Preference
+// ==========================================================================
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 55%);
+    --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 60%);
+    --primary-active: hsl(var(--primary-hue), var(--primary-sat), 39%);
+
+    --ink: hsl(210, 25%, 96%);
+    --ink-light: hsl(210, 15%, 75%);
+    --muted: hsl(215, 12%, 65%);
+
+    --surface: hsl(220, 18%, 12%);
+    --surface-raised: hsl(220, 16%, 14%);
+    --surface-overlay: hsla(220, 18%, 12%, 0.95);
+    --background: hsl(220, 20%, 9%);
+
+    --border: hsl(220, 12%, 22%);
+    --border-light: hsl(220, 12%, 18%);
+
+    --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
+    --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
+    --blockquote-quote: color-mix(in srgb, var(--primary) 75%, white 25%);
+
+    --footer-surface: color-mix(in srgb, var(--surface) 80%, black 20%);
+    --footer-surface-alt: color-mix(in srgb, var(--surface) 70%, black 30%);
+    --footer-divider: color-mix(in srgb, var(--border) 85%, var(--ink) 15%);
+    --footer-text: var(--ink);
+    --footer-text-muted: var(--ink-light);
+    --footer-glow: hsla(var(--primary-hue), var(--primary-sat), 55%, 0.28);
+  }
+}
+
+// ==========================================================================
+// Dark Theme - Manual Toggle
+// ==========================================================================
+body[data-theme="dark"] {
+  color-scheme: dark;
+
+  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 55%);
+  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 60%);
+  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 39%);
+
+  --ink: hsl(210, 25%, 96%);
+  --ink-light: hsl(210, 15%, 75%);
+  --muted: hsl(215, 12%, 65%);
+
+  --surface: hsl(220, 18%, 12%);
+  --surface-raised: hsl(220, 16%, 14%);
+  --surface-overlay: hsla(220, 18%, 12%, 0.95);
+  --background: hsl(220, 20%, 9%);
+
+  --border: hsl(220, 12%, 22%);
+  --border-light: hsl(220, 12%, 18%);
+
+  --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
+  --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
+  --blockquote-quote: color-mix(in srgb, var(--primary) 75%, white 25%);
+
+  --footer-surface: color-mix(in srgb, var(--surface) 80%, black 20%);
+  --footer-surface-alt: color-mix(in srgb, var(--surface) 70%, black 30%);
+  --footer-divider: color-mix(in srgb, var(--border) 85%, var(--ink) 15%);
+  --footer-text: var(--ink);
+  --footer-text-muted: var(--ink-light);
+  --footer-glow: hsla(var(--primary-hue), var(--primary-sat), 55%, 0.28);
+}
+
+// ==========================================================================
+// Light Theme - Manual Toggle (override system dark preference)
+// ==========================================================================
+body[data-theme="light"] {
+  color-scheme: light;
+
+  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 52%);
+  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 47%);
+  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 42%);
+
+  --ink: hsl(222, 24%, 14%);
+  --ink-light: hsl(222, 18%, 36%);
+  --muted: hsl(222, 14%, 52%);
+
+  --surface: hsl(0, 0%, 100%);
+  --surface-raised: hsl(210, 33%, 97%);
+  --surface-overlay: hsla(0, 0%, 100%, 0.94);
+  --background: hsl(210, 40%, 96%);
+
+  --border: hsl(210, 24%, 86%);
+  --border-light: hsl(210, 24%, 92%);
+
+  --blockquote-bg: color-mix(in srgb, var(--surface-raised) 88%, var(--primary) 12%);
+  --blockquote-border: color-mix(in srgb, var(--primary) 60%, var(--border) 40%);
+  --blockquote-quote: color-mix(in srgb, var(--primary) 80%, var(--ink) 20%);
+
+  --footer-surface: hsl(214, 32%, 17%);
+  --footer-surface-alt: hsl(214, 32%, 14%);
+  --footer-divider: hsl(214, 28%, 30%);
+  --footer-text: hsl(210, 20%, 96%);
+  --footer-text-muted: hsl(214, 22%, 80%);
+  --footer-glow: hsla(var(--primary-hue), 70%, 60%, 0.22);
+}
+
+// ==========================================================================
+// Legacy Sass Variables (backwards compatibility)
+// These map to CSS custom properties for theme support
+// ==========================================================================
+
+// Theme colors (use CSS vars for theming)
 $color__primary: var(--primary);
-$color__primary-dark: var(--primary-dark);
-$color__primary-contrast: var(--primary-contrast);
-$color__secondary: var(--secondary);
-$color__secondary-dark: var(--secondary-dark);
-$color__secondary-contrast: var(--secondary-contrast);
+$color__primary-dark: var(--primary-hover);
+$color__primary-contrast: var(--surface); // Simplified - white works for both themes
+$color__secondary: var(--ink-light);
+$color__secondary-dark: var(--ink);
+$color__secondary-contrast: var(--surface);
 $color__accent: var(--accent);
-$color__accent-dark: var(--accent-dark);
+$color__accent-dark: var(--primary-hover);
+
+// Status colors
 $color__success: #4cbb87;
 $color__warning: #ff5c00;
 $color__error: #ee001d;
-$color__bg-body: #fff;
 
-// Grayscale
-$color__black: #333;
+// Background
+$color__bg-body: var(--background);
+
+// Semantic mappings (now using CSS vars)
+$color__black: var(--ink);
+$color__white: var(--surface);
+$color__headings: var(--ink);
+$color__main-text: var(--ink);
+$color__secondary-text: var(--muted);
+$color__buttons: var(--primary);
+$color__icons: var(--primary);
+$color__link: var(--accent);
+$color__menu-drawer: var(--surface-overlay);
+$color__hr: var(--border-light);
+$color__light-bg: var(--surface-raised);
+$color__disabled: var(--muted);
+$color__placeholder: var(--muted);
+$color__field-border: var(--border);
+
+// Legacy grayscale (kept for any remaining direct references)
 $color__gray-33: #555;
 $color__gray-40: #666;
 $color__gray-46: #767676;
@@ -25,18 +206,3 @@ $color__gray-80: #ccc;
 $color__gray-87: #ddd;
 $color__gray-93: #ececec;
 $color__gray-95: #f3f3f3;
-$color__white: #fff;
-
-//Applications
-$color__headings: $color__black;
-$color__main-text: $color__gray-40;
-$color__secondary-text: $color__gray-60;
-$color__buttons: $color__primary;
-$color__icons: $color__primary;
-$color__link: $color__accent;
-$color__menu-drawer: $color__secondary-dark;
-$color__hr: $color__gray-93;
-$color__light-bg: $color__gray-95;
-$color__disabled: $color__gray-80;
-$color__placeholder: $color__gray-46;
-$color__field-border: $color__gray-58;

@@ -1,0 +1,71 @@
+// ==========================================================================
+// Theme Infrastructure
+// Base resets, accessibility, and theme switching support
+// ==========================================================================
+
+// ==========================================================================
+// Box Sizing Reset
+// ==========================================================================
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// ==========================================================================
+// HTML Base
+// ==========================================================================
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem; // Account for sticky header when jumping to anchors
+}
+
+// ==========================================================================
+// Reduced Motion Support
+// ==========================================================================
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// ==========================================================================
+// Selection Styling
+// ==========================================================================
+::selection {
+  background: var(--selection-bg);
+  color: var(--ink);
+}
+
+// ==========================================================================
+// Focus States
+// ==========================================================================
+:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+// ==========================================================================
+// View Transitions (Progressive Enhancement)
+// ==========================================================================
+@media (prefers-reduced-motion: no-preference) {
+  @supports (view-transition-name: none) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 0.3s;
+    }
+  }
+}

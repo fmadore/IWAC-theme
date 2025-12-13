@@ -1,19 +1,30 @@
+// ==========================================================================
+// Main Header
+// Sticky header with glassmorphism backdrop-filter
+// ==========================================================================
+
 .main-header {
-    background-color: $color__white;
-    position: fixed;
+    background: var(--panel-bg);
+    position: sticky;
     width: 100%;
     top: 0;
-    left: 0;
-    z-index: 1040;
-    box-shadow: 0px 4px 6px 2px rgba(0,0,0,0.11);
-    transition: top 0.3s ease-out;
+    inset-inline-start: 0;
+    z-index: var(--z-sticky);
+    border-bottom: 1px solid var(--border);
+    transition: box-shadow var(--transition-base);
+
+    // Glassmorphism effect with backdrop-filter
+    @supports ((-webkit-backdrop-filter: blur(0.5rem)) or (backdrop-filter: blur(0.5rem))) {
+        background: var(--surface-overlay);
+        -webkit-backdrop-filter: blur(12px) saturate(1.2);
+        backdrop-filter: blur(12px) saturate(1.2);
+    }
 
     &__top-bar {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-top: 10px;
-        padding-bottom: 10px;
+        padding-block: var(--space-sm);
 
         @media (min-width: $lg) {
             align-items: flex-end;
@@ -22,9 +33,10 @@
     }
 
     &__advanced-search {
-        font-size: 0.6875rem;
-        padding-right: 10px;
+        font-size: var(--text-xs);
+        padding-inline-end: var(--space-sm);
         text-transform: uppercase;
+        letter-spacing: 0.025em;
     }
 
     &__search-form {
@@ -38,18 +50,19 @@
         }
 
         input {
-            padding-right: 46px;
+            padding-inline-end: 46px;
             margin-bottom: 0;
-            margin-right: -46px;
+            margin-inline-end: -46px;
             width: 100%;
         }
 
         button {
             background: none;
-            color: $color__placeholder;
-            padding: 10px 15px;
+            color: var(--muted);
+            padding: var(--space-sm) var(--space-md);
             font-size: 0; /* hide text */
             position: relative;
+            box-shadow: none;
 
             &::before {
                 @include font-awesome;
@@ -60,13 +73,15 @@
             &:hover,
             &:focus {
                 background: none;
-                color: $color__main-text;
+                color: var(--ink);
+                transform: none;
+                box-shadow: none;
             }
         }
     }
 
     hr {
-        background-color: $color__gray-80;
+        background-color: var(--border);
         margin-bottom: 0;
     }
 
@@ -74,12 +89,13 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding-block: var(--space-sm);
 
         @media (min-width: $lg) {
             .main-header--center & {
                 justify-content: center;
                 flex-direction: column;
-                padding-top: 30px;
+                padding-block-start: var(--space-lg);
             }
         }
     }
@@ -99,19 +115,16 @@
         a {
             display: block;
             font-family: $font__headings;
-            font-size: $font__h2-sm-size; //40px
+            font-size: var(--text-2xl);
             font-weight: 500;
             line-height: $font__headings-line-height;
             text-decoration: none;
+            color: var(--ink);
         }
 
         img {
-            max-height: 50px;
+            height: clamp(2.5rem, 2rem + 2vw, 3.5rem);
             width: auto;
-
-            @media (min-width: $lg) {
-                max-height: 60px;
-            }
         }
         
     }

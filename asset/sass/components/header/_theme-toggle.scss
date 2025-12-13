@@ -1,0 +1,56 @@
+// ==========================================================================
+// Theme Toggle
+// Button styles for dark/light mode toggle
+// ==========================================================================
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    background: var(--surface-raised);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    box-shadow: var(--shadow-xs);
+
+    &:hover {
+        background: var(--selection-bg);
+        border-color: var(--primary);
+        transform: translateY(var(--lift-xxs));
+        box-shadow: var(--shadow-sm);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--focus-color);
+        outline-offset: 2px;
+    }
+
+    &__icon {
+        font-size: 1.25rem;
+        line-height: 1;
+        transition: transform var(--transition-fast);
+
+        &--light {
+            color: var(--primary);
+        }
+
+        &--dark {
+            color: var(--primary);
+        }
+    }
+
+    &:hover &__icon {
+        transform: scale(1.1);
+    }
+}
+
+// Header placement for theme toggle
+.main-header__top-bar {
+    .theme-toggle {
+        margin-inline-start: var(--space-sm);
+    }
+}
