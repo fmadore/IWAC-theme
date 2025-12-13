@@ -83,13 +83,28 @@ The project uses the modern Sass module system with `@use` and `@forward`:
 
 The project uses **CSS custom properties directly** rather than Sass variables for theming. This enables runtime theme switching.
 
+> **⚠️ CRITICAL: Always use CSS custom properties instead of hardcoded values!**
+> This ensures consistency across the theme, enables dark mode support, and makes future updates easier. Never hardcode colors, spacing, shadows, or transitions.
+
 ```scss
 // ✅ PREFERRED: Use CSS custom properties directly
 .button {
     background: var(--primary);
-    color: white;
+    color: var(--white);
     box-shadow: var(--glow-sm);
     transition: background-color var(--transition-fast);
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-md);
+}
+
+// ❌ AVOID: Hardcoded values
+.button {
+    background: #e77f11;           // Use var(--primary)
+    color: white;                   // Use var(--white)
+    box-shadow: 0 2px 6px rgba(...); // Use var(--shadow-sm) or var(--glow-sm)
+    transition: 0.2s ease;          // Use var(--transition-base)
+    padding: 16px 32px;             // Use var(--space-4) var(--space-8)
+    border-radius: 10px;            // Use var(--radius-md)
 }
 
 // ❌ AVOID: Legacy Sass variables (being phased out)
@@ -97,13 +112,25 @@ $color__primary: var(--primary);  // Don't create new ones
 ```
 
 **Key CSS custom property categories:**
-- **Colors**: `--primary`, `--primary-hover`, `--ink`, `--surface`, `--border`
+- **Colors**: `--primary`, `--primary-hover`, `--ink`, `--ink-light`, `--muted`, `--surface`, `--border`, `--white`, `--black`
+- **Color HSL Components** (for derived colors): `--primary-hue`, `--primary-sat`, `--ink-hue`, `--ink-sat`, `--ink-lum`
 - **Spacing**: `--space-1` through `--space-40`, or semantic `--space-sm`, `--space-md`, etc.
 - **Shadows**: `--shadow-xs` through `--shadow-xl`
 - **Glows**: `--glow-xs` through `--glow-xl` (primary-colored shadows)
 - **Radii**: `--radius-sm`, `--radius-md`, `--radius-lg`, `--radius-full`
 - **Transitions**: `--transition-fast`, `--transition-base`, `--transition-slow`
-- **Effects**: `--backdrop-blur-sm/md/lg/xl`, `--gradient-primary`
+- **Layout**: `--content-max-width`, `--content-max-width-narrow`, `--content-max-width-wide`
+- **Typography**: `--font-weight-medium`, `--font-weight-bold`, `--line-height-relaxed`
+- **Effects**: `--backdrop-blur-sm/md/lg/xl`, `--gradient-primary`, `--text-shadow-dark`
+
+**For overlays and dynamic colors using HSL:**
+```scss
+// Using ink color with custom opacity for overlays
+background: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum) / 0.5);
+
+// Using primary color with custom opacity
+background: hsl(var(--primary-hue) 70% 50% / 0.15);
+```
 
 ### PHP Templates
 
