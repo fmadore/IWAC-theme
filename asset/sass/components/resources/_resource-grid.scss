@@ -15,15 +15,18 @@
         box-shadow: var(--panel-shadow);
         position: absolute;
         overflow: hidden;
-        transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+        transition: 
+            transform var(--transition-base), 
+            box-shadow var(--transition-base), 
+            border-color var(--transition-base);
 
         &::before {
             content: none !important;
         }
 
         &:hover {
-            transform: translateY(var(--lift-xs));
-            box-shadow: var(--shadow-md);
+            transform: translateY(var(--lift-xs)) scale(var(--hover-scale));
+            box-shadow: var(--shadow-lg), var(--glow-sm);
             border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
         }
 

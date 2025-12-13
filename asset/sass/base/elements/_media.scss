@@ -17,10 +17,11 @@ figure {
 }
 
 figcaption {
-    color: var(--text-secondary);
+    color: var(--muted);
     font-size: var(--text-sm);
     font-style: italic;
     margin-block-start: var(--space-2);
+    line-height: 1.5;
 }
 
 .decoration {

@@ -79,23 +79,31 @@ The project uses the modern Sass module system with `@use` and `@forward`:
 - Each file that uses Sass variables/mixins needs its own `@use` statement
 - Use `as *` to access members without namespace prefix
 
-#### Color Variables Pattern
+#### CSS Custom Properties (Preferred)
+
+The project uses **CSS custom properties directly** rather than Sass variables for theming. This enables runtime theme switching.
+
 ```scss
-// Use CSS custom properties for theme support
-$color__primary: var(--primary);
-$color__bg-body: var(--bg-body);
-
-// Define in :root for light theme, [data-theme="dark"] for dark theme
-:root {
-    --primary: #e77f11;
-    --bg-body: #ffffff;
+// ✅ PREFERRED: Use CSS custom properties directly
+.button {
+    background: var(--primary);
+    color: white;
+    box-shadow: var(--glow-sm);
+    transition: background-color var(--transition-fast);
 }
 
-[data-theme="dark"] {
-    --primary: #f5a050;
-    --bg-body: #1a1a2e;
-}
+// ❌ AVOID: Legacy Sass variables (being phased out)
+$color__primary: var(--primary);  // Don't create new ones
 ```
+
+**Key CSS custom property categories:**
+- **Colors**: `--primary`, `--primary-hover`, `--ink`, `--surface`, `--border`
+- **Spacing**: `--space-1` through `--space-40`, or semantic `--space-sm`, `--space-md`, etc.
+- **Shadows**: `--shadow-xs` through `--shadow-xl`
+- **Glows**: `--glow-xs` through `--glow-xl` (primary-colored shadows)
+- **Radii**: `--radius-sm`, `--radius-md`, `--radius-lg`, `--radius-full`
+- **Transitions**: `--transition-fast`, `--transition-base`, `--transition-slow`
+- **Effects**: `--backdrop-blur-sm/md/lg/xl`, `--gradient-primary`
 
 ### PHP Templates
 
@@ -162,37 +170,73 @@ $color__bg-body: var(--bg-body);
 
 ## CSS Custom Properties Reference
 
-The theme uses CSS custom properties set in `view/layout/layout.phtml`:
+The theme uses a comprehensive CSS custom properties system defined in:
+- `asset/sass/abstracts/variables/_colors.scss` - Colors & theming
+- `asset/sass/abstracts/variables/_tokens.scss` - Spacing, shadows, effects
+- `asset/sass/abstracts/variables/_typography.scss` - Font sizes
 
+### Color System (HSL-based)
 ```css
 :root {
-    --primary: <?php echo $primaryColor; ?>;
-    --primary-dark: /* computed */;
-    --primary-contrast: /* computed */;
-    --secondary: <?php echo $secondaryColor; ?>;
-    --secondary-dark: /* computed */;
-    --secondary-contrast: /* computed */;
-    --accent: <?php echo $accentColor; ?>;
-    --accent-dark: /* computed */;
+    /* Primary (IWAC orange) */
+    --primary: hsl(28, 74%, 52%);
+    --primary-hover: hsl(28, 74%, 47%);
+    --primary-active: hsl(28, 86%, 42%);
+    
+    /* Ink (text) */
+    --ink: hsl(222, 24%, 14%);
+    --ink-light: hsl(222, 18%, 36%);
+    --muted: hsl(222, 14%, 52%);
+    
+    /* Surfaces */
+    --surface: hsl(0, 0%, 100%);
+    --surface-raised: hsl(210, 33%, 97%);
+    --background: hsl(210, 40%, 96%);
+    
+    /* Borders */
+    --border: hsl(210, 24%, 86%);
+    --border-light: hsl(210, 24%, 92%);
+    
+    /* Status */
+    --success: hsl(152, 45%, 52%);
+    --warning: hsl(22, 100%, 50%);
+    --error: hsl(355, 90%, 47%);
+    --info: hsl(210, 75%, 52%);
 }
 ```
 
-**For dark mode, add these additional variables:**
+### Design Tokens
 ```css
 :root {
-    --bg-body: #ffffff;
-    --bg-surface: #f5f5f5;
-    --text-primary: #333333;
-    --text-secondary: #666666;
-}
-
-[data-theme="dark"] {
-    --bg-body: #1a1a2e;
-    --bg-surface: #16213e;
-    --text-primary: #eaeaea;
-    --text-secondary: #b0b0b0;
+    /* Shadows */
+    --shadow-sm, --shadow-md, --shadow-lg, --shadow-xl
+    
+    /* Glows (primary-colored, for buttons/accents) */
+    --glow-xs, --glow-sm, --glow-md, --glow-lg, --glow-xl
+    
+    /* Spacing */
+    --space-1 (4px) through --space-40 (160px)
+    
+    /* Border Radius */
+    --radius-sm (6px), --radius-md (10px), --radius-lg (14px)
+    
+    /* Transitions */
+    --transition-fast (150ms), --transition-base (200ms), --transition-slow (300ms)
+    
+    /* Backdrop Blur */
+    --backdrop-blur-sm, --backdrop-blur-md, --backdrop-blur-lg
+    
+    /* Interactive Transforms */
+    --lift-xxs (-1px), --lift-xs (-2px), --lift-sm (-4px)
+    --hover-scale: 1.02;
 }
 ```
+
+### Dark Mode
+Dark mode is handled via:
+1. `@media (prefers-color-scheme: dark)` - System preference
+2. `body[data-theme="dark"]` - Manual toggle override
+3. `body[data-theme="light"]` - Force light mode
 
 ---
 
@@ -309,6 +353,45 @@ Always check for module availability before using their helpers:
 2. Add `@use "../../abstracts/abstracts" as *;` at the top if using variables/mixins
 3. Forward in index: Add `@forward "component-name/component-name";` to `asset/sass/components/_components.scss`
 4. Run build: `npm run build`
+
+### Styling Interactive Elements
+Use the design tokens for consistent, polished interactions:
+
+```scss
+.card {
+    background: var(--panel-bg);
+    border: var(--panel-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--panel-shadow);
+    transition: 
+        transform var(--transition-base),
+        box-shadow var(--transition-base);
+
+    &:hover {
+        transform: translateY(var(--lift-xs)) scale(var(--hover-scale));
+        box-shadow: var(--shadow-lg), var(--glow-sm);
+    }
+}
+
+.btn-primary {
+    background: var(--primary);
+    box-shadow: var(--glow-sm);
+    
+    &:hover {
+        background: var(--primary-hover);
+        box-shadow: var(--glow-md);
+    }
+}
+```
+
+### Glassmorphism Effect
+```scss
+.overlay {
+    background: var(--surface-overlay);
+    backdrop-filter: var(--backdrop-blur-lg);
+    -webkit-backdrop-filter: var(--backdrop-blur-lg);
+}
+```
 
 ### Adding a New Theme Setting
 1. Add element definition in `config/theme.ini`

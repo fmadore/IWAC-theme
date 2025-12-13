@@ -46,6 +46,34 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --lift-xxs: -0.0625rem;
   --lift-xs: -0.125rem;
   --lift-sm: -0.25rem;
+  --hover-scale: 1.02;
+  --active-scale: 0.98;
+  --hover-brightness: 1.05;
+  --active-brightness: 0.95;
+  --gradient-primary: linear-gradient(
+    135deg,
+    hsl(var(--primary-hue), var(--primary-sat), 52%) 0%,
+    hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 42%) 100%
+  );
+  --gradient-surface: linear-gradient(
+    180deg,
+    var(--surface) 0%,
+    var(--surface-raised) 100%
+  );
+  --gradient-overlay: linear-gradient(
+    180deg,
+    transparent 0%,
+    hsla(220, 20%, 10%, 0.6) 100%
+  );
+  --glow-xs: 0 1px 3px 0 hsla(var(--primary-hue), var(--primary-sat), 50%, 0.2);
+  --glow-sm: 0 2px 6px -1px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.25);
+  --glow-md: 0 4px 12px -2px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.3);
+  --glow-lg: 0 8px 20px -4px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.35);
+  --glow-xl: 0 12px 28px -6px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.4);
+  --backdrop-blur-sm: blur(4px);
+  --backdrop-blur-md: blur(8px);
+  --backdrop-blur-lg: blur(16px);
+  --backdrop-blur-xl: blur(24px);
   --shadow-xs: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
   --shadow-sm: 0 2px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.06);
   --shadow-md: 0 6px 16px -4px rgb(15 23 42 / 0.1), 0 4px 8px -4px rgb(15 23 42 / 0.06);
@@ -68,6 +96,11 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme=light]) {
+    --glow-xs: 0 1px 4px 0 hsla(var(--primary-hue), var(--primary-sat), 55%, 0.25);
+    --glow-sm: 0 2px 8px -1px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.3);
+    --glow-md: 0 4px 16px -2px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.35);
+    --glow-lg: 0 8px 24px -4px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.4);
+    --glow-xl: 0 12px 32px -6px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.45);
     --shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 0.18), 0 2px 4px -2px rgb(0 0 0 / 0.12);
     --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.25), 0 4px 8px -4px rgb(0 0 0 / 0.15);
@@ -78,6 +111,11 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   }
 }
 body[data-theme=dark] {
+  --glow-xs: 0 1px 4px 0 hsla(var(--primary-hue), var(--primary-sat), 55%, 0.25);
+  --glow-sm: 0 2px 8px -1px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.3);
+  --glow-md: 0 4px 16px -2px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.35);
+  --glow-lg: 0 8px 24px -4px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.4);
+  --glow-xl: 0 12px 32px -6px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.45);
   --shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 0.18), 0 2px 4px -2px rgb(0 0 0 / 0.12);
   --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.25), 0 4px 8px -4px rgb(0 0 0 / 0.15);
@@ -120,9 +158,21 @@ body[data-theme=light] {
   --selection-bg: hsla(var(--primary-hue), var(--primary-sat), 49%, 0.15);
   --text-primary: var(--ink);
   --text-heading: var(--ink);
+  --text-secondary: var(--muted);
+  --bg-body: var(--background);
   --bg-surface: var(--surface);
   --bg-muted: var(--surface-raised);
+  --bg-elevated: var(--surface);
   --border-color: var(--border);
+  --primary-contrast: white;
+  --success: hsl(152, 45%, 52%);
+  --success-bg: hsl(152, 45%, 95%);
+  --warning: hsl(22, 100%, 50%);
+  --warning-bg: hsl(22, 100%, 95%);
+  --error: hsl(355, 90%, 47%);
+  --error-bg: hsl(355, 90%, 96%);
+  --info: hsl(210, 75%, 52%);
+  --info-bg: hsl(210, 75%, 95%);
   --blockquote-bg: color-mix(in srgb, var(--surface-raised) 88%, var(--primary) 12%);
   --blockquote-border: color-mix(in srgb, var(--primary) 60%, var(--border) 40%);
   --blockquote-quote: color-mix(in srgb, var(--primary) 80%, var(--ink) 20%);
@@ -151,9 +201,21 @@ body[data-theme=light] {
     --border-light: hsl(220, 12%, 18%);
     --text-primary: var(--ink);
     --text-heading: var(--ink);
+    --text-secondary: var(--muted);
+    --bg-body: var(--background);
     --bg-surface: var(--surface);
     --bg-muted: var(--surface-raised);
+    --bg-elevated: var(--surface-raised);
     --border-color: var(--border);
+    --primary-contrast: white;
+    --success: hsl(152, 50%, 55%);
+    --success-bg: hsla(152, 45%, 40%, 0.2);
+    --warning: hsl(22, 100%, 58%);
+    --warning-bg: hsla(22, 90%, 45%, 0.2);
+    --error: hsl(355, 85%, 58%);
+    --error-bg: hsla(355, 80%, 45%, 0.2);
+    --info: hsl(210, 80%, 60%);
+    --info-bg: hsla(210, 70%, 45%, 0.2);
     --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
     --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
     --blockquote-quote: color-mix(in srgb, var(--primary) 75%, white 25%);
@@ -181,9 +243,21 @@ body[data-theme=dark] {
   --border-light: hsl(220, 12%, 18%);
   --text-primary: var(--ink);
   --text-heading: var(--ink);
+  --text-secondary: var(--muted);
+  --bg-body: var(--background);
   --bg-surface: var(--surface);
   --bg-muted: var(--surface-raised);
+  --bg-elevated: var(--surface-raised);
   --border-color: var(--border);
+  --primary-contrast: white;
+  --success: hsl(152, 50%, 55%);
+  --success-bg: hsla(152, 45%, 40%, 0.2);
+  --warning: hsl(22, 100%, 58%);
+  --warning-bg: hsla(22, 90%, 45%, 0.2);
+  --error: hsl(355, 85%, 58%);
+  --error-bg: hsla(355, 80%, 45%, 0.2);
+  --info: hsl(210, 80%, 60%);
+  --info-bg: hsla(210, 70%, 45%, 0.2);
   --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
   --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
   --blockquote-quote: color-mix(in srgb, var(--primary) 75%, white 25%);
@@ -986,7 +1060,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   display: inline-block;
   background-color: var(--primary);
   border-radius: var(--radius-sm);
-  color: var(--primary-contrast);
+  color: white;
   font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: var(--text-xs);
   font-weight: 600;
@@ -994,7 +1068,10 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   padding: var(--space-1) var(--space-2);
   vertical-align: top;
   flex-shrink: 0;
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+.language:hover {
+  background-color: var(--primary-hover);
 }
 
 /*
@@ -1103,10 +1180,11 @@ figure {
 }
 
 figcaption {
-  color: var(--text-secondary);
+  color: var(--muted);
   font-size: var(--text-sm);
   font-style: italic;
   margin-block-start: var(--space-2);
+  line-height: 1.5;
 }
 
 .decoration img {
@@ -1135,7 +1213,7 @@ figcaption {
 }
 .resource .description.fadeout::after {
   content: "";
-  background: linear-gradient(to right, transparent, var(--bg-body) 60%);
+  background: linear-gradient(to right, transparent, var(--background) 60%);
   height: 1.7rem;
   inset-inline-start: 50%;
   inset-inline-end: 0;
@@ -1157,18 +1235,20 @@ figcaption {
 }
 .resource-tags .resource-tag {
   display: inline-block;
-  background-color: var(--bg-muted);
-  border: 1px solid var(--border-color);
+  background-color: var(--surface-raised);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  color: var(--text-primary);
+  color: var(--ink);
   font-size: var(--text-xs);
   font-weight: 600;
   padding: var(--space-1) var(--space-3);
-  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 .resource-tags .resource-tag:hover {
-  background-color: var(--bg-elevated);
+  background-color: var(--surface);
   border-color: var(--primary);
+  transform: translateY(var(--lift-xxs));
+  box-shadow: var(--shadow-sm);
 }
 
 table {
@@ -1176,6 +1256,8 @@ table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
 table th,
 table td {
@@ -1186,19 +1268,19 @@ table td {
   white-space: normal;
 }
 table th {
-  background-color: var(--bg-muted);
-  color: var(--text-primary);
+  background-color: var(--surface-raised);
+  color: var(--ink);
   font-weight: 600;
 }
 table tbody tr {
   transition: background-color var(--transition-fast);
 }
 table tbody tr:hover {
-  background-color: var(--bg-muted);
+  background-color: var(--selection-bg);
 }
 table.bordered th,
 table.bordered td {
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
 }
 
 .title {
@@ -1228,7 +1310,8 @@ table.bordered td {
 .caption {
   font-style: italic;
   font-size: var(--text-sm);
-  color: var(--text-secondary);
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 /*
@@ -1250,7 +1333,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 --------------------------------------------------------------*/
 .tooltip {
   display: inline-block;
-  color: var(--text-secondary);
+  color: var(--muted);
   font-size: 1.2rem;
   line-height: 1;
   margin-inline-start: 5px;
@@ -1260,7 +1343,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   content: "\f059";
-  color: var(--text-secondary);
+  color: var(--muted);
   font-size: 1.2rem;
   transition: color var(--transition-fast);
 }
@@ -1269,12 +1352,12 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 }
 
 .tooltip .tooltiptext {
-  background-color: var(--bg-elevated);
-  border: 1px solid var(--border-color);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   bottom: 130%;
   box-shadow: var(--shadow-lg);
-  color: var(--text-primary);
+  color: var(--ink);
   font-size: var(--text-sm);
   left: 50%;
   margin-left: -106px;
@@ -1291,7 +1374,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
 
 .tooltip .tooltiptext::after {
   content: "";
-  border-color: var(--bg-elevated) transparent transparent transparent;
+  border-color: var(--surface) transparent transparent transparent;
   border-style: solid;
   border-width: 5px;
   left: 50%;
@@ -1372,7 +1455,7 @@ input[type=submit] {
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
-  box-shadow: 0 2px 4px -1px color-mix(in srgb, var(--primary) 35%, transparent);
+  box-shadow: var(--glow-sm);
 }
 button:hover,
 .button:hover,
@@ -1381,7 +1464,7 @@ input[type=reset]:hover,
 input[type=submit]:hover {
   background: var(--primary-hover);
   transform: translateY(var(--lift-xxs));
-  box-shadow: 0 4px 8px -2px color-mix(in srgb, var(--primary) 45%, transparent);
+  box-shadow: var(--glow-md);
 }
 button:active,
 .button:active,
@@ -1390,7 +1473,7 @@ input[type=reset]:active,
 input[type=submit]:active {
   background: var(--primary-active);
   transform: translateY(0);
-  box-shadow: 0 1px 2px 0 color-mix(in srgb, var(--primary) 30%, transparent);
+  box-shadow: var(--glow-xs);
 }
 button.btn--secondary,
 .button.btn--secondary,
@@ -3816,27 +3899,38 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
-  border-radius: 3px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  padding: 10px 40px;
+  padding: var(--space-sm) var(--space-xl);
+  font-weight: 500;
   text-decoration: none;
   text-transform: uppercase;
-  transition: all 0.3s ease;
-  background-color: var(--surface);
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  background: var(--surface);
   border: 1px solid var(--primary);
   color: var(--primary);
+  box-shadow: none;
 }
 .preview-block .browse-all:hover:not(.disabled) {
-  background-color: var(--primary);
-  color: var(--surface);
+  background: var(--selection-bg);
+  border-color: var(--primary-hover);
+  color: var(--primary-hover);
+  transform: translateY(var(--lift-xxs));
 }
-.preview-block .browse-all:focus {
-  outline: 5px auto Highlight;
+.preview-block .browse-all:active:not(.disabled) {
+  background: var(--primary);
+  color: white;
+  transform: translateY(0);
 }
-.preview-block .browse-all:disabled, .preview-block .browse-all[disabled] .preview-block .browse-all.disabled {
+.preview-block .browse-all:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.preview-block .browse-all:disabled, .preview-block .browse-all[disabled], .preview-block .browse-all.disabled {
   border-color: var(--muted);
   color: var(--muted);
-  cursor: default;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 .preview-block .browse-all:visited {
   color: var(--primary);
@@ -4332,27 +4426,38 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
-  border-radius: 3px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  padding: 10px 40px;
+  padding: var(--space-sm) var(--space-xl);
+  font-weight: 500;
   text-decoration: none;
   text-transform: uppercase;
-  transition: all 0.3s ease;
-  background-color: var(--surface);
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  background: var(--surface);
   border: 1px solid var(--primary);
   color: var(--primary);
+  box-shadow: none;
 }
 .pagination .button:hover:not(.disabled) {
-  background-color: var(--primary);
-  color: var(--surface);
+  background: var(--selection-bg);
+  border-color: var(--primary-hover);
+  color: var(--primary-hover);
+  transform: translateY(var(--lift-xxs));
 }
-.pagination .button:focus {
-  outline: 5px auto Highlight;
+.pagination .button:active:not(.disabled) {
+  background: var(--primary);
+  color: white;
+  transform: translateY(0);
 }
-.pagination .button:disabled, .pagination .button[disabled] .pagination .button.disabled {
+.pagination .button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.pagination .button:disabled, .pagination .button[disabled], .pagination .button.disabled {
   border-color: var(--muted);
   color: var(--muted);
-  cursor: default;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 .pagination .button:visited {
   color: var(--primary);
@@ -4407,27 +4512,38 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
-  border-radius: 3px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  padding: 10px 40px;
+  padding: var(--space-sm) var(--space-xl);
+  font-weight: 500;
   text-decoration: none;
   text-transform: uppercase;
-  transition: all 0.3s ease;
-  background-color: var(--surface);
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  background: var(--surface);
   border: 1px solid var(--primary);
   color: var(--primary);
+  box-shadow: none;
 }
 .site-page-pagination a:hover:not(.disabled) {
-  background-color: var(--primary);
-  color: var(--surface);
+  background: var(--selection-bg);
+  border-color: var(--primary-hover);
+  color: var(--primary-hover);
+  transform: translateY(var(--lift-xxs));
 }
-.site-page-pagination a:focus {
-  outline: 5px auto Highlight;
+.site-page-pagination a:active:not(.disabled) {
+  background: var(--primary);
+  color: white;
+  transform: translateY(0);
 }
-.site-page-pagination a:disabled, .site-page-pagination a[disabled] .site-page-pagination a.disabled {
+.site-page-pagination a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.site-page-pagination a:disabled, .site-page-pagination a[disabled], .site-page-pagination a.disabled {
   border-color: var(--muted);
   color: var(--muted);
-  cursor: default;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 .site-page-pagination a:visited {
   color: var(--primary);
@@ -4839,27 +4955,38 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
-  border-radius: 3px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  padding: 10px 40px;
+  padding: var(--space-sm) var(--space-xl);
+  font-weight: 500;
   text-decoration: none;
   text-transform: uppercase;
-  transition: all 0.3s ease;
-  background-color: var(--surface);
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  background: var(--surface);
   border: 1px solid var(--primary);
   color: var(--primary);
+  box-shadow: none;
 }
 .browse-controls .permalink:hover:not(.disabled) {
-  background-color: var(--primary);
-  color: var(--surface);
+  background: var(--selection-bg);
+  border-color: var(--primary-hover);
+  color: var(--primary-hover);
+  transform: translateY(var(--lift-xxs));
 }
-.browse-controls .permalink:focus {
-  outline: 5px auto Highlight;
+.browse-controls .permalink:active:not(.disabled) {
+  background: var(--primary);
+  color: white;
+  transform: translateY(0);
 }
-.browse-controls .permalink:disabled, .browse-controls .permalink[disabled] .browse-controls .permalink.disabled {
+.browse-controls .permalink:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.browse-controls .permalink:disabled, .browse-controls .permalink[disabled], .browse-controls .permalink.disabled {
   border-color: var(--muted);
   color: var(--muted);
-  cursor: default;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 .browse-controls .permalink:visited {
   color: var(--primary);
@@ -4886,8 +5013,8 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   content: none !important;
 }
 .resource-grid .resource:hover {
-  transform: translateY(var(--lift-xs));
-  box-shadow: var(--shadow-md);
+  transform: translateY(var(--lift-xs)) scale(var(--hover-scale));
+  box-shadow: var(--shadow-lg), var(--glow-sm);
   border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
 }
 .resource-grid .resource__thumbnail {

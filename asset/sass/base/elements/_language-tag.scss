@@ -4,7 +4,7 @@
     display: inline-block;
     background-color: var(--primary);
     border-radius: var(--radius-sm);
-    color: var(--primary-contrast);
+    color: white;
     font-family: $font__body;
     font-size: var(--text-xs);
     font-weight: 600;
@@ -12,5 +12,9 @@
     padding: var(--space-1) var(--space-2);
     vertical-align: top;
     flex-shrink: 0;
-    transition: background-color var(--transition-fast);
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+
+    &:hover {
+        background-color: var(--primary-hover);
+    }
 }

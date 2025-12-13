@@ -2,7 +2,7 @@
 
 .tooltip {
     display: inline-block;
-    color: var(--text-secondary);
+    color: var(--muted);
     font-size: 1.2rem;
     line-height: 1;
     margin-inline-start: 5px;
@@ -11,7 +11,7 @@
     &::before {
         @include font-awesome;
         content: "\f059";
-        color: var(--text-secondary);
+        color: var(--muted);
         font-size: 1.2rem;
         transition: color var(--transition-fast);
     }
@@ -22,12 +22,12 @@
 }
 
 .tooltip .tooltiptext {
-    background-color: var(--bg-elevated);
-    border: 1px solid var(--border-color);
+    background-color: var(--surface);
+    border: 1px solid var(--border);
     border-radius: var(--radius-md);
     bottom: 130%;
     box-shadow: var(--shadow-lg);
-    color: var(--text-primary);
+    color: var(--ink);
     font-size: var(--text-sm);
     left: 50%;
     margin-left: -106px;
@@ -47,7 +47,7 @@
 
 .tooltip .tooltiptext::after {
     content: "";
-    border-color: var(--bg-elevated) transparent transparent transparent;
+    border-color: var(--surface) transparent transparent transparent;
     border-style: solid;
     border-width: 5px;
     left: 50%;

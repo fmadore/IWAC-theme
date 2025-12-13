@@ -40,9 +40,23 @@
   // Semantic aliases for text and backgrounds
   --text-primary: var(--ink);
   --text-heading: var(--ink);
+  --text-secondary: var(--muted);
+  --bg-body: var(--background);
   --bg-surface: var(--surface);
   --bg-muted: var(--surface-raised);
+  --bg-elevated: var(--surface);
   --border-color: var(--border);
+  --primary-contrast: white;
+
+  // Status colors (for alerts, validation, etc.)
+  --success: hsl(152, 45%, 52%);
+  --success-bg: hsl(152, 45%, 95%);
+  --warning: hsl(22, 100%, 50%);
+  --warning-bg: hsl(22, 100%, 95%);
+  --error: hsl(355, 90%, 47%);
+  --error-bg: hsl(355, 90%, 96%);
+  --info: hsl(210, 75%, 52%);
+  --info-bg: hsl(210, 75%, 95%);
 
   // Blockquote theming
   --blockquote-bg: color-mix(in srgb, var(--surface-raised) 88%, var(--primary) 12%);
@@ -84,9 +98,23 @@
     // Semantic aliases for text and backgrounds
     --text-primary: var(--ink);
     --text-heading: var(--ink);
+    --text-secondary: var(--muted);
+    --bg-body: var(--background);
     --bg-surface: var(--surface);
     --bg-muted: var(--surface-raised);
+    --bg-elevated: var(--surface-raised);
     --border-color: var(--border);
+    --primary-contrast: white;
+
+    // Status colors (adjusted for dark backgrounds)
+    --success: hsl(152, 50%, 55%);
+    --success-bg: hsla(152, 45%, 40%, 0.2);
+    --warning: hsl(22, 100%, 58%);
+    --warning-bg: hsla(22, 90%, 45%, 0.2);
+    --error: hsl(355, 85%, 58%);
+    --error-bg: hsla(355, 80%, 45%, 0.2);
+    --info: hsl(210, 80%, 60%);
+    --info-bg: hsla(210, 70%, 45%, 0.2);
 
     --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
     --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
@@ -126,9 +154,23 @@ body[data-theme="dark"] {
   // Semantic aliases for text and backgrounds
   --text-primary: var(--ink);
   --text-heading: var(--ink);
+  --text-secondary: var(--muted);
+  --bg-body: var(--background);
   --bg-surface: var(--surface);
   --bg-muted: var(--surface-raised);
+  --bg-elevated: var(--surface-raised);
   --border-color: var(--border);
+  --primary-contrast: white;
+
+  // Status colors (adjusted for dark backgrounds)
+  --success: hsl(152, 50%, 55%);
+  --success-bg: hsla(152, 45%, 40%, 0.2);
+  --warning: hsl(22, 100%, 58%);
+  --warning-bg: hsla(22, 90%, 45%, 0.2);
+  --error: hsl(355, 85%, 58%);
+  --error-bg: hsla(355, 80%, 45%, 0.2);
+  --info: hsl(210, 80%, 60%);
+  --info-bg: hsla(210, 70%, 45%, 0.2);
 
   --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
   --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
@@ -182,55 +224,3 @@ body[data-theme="light"] {
   --footer-text-muted: hsl(214, 22%, 80%);
   --footer-glow: hsla(var(--primary-hue), 70%, 60%, 0.22);
 }
-
-// ==========================================================================
-// Legacy Sass Variables (backwards compatibility)
-// These map to CSS custom properties for theme support
-// ==========================================================================
-
-// Theme colors (use CSS vars for theming)
-$color__primary: var(--primary);
-$color__primary-dark: var(--primary-hover);
-$color__primary-contrast: var(--surface); // Simplified - white works for both themes
-$color__secondary: var(--ink-light);
-$color__secondary-dark: var(--ink);
-$color__secondary-contrast: var(--surface);
-$color__accent: var(--accent);
-$color__accent-dark: var(--primary-hover);
-
-// Status colors
-$color__success: #4cbb87;
-$color__warning: #ff5c00;
-$color__error: #ee001d;
-
-// Background
-$color__bg-body: var(--background);
-
-// Semantic mappings (now using CSS vars)
-$color__black: var(--ink);
-$color__white: var(--surface);
-$color__headings: var(--ink);
-$color__main-text: var(--ink);
-$color__secondary-text: var(--muted);
-$color__buttons: var(--primary);
-$color__icons: var(--primary);
-$color__link: var(--accent);
-$color__menu-drawer: var(--surface-overlay);
-$color__hr: var(--border-light);
-$color__light-bg: var(--surface-raised);
-$color__disabled: var(--muted);
-$color__placeholder: var(--muted);
-$color__field-border: var(--border);
-
-// Legacy grayscale (kept for any remaining direct references)
-$color__gray-33: #555;
-$color__gray-40: #666;
-$color__gray-46: #767676;
-$color__gray-47: #777;
-$color__gray-58: #949494;
-$color__gray-60: #999;
-$color__gray-67: #aaa;
-$color__gray-80: #ccc;
-$color__gray-87: #ddd;
-$color__gray-93: #ececec;
-$color__gray-95: #f3f3f3;

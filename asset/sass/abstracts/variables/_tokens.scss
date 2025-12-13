@@ -51,6 +51,52 @@
   --lift-sm: -0.25rem;     // -4px
 
   // ========================================================================
+  // Interactive States / Motion
+  // Subtle animations for modern, polished feel
+  // ========================================================================
+  --hover-scale: 1.02;
+  --active-scale: 0.98;
+  --hover-brightness: 1.05;
+  --active-brightness: 0.95;
+
+  // ========================================================================
+  // Gradients
+  // Subtle gradients for depth and visual interest
+  // ========================================================================
+  --gradient-primary: linear-gradient(
+    135deg, 
+    hsl(var(--primary-hue), var(--primary-sat), 52%) 0%, 
+    hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 42%) 100%
+  );
+  --gradient-surface: linear-gradient(
+    180deg,
+    var(--surface) 0%,
+    var(--surface-raised) 100%
+  );
+  --gradient-overlay: linear-gradient(
+    180deg,
+    transparent 0%,
+    hsla(220, 20%, 10%, 0.6) 100%
+  );
+
+  // ========================================================================
+  // Glow Effects (primary-colored shadows for buttons/accents)
+  // ========================================================================
+  --glow-xs: 0 1px 3px 0 hsla(var(--primary-hue), var(--primary-sat), 50%, 0.2);
+  --glow-sm: 0 2px 6px -1px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.25);
+  --glow-md: 0 4px 12px -2px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.3);
+  --glow-lg: 0 8px 20px -4px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.35);
+  --glow-xl: 0 12px 28px -6px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.4);
+
+  // ========================================================================
+  // Backdrop Blur (for frosted glass effects)
+  // ========================================================================
+  --backdrop-blur-sm: blur(4px);
+  --backdrop-blur-md: blur(8px);
+  --backdrop-blur-lg: blur(16px);
+  --backdrop-blur-xl: blur(24px);
+
+  // ========================================================================
   // Shadows - Light Theme (layered for depth)
   // ========================================================================
   --shadow-xs: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
@@ -91,6 +137,13 @@
 // ==========================================================================
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
+    // Stronger glows for dark backgrounds
+    --glow-xs: 0 1px 4px 0 hsla(var(--primary-hue), var(--primary-sat), 55%, 0.25);
+    --glow-sm: 0 2px 8px -1px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.3);
+    --glow-md: 0 4px 16px -2px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.35);
+    --glow-lg: 0 8px 24px -4px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.4);
+    --glow-xl: 0 12px 32px -6px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.45);
+
     --shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 0.18), 0 2px 4px -2px rgb(0 0 0 / 0.12);
     --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.25), 0 4px 8px -4px rgb(0 0 0 / 0.15);
@@ -102,6 +155,13 @@
 }
 
 body[data-theme="dark"] {
+  // Stronger glows for dark backgrounds
+  --glow-xs: 0 1px 4px 0 hsla(var(--primary-hue), var(--primary-sat), 55%, 0.25);
+  --glow-sm: 0 2px 8px -1px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.3);
+  --glow-md: 0 4px 16px -2px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.35);
+  --glow-lg: 0 8px 24px -4px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.4);
+  --glow-xl: 0 12px 32px -6px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.45);
+
   --shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 0.18), 0 2px 4px -2px rgb(0 0 0 / 0.12);
   --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.25), 0 4px 8px -4px rgb(0 0 0 / 0.15);

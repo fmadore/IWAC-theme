@@ -19,19 +19,22 @@ input[type="submit"] {
     border: none;
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
-    box-shadow: 0 2px 4px -1px color-mix(in srgb, var(--primary) 35%, transparent);
+    transition: 
+        background-color var(--transition-fast), 
+        transform var(--transition-fast), 
+        box-shadow var(--transition-fast);
+    box-shadow: var(--glow-sm);
 
     &:hover {
         background: var(--primary-hover);
         transform: translateY(var(--lift-xxs));
-        box-shadow: 0 4px 8px -2px color-mix(in srgb, var(--primary) 45%, transparent);
+        box-shadow: var(--glow-md);
     }
 
     &:active {
         background: var(--primary-active);
         transform: translateY(0);
-        box-shadow: 0 1px 2px 0 color-mix(in srgb, var(--primary) 30%, transparent);
+        box-shadow: var(--glow-xs);
     }
 
     &.btn--secondary {
