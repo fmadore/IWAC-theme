@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		itemButton.setAttribute('aria-expanded', 'false');
 
 		if (item.closest('.main-navigation')) { // Desktop only.
-			item.addEventListener('mouseover', () => {
+			item.addEventListener('mouseenter', () => {
 				item.classList.add('open');
 				itemLink.setAttribute('aria-expanded', 'true');
 				itemButton.setAttribute('aria-expanded', 'true');
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				});
 			});
 
-			item.addEventListener('mouseout', () => {
+			item.addEventListener('mouseleave', () => {
 				item.classList.remove('open');
 				itemLink.setAttribute('aria-expanded', 'false');
 				itemButton.setAttribute('aria-expanded', 'false');
