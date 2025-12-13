@@ -12,14 +12,20 @@ $navDepth = (int) $this->themeSetting('nav_depth') ? (int) $this->themeSetting('
 		<div class="main-header__search-form">
 			<?php echo $this->partial('common/search-form'); ?>
 		</div>
-		<button class="theme-toggle" 
-				data-theme-toggle 
-				type="button" 
-				aria-label="<?php echo $this->escapeHtmlAttr($translate('Toggle dark mode')); ?>"
-				aria-pressed="false">
-			<span class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true">☀️</span>
-			<span class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true" style="display: none;">🌙</span>
-		</button>
+		<div class="main-header__utilities">
+			<?php // Language Switcher - requires Internationalisation module ?>
+			<?php if ($this->getHelperPluginManager()->has('languageSwitcher')): ?>
+				<?php echo $this->languageSwitcher(['template' => 'common/language-switcher']); ?>
+			<?php endif; ?>
+			<button class="theme-toggle" 
+					data-theme-toggle 
+					type="button" 
+					aria-label="<?php echo $this->escapeHtmlAttr($translate('Toggle dark mode')); ?>"
+					aria-pressed="false">
+				<span class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true">☀️</span>
+				<span class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true" style="display: none;">🌙</span>
+			</button>
+		</div>
 	</div>
 	<hr class="alignfull">
 

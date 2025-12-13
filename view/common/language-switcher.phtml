@@ -1,0 +1,117 @@
+<?php
+/**
+ * Language Switcher
+ * 
+ * Custom template for the Internationalisation module's language switcher.
+ * Displays available site languages with flag icons and language codes.
+ * 
+ * @var array $sites List of related sites with their locales
+ * @var \Omeka\Api\Representation\SiteRepresentation $currentSite
+ * @var string $locale Current locale
+ * @var bool $localeAsCode Whether to display locale as code
+ */
+
+$escape = $this->plugin('escapeHtml');
+$escapeAttr = $this->plugin('escapeHtmlAttr');
+$translate = $this->plugin('translate');
+
+// Language display names and flag codes
+$languageNames = [
+    'en' => 'English',
+    'en-us' => 'English',
+    'en-gb' => 'English',
+    'fr' => 'Français',
+    'fr-fr' => 'Français',
+    'fr-ca' => 'Français',
+    'ar' => 'العربية',
+    'de' => 'Deutsch',
+    'es' => 'Español',
+    'pt' => 'Português',
+    'it' => 'Italiano',
+    'nl' => 'Nederlands',
+    'ru' => 'Русский',
+    'zh' => '中文',
+    'ja' => '日本語',
+];
+
+// Map locales to flag codes (ISO 3166-1 alpha-2 country codes)
+$flagCodes = [
+    'en' => 'gb',
+    'en-us' => 'us',
+    'en-gb' => 'gb',
+    'fr' => 'fr',
+    'fr-fr' => 'fr',
+    'fr-ca' => 'ca',
+    'ar' => 'sa',
+    'de' => 'de',
+    'es' => 'es',
+    'pt' => 'pt',
+    'it' => 'it',
+    'nl' => 'nl',
+    'ru' => 'ru',
+    'zh' => 'cn',
+    'ja' => 'jp',
+];
+
+// Get current locale
+$currentLocale = strtolower($locale ?? 'en');
+$currentLocaleShort = substr($currentLocale, 0, 2);
+
+// Helper function to get language name
+$getLanguageName = function($locale) use ($languageNames) {
+    $locale = strtolower($locale);
+    if (isset($languageNames[$locale])) {
+        return $languageNames[$locale];
+    }
+    $short = substr($locale, 0, 2);
+    return $languageNames[$short] ?? strtoupper($short);
+};
+
+// Helper function to get flag code
+$getFlagCode = function($locale) use ($flagCodes) {
+    $locale = strtolower($locale);
+    if (isset($flagCodes[$locale])) {
+        return $flagCodes[$locale];
+    }
+    $short = substr($locale, 0, 2);
+    return $flagCodes[$short] ?? $short;
+};
+
+// Check if we have multiple sites/languages
+if (empty($sites) || count($sites) <= 1) {
+    return;
+}
+?>
+
+<nav class="language-switcher" aria-label="<?php echo $escapeAttr($translate('Language selection')); ?>">
+    <ul class="language-switcher__list">
+        <?php foreach ($sites as $siteData): 
+            $siteLocale = strtolower($siteData['locale'] ?? 'en');
+            $siteLocaleShort = substr($siteLocale, 0, 2);
+            $isCurrentLang = ($siteLocale === $currentLocale || $siteLocaleShort === $currentLocaleShort);
+            $langName = $getLanguageName($siteLocale);
+            $flagCode = $getFlagCode($siteLocale);
+            $siteUrl = $siteData['url'] ?? '#';
+        ?>
+            <li class="language-switcher__item <?php echo $isCurrentLang ? 'language-switcher__item--active' : ''; ?>">
+                <?php if ($isCurrentLang): ?>
+                    <span class="language-switcher__link language-switcher__link--current" 
+                          aria-current="true"
+                          title="<?php echo $escapeAttr($langName); ?> (<?php echo $escape($translate('current')); ?>)">
+                        <span class="language-switcher__code" aria-hidden="true"><?php echo $escape(strtoupper($siteLocaleShort)); ?></span>
+                        <span class="screen-reader-text"><?php echo $escape($langName); ?> (<?php echo $escape($translate('current language')); ?>)</span>
+                    </span>
+                <?php else: ?>
+                    <a href="<?php echo $escapeAttr($siteUrl); ?>" 
+                       class="language-switcher__link"
+                       hreflang="<?php echo $escapeAttr($siteLocale); ?>"
+                       lang="<?php echo $escapeAttr($siteLocale); ?>"
+                       title="<?php echo $escapeAttr($langName); ?>">
+                        <span class="language-switcher__code" aria-hidden="true"><?php echo $escape(strtoupper($siteLocaleShort)); ?></span>
+                        <span class="screen-reader-text"><?php echo $escape($langName); ?></span>
+                    </a>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</nav>

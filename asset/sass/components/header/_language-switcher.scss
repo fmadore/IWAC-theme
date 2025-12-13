@@ -1,0 +1,179 @@
+// ==========================================================================
+// Language Switcher
+// Multi-language navigation with flag icons and accessible styling
+// ==========================================================================
+
+.language-switcher {
+    display: flex;
+    align-items: center;
+
+    &__list {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    &__item {
+        margin: 0;
+
+        &::before {
+            content: none !important;
+        }
+
+        // Separator between languages
+        &:not(:last-child)::after {
+            content: "/";
+            color: var(--muted);
+            font-size: var(--text-xs);
+            margin-inline-start: var(--space-1);
+        }
+    }
+
+    &__link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        padding: var(--space-1) var(--space-2);
+        border-radius: var(--radius-sm);
+        font-size: var(--text-sm);
+        font-weight: 500;
+        text-decoration: none;
+        color: var(--ink-light);
+        transition: color var(--transition-fast), background-color var(--transition-fast);
+
+        &:hover {
+            color: var(--primary);
+            background-color: var(--selection-bg);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--focus-color);
+            outline-offset: 2px;
+        }
+
+        &--current {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: default;
+            background-color: var(--selection-bg);
+        }
+    }
+
+    &__code {
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    &__flag {
+        width: 20px;
+        height: 15px;
+        border-radius: 2px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        object-fit: cover;
+    }
+}
+
+// Compact variant for tight spaces
+.language-switcher--compact {
+    .language-switcher__link {
+        padding: var(--space-1);
+        font-size: var(--text-xs);
+    }
+
+    .language-switcher__item:not(:last-child)::after {
+        margin-inline-start: var(--space-1);
+    }
+}
+
+// Dropdown variant (for many languages)
+.language-switcher--dropdown {
+    position: relative;
+
+    .language-switcher__toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-3);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm);
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+        transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+        &:hover {
+            border-color: var(--primary);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--focus-color);
+            outline-offset: 2px;
+        }
+
+        &::after {
+            content: "";
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 5px solid currentColor;
+            transition: transform var(--transition-fast);
+        }
+    }
+
+    .language-switcher__list {
+        position: absolute;
+        inset-block-start: 100%;
+        inset-inline-end: 0;
+        margin-block-start: var(--space-2);
+        padding: var(--space-2);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        flex-direction: column;
+        gap: 0;
+        min-width: 150px;
+        z-index: var(--z-dropdown);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(calc(-1 * var(--space-2)));
+        transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
+    }
+
+    &:hover .language-switcher__list,
+    &:focus-within .language-switcher__list {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .language-switcher__item {
+        width: 100%;
+
+        &:not(:last-child)::after {
+            content: none;
+        }
+    }
+
+    .language-switcher__link {
+        display: flex;
+        width: 100%;
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius-sm);
+
+        &--current {
+            background-color: var(--selection-bg);
+        }
+    }
+}
+
+// Integration with header utilities
+.main-header__utilities {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
