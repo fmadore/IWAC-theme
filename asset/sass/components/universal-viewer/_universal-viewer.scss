@@ -1,0 +1,412 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Universal Viewer (UV) Component Styling
+// Themed styling for the IIIF Universal Viewer module
+// ==========================================================================
+
+// ==========================================================================
+// Container & Base
+// ==========================================================================
+.uv {
+    // Ensure UV container respects theme background
+    background: var(--bg-body);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+
+    // Fix box-sizing for all UV elements
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+}
+
+// ==========================================================================
+// Button Resets
+// Prevent theme button styles from affecting UV buttons
+// ==========================================================================
+.uv button,
+.uv .button,
+.uv-iiif-extension-host button,
+.uv-iiif-extension-host .button {
+    all: revert;
+    box-sizing: border-box;
+}
+
+.uv-iiif-extension-host button {
+    border: 0;
+    background-color: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    cursor: pointer;
+}
+
+.uv .expandButton,
+.uv .collapseButton,
+.uv .btn,
+.uv [class*="Button"],
+.uv-iiif-extension-host .expandButton,
+.uv-iiif-extension-host .collapseButton,
+.uv-iiif-extension-host .btn,
+.uv-iiif-extension-host [class*="Button"] {
+    display: block;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    color: inherit;
+    transform: none;
+    transition: none;
+}
+
+.uv button:hover,
+.uv .button:hover,
+.uv-iiif-extension-host button:hover,
+.uv-iiif-extension-host .button:hover {
+    background-color: transparent;
+    transform: none;
+    box-shadow: none;
+}
+
+// ==========================================================================
+// Form Field Resets
+// Prevent theme form styles from affecting UV form fields
+// ==========================================================================
+.uv input,
+.uv select,
+.uv textarea,
+.uv-iiif-extension-host input,
+.uv-iiif-extension-host select,
+.uv-iiif-extension-host textarea {
+    all: revert;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.uv input[type="text"],
+.uv-iiif-extension-host input[type="text"] {
+    display: block;
+    width: 100%;
+    padding: 4px 8px;
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #000;
+    background: #efefef;
+    border: 1px solid #9a9a9a;
+    border-radius: 0;
+    box-shadow: none;
+    transition: none;
+}
+
+.uv input[type="text"]:focus,
+.uv-iiif-extension-host input[type="text"]:focus {
+    outline: 1px solid #666;
+    box-shadow: none;
+    transform: none;
+}
+
+// ==========================================================================
+// UV Main Interface Elements - Theme Integration
+// ==========================================================================
+
+// Main header/toolbar area
+.uv .headerPanel {
+    background: var(--surface) !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+// Side panels (info, thumbnails, etc.)
+.uv .leftPanel,
+.uv .rightPanel {
+    background: var(--surface) !important;
+    border-color: var(--border) !important;
+}
+
+// Footer panel
+.uv .footerPanel {
+    background: var(--surface-raised) !important;
+    border-top: 1px solid var(--border) !important;
+}
+
+// Center panel (main viewer area)
+.uv .centerPanel {
+    background: var(--background) !important;
+}
+
+// Text and heading colors
+.uv .panel,
+.uv-iiif-extension-host .panel {
+    color: var(--text-primary) !important;
+}
+
+.uv h1,
+.uv h2,
+.uv h3,
+.uv-iiif-extension-host h1,
+.uv-iiif-extension-host h2,
+.uv-iiif-extension-host h3 {
+    color: var(--text-heading) !important;
+}
+
+// Links
+.uv a,
+.uv-iiif-extension-host a {
+    color: var(--primary) !important;
+    
+    &:hover {
+        color: var(--primary-hover) !important;
+    }
+}
+
+// ==========================================================================
+// Buttons - Theme Colors
+// ==========================================================================
+.uv .btn.btn-primary,
+.uv-iiif-extension-host .btn.btn-primary {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--primary-contrast) !important;
+    
+    &:hover {
+        background: var(--primary-hover) !important;
+        border-color: var(--primary-hover) !important;
+    }
+}
+
+.uv .btn.imageBtn:hover,
+.uv-iiif-extension-host .btn.imageBtn:hover {
+    background: var(--selection-bg) !important;
+}
+
+// Icon buttons
+.uv .btn.imageBtn,
+.uv-iiif-extension-host .btn.imageBtn {
+    transition: background-color var(--transition-fast) !important;
+    
+    &:hover {
+        background-color: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum) / 0.1) !important;
+    }
+    
+    &:active {
+        background-color: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum) / 0.15) !important;
+    }
+}
+
+// ==========================================================================
+// Tabs and Navigation
+// ==========================================================================
+.uv .tab,
+.uv-iiif-extension-host .tab {
+    background: var(--surface-raised) !important;
+    border-color: var(--border) !important;
+    color: var(--text-primary) !important;
+    transition: background-color var(--transition-fast) !important;
+    
+    &:hover {
+        background: var(--surface) !important;
+    }
+    
+    &.on {
+        background: var(--surface) !important;
+        color: var(--primary) !important;
+        border-bottom-color: var(--primary) !important;
+    }
+}
+
+// ==========================================================================
+// Tree View / Thumbnail Gallery
+// ==========================================================================
+.uv .treeView,
+.uv .thumbsView,
+.uv-iiif-extension-host .treeView,
+.uv-iiif-extension-host .thumbsView {
+    background: var(--surface) !important;
+}
+
+.uv .treeView .node,
+.uv .thumbsView .thumb,
+.uv-iiif-extension-host .treeView .node,
+.uv-iiif-extension-host .thumbsView .thumb {
+    border-color: var(--border-light) !important;
+    transition: all var(--transition-fast) !important;
+    
+    &:hover {
+        background: var(--surface-raised) !important;
+        box-shadow: var(--shadow-sm) !important;
+    }
+    
+    &.selected {
+        background: var(--selection-bg) !important;
+        border-color: var(--primary) !important;
+    }
+}
+
+// ==========================================================================
+// Dialog / Modal Overlays
+// ==========================================================================
+.uv .overlay,
+.uv-iiif-extension-host .overlay {
+    background: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum) / 0.75) !important;
+}
+
+.uv .dialogue,
+.uv-iiif-extension-host .dialogue {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-xl) !important;
+}
+
+.uv .dialogue .content,
+.uv-iiif-extension-host .dialogue .content {
+    color: var(--text-primary) !important;
+}
+
+// ==========================================================================
+// Search Results
+// ==========================================================================
+.uv .searchResult,
+.uv-iiif-extension-host .searchResult {
+    background: var(--surface-raised) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-sm) !important;
+    margin-bottom: var(--space-2) !important;
+    padding: var(--space-2) var(--space-3) !important;
+    transition: all var(--transition-fast) !important;
+    
+    &:hover {
+        background: var(--surface) !important;
+        border-color: var(--primary) !important;
+        box-shadow: var(--glow-xs) !important;
+    }
+}
+
+// Highlighted search terms
+.uv .searchResult em,
+.uv-iiif-extension-host .searchResult em {
+    background: var(--selection-bg) !important;
+    color: var(--primary) !important;
+    font-weight: var(--font-weight-medium) !important;
+}
+
+// ==========================================================================
+// Metadata Panel
+// ==========================================================================
+.uv .metadata,
+.uv-iiif-extension-host .metadata {
+    background: var(--surface) !important;
+    color: var(--text-primary) !important;
+}
+
+.uv .metadata .label,
+.uv-iiif-extension-host .metadata .label {
+    color: var(--text-secondary) !important;
+    font-weight: var(--font-weight-medium) !important;
+}
+
+.uv .metadata .value,
+.uv-iiif-extension-host .metadata .value {
+    color: var(--text-primary) !important;
+}
+
+// ==========================================================================
+// Scrollbars - Theme-aware
+// ==========================================================================
+.uv ::-webkit-scrollbar,
+.uv-iiif-extension-host ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.uv ::-webkit-scrollbar-track,
+.uv-iiif-extension-host ::-webkit-scrollbar-track {
+    background: var(--surface-raised);
+}
+
+.uv ::-webkit-scrollbar-thumb,
+.uv-iiif-extension-host ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: var(--radius-sm);
+    
+    &:hover {
+        background: var(--muted);
+    }
+}
+
+// ==========================================================================
+// Loading Indicators
+// ==========================================================================
+.uv .loading,
+.uv-iiif-extension-host .loading {
+    color: var(--primary) !important;
+}
+
+// ==========================================================================
+// Download/Share Panels
+// ==========================================================================
+.uv .downloadPanel,
+.uv .sharePanel,
+.uv-iiif-extension-host .downloadPanel,
+.uv-iiif-extension-host .sharePanel {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+// ==========================================================================
+// Dark Mode Adjustments
+// Override UV's internal colors to respect theme's dark mode
+// ==========================================================================
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        .uv input[type="text"],
+        .uv-iiif-extension-host input[type="text"] {
+            color: var(--ink) !important;
+            background: var(--surface-raised) !important;
+            border-color: var(--border) !important;
+        }
+
+        .uv input[type="text"]:focus,
+        .uv-iiif-extension-host input[type="text"]:focus {
+            outline-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+        }
+    }
+}
+
+body[data-theme="dark"] {
+    .uv input[type="text"],
+    .uv-iiif-extension-host input[type="text"] {
+        color: var(--ink) !important;
+        background: var(--surface-raised) !important;
+        border-color: var(--border) !important;
+    }
+
+    .uv input[type="text"]:focus,
+    .uv-iiif-extension-host input[type="text"]:focus {
+        outline-color: var(--primary) !important;
+        border-color: var(--primary) !important;
+    }
+}
+
+// ==========================================================================
+// Responsive Adjustments
+// ==========================================================================
+@media screen and (max-width: 768px) {
+    .uv {
+        border-radius: 0;
+    }
+
+    .uv .leftPanel,
+    .uv .rightPanel {
+        max-width: 80vw !important;
+    }
+}
