@@ -151,16 +151,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	} );
 
 	mmDrawer.querySelectorAll( '.menu-item-has-children' ).forEach( item => {
-		// Add submenu header.
-		const ul = item.querySelector('ul');
-
-		if (ul) {
-			const submenuHeader = document.createElement('li');
-			submenuHeader.setAttribute('class', 'menu-header');
-			submenuHeader.innerHTML = item.innerHTML;
-			ul.prepend(submenuHeader);
-		}
-
 		// Add click events.
 		item.addEventListener( 'click', function( event ) {
 			// stop propagation of child elements
@@ -170,25 +160,11 @@ document.addEventListener("DOMContentLoaded", function() {
 				});
 			});
 
-			item.classList.add( 'expanded' );
-
-			mmTargets.push( this );
-			slideMenus( this );
-			scrollMenuToTop();
-
-			mmDrawer.querySelectorAll( '.in-viewport' ).forEach( item => {
-				item.classList.remove( 'in-viewport' );
-			});
-			item.querySelector('ul').classList.add('in-viewport');
-			setFocusableToElementsInViewPort();
-
-			mmNavigation.querySelectorAll('a').forEach( item => {
-				item.setAttribute('aria-hidden', 'true');
-			});
-
-			item.querySelectorAll('ul a').forEach( item => {
-				item.removeAttribute('aria-hidden');
-			});
+			if (item.classList.contains('expanded')) {
+				item.classList.remove('expanded');
+			} else {
+				item.classList.add('expanded');
+			}
 
 			if (typeof cleanupTrap === 'function') {
 				cleanupTrap();
@@ -203,25 +179,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	mmBacker.addEventListener( 'click', function( event ) {
 		event.preventDefault();
-		if( mmTargets.length > 0 ) {
-			mmDrawer.querySelectorAll( '.in-viewport' ).forEach( item => {
-				item.classList.remove( 'in-viewport' );
-			});
-			mmTargets[mmTargets.length - 1].closest('ul').classList.add('in-viewport');
-			setFocusableToElementsInViewPort();
-
-			let collapse = mmTargets.pop();
-			collapse.classList.remove( 'expanded' );
-			slideMenus( this );
-			scrollMenuToTop();
-		}
-		else {
-			mmDrawer.querySelectorAll( '.in-viewport' ).forEach( item => {
-				item.classList.remove( 'in-viewport' );
-			});
-
-			closeMenuDrawer();
-		}
+		closeMenuDrawer();
 	} );
 
 	mmHeader.addEventListener('keydown', function(e) {
@@ -234,7 +192,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Trap focus.
 function getFocusableElements(container) {
-	return container.querySelectorAll('.main-navigation__toggle, #menu-backer, .in-viewport > li > a');
+	const elements = container.querySelectorAll('.main-navigation__toggle, #menu-backer, .menu-container a');
+	return Array.from(elements).filter(el => el.offsetParent !== null);
 }
 
 function trapFocus(container) {
@@ -294,15 +253,7 @@ function openMenuDrawer() {
 }
 
 function setFocusableToElementsInViewPort() {
-	mmNavigation.querySelectorAll( 'a' ).forEach( item => {
-		item.tabIndex= -1;
-		item.inert = true;
-	} );
-
-	mmDrawer.querySelectorAll( '.in-viewport > li > a' ).forEach( item => {
-		item.tabIndex= 0;
-		item.inert = false;
-	} );
+	// No-op for accordion menu
 }
 
 function closeMenuDrawer() {
