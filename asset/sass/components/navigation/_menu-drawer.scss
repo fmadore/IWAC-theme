@@ -169,15 +169,16 @@
 
             ul {
                 display: none;
-                position: static;
+                position: static !important; // Force static - no floating cards in mobile
                 width: 100%;
                 box-shadow: none;
                 border: 0;
+                inset: auto !important; // Reset any positioning
 
                 ul {
                     background: var(--surface);
                     border: 1px solid var(--border-light);
-                    border-radius: var(--radius-lg);
+                    border-radius: var(--radius-md);
                     margin-inline-start: var(--space-md);
                     margin-block: var(--space-sm);
                     padding: var(--space-sm);
@@ -187,6 +188,7 @@
                         font-size: var(--text-xs);
                         color: var(--muted);
                         border-radius: var(--radius-sm);
+                        margin: var(--space-xs) 0;
                     }
                 }
 
@@ -199,35 +201,43 @@
                 }
             }
 
-            .expanded {
-                & > ul {
-                    display: block;
-                    position: absolute;
-                    top: 0;
-                    inset-inline-start: 100%;
-                }
+            // Expanded submenus - inline, not floating
+            .expanded > ul {
+                display: block;
+                position: static !important;
+                inset: auto !important;
+                transform: none !important;
             }
         }
     }
 
     .menu-item-has-children {
         > a {
+            position: relative;
+
             &::after {
                 content: "";
                 background-image: url(../img/chevron-right-thin.svg);
                 background-position: 50%;
                 background-repeat: no-repeat;
                 background-size: contain;
-                height: 26px;
+                height: 20px;
+                width: 20px;
                 position: absolute;
                 inset-inline-end: var(--space-md);
+                top: 50%;
+                transform: translateY(-50%);
                 transition: transform var(--transition-fast);
-                width: 26px;
+                opacity: 0.6;
             }
         }
 
+        &.expanded > a::after {
+            transform: translateY(-50%) rotate(90deg);
+        }
+
         li:not(.menu-header) {
-            padding-inline-start: var(--space-xl);
+            padding-inline-start: var(--space-lg);
         }
     }
 
