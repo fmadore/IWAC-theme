@@ -8,11 +8,11 @@
 .menu-drawer {
     display: block !important;
     position: fixed;
-    height: calc( 100vh - #{$header-min-height} );
+    height: calc( 100vh - var(--menu-drawer-top, #{$header-min-height}) );
     width: 100%;
     transform: translateX( -100% );
     z-index: var(--z-modal);
-    top: $header-min-height;
+    top: var(--menu-drawer-top, #{$header-min-height});
     inset-inline-start: 0;
     background: var(--panel-bg);
     border-inline-end: 1px solid var(--border);

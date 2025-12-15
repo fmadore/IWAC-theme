@@ -16,12 +16,18 @@ const freedomScripts = () => {
     function onScroll(scrollPos) {
         if(scrollPos > 60 && scrollDirection == 'down') {
             mainHeader.style.top = - (userBarHeight + mainHeaderTopBar.offsetHeight) + 'px';
-            menuDrawer.style.top = mainHeaderMainBar.offsetHeight + 'px';
-            menuDrawer.style.height = 'calc(100vh - ' + mainHeaderMainBar.offsetHeight + 'px)';
+            // Update menu drawer position to match visible header area
+            const menuTop = mainHeaderMainBar.offsetHeight;
+            menuDrawer.style.setProperty('--menu-drawer-top', menuTop + 'px');
+            menuDrawer.style.top = menuTop + 'px';
+            menuDrawer.style.height = 'calc(100vh - ' + menuTop + 'px)';
         } else {
             mainHeader.style.top = 0;
-            menuDrawer.style.top = mainHeader.offsetHeight + 'px';
-            menuDrawer.style.height = 'calc(100vh - ' + mainHeader.offsetHeight + 'px)';
+            // Reset menu drawer to full header height
+            const menuTop = mainHeader.offsetHeight;
+            menuDrawer.style.setProperty('--menu-drawer-top', menuTop + 'px');
+            menuDrawer.style.top = menuTop + 'px';
+            menuDrawer.style.height = 'calc(100vh - ' + menuTop + 'px)';
         }
     }
 

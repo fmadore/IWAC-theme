@@ -2364,11 +2364,11 @@ body.main-header--center {
 .menu-drawer {
   display: block !important;
   position: fixed;
-  height: calc(100vh - 133px);
+  height: calc(100vh - var(--menu-drawer-top, 133px));
   width: 100%;
   transform: translateX(-100%);
   z-index: var(--z-modal);
-  top: 133px;
+  top: var(--menu-drawer-top, 133px);
   inset-inline-start: 0;
   background: var(--panel-bg);
   border-inline-end: 1px solid var(--border);
