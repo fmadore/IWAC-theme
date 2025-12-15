@@ -1,8 +1,15 @@
 @use "../../abstracts/abstracts" as *;
 
+// =============================================================================
+// FACETED BROWSE - Modern Filter Sidebar
+// =============================================================================
+
 .faceted-browse-page,
 .block-facetedBrowsePreview {
 
+    // -------------------------------------------------------------------------
+    // Layout Container
+    // -------------------------------------------------------------------------
     #container {
         flex-wrap: wrap;
 
@@ -12,6 +19,9 @@
         }
     }
 
+    // -------------------------------------------------------------------------
+    // Sidebar
+    // -------------------------------------------------------------------------
     #section-sidebar {
         width: 100%;
         overflow: hidden;
@@ -32,8 +42,13 @@
             margin-block-end: var(--space-6);
         }
 
+        // Reset default field/fieldset styles in sidebar
         .field, fieldset {
+            background: transparent;
+            border: none;
             box-shadow: none;
+            padding: 0;
+            margin-block-end: 0;
         }
 
         button.close-button {
@@ -41,21 +56,346 @@
         }
     }
 
-    // Facet container overflow handling
-    .facet {
+    // -------------------------------------------------------------------------
+    // Facets Container
+    // -------------------------------------------------------------------------
+    #facets {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        margin-block-end: var(--space-4);
         overflow: hidden;
 
-        ul {
-            overflow: hidden;
+        @media (min-width: $xl) {
+            height: auto;
+            margin-block-end: 0;
+            overflow: initial;
         }
 
-        label {
-            display: block;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        &.show-all {
+            height: auto;
+            overflow: initial;
         }
     }
 
+    #show-more-facets {
+        margin-block-start: var(--space-3);
+
+        @media (min-width: $xl) {
+            display: none;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Category & Facet Containers (Accordion-style groups)
+    // -------------------------------------------------------------------------
+    .categories-container,
+    .facets-container {
+        border: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .category,
+    .facet {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        margin-block-end: var(--space-3);
+        overflow: hidden;
+        transition: 
+            border-color var(--transition-fast),
+            box-shadow var(--transition-fast);
+
+        &:hover {
+            border-color: color-mix(in srgb, var(--primary) 30%, var(--border-color) 70%);
+        }
+
+        &:last-child {
+            margin-block-end: 0;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Legends (Facet group headings)
+    // -------------------------------------------------------------------------
+    .categories-container legend,
+    .facets-container legend {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: var(--space-3) var(--space-4);
+        margin: 0;
+        background: var(--bg-muted);
+        border-block-end: 1px solid var(--border-color);
+        color: var(--text-heading);
+        font-family: $font__headings;
+        font-weight: 600;
+        font-size: var(--text-sm);
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        line-height: 1.4;
+    }
+
+    .categories-container legend {
+        font-size: var(--text-base);
+        text-transform: none;
+    }
+
+    // -------------------------------------------------------------------------
+    // Select List (Options within each facet)
+    // -------------------------------------------------------------------------
+    .select-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin: 0 !important;
+        padding: var(--space-2);
+        width: 100%;
+        list-style: none;
+
+        &-item {
+            margin: 0;
+            padding: 0;
+            max-width: 100%;
+            overflow: hidden;
+
+            &::before {
+                content: none !important;
+            }
+        }
+
+        &-expand,
+        &-collapse {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            margin: var(--space-2) var(--space-2) var(--space-1);
+            padding: var(--space-2) var(--space-3);
+            background: transparent;
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--primary);
+            font-size: var(--text-sm);
+            font-weight: 500;
+            cursor: pointer;
+            transition: 
+                background var(--transition-fast),
+                border-color var(--transition-fast);
+
+            &:hover {
+                background: var(--bg-muted);
+                border-color: var(--primary);
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Labels & Custom Radio/Checkbox Styling
+    // -------------------------------------------------------------------------
+    .facet label,
+    .category label,
+    .select-list-item label {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-3);
+        padding: var(--space-2) var(--space-3);
+        margin: 0;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: background var(--transition-fast);
+        overflow: hidden;
+
+        &:hover {
+            background: var(--bg-muted);
+        }
+
+        // Custom radio button styling
+        input[type="radio"],
+        input[type="checkbox"] {
+            // Hide default input but keep accessible
+            appearance: none;
+            -webkit-appearance: none;
+            position: relative;
+            flex-shrink: 0;
+            width: 1.125rem;
+            height: 1.125rem;
+            margin: 0.125rem 0 0 0 !important;
+            background: var(--bg-surface);
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: 
+                background var(--transition-fast),
+                border-color var(--transition-fast),
+                box-shadow var(--transition-fast);
+
+            &:hover {
+                border-color: var(--primary);
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--primary);
+                outline-offset: 2px;
+            }
+
+            &:checked {
+                background: var(--primary);
+                border-color: var(--primary);
+
+                &::after {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            &::after {
+                content: "";
+                position: absolute;
+                opacity: 0;
+                transform: scale(0.5);
+                transition: 
+                    opacity var(--transition-fast),
+                    transform var(--transition-fast);
+            }
+        }
+
+        input[type="radio"] {
+            border-radius: 50%;
+
+            &::after {
+                top: 50%;
+                left: 50%;
+                width: 0.375rem;
+                height: 0.375rem;
+                margin-top: -0.1875rem;
+                margin-left: -0.1875rem;
+                background: var(--white);
+                border-radius: 50%;
+            }
+        }
+
+        input[type="checkbox"] {
+            border-radius: var(--radius-sm);
+
+            &::after {
+                top: 0.0625rem;
+                left: 0.3125rem;
+                width: 0.3125rem;
+                height: 0.625rem;
+                border: solid var(--white);
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg) scale(0.5);
+            }
+
+            &:checked::after {
+                transform: rotate(45deg) scale(1);
+            }
+        }
+
+        // Label text styling
+        span,
+        > span:first-of-type {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: var(--text-sm);
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+    }
+
+    // Selected/active state for the whole label
+    .select-list-item.active label,
+    .facet label:has(input:checked) {
+        background: color-mix(in srgb, var(--primary) 8%, transparent 92%);
+
+        &:hover {
+            background: color-mix(in srgb, var(--primary) 12%, transparent 88%);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Categories List
+    // -------------------------------------------------------------------------
+    #categories {
+        list-style: none;
+        margin: 0;
+        padding: var(--space-2);
+
+        li {
+            border-block-end: none;
+            margin: 0;
+            padding: 0;
+
+            &::before {
+                content: none !important;
+            }
+
+            a {
+                display: flex;
+                align-items: center;
+                gap: var(--space-3);
+                padding: var(--space-2) var(--space-3);
+                border-radius: var(--radius-sm);
+                color: var(--text-primary);
+                font-size: var(--text-sm);
+                text-decoration: none;
+                transition: 
+                    background var(--transition-fast),
+                    color var(--transition-fast);
+
+                &:hover {
+                    background: var(--bg-muted);
+                    color: var(--primary);
+                }
+
+                &::before {
+                    content: "";
+                    flex-shrink: 0;
+                    width: 0.5rem;
+                    height: 0.5rem;
+                    background: var(--primary);
+                    border-radius: 50%;
+                    opacity: 0.6;
+                }
+            }
+        }
+    }
+
+    #categories-return {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        margin-block-end: var(--space-3);
+        padding: var(--space-2) var(--space-3);
+        background: var(--bg-muted);
+        border-radius: var(--radius-sm);
+        color: var(--primary);
+        font-size: var(--text-sm);
+        font-weight: 500;
+        text-decoration: none;
+        transition: 
+            background var(--transition-fast),
+            color var(--transition-fast);
+
+        &:hover {
+            background: color-mix(in srgb, var(--primary) 15%, var(--bg-muted) 85%);
+            color: var(--primary-hover);
+        }
+
+        &::before {
+            @include font-awesome;
+            content: "\f053";
+            display: inline-block;
+            font-size: 0.7rem;
+            text-decoration: none;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Main Content Area
+    // -------------------------------------------------------------------------
     #section-content {
         width: 100%;
 
@@ -73,6 +413,9 @@
         }
     }
 
+    // -------------------------------------------------------------------------
+    // Results Display
+    // -------------------------------------------------------------------------
     .faceted-results,
     .resource-list {
         img {
@@ -93,110 +436,6 @@
         }
     }
 
-    #facets {
-        margin-block-end: var(--space-4);
-        overflow: hidden;
-
-        @media (min-width: $xl) {
-            height: auto;
-            margin-block-end: 0;
-            overflow: initial;
-        }
-
-        &.show-all {
-            height: auto;
-            overflow: initial;
-        }
-    }
-
-    #show-more-facets {
-        @media (min-width: $xl) {
-            display: none;
-        }
-    }
-
-    .select-list {
-        display: flex;
-        flex-wrap: wrap;
-        margin-inline-start: 0 !important;
-        width: 100%;
-
-        @media (min-width: $xl) {
-            display: block;
-            margin-inline-start: var(--space-4) !important;
-        }
-
-        &-item {
-            margin-inline-start: var(--space-4);
-            max-width: 100%;
-            overflow: hidden;
-
-            @media (min-width: $xl) {
-                margin-inline-start: 0;
-            }
-
-            &::before {
-                content: none !important;
-            }
-        }
-
-        &-expand,
-        &-collapse {
-            margin-inline-start: var(--space-4);
-        }
-    }
-
-    #categories {
-        li {
-            border-block-end: none;
-
-            &::before {
-                content: none !important;
-            }
-        }
-    }
-
-    #categories-return {
-        display: inline-block;
-        color: var(--primary);
-        transition: color var(--transition-fast);
-
-        &:hover {
-            color: var(--primary-hover);
-        }
-
-        &::before {
-            @include font-awesome;
-            content: "\f053";
-            display: inline-block;
-            font-size: 0.8rem;
-            padding-inline-end: 5px;
-            text-decoration: none;
-        }
-    }
-
-    .categories-container legend,
-    .facets-container legend {
-        color: var(--text-heading);
-        font-family: $font__headings;
-        font-weight: 500;
-        line-height: $font__headings-line-height;
-    }
-
-    .categories-container legend {
-        font-size: var(--text-lg);
-        margin-block-end: var(--space-4);
-    }
-
-    .facets-container legend {
-        font-size: var(--text-base);
-        margin-block-end: var(--space-4);
-    }
-
-    label input {
-        margin: 0 var(--space-2) 0 0 !important;
-    }
-
     .resource-name {
         font-weight: 500;
     }
@@ -214,11 +453,13 @@
         }
     }
 
+    // -------------------------------------------------------------------------
+    // Table Layout
+    // -------------------------------------------------------------------------
     .faceted-browse-table-wrapper {
         overflow-x: auto;
         padding: 0 5px;
     }
-
 
     table {
         border-collapse: separate;
@@ -242,7 +483,6 @@
         }
 
         tbody {
-
             tr {
                 background-color: var(--bg-surface);
                 box-shadow: var(--shadow-sm);
@@ -268,5 +508,4 @@
             }
         }
     }
-
 }
