@@ -2405,6 +2405,9 @@ body.main-header--center {
   visibility: visible;
 }
 .menu-drawer .navigation-controls {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   border-bottom: 1px solid var(--border);
   background: var(--background);
   font-size: var(--text-base);
@@ -2492,16 +2495,16 @@ body.main-header--center {
   display: block;
 }
 .menu-drawer .menu-container .navigation > li > ul {
-  background: var(--background);
-  border-radius: var(--radius-lg);
-  margin: var(--space-sm) var(--space-md) var(--space-md);
-  padding: var(--space-sm);
-  border: var(--panel-border);
+  background: transparent;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 .menu-drawer .menu-container .navigation > li > ul > li > a {
   padding: var(--space-sm) var(--space-md);
-  font-size: var(--text-sm);
-  color: var(--ink-light);
+  font-size: var(--text-base);
+  color: var(--ink);
   border-radius: var(--radius-sm);
 }
 .menu-drawer .menu-container .navigation ul {
@@ -2513,17 +2516,17 @@ body.main-header--center {
   inset: auto !important;
 }
 .menu-drawer .menu-container .navigation ul ul {
-  background: var(--surface);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
   margin-inline-start: var(--space-md);
-  margin-block: var(--space-sm);
-  padding: var(--space-sm);
+  margin-block: 0;
+  padding: 0;
 }
 .menu-drawer .menu-container .navigation ul ul a {
   padding: var(--space-xs) var(--space-md);
-  font-size: var(--text-xs);
-  color: var(--muted);
+  font-size: var(--text-sm);
+  color: var(--ink-light);
   border-radius: var(--radius-sm);
   margin: var(--space-xs) 0;
 }
@@ -2563,20 +2566,8 @@ body.main-header--center {
 .menu-drawer .menu-item-has-children li:not(.menu-header) {
   padding-inline-start: var(--space-lg);
 }
-.menu-drawer .menu-header > a {
-  font-weight: 600;
-  color: var(--ink);
-  font-size: var(--text-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
-  padding-bottom: var(--space-xs);
-  border-bottom: 1px solid var(--border-light);
-  margin-bottom: var(--space-sm);
-  background: none;
-}
-.menu-drawer .menu-header > a:hover {
-  background: none;
-  color: var(--primary);
+.menu-drawer .menu-header {
+  display: none;
 }
 
 body.menu-drawer-toggled {
