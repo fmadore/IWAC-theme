@@ -23,12 +23,12 @@
         overflow: hidden;
         position: absolute;
         inset-inline-start: 0;
-        bottom: 10px;
+        bottom: var(--space-2);
         transition: opacity var(--transition-base);
         z-index: var(--z-dropdown);
 
         @media (min-width: $lg) {
-            bottom: 5px;
+            bottom: var(--space-1);
         }
 
         &__wrapper {

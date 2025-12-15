@@ -1884,7 +1884,7 @@ body.main-header--center {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   content: "\f002";
-  font-size: 16px;
+  font-size: var(--text-base);
 }
 .main-header__search-form button:hover, .main-header__search-form button:focus {
   background: none;
@@ -2551,8 +2551,8 @@ body.main-header--center {
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: contain;
-  height: 20px;
-  width: 20px;
+  height: var(--space-5);
+  width: var(--space-5);
   position: absolute;
   inset-inline-end: var(--space-md);
   top: 50%;
@@ -2617,7 +2617,7 @@ body.menu-drawer-toggled {
   align-items: center;
   border: 1px solid var(--border-color);
   border-radius: 50%;
-  height: 34px;
+  height: var(--space-9, 36px);
   justify-content: center;
   pointer-events: none;
   position: absolute;
@@ -2625,7 +2625,7 @@ body.menu-drawer-toggled {
   top: 50%;
   transform: translateY(-50%) rotate(0);
   transition: transform var(--transition-base);
-  width: 34px;
+  width: var(--space-9, 36px);
 }
 .accordion__trigger.expanded .accordion__icon {
   transform: translateY(-50%) rotate(-180deg);
@@ -2693,12 +2693,12 @@ body.menu-drawer-toggled {
   margin-bottom: 0;
 }
 #advanced-search .field.multi-value .field-meta {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
 }
 #advanced-search .field.multi-value .value {
   align-items: center;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: var(--space-4);
 }
 #advanced-search .field.multi-value .value:first-child .logical-operator:first-child {
   display: none;
@@ -2731,7 +2731,7 @@ body.menu-drawer-toggled {
   flex-basis: 100%;
 }
 #advanced-search .field.multi-value button.remove-value {
-  margin: 6px 0 0;
+  margin: var(--space-sm) 0 0;
 }
 @media (min-width: 768px) {
   #advanced-search .field.multi-value#item-sets .value .sub-label:first-child {
@@ -2749,7 +2749,7 @@ body.menu-drawer-toggled {
 @media (min-width: 768px) {
   #advanced-search .field:not(.multi-value) .inputs > * {
     flex: 1 1 100px;
-    margin-right: 15px;
+    margin-right: var(--space-4);
     max-width: 100%;
     min-width: 100px;
   }
@@ -2790,10 +2790,10 @@ body.menu-drawer-toggled {
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
   cursor: pointer;
-  height: 35px;
+  height: var(--space-9, 36px);
   margin: var(--space-2) 0 0 var(--space-1);
-  padding: 5px 9px;
-  width: 35px;
+  padding: var(--space-1) var(--space-2);
+  width: var(--space-9, 36px);
   transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 #advanced-search .field .numeric-toggle-time:hover {
@@ -2814,7 +2814,7 @@ body.menu-drawer-toggled {
   position: relative;
 }
 #advanced-search #property-queries .input-group > * {
-  margin-right: 15px;
+  margin-right: var(--space-4);
 }
 #advanced-search #property-queries .input-group > *:last-child {
   margin-right: 0;
@@ -2828,7 +2828,7 @@ body.menu-drawer-toggled {
   height: 0;
 }
 #advanced-search #property-queries .input-group .sub-field {
-  margin-top: 20px;
+  margin-top: var(--space-5);
 }
 #advanced-search #property-queries .input-group .sub-label {
   opacity: 0;
@@ -2859,7 +2859,7 @@ body.menu-drawer-toggled {
     background-color: transparent;
     backdrop-filter: none;
     border-block-start: none;
-    bottom: 15px;
+    bottom: var(--space-4);
     flex-direction: column;
     gap: var(--space-4);
     justify-content: initial;
@@ -2923,13 +2923,13 @@ body.menu-drawer-toggled {
   overflow: hidden;
   position: absolute;
   inset-inline-start: 0;
-  bottom: 10px;
+  bottom: var(--space-2);
   transition: opacity var(--transition-base);
   z-index: var(--z-dropdown);
 }
 @media (min-width: 1024px) {
   .annotation-btn .annotation-tooltip {
-    bottom: 5px;
+    bottom: var(--space-1);
   }
 }
 .annotation-btn .annotation-tooltip__wrapper {
@@ -3334,7 +3334,7 @@ body.menu-drawer-toggled {
 .metadata dl > .property dd {
   display: flex;
   flex-wrap: wrap;
-  gap: 3px;
+  gap: var(--space-1);
   margin: 0 0 var(--space-4);
   word-break: break-word;
   overflow-wrap: anywhere;

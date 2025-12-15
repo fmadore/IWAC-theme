@@ -54,7 +54,7 @@
             dd {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 3px;
+                gap: var(--space-1);
                 margin: 0 0 var(--space-4);
                 word-break: break-word;
                 overflow-wrap: anywhere;
