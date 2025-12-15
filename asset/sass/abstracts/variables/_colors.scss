@@ -10,19 +10,19 @@
   color-scheme: light;
 
   // Primary color (IWAC orange) - HSL base
-  --primary-hue: 28;
-  --primary-sat: 86%;
-  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 52%);
-  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 47%);
-  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 42%);
+  --primary-hue: 24;
+  --primary-sat: 90%;
+  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 50%);
+  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 45%);
+  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 40%);
 
   // Semantic ink colors (text) - with HSL components for derived colors
-  --ink-hue: 222;
-  --ink-sat: 24%;
-  --ink-lum: 14%;
+  --ink-hue: 220;
+  --ink-sat: 28%;
+  --ink-lum: 12%;
   --ink: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum));
-  --ink-light: hsl(222, 18%, 36%);
-  --muted: hsl(222, 14%, 52%);
+  --ink-light: hsl(220, 18%, 32%);
+  --muted: hsl(220, 14%, 50%);
 
   // Pure colors for overlays
   --white: #fff;

@@ -22,10 +22,10 @@
         position: absolute;
         inset: 0;
         background: linear-gradient(
-            180deg,
-            hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum) / 0.3) 0%,
-            hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum) / 0.5) 40%,
-            hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum) / 0.75) 100%
+            to bottom,
+            hsla(var(--ink-hue), var(--ink-sat), 5%, 0.2) 0%,
+            hsla(var(--ink-hue), var(--ink-sat), 5%, 0.6) 50%,
+            hsla(var(--ink-hue), var(--ink-sat), 5%, 0.85) 100%
         );
         z-index: 1;
     }
@@ -37,10 +37,10 @@
         inset: 0;
         background: linear-gradient(
             135deg,
-            hsl(var(--primary-hue) 70% 50% / 0.15) 0%,
-            transparent 50%,
-            hsl(var(--primary-hue) 70% 40% / 0.1) 100%
+            hsla(var(--primary-hue), var(--primary-sat), 50%, 0.6) 0%,
+            transparent 70%
         );
+        mix-blend-mode: overlay;
         z-index: 1;
         pointer-events: none;
     }
@@ -124,7 +124,7 @@
         max-width: 900px;
         margin-block-end: var(--space-4);
         position: relative;
-        text-shadow: var(--text-shadow-dark, 0 2px 4px rgba(0, 0, 0, 0.3));
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         letter-spacing: -0.01em;
         
         @media (min-width: $md) {
@@ -161,8 +161,8 @@
         max-width: 700px;
         margin-block-end: 0;
         margin-block-start: var(--space-2);
-        color: hsl(0 0% 100% / 0.92);
-        text-shadow: var(--text-shadow-dark, 0 1px 3px rgba(0, 0, 0, 0.4));
+        color: hsl(0 0% 100% / 0.95);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         
         @media (min-width: $md) {
             font-size: var(--text-lg);
