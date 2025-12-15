@@ -11,9 +11,27 @@
     align-items: center;
     position: relative;
     overflow: hidden;
+    
+    // Rounded corners for modern card-like appearance
+    border-radius: var(--radius-lg);
+    
+    // On larger screens, use larger radius for more prominent effect
+    @media (min-width: $md) {
+        border-radius: var(--radius-xl);
+    }
 
     &.container {
         padding: 0;
+        // Add margin to show rounded corners against background
+        margin-inline: var(--space-4);
+        width: calc(100% - var(--space-8));
+        max-width: calc(var(--content-max-width) - var(--space-8));
+        
+        @media (min-width: $lg) {
+            margin-inline: auto;
+            width: 100%;
+            max-width: var(--content-max-width);
+        }
     }
 
     // Modern gradient overlay using ink color for consistency

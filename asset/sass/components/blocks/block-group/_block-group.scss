@@ -179,15 +179,22 @@
 // Content blocks - enhanced readability for both standalone and grouped
 .block-blockGroup .block-html,
 .block-html {
-    // Lead paragraph styling (first paragraph gets emphasis)
+    // Lead paragraph styling (first paragraph gets subtle emphasis)
+    // Use base size to avoid inconsistent scaling on desktop
     > p:first-of-type {
-        font-size: var(--text-lg);
-        line-height: 1.7;
+        font-size: var(--text-base);
+        line-height: 1.75;
         color: var(--ink);
+        
+        // Slightly larger on wider screens where there's more room
+        @media (min-width: $lg) {
+            font-size: clamp(var(--text-base), 1rem + 0.1vw, var(--text-lg));
+        }
     }
     
-    // Standard paragraphs
+    // Standard paragraphs - consistent sizing
     p {
+        font-size: var(--text-base);
         line-height: 1.75;
         
         // Links get enhanced styling in content

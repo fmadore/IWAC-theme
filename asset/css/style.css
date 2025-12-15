@@ -3237,9 +3237,25 @@ body.menu-drawer-toggled {
   align-items: center;
   position: relative;
   overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+@media (min-width: 768px) {
+  .banner {
+    border-radius: var(--radius-xl);
+  }
 }
 .banner.container {
   padding: 0;
+  margin-inline: var(--space-4);
+  width: calc(100% - var(--space-8));
+  max-width: calc(var(--content-max-width) - var(--space-8));
+}
+@media (min-width: 1024px) {
+  .banner.container {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--content-max-width);
+  }
 }
 .banner.has-text::before {
   content: "";
@@ -3771,12 +3787,19 @@ body.menu-drawer-toggled {
 
 .block-blockGroup .block-html > p:first-of-type,
 .block-html > p:first-of-type {
-  font-size: var(--text-lg);
-  line-height: 1.7;
+  font-size: var(--text-base);
+  line-height: 1.75;
   color: var(--ink);
+}
+@media (min-width: 1024px) {
+  .block-blockGroup .block-html > p:first-of-type,
+  .block-html > p:first-of-type {
+    font-size: clamp(var(--text-base), 1rem + 0.1vw, var(--text-lg));
+  }
 }
 .block-blockGroup .block-html p,
 .block-html p {
+  font-size: var(--text-base);
   line-height: 1.75;
 }
 .block-blockGroup .block-html p a,
