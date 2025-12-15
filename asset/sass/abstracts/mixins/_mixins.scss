@@ -42,9 +42,9 @@
 }
 
 @mixin button {
-    appearance: none;
-    -moz-appearance: none;
     -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     border-radius: var(--radius-md);
     cursor: pointer;
     padding: var(--space-sm) var(--space-xl);

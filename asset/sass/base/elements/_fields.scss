@@ -50,6 +50,7 @@ select {
 input[type="checkbox"] {
     border: 2px solid var(--border);
     -webkit-appearance: none;
+    -moz-appearance: none;
     appearance: none;
     background-color: var(--surface);
     margin: 0;
@@ -89,6 +90,7 @@ input[type="checkbox"] {
 input[type="radio"] {
     border: 2px solid var(--border);
     -webkit-appearance: none;
+    -moz-appearance: none;
     appearance: none;
     background-color: var(--surface);
     margin: 0;

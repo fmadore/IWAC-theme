@@ -1123,6 +1123,7 @@ figcaption {
 .resource .description.ellipsis {
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1452,8 +1453,7 @@ button.remove-value {
   height: 35px;
   padding: 5px 9px;
   text-transform: uppercase;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+  appearance: none;
   flex-shrink: 0;
   box-shadow: none;
 }
@@ -3819,8 +3819,6 @@ body.menu-drawer-toggled {
 }
 .preview-block .browse-all {
   appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   padding: var(--space-sm) var(--space-xl);
@@ -4232,8 +4230,6 @@ body.menu-drawer-toggled {
 }
 .pagination .button {
   appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   padding: var(--space-sm) var(--space-xl);
@@ -4306,8 +4302,6 @@ body.menu-drawer-toggled {
 }
 .site-page-pagination a {
   appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   padding: var(--space-sm) var(--space-xl);
@@ -4463,6 +4457,24 @@ body.menu-drawer-toggled {
 .block-facetedBrowsePreview .facet:last-child {
   margin-block-end: 0;
 }
+.faceted-browse-page .category > select,
+.faceted-browse-page .category select.value,
+.faceted-browse-page .facet > select,
+.faceted-browse-page .facet select.value,
+.block-facetedBrowsePreview .category > select,
+.block-facetedBrowsePreview .category select.value,
+.block-facetedBrowsePreview .facet > select,
+.block-facetedBrowsePreview .facet select.value {
+  margin: var(--space-3) var(--space-4);
+  width: calc(100% - var(--space-8)) !important;
+  margin-block-end: 0;
+}
+.faceted-browse-page .category:has(select),
+.faceted-browse-page .facet:has(select),
+.block-facetedBrowsePreview .category:has(select),
+.block-facetedBrowsePreview .facet:has(select) {
+  padding-block-end: var(--space-3);
+}
 .faceted-browse-page .categories-container legend,
 .faceted-browse-page .facets-container legend,
 .block-facetedBrowsePreview .categories-container legend,
@@ -4472,7 +4484,7 @@ body.menu-drawer-toggled {
   width: 100%;
   padding: var(--space-3) var(--space-4);
   margin: 0;
-  background: var(--bg-muted);
+  background: transparent;
   border-block-end: 1px solid var(--border-color);
   color: var(--text-heading);
   font-family: "Noto Serif", serif;
@@ -4568,7 +4580,6 @@ body.menu-drawer-toggled {
 .block-facetedBrowsePreview .select-list-item label input[type=radio],
 .block-facetedBrowsePreview .select-list-item label input[type=checkbox] {
   appearance: none;
-  -webkit-appearance: none;
   position: relative;
   flex-shrink: 0;
   width: 1.125rem;
@@ -4915,6 +4926,48 @@ body.menu-drawer-toggled {
   display: flex;
   align-items: center;
 }
+@media (min-width: 1024px) {
+  .faceted-browse-page .tablesaw th.tablesaw-swipe-cellhidden,
+  .faceted-browse-page .tablesaw td.tablesaw-swipe-cellhidden,
+  .block-facetedBrowsePreview .tablesaw th.tablesaw-swipe-cellhidden,
+  .block-facetedBrowsePreview .tablesaw td.tablesaw-swipe-cellhidden {
+    display: table-cell !important;
+  }
+}
+.faceted-browse-page .tablesaw-advance,
+.block-facetedBrowsePreview .tablesaw-advance {
+  display: flex;
+  gap: var(--space-2);
+  margin-block-start: var(--space-3);
+}
+@media (min-width: 1024px) {
+  .faceted-browse-page .tablesaw-advance,
+  .block-facetedBrowsePreview .tablesaw-advance {
+    display: none;
+  }
+}
+.faceted-browse-page .tablesaw-advance .tablesaw-nav-btn,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.faceted-browse-page .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled),
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled) {
+  background: var(--bg-muted);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.faceted-browse-page .tablesaw-advance .tablesaw-nav-btn.disabled,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 /* Hierarchy
 --------------------------------------------- */
@@ -4994,8 +5047,6 @@ body.menu-drawer-toggled {
 }
 .browse-controls .permalink {
   appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   border-radius: var(--radius-md);
   cursor: pointer;
   padding: var(--space-sm) var(--space-xl);
