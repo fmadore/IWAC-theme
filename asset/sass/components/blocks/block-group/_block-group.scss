@@ -18,21 +18,6 @@
     padding: var(--space-lg);
     margin-block-end: var(--space-lg);
     
-    // Accent border on the left for visual interest
-    &::before {
-        content: "";
-        position: absolute;
-        inset-block: 0;
-        inset-inline-start: 0;
-        width: 4px;
-        background: linear-gradient(
-            180deg,
-            var(--primary) 0%,
-            color-mix(in srgb, var(--primary) 70%, var(--primary-active) 30%) 100%
-        );
-        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-    }
-    
     // Subtle inner glow for depth
     &::after {
         content: "";
@@ -179,21 +164,6 @@
     box-shadow: var(--panel-shadow);
     padding: var(--space-lg);
     margin-block-end: var(--space-lg);
-    
-    // Gradient accent border on the left
-    &::before {
-        content: "";
-        position: absolute;
-        inset-block: 0;
-        inset-inline-start: 0;
-        width: 4px;
-        background: linear-gradient(
-            180deg,
-            var(--primary) 0%,
-            color-mix(in srgb, var(--primary) 70%, var(--primary-active) 30%) 100%
-        );
-        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-    }
     
     // Hover effect
     transition: 

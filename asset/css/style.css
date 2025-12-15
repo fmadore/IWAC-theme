@@ -71,13 +71,13 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --backdrop-blur-md: blur(8px);
   --backdrop-blur-lg: blur(16px);
   --backdrop-blur-xl: blur(24px);
-  --shadow-xs: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
-  --shadow-sm: 0 2px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.06);
-  --shadow-md: 0 6px 16px -4px rgb(15 23 42 / 0.1), 0 4px 8px -4px rgb(15 23 42 / 0.06);
-  --shadow-lg: 0 12px 28px -8px rgb(15 23 42 / 0.12), 0 8px 16px -8px rgb(15 23 42 / 0.08);
-  --shadow-xl: 0 20px 40px -12px rgb(15 23 42 / 0.16), 0 12px 24px -8px rgb(15 23 42 / 0.1);
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --panel-bg: var(--surface);
-  --panel-border-color: transparent;
+  --panel-border-color: rgba(0, 0, 0, 0.05);
   --panel-border: 1px solid var(--panel-border-color);
   --panel-radius: var(--radius-md);
   --panel-shadow: var(--shadow-md);
@@ -135,13 +135,13 @@ body[data-theme=dark] {
 }
 
 body[data-theme=light] {
-  --shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.05);
-  --shadow-sm: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
-  --shadow-md: 0 4px 6px -1px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.05);
-  --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.08), 0 4px 6px -4px rgb(15 23 42 / 0.05);
-  --shadow-xl: 0 20px 25px -5px rgb(15 23 42 / 0.08), 0 8px 10px -6px rgb(15 23 42 / 0.05);
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --panel-bg: var(--surface);
-  --panel-border-color: transparent;
+  --panel-border-color: rgba(0, 0, 0, 0.05);
   --panel-shadow: var(--shadow-md);
 }
 
@@ -3408,15 +3408,6 @@ body.menu-drawer-toggled {
   padding: var(--space-lg);
   margin-block-end: var(--space-lg);
 }
-.block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle))::before {
-  content: "";
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
-  width: 4px;
-  background: linear-gradient(180deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 70%, var(--primary-active) 30%) 100%);
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-}
 .block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle))::after {
   content: "";
   position: absolute;
@@ -3515,17 +3506,6 @@ body.menu-drawer-toggled {
   box-shadow: var(--panel-shadow);
   padding: var(--space-lg);
   margin-block-end: var(--space-lg);
-}
-.block-html:not(.block-blockGroup .block-html)::before {
-  content: "";
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
-  width: 4px;
-  background: linear-gradient(180deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 70%, var(--primary-active) 30%) 100%);
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-}
-.block-html:not(.block-blockGroup .block-html) {
   transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 .block-html:not(.block-blockGroup .block-html):hover {
