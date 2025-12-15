@@ -3,7 +3,8 @@
  * Language Switcher
  * 
  * Custom template for the Internationalisation module's language switcher.
- * Displays available site languages with language codes.
+ * Displays a dropdown menu with available site languages, triggered by a globe icon button.
+ * Designed to match the theme toggle button styling.
  * 
  * Variables provided by the Internationalisation module:
  * @var \Laminas\View\Renderer\PhpRenderer $this
@@ -25,10 +26,20 @@ $translate = $this->plugin('translate');
 
 // Get current locale from site settings
 $currentLocale = $this->siteSetting('locale') ?: ($defaultLocale ?? 'en');
+$currentLocaleShort = rtrim(substr($currentLocale, 0, 3), '_-');
 ?>
 
-<nav class="language-switcher" aria-label="<?php echo $escapeAttr($translate('Language selection')); ?>">
-    <ul class="language-switcher__list">
+<div class="language-switcher language-switcher--dropdown" data-language-switcher>
+    <button class="language-switcher__toggle" 
+            type="button"
+            aria-expanded="false"
+            aria-haspopup="listbox"
+            aria-label="<?php echo $escapeAttr($translate('Select language')); ?>"
+            title="<?php echo $escapeAttr($translate('Change language')); ?>">
+        <span class="language-switcher__icon" aria-hidden="true"></span>
+        <span class="language-switcher__current-code"><?php echo $escape(strtoupper($currentLocaleShort)); ?></span>
+    </button>
+    <ul class="language-switcher__list" role="listbox" aria-label="<?php echo $escapeAttr($translate('Available languages')); ?>">
         <?php foreach ($locales as $localeData): 
             $siteLocale = $localeData['locale'] ?? '';
             $siteLocaleShort = rtrim(substr($siteLocale, 0, 3), '_-');
@@ -36,25 +47,25 @@ $currentLocale = $this->siteSetting('locale') ?: ($defaultLocale ?? 'en');
             $langName = $localeData['locale_label'] ?? $siteLocaleShort;
             $siteUrl = $localeData['url'] ?? '#';
         ?>
-            <li class="language-switcher__item <?php echo $isCurrentLang ? 'language-switcher__item--active' : ''; ?>">
+            <li class="language-switcher__item <?php echo $isCurrentLang ? 'language-switcher__item--active' : ''; ?>" 
+                role="option"
+                aria-selected="<?php echo $isCurrentLang ? 'true' : 'false'; ?>">
                 <?php if ($isCurrentLang): ?>
-                    <span class="language-switcher__link language-switcher__link--current" 
-                          aria-current="true"
-                          title="<?php echo $escapeAttr($langName); ?> (<?php echo $escape($translate('current')); ?>)">
-                        <span class="language-switcher__code" aria-hidden="true"><?php echo $escape(strtoupper($siteLocaleShort)); ?></span>
-                        <span class="screen-reader-text"><?php echo $escape($langName); ?> (<?php echo $escape($translate('current language')); ?>)</span>
+                    <span class="language-switcher__link language-switcher__link--current">
+                        <span class="language-switcher__code"><?php echo $escape(strtoupper($siteLocaleShort)); ?></span>
+                        <span class="language-switcher__label"><?php echo $escape($langName); ?></span>
+                        <span class="language-switcher__check" aria-hidden="true">✓</span>
                     </span>
                 <?php else: ?>
                     <a href="<?php echo $escapeAttr($siteUrl); ?>" 
                        class="language-switcher__link"
                        hreflang="<?php echo $escapeAttr(str_replace('_', '-', $siteLocale)); ?>"
-                       lang="<?php echo $escapeAttr(str_replace('_', '-', $siteLocale)); ?>"
-                       title="<?php echo $escapeAttr($langName); ?>">
-                        <span class="language-switcher__code" aria-hidden="true"><?php echo $escape(strtoupper($siteLocaleShort)); ?></span>
-                        <span class="screen-reader-text"><?php echo $escape($langName); ?></span>
+                       lang="<?php echo $escapeAttr(str_replace('_', '-', $siteLocale)); ?>">
+                        <span class="language-switcher__code"><?php echo $escape(strtoupper($siteLocaleShort)); ?></span>
+                        <span class="language-switcher__label"><?php echo $escape($langName); ?></span>
                     </a>
                 <?php endif; ?>
             </li>
         <?php endforeach; ?>
     </ul>
-</nav>
+</div>

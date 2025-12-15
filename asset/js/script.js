@@ -112,6 +112,49 @@ const freedomScripts = () => {
             }
         }
     });
+
+    // Language Switcher dropdown functionality
+
+    const languageSwitcher = document.querySelector('[data-language-switcher]');
+    
+    if (languageSwitcher) {
+        const toggleBtn = languageSwitcher.querySelector('.language-switcher__toggle');
+        
+        if (toggleBtn) {
+            // Toggle dropdown on button click
+            toggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isOpen = languageSwitcher.classList.contains('is-open');
+                
+                if (isOpen) {
+                    closeLanguageSwitcher();
+                } else {
+                    languageSwitcher.classList.add('is-open');
+                    toggleBtn.setAttribute('aria-expanded', 'true');
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!languageSwitcher.contains(e.target)) {
+                    closeLanguageSwitcher();
+                }
+            });
+
+            // Close dropdown on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && languageSwitcher.classList.contains('is-open')) {
+                    closeLanguageSwitcher();
+                    toggleBtn.focus();
+                }
+            });
+
+            function closeLanguageSwitcher() {
+                languageSwitcher.classList.remove('is-open');
+                toggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        }
+    }
 }
 
 if (document.readyState === 'loading') {
