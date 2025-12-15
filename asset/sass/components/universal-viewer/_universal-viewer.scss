@@ -1,0 +1,270 @@
+// ==========================================================================
+// Universal Viewer (UV) Component
+// Reset global theme styles within UV container to prevent conflicts
+// ==========================================================================
+
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// UV Container Isolation
+// The Universal Viewer has its own styling system - we reset our global
+// styles to prevent breaking the viewer's UI
+// ==========================================================================
+
+// UV CSS Custom Properties (scoped to UV container)
+// These can be customized to theme the UV to match IWAC while respecting
+// the viewer's internal structure
+.uv,
+.uv-iiif-extension-host {
+    // UV-specific color palette (dark theme viewer)
+    --uv-bg: #000;
+    --uv-surface: #1c1c1c;
+    --uv-surface-light: #2a2a2a;
+    --uv-text: #fff;
+    --uv-text-muted: #949494;
+    --uv-border: #4a4a4a;
+    --uv-input-bg: #efefef;
+    --uv-input-border: #9a9a9a;
+    --uv-input-text: #000;
+    --uv-focus: #666;
+    --uv-brand: #10819a;
+    --uv-brand-hover: #26b5cc;
+}
+
+// ==========================================================================
+// Button Reset
+// Prevent IWAC button styles from affecting UV buttons
+// ==========================================================================
+.uv button,
+.uv .button,
+.uv-iiif-extension-host button,
+.uv-iiif-extension-host .button {
+    all: revert;
+    box-sizing: border-box;
+}
+
+.uv button,
+.uv-iiif-extension-host button {
+    border: 0;
+    background-color: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    cursor: pointer;
+}
+
+// Reset specific UV button classes
+.uv .expandButton,
+.uv .collapseButton,
+.uv .btn,
+.uv [class*="Button"],
+.uv-iiif-extension-host .expandButton,
+.uv-iiif-extension-host .collapseButton,
+.uv-iiif-extension-host .btn,
+.uv-iiif-extension-host [class*="Button"] {
+    display: block;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    color: inherit;
+    transform: none;
+    transition: none;
+}
+
+// Reset hover states
+.uv button:hover,
+.uv .button:hover,
+.uv-iiif-extension-host button:hover,
+.uv-iiif-extension-host .button:hover {
+    background-color: transparent;
+    transform: none;
+    box-shadow: none;
+}
+
+// ==========================================================================
+// Form Input Reset
+// Prevent IWAC form styles from affecting UV inputs
+// ==========================================================================
+.uv input,
+.uv select,
+.uv textarea,
+.uv-iiif-extension-host input,
+.uv-iiif-extension-host select,
+.uv-iiif-extension-host textarea {
+    all: revert;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+// Text inputs with UV-appropriate styling
+.uv input[type="text"],
+.uv-iiif-extension-host input[type="text"] {
+    display: block;
+    width: 100%;
+    padding: 4px 8px;
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--uv-input-text);
+    background: var(--uv-input-bg);
+    border: 1px solid var(--uv-input-border);
+    border-radius: 0;
+    box-shadow: none;
+    transition: none;
+}
+
+.uv input[type="text"]:focus,
+.uv-iiif-extension-host input[type="text"]:focus {
+    outline: 1px solid var(--uv-focus);
+    box-shadow: none;
+    transform: none;
+}
+
+// ==========================================================================
+// Panel & Layout Reset
+// Ensure UV panels render correctly
+// ==========================================================================
+.uv .mainPanel,
+.uv .leftPanel,
+.uv .rightPanel,
+.uv .centerPanel,
+.uv .headerPanel,
+.uv .footerPanel,
+.uv-iiif-extension-host .mainPanel,
+.uv-iiif-extension-host .leftPanel,
+.uv-iiif-extension-host .rightPanel,
+.uv-iiif-extension-host .centerPanel,
+.uv-iiif-extension-host .headerPanel,
+.uv-iiif-extension-host .footerPanel {
+    all: revert;
+    box-sizing: border-box;
+}
+
+// ==========================================================================
+// Overlay & Dialogue Reset
+// Prevent theme modals/overlays from conflicting
+// ==========================================================================
+.uv .overlay,
+.uv .overlays,
+.uv .dialogue,
+.uv-iiif-extension-host .overlay,
+.uv-iiif-extension-host .overlays,
+.uv-iiif-extension-host .dialogue {
+    all: revert;
+    box-sizing: border-box;
+}
+
+// ==========================================================================
+// Link Reset
+// ==========================================================================
+.uv a,
+.uv-iiif-extension-host a {
+    all: revert;
+    color: var(--uv-brand);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: var(--uv-brand-hover);
+        text-decoration: underline;
+    }
+}
+
+// ==========================================================================
+// Scrollbar Styling (match UV's dark theme)
+// ==========================================================================
+.uv,
+.uv-iiif-extension-host {
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--uv-surface);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--uv-border);
+    }
+
+    *::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: var(--uv-surface);
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: var(--uv-border);
+    }
+}
+
+// ==========================================================================
+// Typography Reset
+// ==========================================================================
+.uv h1, .uv h2, .uv h3, .uv h4, .uv h5, .uv h6,
+.uv-iiif-extension-host h1,
+.uv-iiif-extension-host h2,
+.uv-iiif-extension-host h3,
+.uv-iiif-extension-host h4,
+.uv-iiif-extension-host h5,
+.uv-iiif-extension-host h6 {
+    all: revert;
+    margin: 0;
+    padding: 0;
+    color: inherit;
+}
+
+.uv p,
+.uv-iiif-extension-host p {
+    all: revert;
+    margin: 0;
+    padding: 0;
+}
+
+// ==========================================================================
+// List Reset
+// ==========================================================================
+.uv ul, .uv ol, .uv li,
+.uv-iiif-extension-host ul,
+.uv-iiif-extension-host ol,
+.uv-iiif-extension-host li {
+    all: revert;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+// ==========================================================================
+// Image Reset
+// ==========================================================================
+.uv img,
+.uv-iiif-extension-host img {
+    all: revert;
+    max-width: none;
+}
+
+// ==========================================================================
+// Range/Slider Reset
+// ==========================================================================
+.uv input[type="range"],
+.uv-iiif-extension-host input[type="range"] {
+    all: revert;
+}
+
+// ==========================================================================
+// Checkbox/Radio Reset
+// ==========================================================================
+.uv input[type="checkbox"],
+.uv input[type="radio"],
+.uv-iiif-extension-host input[type="checkbox"],
+.uv-iiif-extension-host input[type="radio"] {
+    all: revert;
+}
