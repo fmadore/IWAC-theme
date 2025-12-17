@@ -1,49 +1,123 @@
 @use "../../../abstracts/abstracts" as *;
 
-.carousel-block {
-    padding-inline: 45px;
+.block-carousel {
+    padding-inline: var(--space-12);
+    margin-block-end: var(--space-xl);
+    position: relative;
+
+    // Fix for grid overflow issues
+    min-width: 0;
+    width: 100%;
+
+    .slick-list {
+        margin-inline: calc(var(--space-sm) * -1);
+        padding-block: var(--space-md); // Room for hover lift
+    }
+
+    .slick-slide {
+        padding-inline: var(--space-sm);
+        height: auto; // Allow height to be determined by content
+
+        // Card styling for the content inside the slide
+        // We target the direct child div or anchor
+        > div > * {
+            display: block;
+            background: var(--panel-bg);
+            border: var(--panel-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md), var(--glow-xs);
+            transition: 
+                transform var(--transition-base),
+                box-shadow var(--transition-base),
+                border-color var(--transition-base);
+            overflow: hidden;
+            height: 100%;
+            text-decoration: none;
+
+            &:hover {
+                transform: translateY(var(--lift-sm));
+                box-shadow: var(--shadow-xl), var(--glow-sm);
+                border-color: var(--primary);
+            }
+
+            img {
+                width: 100%;
+                height: 250px; // Consistent height
+                object-fit: cover;
+                display: block;
+            }
+
+            .caption, figcaption, .slide-caption {
+                padding: var(--space-md);
+                color: var(--ink);
+                font-size: var(--text-sm);
+                background: var(--surface);
+                border-top: 1px solid var(--border-light);
+            }
+            
+            // If it's just an image without container
+            &.media-render {
+                border: none;
+                box-shadow: none;
+                background: transparent;
+                
+                img {
+                    border-radius: var(--radius-lg);
+                    box-shadow: var(--shadow-md);
+                }
+            }
+        }
+    }
 
     .slick-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
         border: 1px solid var(--border);
         border-radius: var(--radius-full);
-        height: 40px;
-        width: 40px;
-        transition: 
-            background-color var(--transition-fast), 
-            border-color var(--transition-fast),
-            box-shadow var(--transition-fast);
+        height: 2.5rem;
+        width: 2.5rem;
+        background: var(--surface);
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        padding: 0;
+        box-shadow: var(--shadow-sm);
 
         &:hover {
             background-color: var(--primary);
             border-color: var(--primary);
+            color: var(--white);
             box-shadow: var(--glow-sm);
 
             .slick-prev-icon,
             .slick-next-icon {
                 &::before {
-                    color: white;
+                    color: var(--white);
                 }
             }
         }
 
         &.slick-next {
-            padding-inline-start: 3px;
-            inset-inline-end: -45px;
+            inset-inline-end: 0;
         }
 
         &.slick-prev {
-            padding-inline-end: 3px;
-            inset-inline-start: -45px;
+            inset-inline-start: 0;
         }
 
         .slick-prev-icon,
         .slick-next-icon {
             &::before {
                 @include font-awesome;
-                color: var(--muted);
-                font-size: 25px;
+                font-size: 1rem;
                 line-height: 1;
                 transition: color var(--transition-fast);
+                color: inherit;
             }
         }
 
@@ -61,9 +135,36 @@
     }
 
     .slick-dots {
-        button {
-            &:hover {
-                background-color: transparent;
+        display: flex !important;
+        justify-content: center;
+        gap: var(--space-xs);
+        margin-top: var(--space-md);
+        padding: 0;
+        list-style: none;
+
+        li {
+            margin: 0;
+            padding: 0;
+            
+            button {
+                font-size: 0;
+                width: 0.625rem;
+                height: 0.625rem;
+                padding: 0;
+                border-radius: var(--radius-full);
+                background: var(--border);
+                border: none;
+                transition: all var(--transition-fast);
+                cursor: pointer;
+
+                &:hover {
+                    background: var(--primary-hover);
+                }
+            }
+
+            &.slick-active button {
+                background: var(--primary);
+                transform: scale(1.2);
             }
         }
     }
