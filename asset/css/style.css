@@ -511,7 +511,7 @@ button,
 [type=button],
 [type=reset],
 [type=submit] {
-  -webkit-appearance: button;
+  appearance: button;
 }
 
 /**
@@ -594,7 +594,7 @@ textarea {
  * 2. Correct the outline style in Safari.
  */
 [type=search] {
-  -webkit-appearance: textfield;
+  appearance: textfield;
   outline-offset: -2px;
 }
 
@@ -770,6 +770,10 @@ h6 {
   margin-block-start: 0;
 }
 
+:is(h1, h2, h3, h4, h5, h6):first-child {
+  margin-block-start: 0;
+}
+
 h1 {
   clear: both;
   font-size: var(--text-3xl);
@@ -785,10 +789,12 @@ h1 {
 }
 
 h2 {
+  color: var(--primary);
   font-size: var(--text-2xl);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.25;
-  margin-block-end: var(--space-8);
+  margin-block-start: var(--space-12);
+  margin-block-end: var(--space-6);
 }
 @media (min-width: 768px) {
   h2 {
@@ -798,9 +804,10 @@ h2 {
 
 h3 {
   font-size: var(--text-xl);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.25;
-  margin-block-end: var(--space-8);
+  margin-block-start: var(--space-10);
+  margin-block-end: var(--space-5);
 }
 @media (min-width: 768px) {
   h3 {
@@ -810,9 +817,10 @@ h3 {
 
 h4 {
   font-size: var(--text-lg);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.25;
-  margin-block-end: var(--space-6);
+  margin-block-start: var(--space-8);
+  margin-block-end: var(--space-4);
 }
 @media (min-width: 768px) {
   h4 {
@@ -845,8 +853,10 @@ h6 {
 }
 
 p {
+  line-height: 1.75;
   margin-block-end: var(--space-6);
   margin-block-start: 0;
+  max-width: 75ch;
 }
 
 dfn,
@@ -3649,7 +3659,7 @@ body.menu-drawer-toggled {
   background: var(--panel-bg);
   border: var(--panel-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--panel-shadow);
+  box-shadow: var(--shadow-md), var(--glow-xs);
   padding: var(--space-lg);
   margin-block-end: var(--space-lg);
 }
@@ -3665,22 +3675,22 @@ body.menu-drawer-toggled {
   transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 .block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle)):hover {
-  transform: translateY(var(--lift-xxs));
-  box-shadow: var(--shadow-lg);
+  transform: translateY(var(--lift-sm));
+  box-shadow: var(--shadow-xl), var(--glow-sm);
 }
 
 .block-blockGroup:has(.block-asset) {
   background: var(--panel-bg);
   border: var(--panel-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--panel-shadow);
+  box-shadow: var(--shadow-md), var(--glow-xs);
   padding: var(--space-lg);
   margin-block-end: var(--space-lg);
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
 }
 .block-blockGroup:has(.block-asset):hover {
-  transform: translateY(var(--lift-xxs));
-  box-shadow: var(--shadow-md);
+  transform: translateY(var(--lift-sm));
+  box-shadow: var(--shadow-xl), var(--glow-sm);
   border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
 }
 .block-blockGroup:has(.block-asset) .block {
@@ -3748,14 +3758,14 @@ body.menu-drawer-toggled {
   background: var(--panel-bg);
   border: var(--panel-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--panel-shadow);
+  box-shadow: var(--shadow-md), var(--glow-xs);
   padding: var(--space-lg);
   margin-block-end: var(--space-lg);
   transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 .block-html:not(.block-blockGroup .block-html):hover {
-  transform: translateY(var(--lift-xxs));
-  box-shadow: var(--shadow-lg);
+  transform: translateY(var(--lift-sm));
+  box-shadow: var(--shadow-xl), var(--glow-sm);
 }
 
 .block-blockGroup .block-html > p:first-of-type,

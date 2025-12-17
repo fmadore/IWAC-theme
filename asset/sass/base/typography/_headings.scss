@@ -16,6 +16,10 @@ h6 {
     margin-block-start: 0;
 }
 
+:is(h1, h2, h3, h4, h5, h6):first-child {
+    margin-block-start: 0;
+}
+
 h1 {
     clear: both;
     font-size: var(--text-3xl);
@@ -30,10 +34,12 @@ h1 {
 }
 
 h2 {
+    color: var(--primary);
     font-size: var(--text-2xl);
-    font-weight: 500;
+    font-weight: 600;
     line-height: $font__headings-line-height;
-    margin-block-end: var(--space-8);
+    margin-block-start: var(--space-12);
+    margin-block-end: var(--space-6);
 
     @media (min-width: $md) {
         font-size: var(--text-3xl);
@@ -42,9 +48,10 @@ h2 {
 
 h3 {
     font-size: var(--text-xl);
-    font-weight: 400;
+    font-weight: 500;
     line-height: $font__headings-line-height;
-    margin-block-end: var(--space-8);
+    margin-block-start: var(--space-10);
+    margin-block-end: var(--space-5);
 
     @media (min-width: $md) {
         font-size: var(--text-2xl);
@@ -53,9 +60,10 @@ h3 {
 
 h4 {
     font-size: var(--text-lg);
-    font-weight: 400;
+    font-weight: 500;
     line-height: $font__headings-line-height;
-    margin-block-end: var(--space-6);
+    margin-block-start: var(--space-8);
+    margin-block-end: var(--space-4);
 
     @media (min-width: $md) {
         font-size: var(--text-xl);
