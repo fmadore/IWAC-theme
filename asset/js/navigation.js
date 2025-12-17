@@ -151,19 +151,28 @@ document.addEventListener("DOMContentLoaded", function() {
 	} );
 
 	mmDrawer.querySelectorAll( '.menu-item-has-children' ).forEach( item => {
-		// Add click events.
-		item.addEventListener( 'click', function( event ) {
-			// stop propagation of child elements
-			item.querySelectorAll( 'li:not(.menu-item-has-children)' ).forEach( child => {
-				child.addEventListener( 'click', function ( event ) {
-					event.stopPropagation();
-				});
-			});
+		const link = item.querySelector('a');
+		
+		// Create toggle button
+		const toggleBtn = document.createElement('button');
+		toggleBtn.className = 'mobile-dropdown-toggle';
+		toggleBtn.setAttribute('aria-label', 'Toggle submenu');
+		toggleBtn.setAttribute('aria-expanded', 'false');
+		
+		// Insert after link
+		link.after(toggleBtn);
+
+		// Add click event to the button
+		toggleBtn.addEventListener( 'click', function( event ) {
+			event.stopPropagation();
+			event.preventDefault();
 
 			if (item.classList.contains('expanded')) {
 				item.classList.remove('expanded');
+				toggleBtn.setAttribute('aria-expanded', 'false');
 			} else {
 				item.classList.add('expanded');
+				toggleBtn.setAttribute('aria-expanded', 'true');
 			}
 
 			if (typeof cleanupTrap === 'function') {
@@ -171,9 +180,6 @@ document.addEventListener("DOMContentLoaded", function() {
 				cleanupTrap = null;
 			}
 			cleanupTrap = trapFocus(mmHeader);
-
-			event.stopPropagation();
-			event.preventDefault();
 		});
 	});
 

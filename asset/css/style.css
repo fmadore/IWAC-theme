@@ -2451,7 +2451,7 @@ body.main-header--center {
   padding-bottom: var(--space-sm);
 }
 .menu-drawer .menu-container li {
-  position: static;
+  position: relative;
   padding: 0;
   margin-bottom: 0;
 }
@@ -2539,8 +2539,20 @@ body.main-header--center {
 }
 .menu-drawer .menu-item-has-children > a {
   position: relative;
+  padding-inline-end: var(--space-xl);
 }
-.menu-drawer .menu-item-has-children > a::after {
+.menu-drawer .menu-item-has-children .mobile-dropdown-toggle {
+  position: absolute;
+  top: var(--space-xs);
+  inset-inline-end: var(--space-md);
+  width: var(--space-xl);
+  height: 3rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+.menu-drawer .menu-item-has-children .mobile-dropdown-toggle::after {
   content: "";
   background-image: url(../img/chevron-right-thin.svg);
   background-position: 50%;
@@ -2549,14 +2561,17 @@ body.main-header--center {
   height: var(--space-5);
   width: var(--space-5);
   position: absolute;
-  inset-inline-end: var(--space-md);
   top: 50%;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
   transition: transform var(--transition-fast);
   opacity: 0.6;
 }
-.menu-drawer .menu-item-has-children.expanded > a::after {
-  transform: translateY(-50%) rotate(90deg);
+.menu-drawer .menu-item-has-children .mobile-dropdown-toggle:hover::after {
+  opacity: 1;
+}
+.menu-drawer .menu-item-has-children.expanded > .mobile-dropdown-toggle::after {
+  transform: translate(-50%, -50%) rotate(90deg);
 }
 .menu-drawer .menu-item-has-children li:not(.menu-header) {
   padding-inline-start: var(--space-lg);
