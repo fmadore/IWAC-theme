@@ -793,7 +793,7 @@ h2 {
   font-size: var(--text-2xl);
   font-weight: 600;
   line-height: 1.25;
-  margin-block-start: var(--space-12);
+  margin-block-start: var(--space-8);
   margin-block-end: var(--space-6);
 }
 @media (min-width: 768px) {
@@ -856,7 +856,6 @@ p {
   line-height: 1.75;
   margin-block-end: var(--space-6);
   margin-block-start: 0;
-  max-width: 75ch;
 }
 
 dfn,
@@ -1078,6 +1077,19 @@ embed,
 iframe,
 object {
   max-width: 100%;
+}
+
+iframe {
+  background: var(--surface-raised);
+  border: var(--panel-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: block;
+  margin-block-end: var(--space-6);
+  transition: box-shadow var(--transition-base);
+}
+iframe:hover {
+  box-shadow: var(--shadow-md);
 }
 
 img {
@@ -3768,6 +3780,10 @@ body.menu-drawer-toggled {
   box-shadow: var(--shadow-xl), var(--glow-sm);
 }
 
+.block-blockGroup .block-html > :first-child,
+.block-html > :first-child {
+  margin-block-start: 0;
+}
 .block-blockGroup .block-html > p:first-of-type,
 .block-html > p:first-of-type {
   font-size: var(--text-base);

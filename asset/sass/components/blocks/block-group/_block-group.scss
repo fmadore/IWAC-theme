@@ -179,6 +179,11 @@
 // Content blocks - enhanced readability for both standalone and grouped
 .block-blockGroup .block-html,
 .block-html {
+    // Ensure first element has no top margin to avoid double spacing with padding
+    > :first-child {
+        margin-block-start: 0;
+    }
+
     // Lead paragraph styling (first paragraph gets subtle emphasis)
     // Use base size to avoid inconsistent scaling on desktop
     > p:first-of-type {

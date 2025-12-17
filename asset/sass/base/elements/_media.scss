@@ -7,6 +7,20 @@ object {
     max-width: 100%;
 }
 
+iframe {
+    background: var(--surface-raised);
+    border: var(--panel-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    display: block;
+    margin-block-end: var(--space-6);
+    transition: box-shadow var(--transition-base);
+
+    &:hover {
+        box-shadow: var(--shadow-md);
+    }
+}
+
 img {
     height: auto; // Make sure images are scaled correctly.
     max-width: 100%; // Adhere to container width.
