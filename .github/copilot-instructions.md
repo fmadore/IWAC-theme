@@ -181,7 +181,7 @@ background: hsl(var(--primary-hue) 70% 50% / 0.15);
 - Use the Internationalisation module's `languageSwitcher()` view helper
 - Add to header area in `view/layout/layout.phtml` or `view/common/header.phtml`
 - Style the language switcher in `asset/sass/components/header/`
-- Create custom partial at `view/common/helper/language-switcher.phtml` if needed
+- Create custom partial at `view/common/language-switcher.phtml` if needed
 
 **Integration Code:**
 ```php

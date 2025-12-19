@@ -15,8 +15,8 @@
  * @var string $displayLocale "code" (default) or "flag"
  */
 
-// No switcher if there is only one site or a single language
-if (empty($locales) || count($locales) <= 1) {
+// No switcher if there are no locales available
+if (!$locales) {
     return;
 }
 
@@ -24,8 +24,8 @@ $escape = $this->plugin('escapeHtml');
 $escapeAttr = $this->plugin('escapeHtmlAttr');
 $translate = $this->plugin('translate');
 
-// Get current locale from site settings
-$currentLocale = $this->siteSetting('locale') ?: ($defaultLocale ?? 'en');
+// Get current locale from site settings (matching reference theme pattern)
+$currentLocale = $this->siteSetting('locale') ?: 'en_US';
 $currentLocaleShort = rtrim(substr($currentLocale, 0, 3), '_-');
 ?>
 
@@ -44,7 +44,8 @@ $currentLocaleShort = rtrim(substr($currentLocale, 0, 3), '_-');
             $siteLocale = $localeData['locale'] ?? '';
             $siteLocaleShort = rtrim(substr($siteLocale, 0, 3), '_-');
             $isCurrentLang = ($siteLocale === $currentLocale);
-            $langName = $localeData['locale_label'] ?? $siteLocaleShort;
+            // Extract just the language name without locale code in parentheses (e.g., "English" from "English (en-US)")
+            $langName = ucwords(explode(' (', $localeData['locale_label'] ?? $siteLocaleShort)[0]);
             $siteUrl = $localeData['url'] ?? '#';
         ?>
             <li class="language-switcher__item <?php echo $isCurrentLang ? 'language-switcher__item--active' : ''; ?>" 
