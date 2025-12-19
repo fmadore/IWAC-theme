@@ -89,26 +89,54 @@ input[type="submit"] {
 
 button.add-value,
 button.remove-value {
+    // Reset generic button styles
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    // Size and shape
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0;
+    margin: 0;
+    
+    // Appearance
     background-color: var(--surface);
     border: 1px solid var(--border);
     border-radius: 50%;
-    cursor: pointer;
+    box-shadow: none;
+    
+    // Text/icon
     color: var(--primary);
-    width: 35px;
-    height: 35px;
-    padding: 5px 9px;
-    text-transform: uppercase;
+    font-size: var(--text-sm);
+    text-indent: -9999px; // Hide text, show only icon
+    
+    // Behavior
+    cursor: pointer;
+    flex-shrink: 0;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    flex-shrink: 0;
-    box-shadow: none;
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast);
+
+    // Show the icon via ::before
+    &::before {
+        text-indent: 0;
+        font-size: 0.875rem;
+    }
 
     &:hover,
     &:focus {
-        background-color: var(--primary) !important;
-        color: var(--surface);
+        background-color: var(--primary);
+        border-color: var(--primary);
+        color: var(--primary-contrast);
         transform: none;
+        box-shadow: var(--glow-sm);
     }
 }
 

@@ -107,7 +107,9 @@
             }
     
             button.remove-value {
-                margin: var(--space-sm) 0 0;
+                align-self: center;
+                margin: 0;
+                margin-inline-start: var(--space-2);
             }
     
             &#item-sets {
@@ -174,30 +176,68 @@
             margin-top: 0 !important;
         }
 
-        .numeric-toggle-time {
-            align-self: center;
+        // Time toggle button - needs high specificity to override generic button styles
+        .numeric-toggle-time,
+        label.numeric-toggle-time.button {
+            // Reset button styles
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            
+            // Size and shape
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            min-height: 36px;
+            padding: 0;
+            margin: 0;
+            margin-inline-start: var(--space-2);
+            
+            // Appearance
             background-color: var(--bg-surface);
-            border-radius: 50%;
             border: 1px solid var(--border-color);
+            border-radius: 50%;
+            box-shadow: none;
+            
+            // Text/icon
             color: var(--text-secondary);
+            font-size: var(--text-base);
+            line-height: 1;
+            
+            // Behavior
             cursor: pointer;
-            height: var(--space-9, 36px);
-            margin: var(--space-2) 0 0 var(--space-1);
-            padding: var(--space-1) var(--space-2);
-            width: var(--space-9, 36px);
             transition:
                 background-color var(--transition-fast),
                 color var(--transition-fast),
                 border-color var(--transition-fast);
 
+            // Override the ::before from the module (Font Awesome icon)
+            &::before {
+                margin: 0 !important;
+                font-size: 1rem;
+            }
+
             &:hover {
                 background-color: var(--primary);
                 border-color: var(--primary);
                 color: var(--primary-contrast);
+                box-shadow: var(--glow-sm);
             }
 
             input[type="checkbox"] {
                 display: none;
+            }
+        }
+
+        // Remove button within numeric date/time inputs
+        .numeric-timestamp,
+        .numeric-duration,
+        .numeric-interval {
+            button.remove-value {
+                align-self: center;
+                margin: 0;
+                margin-inline-start: var(--space-2);
             }
         }
     }

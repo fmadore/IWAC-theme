@@ -1477,27 +1477,42 @@ input[type=submit].icon-btn.disabled {
 
 button.add-value,
 button.remove-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0;
+  margin: 0;
   background-color: var(--surface);
   border: 1px solid var(--border);
   border-radius: 50%;
-  cursor: pointer;
+  box-shadow: none;
   color: var(--primary);
-  width: 35px;
-  height: 35px;
-  padding: 5px 9px;
-  text-transform: uppercase;
+  font-size: var(--text-sm);
+  text-indent: -9999px;
+  cursor: pointer;
+  flex-shrink: 0;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  flex-shrink: 0;
-  box-shadow: none;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+button.add-value::before,
+button.remove-value::before {
+  text-indent: 0;
+  font-size: 0.875rem;
 }
 button.add-value:hover, button.add-value:focus,
 button.remove-value:hover,
 button.remove-value:focus {
-  background-color: var(--primary) !important;
-  color: var(--surface);
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-contrast);
   transform: none;
+  box-shadow: var(--glow-sm);
 }
 
 .button {
@@ -2854,7 +2869,9 @@ body.menu-drawer-toggled {
   flex-basis: 100%;
 }
 #advanced-search .field.multi-value button.remove-value {
-  margin: var(--space-sm) 0 0;
+  align-self: center;
+  margin: 0;
+  margin-inline-start: var(--space-2);
 }
 @media (min-width: 768px) {
   #advanced-search .field.multi-value#item-sets .value .sub-label:first-child {
@@ -2906,26 +2923,51 @@ body.menu-drawer-toggled {
 #advanced-search .field .numeric-datetime-inputs div {
   margin-top: 0 !important;
 }
-#advanced-search .field .numeric-toggle-time {
-  align-self: center;
+#advanced-search .field .numeric-toggle-time,
+#advanced-search .field label.numeric-toggle-time.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0;
+  margin: 0;
+  margin-inline-start: var(--space-2);
   background-color: var(--bg-surface);
-  border-radius: 50%;
   border: 1px solid var(--border-color);
+  border-radius: 50%;
+  box-shadow: none;
   color: var(--text-secondary);
+  font-size: var(--text-base);
+  line-height: 1;
   cursor: pointer;
-  height: var(--space-9, 36px);
-  margin: var(--space-2) 0 0 var(--space-1);
-  padding: var(--space-1) var(--space-2);
-  width: var(--space-9, 36px);
   transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
-#advanced-search .field .numeric-toggle-time:hover {
+#advanced-search .field .numeric-toggle-time::before,
+#advanced-search .field label.numeric-toggle-time.button::before {
+  margin: 0 !important;
+  font-size: 1rem;
+}
+#advanced-search .field .numeric-toggle-time:hover,
+#advanced-search .field label.numeric-toggle-time.button:hover {
   background-color: var(--primary);
   border-color: var(--primary);
   color: var(--primary-contrast);
+  box-shadow: var(--glow-sm);
 }
-#advanced-search .field .numeric-toggle-time input[type=checkbox] {
+#advanced-search .field .numeric-toggle-time input[type=checkbox],
+#advanced-search .field label.numeric-toggle-time.button input[type=checkbox] {
   display: none;
+}
+#advanced-search .field .numeric-timestamp button.remove-value,
+#advanced-search .field .numeric-duration button.remove-value,
+#advanced-search .field .numeric-interval button.remove-value {
+  align-self: center;
+  margin: 0;
+  margin-inline-start: var(--space-2);
 }
 @media (min-width: 768px) {
   #advanced-search .half {
