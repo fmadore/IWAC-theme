@@ -2920,8 +2920,44 @@ body.menu-drawer-toggled {
     flex: 1 1 330px !important;
   }
 }
+#advanced-search .field .numeric-datetime-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
 #advanced-search .field .numeric-datetime-inputs div {
   margin-top: 0 !important;
+}
+#advanced-search .field .numeric-datetime-inputs .numeric-date-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2);
+  flex: 1 1 100%;
+}
+#advanced-search .field .numeric-datetime-inputs .numeric-time-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2);
+  flex: 1 1 100%;
+  margin-top: var(--space-2);
+  margin-left: 0;
+  padding-left: 0;
+}
+#advanced-search .field .numeric-datetime-inputs .sub-label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1 1 auto;
+  min-width: 80px;
+  max-width: 140px;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+#advanced-search .field .numeric-datetime-inputs .sub-label select,
+#advanced-search .field .numeric-datetime-inputs .sub-label input {
+  width: 100%;
 }
 #advanced-search .field .numeric-toggle-time,
 #advanced-search .field label.numeric-toggle-time.button {

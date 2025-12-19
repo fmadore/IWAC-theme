@@ -172,8 +172,55 @@
             }
         }
 
-        .numeric-datetime-inputs div {
-            margin-top: 0 !important;
+        // Numeric datetime inputs layout
+        .numeric-datetime-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+
+            div {
+                margin-top: 0 !important;
+            }
+
+            // Date inputs row (Year, Month, Day, toggle button)
+            .numeric-date-inputs {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: flex-end;
+                gap: var(--space-2);
+                flex: 1 1 100%;
+            }
+
+            // Time inputs row (Hour, Minute, Second, Offset)
+            .numeric-time-inputs {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: flex-end;
+                gap: var(--space-2);
+                flex: 1 1 100%;
+                margin-top: var(--space-2);
+
+                // Remove left margin/padding - align to start
+                margin-left: 0;
+                padding-left: 0;
+            }
+
+            // Labels within date/time inputs
+            .sub-label {
+                display: flex;
+                flex-direction: column;
+                gap: var(--space-1);
+                flex: 1 1 auto;
+                min-width: 80px;
+                max-width: 140px;
+                font-size: var(--text-sm);
+                color: var(--text-secondary);
+
+                select,
+                input {
+                    width: 100%;
+                }
+            }
         }
 
         // Time toggle button - needs high specificity to override generic button styles
