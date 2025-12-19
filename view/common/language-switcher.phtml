@@ -15,8 +15,11 @@
  * @var string $displayLocale "code" (default) or "flag"
  */
 
+// Debug: uncomment the next line to see what data is being passed
+// echo '<!-- DEBUG locales: ' . print_r($locales, true) . ' -->';
+
 // No switcher if there are no locales available
-if (!$locales) {
+if (empty($locales)) {
     return;
 }
 

@@ -14,9 +14,10 @@ $navDepth = (int) $this->themeSetting('nav_depth') ? (int) $this->themeSetting('
 		</div>
 		<div class="main-header__utilities">
 			<?php // Language Switcher - requires Internationalisation module ?>
-			<?php // Template automatically uses themed view/common/language-switcher.phtml ?>
 			<?php if ($this->getHelperPluginManager()->has('languageSwitcher')): ?>
 				<?php echo $this->languageSwitcher(); ?>
+			<?php else: ?>
+				<!-- DEBUG: languageSwitcher helper not available - Internationalisation module may not be installed/active -->
 			<?php endif; ?>
 			<button class="theme-toggle" 
 					data-theme-toggle 
