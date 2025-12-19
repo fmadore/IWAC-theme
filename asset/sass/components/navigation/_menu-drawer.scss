@@ -28,12 +28,12 @@
         backdrop-filter: blur(12px) saturate(1.2);
     }
 
-    @media screen and (min-width: $xl) {
+    @media screen and (min-width: $xxl) {
         transform: translateX( -100% ) !important;
     }
 
-    // Show menu drawer between lg and xl breakpoints when toggled
-    @media (min-width: $lg) and (max-width: #{$xl - 0.02px}) {
+    // Show menu drawer between lg and xxl breakpoints when toggled
+    @media (min-width: $lg) and (max-width: #{$xxl - 0.02px}) {
         body.menu-drawer-toggled &,
         &.toggled {
             transform: translateX(0) !important;

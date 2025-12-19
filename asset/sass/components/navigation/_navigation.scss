@@ -10,7 +10,7 @@
     &__container {
         display: none;
 
-        @media screen and (min-width: $xl) {
+        @media screen and (min-width: $xxl) {
             display: block;
         }
     }
@@ -25,7 +25,7 @@
         transition: transform 0.5s ease-in-out;
         cursor: pointer;
 
-        // Show toggle between lg and xl breakpoints
+        // Show toggle between lg and xxl breakpoints
         @media (min-width: $lg) {
             display: inline-flex;
             align-items: center;
@@ -34,7 +34,7 @@
             margin-inline-start: var(--space-lg);
         }
 
-        @media (min-width: $xl) {
+        @media (min-width: $xxl) {
             display: none;
         }
 
