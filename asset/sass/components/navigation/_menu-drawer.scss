@@ -8,7 +8,9 @@
 .menu-drawer {
     display: block !important;
     position: fixed;
+    // Use dvh (dynamic viewport height) for mobile browsers where vh includes address bar
     height: calc( 100vh - var(--menu-drawer-top, #{$header-min-height}) );
+    height: calc( 100dvh - var(--menu-drawer-top, #{$header-min-height}) );
     width: 100%;
     transform: translateX( -100% );
     z-index: var(--z-modal);
@@ -18,6 +20,9 @@
     border-inline-end: 1px solid var(--border);
     box-shadow: var(--shadow-xl);
     overflow-x: hidden;
+    overflow-y: auto; // Enable vertical scrolling within drawer
+    -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
+    overscroll-behavior: contain; // Prevent scroll chaining to parent
     transition: transform var(--transition-slow), visibility var(--transition-slow);
     visibility: hidden;
 
@@ -215,14 +220,20 @@
     }
 
     .menu-item-has-children {
+        // Create a wrapper context for the link + button
         > a {
             position: relative;
             padding-inline-end: var(--space-2xl); // Make room for the button
         }
 
+        // Position the toggle button at a fixed distance from top of li
+        // This keeps it aligned with the first link even when submenu expands
         .mobile-dropdown-toggle {
             position: absolute;
-            top: 50%;
+            // Fixed position from top: link margin (--space-xs) + link padding (--space-md) + half line height
+            // Link total height ≈ padding-top + line-height + padding-bottom = 1rem + 1.6em + 1rem ≈ 52px
+            // Center point ≈ 26px from top of link, plus the margin = var(--space-xs) ≈ 4px = ~30px
+            top: calc(var(--space-xs) + var(--space-md) + 0.8em);
             transform: translateY(-50%);
             inset-inline-end: var(--space-md);
             width: 2.25rem;

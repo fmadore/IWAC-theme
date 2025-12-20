@@ -18,12 +18,58 @@
             border-color var(--transition-fast),
             transform var(--transition-fast),
             box-shadow var(--transition-fast);
+
+        // Inline styles set pastel colors (87.5% lightness) which need dark text
+        // Force dark text when inline background-color is set via style attribute
+        &[style*="background-color"] {
+            color: hsl(220, 28%, 20%); // Dark text for readability on pastel backgrounds
+            border-color: transparent;
+        }
     
         &:hover {
             background-color: var(--surface);
             border-color: var(--primary);
             transform: translateY(var(--lift-xxs));
             box-shadow: var(--shadow-sm);
+        }
+    }
+}
+
+// Dark mode adjustments for resource tags with inline pastel colors
+body[data-theme="dark"],
+:root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+        .resource-tag[style*="background-color"] {
+            // Darken the pastel backgrounds for dark mode
+            // Use a semi-transparent overlay effect
+            position: relative;
+            color: hsl(220, 28%, 15%); // Even darker text for contrast
+            
+            &::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.15); // Darken the pastel slightly
+                border-radius: inherit;
+                pointer-events: none;
+            }
+        }
+    }
+}
+
+// Explicit dark theme override (not relying on media query)
+body[data-theme="dark"] {
+    .resource-tag[style*="background-color"] {
+        position: relative;
+        color: hsl(220, 28%, 15%);
+        
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: inherit;
+            pointer-events: none;
         }
     }
 }
