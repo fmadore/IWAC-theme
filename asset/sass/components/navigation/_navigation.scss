@@ -6,7 +6,7 @@
 // ==========================================================================
 
 .main-navigation {
-    
+
     &__container {
         display: none;
 
@@ -55,29 +55,29 @@
             top: 0px;
             transform-origin: left center;
         }
-        
+
         span:nth-child(2) {
             top: 11px;
             transform-origin: left center;
         }
-        
+
         span:nth-child(3) {
             top: 22px;
             transform-origin: left center;
         }
-    
+
         &.open {
             span:nth-child(1) {
                 transform: rotate(45deg);
                 top: -1px;
                 inset-inline-start: 5px;
             }
-            
+
             span:nth-child(2) {
                 width: 0%;
                 opacity: 0;
             }
-            
+
             span:nth-child(3) {
                 transform: rotate(-45deg);
                 top: 24px;
@@ -86,7 +86,8 @@
         }
     }
 
-    .navigation { //main ul
+    .navigation {
+        //main ul
         list-style: none;
         display: flex;
         gap: var(--space-xs);
@@ -105,26 +106,29 @@
                 content: none !important;
             }
         }
-    
-        > li { //main menu items
+
+        >li {
+            //main menu items
             display: flex;
             cursor: pointer;
             margin-bottom: 0;
-    
-            &:hover > a,
-            &.focus > a {
+
+            &:hover>a,
+            &.focus>a {
                 background: var(--selection-bg);
                 color: var(--primary);
                 transform: translateY(var(--lift-xxs));
             }
 
             &.active {
-                > a { //main menu items links (active)
+                >a {
+                    //main menu items links (active)
                     font-weight: 600;
                     color: var(--primary);
                     position: relative;
 
-                    &::after { //active link underline
+                    &::after {
+                        //active link underline
                         content: "";
                         position: absolute;
                         height: 3px;
@@ -170,7 +174,7 @@
                 }
 
                 &.open {
-                    > ul {
+                    >ul {
                         display: flex;
                         height: auto;
                         padding: var(--space-xl);
@@ -178,7 +182,8 @@
                 }
             }
 
-            > a { //main menu items links
+            >a {
+                //main menu items links
                 color: var(--ink-light);
                 display: block;
                 text-decoration: none;
@@ -198,7 +203,8 @@
                 }
             }
 
-            > ul { //mega menu hidden
+            >ul {
+                //mega menu hidden
                 display: none;
                 gap: var(--space-xl);
                 transition: opacity var(--transition-slow);
@@ -217,14 +223,14 @@
                 width: 100vw;
                 inset-inline-start: 0;
                 top: 100%;
-                
+
                 // Bridge the gap between menu item and submenu to prevent mouseout
                 &::before {
                     content: "";
                     position: absolute;
                     top: -1.5rem; // Bridge the gap above the submenu
-                    left: 0;
-                    right: 0;
+                    inset-inline-start: 0;
+                    inset-inline-end: 0;
                     height: 1.5rem;
                     background: transparent;
                 }
@@ -236,20 +242,24 @@
                     backdrop-filter: blur(12px) saturate(1.2);
                 }
 
-                > li { //mega menu columns
+                >li {
+                    //mega menu columns
                     max-width: 260px;
 
-                    > a { //Links 1st level mega menu
+                    >a {
+                        //Links 1st level mega menu
                         font-weight: 600;
                     }
 
-                    > ul { //2do level columns
+                    >ul {
+                        //2do level columns
                         margin-block-start: var(--space-sm);
                         margin-inline-start: 0;
                         padding-inline-start: 0;
                         list-style: none;
 
-                        li { //2do level links
+                        li {
+                            //2do level links
                             margin-bottom: var(--space-xs);
 
                             ul {
@@ -260,7 +270,8 @@
                     }
                 }
 
-                a { //all mega menu links
+                a {
+                    //all mega menu links
                     color: var(--ink);
                     text-transform: none;
                     text-decoration: none;
@@ -273,7 +284,7 @@
                         color: var(--primary);
                         text-decoration: none;
                     }
-                    
+
                 }
 
             }

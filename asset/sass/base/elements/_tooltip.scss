@@ -29,8 +29,8 @@
     box-shadow: var(--shadow-lg);
     color: var(--ink);
     font-size: var(--text-sm);
-    left: 50%;
-    margin-left: -106px;
+    inset-inline-start: 50%;
+    margin-inline-start: -106px;
     opacity: 0;
     padding: var(--space-3);
     position: absolute;
@@ -50,8 +50,8 @@
     border-color: var(--surface) transparent transparent transparent;
     border-style: solid;
     border-width: 5px;
-    left: 50%;
-    margin-left: -5px;
+    inset-inline-start: 50%;
+    margin-inline-start: -5px;
     position: absolute;
     top: 100%;
 }

@@ -14,14 +14,14 @@ input[type="submit"] {
     padding: var(--space-sm) var(--space-lg);
     font-size: var(--text-sm);
     font-weight: 500;
-    color: white;
+    color: var(--primary-contrast);
     background: var(--primary);
     border: none;
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: 
-        background-color var(--transition-fast), 
-        transform var(--transition-fast), 
+    transition:
+        background-color var(--transition-fast),
+        transform var(--transition-fast),
         box-shadow var(--transition-fast);
     box-shadow: var(--glow-sm);
 
@@ -93,7 +93,7 @@ button.remove-value {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    
+
     // Size and shape
     width: 36px;
     height: 36px;
@@ -101,18 +101,18 @@ button.remove-value {
     min-height: 36px;
     padding: 0;
     margin: 0;
-    
+
     // Appearance
     background-color: var(--surface);
     border: 1px solid var(--border);
     border-radius: 50%;
     box-shadow: none;
-    
+
     // Text/icon
     color: var(--primary);
     font-size: var(--text-sm);
     text-indent: -9999px; // Hide text, show only icon
-    
+
     // Behavior
     cursor: pointer;
     flex-shrink: 0;
@@ -165,4 +165,3 @@ button.remove-value {
         box-shadow: none;
     }
 }
-

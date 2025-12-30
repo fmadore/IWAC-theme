@@ -17,7 +17,7 @@
     }
 
     button[type="submit"] {
-        float: right;
+        float: inline-end;
     }
 
     .advanced-search-content {
@@ -32,7 +32,7 @@
             z-index: 1;
         }
 
-        > div {
+        >div {
             flex-basis: 100%;
         }
     }
@@ -66,52 +66,53 @@
             .field-meta {
                 margin-bottom: var(--space-4);
             }
-    
+
             .value {
                 align-items: center;
                 flex-wrap: wrap;
                 gap: var(--space-4);
-    
+
                 &:first-child .logical-operator:first-child {
                     display: none;
                 }
-    
+
                 &:only-child {
+
                     .sub-field:last-of-type,
                     .sub-label:last-of-type {
-                        margin-right: 0;
+                        margin-inline-end: 0;
                     }
                 }
             }
-    
+
             .sub-field,
             .sub-label {
                 flex: 1 0 100%;
-    
+
                 @media (min-width: $md) {
                     flex: 1 1 100px;
-                    margin-right: 0;
+                    margin-inline-end: 0;
                     max-width: 100%;
                     min-width: 100px;
                 }
-    
+
                 &:last-of-type {
                     flex: 1 1 100px;
                     max-width: 100%;
                     min-width: 100px;
                 }
-    
+
                 &.logical-operator {
                     flex-basis: 100%;
                 }
             }
-    
+
             button.remove-value {
                 align-self: center;
                 margin: 0;
                 margin-inline-start: var(--space-2);
             }
-    
+
             &#item-sets {
                 .value .sub-label:first-child {
                     @media (min-width: $md) {
@@ -127,19 +128,19 @@
                 align-items: flex-start;
                 flex-wrap: wrap;
 
-                > * {
+                >* {
                     flex: 1 0 100%;
-        
+
                     @media (min-width: $md) {
                         flex: 1 1 100px;
-                        margin-right: var(--space-4);
+                        margin-inline-end: var(--space-4);
                         max-width: 100%;
                         min-width: 100px;
                     }
 
                     &:last-child {
                         @media (min-width: $md) {
-                            margin-right: 0;
+                            margin-inline-end: 0;
                         }
                     }
                 }
@@ -153,10 +154,10 @@
                         flex: 1 1 350px !important;
                     }
 
-                    > .numeric-datetime-inputs {
+                    >.numeric-datetime-inputs {
                         flex-wrap: wrap;
 
-                        > div {
+                        >div {
                             @media (min-width: $md) {
                                 flex-wrap: nowrap;
                             }
@@ -201,8 +202,8 @@
                 margin-top: var(--space-2);
 
                 // Remove left margin/padding - align to start
-                margin-left: 0;
-                padding-left: 0;
+                margin-inline-start: 0;
+                padding-inline-start: 0;
             }
 
             // Labels within date/time inputs
@@ -231,7 +232,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            
+
             // Size and shape
             width: 36px;
             height: 36px;
@@ -240,18 +241,18 @@
             padding: 0;
             margin: 0;
             margin-inline-start: var(--space-2);
-            
+
             // Appearance
             background-color: var(--bg-surface);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             border-radius: 50%;
             box-shadow: none;
-            
+
             // Text/icon
             color: var(--text-secondary);
             font-size: var(--text-base);
             line-height: 1;
-            
+
             // Behavior
             cursor: pointer;
             transition:
@@ -301,12 +302,12 @@
             gap: initial;
             position: relative;
 
-            > * {
-                margin-right: var(--space-4);
+            >* {
+                margin-inline-end: var(--space-4);
             }
 
-            > *:last-child {
-                margin-right: 0;
+            >*:last-child {
+                margin-inline-end: 0;
             }
 
             .joiner {
@@ -334,7 +335,7 @@
     #page-actions {
         display: flex;
         background-color: var(--bg-elevated);
-        border-block-start: 1px solid var(--border-color);
+        border-block-start: 1px solid var(--border);
         bottom: 0;
         gap: var(--space-5);
         justify-content: center;
@@ -366,7 +367,7 @@
             width: auto;
         }
 
-        > * {
+        >* {
             margin-block-end: 0 !important;
             padding: var(--space-3);
             text-align: center;
@@ -383,7 +384,7 @@
 
     .filter {
         background-color: var(--bg-muted);
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--border);
         border-radius: var(--radius-full);
         color: var(--text-primary);
         font-size: var(--text-sm);
@@ -406,6 +407,7 @@
         }
     }
 }
+
 // =============================================================================
 // CHOSEN.JS CUSTOM STYLING
 // Overrides for the Chosen select replacement library
@@ -438,7 +440,7 @@
         line-height: 1.4;
         text-decoration: none;
         cursor: pointer;
-        transition: 
+        transition:
             border-color var(--transition-fast),
             box-shadow var(--transition-fast);
 
@@ -509,7 +511,7 @@
         clip: rect(0, 0, 0, 0);
         clip-path: inset(100% 0 0 0);
         opacity: 0;
-        transition: 
+        transition:
             opacity var(--transition-fast),
             clip-path var(--transition-fast);
     }
@@ -538,7 +540,7 @@
             color: var(--text-primary);
             font-size: var(--text-sm);
             outline: none;
-            transition: 
+            transition:
                 border-color var(--transition-fast),
                 box-shadow var(--transition-fast);
 
@@ -632,7 +634,7 @@
             font-size: var(--text-sm);
             cursor: pointer;
             background: transparent;
-            transition: 
+            transition:
                 background var(--transition-fast),
                 color var(--transition-fast);
 
@@ -681,7 +683,7 @@
             list-style: none !important;
             margin: 0 !important;
             cursor: text;
-            transition: 
+            transition:
                 border-color var(--transition-fast),
                 box-shadow var(--transition-fast);
 
