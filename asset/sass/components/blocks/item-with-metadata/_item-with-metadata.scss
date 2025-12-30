@@ -1,9 +1,14 @@
 @use "../../../abstracts/abstracts" as *;
 
+// ==========================================================================
+// Item With Metadata Block
+// Detailed item display with header accent bar and responsive thumbnail
+// ==========================================================================
+
 .item-with-metadata {
     overflow: initial !important;
     margin-block-end: var(--space-12) !important;
-    
+
     &__container {
         background: var(--panel-bg);
         border: var(--panel-border);

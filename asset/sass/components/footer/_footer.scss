@@ -9,11 +9,14 @@
     clear: both;
     color: var(--footer-text);
     font-size: var(--text-sm);
-    margin-top: var(--space-3xl);
+    margin-block-start: var(--space-3xl);
     position: relative;
 
     // Footer headings
-    h1, h2, h3, h4 {
+    h1,
+    h2,
+    h3,
+    h4 {
         color: var(--footer-text);
         margin-bottom: var(--space-sm);
         font-weight: 600;
@@ -77,11 +80,11 @@
             gap: var(--space-xl);
         }
 
-        > div {
+        >div {
             flex-grow: 1;
             margin-bottom: var(--space-md);
             position: relative;
-            
+
             &:first-child {
                 padding-inline-start: 0;
             }
@@ -192,7 +195,7 @@
                 }
             }
 
-            > li {
+            >li {
                 flex: 1;
                 min-width: 160px;
 
@@ -200,7 +203,8 @@
                     max-width: 20%;
                 }
 
-                > a { // First level links
+                >a {
+                    // First level links
                     font-weight: 600;
                     font-size: var(--text-base);
                     color: var(--footer-text);
@@ -217,19 +221,21 @@
                     }
                 }
 
-                &.active > a,
-                &.current > a,
-                &.current-menu-item > a {
+                &.active>a,
+                &.current>a,
+                &.current-menu-item>a {
                     color: var(--primary);
                 }
 
-                > ul { // Second level columns
+                >ul {
+                    // Second level columns
                     margin-inline-start: 0;
                     margin-top: var(--space-sm);
                     list-style: none;
                     padding-inline-start: 0;
 
-                    li { // Second level links
+                    li {
+                        // Second level links
                         margin-bottom: var(--space-xs);
 
                         a {
@@ -268,11 +274,11 @@
             a {
                 color: var(--footer-text);
                 text-transform: none;
-            
+
                 &:visited {
                     color: var(--footer-text);
                 }
-            
+
                 &:hover,
                 &:focus,
                 &:active {
@@ -287,17 +293,15 @@
                     display: block;
                 }
             }
-            
+
         }
     }
 
     &__bottom {
         background-color: var(--footer-surface);
-        background: linear-gradient(
-            180deg,
-            color-mix(in srgb, var(--footer-surface) 92%, black 8%) 0%,
-            color-mix(in srgb, var(--footer-surface-alt) 88%, black 12%) 100%
-        );
+        background: linear-gradient(180deg,
+                color-mix(in srgb, var(--footer-surface) 92%, black 8%) 0%,
+                color-mix(in srgb, var(--footer-surface-alt) 88%, black 12%) 100%);
         border-top: 1px solid var(--footer-divider);
         box-shadow: 0 -12px 24px -18px color-mix(in srgb, black 42%, transparent);
         padding: var(--space-xl) 0;
@@ -370,7 +374,8 @@
                 color: var(--footer-text);
             }
 
-            svg, i {
+            svg,
+            i {
                 color: inherit;
                 fill: currentColor;
             }

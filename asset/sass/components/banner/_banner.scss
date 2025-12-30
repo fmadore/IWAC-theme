@@ -12,6 +12,13 @@
     position: relative;
     overflow: hidden;
 
+    // Top spacing for separation from header/navigation
+    margin-block-start: var(--space-4);
+
+    @media (min-width: $md) {
+        margin-block-start: var(--space-6);
+    }
+
     // Rounded corners for modern card-like appearance
     border-radius: var(--radius-lg);
 

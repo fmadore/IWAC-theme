@@ -35,33 +35,16 @@
     }
 }
 
-// Dark mode adjustments for resource tags with inline pastel colors
-body[data-theme="dark"],
-:root:not([data-theme="light"]) {
-    @media (prefers-color-scheme: dark) {
-        .resource-tag[style*="background-color"] {
-            // Darken the pastel backgrounds for dark mode
-            // Use a semi-transparent overlay effect
-            position: relative;
-            color: hsl(220, 28%, 15%); // Even darker text for contrast
+// ==========================================================================
+// Dark Mode Adjustments
+// Darken pastel backgrounds for better contrast in dark mode
+// ==========================================================================
 
-            &::before {
-                content: "";
-                position: absolute;
-                inset: 0;
-                background: color-mix(in srgb, black 15%, transparent); // Darken the pastel slightly
-                border-radius: inherit;
-                pointer-events: none;
-            }
-        }
-    }
-}
-
-// Explicit dark theme override (not relying on media query)
-body[data-theme="dark"] {
+// Mixin for dark mode resource tag styles (used by both media query and explicit theme)
+@mixin resource-tag-dark-mode-styles {
     .resource-tag[style*="background-color"] {
         position: relative;
-        color: hsl(220, 28%, 15%);
+        color: hsl(220, 28%, 15%); // Dark text for contrast on pastels
 
         &::before {
             content: "";
@@ -72,4 +55,16 @@ body[data-theme="dark"] {
             pointer-events: none;
         }
     }
+}
+
+// System preference dark mode (when no explicit theme set)
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        @include resource-tag-dark-mode-styles;
+    }
+}
+
+// Explicit dark theme override
+body[data-theme="dark"] {
+    @include resource-tag-dark-mode-styles;
 }

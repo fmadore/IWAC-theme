@@ -6,25 +6,24 @@
 // Center block
 @mixin center-block {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
+    margin-inline: auto;
 }
 
 // Column width with margin
 @mixin column-width($numberColumns: 3) {
-    width: map-get($columns, $numberColumns) - ( ( $columns__margin * ( $numberColumns - 1 ) ) / $numberColumns );
+    width: map-get($columns, $numberColumns) - (($columns__margin * ($numberColumns - 1)) / $numberColumns );
 }
 
 // Container mixin
 @mixin container {
     width: 100%;
     max-width: 1440px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 15px;
-    
+    margin-inline: auto;
+    padding-block: 0;
+    padding-inline: 15px;
+
     @media (min-width: $md) {
-        padding: 0 30px;
+        padding-inline: 30px;
     }
 }
 
@@ -51,7 +50,7 @@
     font-weight: 500;
     text-decoration: none;
     text-transform: uppercase;
-    transition: 
+    transition:
         background-color var(--transition-fast),
         transform var(--transition-fast),
         box-shadow var(--transition-fast);
@@ -63,26 +62,26 @@
     border: none;
     color: white;
     box-shadow: var(--glow-sm);
-    
+
     &:hover:not(.disabled) {
         background: var(--primary-hover);
         color: white;
         transform: translateY(var(--lift-xxs));
         box-shadow: var(--glow-md);
     }
-    
+
     &:active:not(.disabled) {
         background: var(--primary-active);
         transform: translateY(0);
         box-shadow: var(--glow-xs);
     }
-    
+
     &:focus-visible {
         color: white;
         outline: 2px solid var(--primary);
         outline-offset: 2px;
     }
-    
+
     &:disabled,
     &[disabled],
     &.disabled {
@@ -91,7 +90,7 @@
         cursor: not-allowed;
         opacity: 0.7;
     }
-    
+
     &:visited {
         color: white;
     }
@@ -103,25 +102,25 @@
     border: 1px solid var(--primary);
     color: var(--primary);
     box-shadow: none;
-    
+
     &:hover:not(.disabled) {
         background: var(--selection-bg);
         border-color: var(--primary-hover);
         color: var(--primary-hover);
         transform: translateY(var(--lift-xxs));
     }
-    
+
     &:active:not(.disabled) {
         background: var(--primary);
         color: white;
         transform: translateY(0);
     }
-    
+
     &:focus-visible {
         outline: 2px solid var(--primary);
         outline-offset: 2px;
     }
-    
+
     &:disabled,
     &[disabled],
     &.disabled {
@@ -130,7 +129,7 @@
         cursor: not-allowed;
         opacity: 0.7;
     }
-    
+
     &:visited {
         color: var(--primary);
     }

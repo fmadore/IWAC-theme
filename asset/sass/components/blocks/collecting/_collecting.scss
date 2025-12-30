@@ -1,3 +1,10 @@
+@use "../../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Collecting Block
+// Form styling for the Collecting module submission forms
+// ==========================================================================
+
 .collecting-block-form {
     max-width: 840px;
     margin-inline: auto;

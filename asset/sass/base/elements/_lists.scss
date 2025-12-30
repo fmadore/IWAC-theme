@@ -33,8 +33,8 @@ ol {
     }
 }
 
-li > ul,
-li > ol {
+li>ul,
+li>ol {
     margin-block-end: 0;
     margin-inline-start: var(--space-6);
 }
@@ -50,6 +50,7 @@ dt {
 }
 
 dd {
-    margin: 0 var(--space-4) var(--space-4) 0;
+    margin-block: 0 var(--space-4);
+    margin-inline: 0 var(--space-4);
     @include clearfix();
 }

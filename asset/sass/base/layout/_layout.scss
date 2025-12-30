@@ -1,8 +1,14 @@
+// ==========================================================================
+// Layout
+// Core layout structure including container, main content, and body padding
+// ==========================================================================
+
 @forward "regions";
 
 @use "../../abstracts/abstracts" as *;
 
-html, body {
+html,
+body {
     width: 100%;
 }
 

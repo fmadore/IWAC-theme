@@ -3,16 +3,16 @@
 .tooltip {
     display: inline-block;
     color: var(--muted);
-    font-size: 1.2rem;
+    font-size: var(--text-lg);
     line-height: 1;
-    margin-inline-start: 5px;
+    margin-inline-start: var(--space-1);
     position: relative;
 
     &::before {
         @include font-awesome;
         content: "\f059";
         color: var(--muted);
-        font-size: 1.2rem;
+        font-size: var(--text-lg);
         transition: color var(--transition-fast);
     }
 

@@ -1,6 +1,14 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Captions
+// Styling for figure captions and descriptive text
+// ==========================================================================
+
 .caption {
     font-style: italic;
     font-size: var(--text-sm);
     color: var(--muted);
-    line-height: 1.5;
+    line-height: var(--line-height-normal);
+    margin-block-start: var(--space-2);
 }

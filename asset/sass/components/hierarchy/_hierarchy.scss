@@ -1,9 +1,17 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Hierarchy Module
+// Resource list display for hierarchical content
+// ==========================================================================
+
 .hierarchy-module {
 	.resource-list {
 		.resource {
 			clear: both;
 			flex-wrap: wrap;
-			margin: 0 0 var(--space-4);
+			margin-block: 0 var(--space-4);
+			margin-inline: 0;
 			overflow: hidden;
 			padding: var(--space-3);
 			border-radius: var(--radius-sm);

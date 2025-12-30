@@ -1,5 +1,10 @@
 @use "../../abstracts/abstracts" as *;
 
+// ==========================================================================
+// Regions
+// Page region layout with main content and optional sidebars
+// ==========================================================================
+
 .regions-container {
     display: flex;
     flex-direction: column;
@@ -44,7 +49,7 @@
                 inset-inline-end: calc(-1 * var(--space-8));
             }
         }
-    
+
         &--right {
             &::after {
                 inset-inline-start: calc(-1 * var(--space-8));

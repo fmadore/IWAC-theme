@@ -27,7 +27,8 @@ img {
 }
 
 figure {
-    margin: var(--space-4) 0; // Extra wide images within figure tags don't overflow the content area.
+    margin-block: var(--space-4);
+    margin-inline: 0; // Extra wide images within figure tags don't overflow the content area.
 }
 
 figcaption {
@@ -40,7 +41,7 @@ figcaption {
 
 .decoration {
     img {
-        outline: 1px solid var(--bg-surface);
+        outline: 1px solid var(--surface);
         outline-offset: -10px;
 
         @media(min-width: $md) {

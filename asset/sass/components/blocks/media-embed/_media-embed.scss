@@ -1,5 +1,10 @@
 @use "../../../abstracts/abstracts" as *;
 
+// ==========================================================================
+// Media Embed Block
+// Embedded media display with thumbnail and file positioning variants
+// ==========================================================================
+
 .media-embed {
     &.media-display-thumbnail {
         margin-block-end: var(--space-12);
@@ -13,8 +18,8 @@
             border-radius: var(--radius-md);
             padding: 0;
             overflow: hidden;
-            transition: 
-                box-shadow var(--transition-fast), 
+            transition:
+                box-shadow var(--transition-fast),
                 transform var(--transition-fast);
 
             &:hover {
@@ -52,16 +57,18 @@
     &.right .item.resource {
 
         &:first-of-type {
-            padding-block-start: 0.6rem !important;
+            padding-block-start: var(--space-2) !important;
         }
     }
 
     &.left .item.resource {
-        margin: 0 var(--space-2) var(--space-4) 0 !important;
+        margin-block: 0 var(--space-4);
+        margin-inline: 0 var(--space-2);
     }
 
     &.right .item.resource {
-        margin: 0 0 var(--space-4) var(--space-2) !important;
+        margin-block: 0 var(--space-4);
+        margin-inline: var(--space-2) 0;
     }
 
     &.center {

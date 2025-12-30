@@ -1,7 +1,12 @@
 @use "../../abstracts/abstracts" as *;
 
+// ==========================================================================
+// Copy
+// Body text, blockquotes, code blocks, and inline text elements
+// ==========================================================================
+
 p {
-    line-height: 1.75;
+    line-height: var(--line-height-relaxed);
     margin-block-end: var(--space-6);
     margin-block-start: 0;
 }
@@ -21,21 +26,22 @@ blockquote {
     font-style: italic;
     padding: var(--space-5) var(--space-6) var(--space-5) var(--space-16);
     position: relative;
-    margin: var(--space-4) 0 var(--space-6);
+    margin-block: var(--space-4) var(--space-6);
+    margin-inline: 0;
     border-radius: var(--radius-md);
 
     @media (min-width: $md) {
-        margin: var(--space-4) var(--space-10) var(--space-6);
+        margin-inline: var(--space-10);
     }
 
     &::before {
         @include font-awesome;
         color: var(--blockquote-quote);
         content: "\f10d";
-        font-size: 2rem;
-        inset-inline-start: 10px;
+        font-size: var(--text-2xl);
+        inset-inline-start: var(--space-3);
         position: absolute;
-        top: 0px;
+        top: 0;
         opacity: 0.7;
     }
 
@@ -45,7 +51,8 @@ blockquote {
 }
 
 address {
-    margin: 0 0 var(--space-6);
+    margin-block: 0 var(--space-6);
+    margin-inline: 0;
 }
 
 pre {

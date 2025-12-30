@@ -1,7 +1,13 @@
 @use "../../../abstracts/abstracts" as *;
 
+// ==========================================================================
+// Browse Preview Block
+// Preview block with "browse all" button for collection previews
+// ==========================================================================
+
 .preview-block {
-    margin: var(--space-4) 0 var(--space-16) !important;
+    margin-block: var(--space-4) var(--space-16);
+    margin-inline: 0;
     overflow: visible !important;
 
     .browse-all {

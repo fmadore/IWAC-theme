@@ -8,7 +8,7 @@
 	cursor: pointer;
 	-webkit-user-select: none;
 	user-select: none;
-	
+
 	&::after {
 		font-family: "Font Awesome 5 Free";
 		font-weight: 900;
@@ -31,11 +31,13 @@
 	display: none;
 }
 
-.collapse + .collapsible {
+.collapse+.collapsible {
 	display: block;
 	border-inline-start: 3px solid var(--primary);
-	padding: 0 0 0 var(--space-4);
-	margin: var(--space-2) 0 var(--space-4);
+	padding: 0;
+	padding-inline-start: var(--space-4);
+	margin-block: var(--space-2) var(--space-4);
+	margin-inline: 0;
 	width: 100%;
 	animation: fadeIn var(--transition-base);
 }
@@ -45,6 +47,7 @@
 		opacity: 0;
 		transform: translateY(-4px);
 	}
+
 	to {
 		opacity: 1;
 		transform: translateY(0);

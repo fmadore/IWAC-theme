@@ -1,3 +1,10 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Mapping Map
+// Leaflet map popup styling for the Mapping module
+// ==========================================================================
+
 .mapping-map {
     .leaflet-popup-content {
         margin: var(--space-3);

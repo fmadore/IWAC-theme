@@ -1,3 +1,8 @@
+// ==========================================================================
+// Tables
+// Styled tables with hover states and optional variants
+// ==========================================================================
+
 table {
     margin-block: 0 var(--space-6);
     width: 100%;
@@ -31,9 +36,21 @@ table {
 
     // Bordered variant
     &.bordered {
+
         th,
         td {
             border: 1px solid var(--border);
+        }
+    }
+
+    // Zebra-striped variant for improved scanability
+    &.striped {
+        tbody tr:nth-child(even) {
+            background-color: var(--surface-raised);
+        }
+
+        tbody tr:nth-child(even):hover {
+            background-color: var(--selection-bg);
         }
     }
 }

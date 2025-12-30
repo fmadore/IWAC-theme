@@ -1,4 +1,9 @@
 @use "../../abstracts/abstracts" as *;
 
+// ==========================================================================
+// Pagination
+// Index file for pagination components
+// ==========================================================================
+
 @forward "resources-pagination";
 @forward "page-pagination";

@@ -1,3 +1,8 @@
+// ==========================================================================
+// Typography
+// Base typography settings for form elements and body text
+// ==========================================================================
+
 @forward "headings";
 @forward "copy";
 
@@ -9,8 +14,8 @@ input,
 select,
 optgroup,
 textarea {
-    color: var(--text-primary);
+    color: var(--ink);
     font-family: $font__body;
-    font-size: 1rem;
+    font-size: var(--text-base);
     line-height: $font__base-line-height;
 }

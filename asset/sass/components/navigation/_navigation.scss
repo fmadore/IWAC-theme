@@ -147,7 +147,7 @@
                 margin-inline-end: var(--space-sm);
 
                 a {
-                    margin-inline-end: 5px;
+                    margin-inline-end: var(--space-1);
                 }
 
                 button {
@@ -155,7 +155,7 @@
                     background-color: transparent;
                     border: none;
                     line-height: 1;
-                    padding: 3px;
+                    padding: var(--space-1);
                     box-shadow: none;
 
                     &::after {
@@ -192,7 +192,7 @@
                 font-weight: 500;
                 letter-spacing: 0.025em;
                 padding: var(--space-sm) var(--space-md);
-                margin: var(--space-lg) 0;
+                margin-block: var(--space-lg) 0;
                 position: relative;
                 border-radius: var(--radius-md);
                 white-space: nowrap;

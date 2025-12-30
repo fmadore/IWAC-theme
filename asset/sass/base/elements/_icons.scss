@@ -1,11 +1,24 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Icons
+// Custom icon overrides using Font Awesome
+// ==========================================================================
+
 .o-icon-list::before {
+    @include font-awesome;
     content: "\f03a";
+    color: var(--ink);
 }
 
 .o-icon-grid::before {
+    @include font-awesome;
     content: "\f009";
+    color: var(--ink);
 }
 
 .o-icon-chevron-down::before {
+    @include font-awesome;
     content: "\f078";
+    color: var(--ink);
 }
