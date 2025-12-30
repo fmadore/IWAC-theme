@@ -17,22 +17,21 @@
     box-shadow: var(--shadow-md), var(--glow-xs);
     padding: var(--space-lg);
     margin-block-end: var(--space-lg);
-    
+
     // Subtle inner glow for depth
     &::after {
         content: "";
         position: absolute;
         inset: 0;
         border-radius: var(--radius-lg);
-        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+        box-shadow: inset 0 1px 0 0 color-mix(in srgb, white 8%, transparent);
         pointer-events: none;
     }
-    
+
     // Hover effect for interactivity
-    transition: 
-        transform var(--transition-base),
-        box-shadow var(--transition-base);
-    
+    transition: transform var(--transition-base),
+    box-shadow var(--transition-base);
+
     &:hover {
         transform: translateY(var(--lift-sm));
         box-shadow: var(--shadow-xl), var(--glow-sm);
@@ -42,6 +41,7 @@
 // News-style block groups (contain asset + html blocks)
 // Target block groups that have .block-asset as a direct child
 .block-blockGroup {
+
     // When block group contains an asset and text (news item pattern)
     &:has(.block-asset) {
         background: var(--panel-bg);
@@ -50,8 +50,8 @@
         box-shadow: var(--shadow-md), var(--glow-xs);
         padding: var(--space-lg);
         margin-block-end: var(--space-lg);
-        transition: 
-            transform var(--transition-base), 
+        transition:
+            transform var(--transition-base),
             box-shadow var(--transition-base),
             border-color var(--transition-base);
 
@@ -122,8 +122,8 @@
         border-radius: var(--radius-lg);
         box-shadow: var(--panel-shadow);
         overflow: hidden;
-        transition: 
-            transform var(--transition-base), 
+        transition:
+            transform var(--transition-base),
             box-shadow var(--transition-base);
 
         &:hover {
@@ -164,12 +164,12 @@
     box-shadow: var(--shadow-md), var(--glow-xs);
     padding: var(--space-lg);
     margin-block-end: var(--space-lg);
-    
+
     // Hover effect
-    transition: 
+    transition:
         transform var(--transition-base),
         box-shadow var(--transition-base);
-    
+
     &:hover {
         transform: translateY(var(--lift-sm));
         box-shadow: var(--shadow-xl), var(--glow-sm);
@@ -179,6 +179,7 @@
 // Content blocks - enhanced readability for both standalone and grouped
 .block-blockGroup .block-html,
 .block-html {
+
     // Ensure first element has no top margin to avoid double spacing with padding
     > :first-child {
         margin-block-start: 0;
@@ -186,36 +187,37 @@
 
     // Lead paragraph styling (first paragraph gets subtle emphasis)
     // Use base size to avoid inconsistent scaling on desktop
-    > p:first-of-type {
+    >p:first-of-type {
         font-size: var(--text-base);
         line-height: 1.75;
         color: var(--ink);
-        
+
         // Slightly larger on wider screens where there's more room
         @media (min-width: $lg) {
             font-size: clamp(var(--text-base), 1rem + 0.1vw, var(--text-lg));
         }
     }
-    
+
     // Standard paragraphs - consistent sizing
     p {
         font-size: var(--text-base);
         line-height: 1.75;
-        
+
         // Links get enhanced styling in content
         a {
             font-weight: 500;
             text-decoration-thickness: 0.09em;
             text-underline-offset: 0.2em;
-            
+
             &:hover {
                 text-decoration-thickness: 0.12em;
             }
         }
     }
-    
+
     // Italic text styling (for titles, emphasis)
-    em, i {
+    em,
+    i {
         color: var(--ink);
         font-style: italic;
     }

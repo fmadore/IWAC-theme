@@ -8,47 +8,47 @@
   // Spacing Scale (Numeric)
   // Preferred scale for consistent spacing throughout
   // ========================================================================
-  --space-1: 0.25rem;    // 4px
-  --space-2: 0.5rem;     // 8px
-  --space-3: 0.75rem;    // 12px
-  --space-4: 1rem;       // 16px
-  --space-5: 1.25rem;    // 20px
-  --space-6: 1.5rem;     // 24px
-  --space-8: 2rem;       // 32px
-  --space-10: 2.5rem;    // 40px
-  --space-12: 3rem;      // 48px
-  --space-16: 4rem;      // 64px
-  --space-20: 5rem;      // 80px
-  --space-24: 6rem;      // 96px
-  --space-32: 8rem;      // 128px
-  --space-40: 10rem;     // 160px
+  --space-1: 0.25rem; // 4px
+  --space-2: 0.5rem; // 8px
+  --space-3: 0.75rem; // 12px
+  --space-4: 1rem; // 16px
+  --space-5: 1.25rem; // 20px
+  --space-6: 1.5rem; // 24px
+  --space-8: 2rem; // 32px
+  --space-10: 2.5rem; // 40px
+  --space-12: 3rem; // 48px
+  --space-16: 4rem; // 64px
+  --space-20: 5rem; // 80px
+  --space-24: 6rem; // 96px
+  --space-32: 8rem; // 128px
+  --space-40: 10rem; // 160px
 
   // ========================================================================
   // Spacing Scale (Semantic - legacy aliases)
   // ========================================================================
-  --space-xs: 0.25rem;   // 4px
-  --space-sm: 0.5rem;    // 8px
-  --space-md: 1rem;      // 16px
-  --space-lg: 1.5rem;    // 24px
-  --space-xl: 2rem;      // 32px
-  --space-2xl: 3rem;     // 48px
-  --space-3xl: 4rem;     // 64px
+  --space-xs: 0.25rem; // 4px
+  --space-sm: 0.5rem; // 8px
+  --space-md: 1rem; // 16px
+  --space-lg: 1.5rem; // 24px
+  --space-xl: 2rem; // 32px
+  --space-2xl: 3rem; // 48px
+  --space-3xl: 4rem; // 64px
 
   // ========================================================================
   // Border Radius Scale
   // ========================================================================
-  --radius-sm: 0.375rem;   // 6px
-  --radius-md: 0.75rem;    // 12px
-  --radius-lg: 1rem;       // 16px
-  --radius-xl: 1.5rem;     // 24px
+  --radius-sm: 0.375rem; // 6px
+  --radius-md: 0.75rem; // 12px
+  --radius-lg: 1rem; // 16px
+  --radius-xl: 1.5rem; // 24px
   --radius-full: 9999px;
 
   // ========================================================================
   // Lift (negative translate) for hover effects
   // ========================================================================
-  --lift-xxs: -0.0625rem;  // -1px
-  --lift-xs: -0.125rem;    // -2px
-  --lift-sm: -0.25rem;     // -4px
+  --lift-xxs: -0.0625rem; // -1px
+  --lift-xs: -0.125rem; // -2px
+  --lift-sm: -0.25rem; // -4px
 
   // ========================================================================
   // Interactive States / Motion
@@ -63,30 +63,24 @@
   // Gradients
   // Subtle gradients for depth and visual interest
   // ========================================================================
-  --gradient-primary: linear-gradient(
-    135deg, 
-    hsl(var(--primary-hue), var(--primary-sat), 52%) 0%, 
-    hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 42%) 100%
-  );
-  --gradient-surface: linear-gradient(
-    180deg,
-    var(--surface) 0%,
-    var(--surface-raised) 100%
-  );
-  --gradient-overlay: linear-gradient(
-    180deg,
-    transparent 0%,
-    hsla(220, 20%, 10%, 0.6) 100%
-  );
+  --gradient-primary: linear-gradient(135deg,
+      hsl(var(--primary-hue), var(--primary-sat), 52%) 0%,
+      hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 42%) 100%);
+  --gradient-surface: linear-gradient(180deg,
+      var(--surface) 0%,
+      var(--surface-raised) 100%);
+  --gradient-overlay: linear-gradient(180deg,
+      transparent 0%,
+      color-mix(in srgb, hsl(220, 20%, 10%) 60%, transparent) 100%);
 
   // ========================================================================
   // Glow Effects (primary-colored shadows for buttons/accents)
   // ========================================================================
-  --glow-xs: 0 1px 3px 0 hsla(var(--primary-hue), var(--primary-sat), 50%, 0.2);
-  --glow-sm: 0 2px 6px -1px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.25);
-  --glow-md: 0 4px 12px -2px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.3);
-  --glow-lg: 0 8px 20px -4px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.35);
-  --glow-xl: 0 12px 28px -6px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.4);
+  --glow-xs: 0 1px 3px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 20%, transparent);
+  --glow-sm: 0 2px 6px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 25%, transparent);
+  --glow-md: 0 4px 12px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 30%, transparent);
+  --glow-lg: 0 8px 20px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 35%, transparent);
+  --glow-xl: 0 12px 28px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 40%, transparent);
 
   // ========================================================================
   // Backdrop Blur (for frosted glass effects)
@@ -97,20 +91,27 @@
   --backdrop-blur-xl: blur(24px);
 
   // ========================================================================
+  // Shadow Color Tokens (semantic, theme-aware)
+  // ========================================================================
+  --shadow-color: color-mix(in srgb, black 10%, transparent);
+  --shadow-color-strong: color-mix(in srgb, black 15%, transparent);
+  --shadow-color-subtle: color-mix(in srgb, black 5%, transparent);
+
+  // ========================================================================
   // Shadows - Light Theme (layered for depth)
   // ========================================================================
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xs: 0 1px 2px 0 var(--shadow-color-subtle);
+  --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px color-mix(in srgb, black 6%, transparent);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px color-mix(in srgb, black 6%, transparent);
+  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
+  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, black 4%, transparent);
 
   // ========================================================================
   // Panel/Card Elevation Helpers
   // ========================================================================
   --panel-bg: var(--surface);
   // Subtle border for light mode to define edges better
-  --panel-border-color: rgba(0, 0, 0, 0.05);
+  --panel-border-color: var(--shadow-color-subtle);
   --panel-border: 1px solid var(--panel-border-color);
   --panel-radius: var(--radius-md);
   --panel-shadow: var(--shadow-md);
@@ -152,8 +153,8 @@
   // ========================================================================
   // Text Shadows (for dark overlays)
   // ========================================================================
-  --text-shadow-dark: 0 2px 4px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
-  --text-shadow-dark-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --text-shadow-dark: 0 2px 4px color-mix(in srgb, black 30%, transparent), 0 4px 12px color-mix(in srgb, black 20%, transparent);
+  --text-shadow-dark-sm: 0 1px 3px color-mix(in srgb, black 40%, transparent), 0 2px 8px color-mix(in srgb, black 20%, transparent);
 }
 
 // ==========================================================================
@@ -161,50 +162,65 @@
 // ==========================================================================
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    // Stronger glows for dark backgrounds
-    --glow-xs: 0 1px 4px 0 hsla(var(--primary-hue), var(--primary-sat), 55%, 0.25);
-    --glow-sm: 0 2px 8px -1px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.3);
-    --glow-md: 0 4px 16px -2px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.35);
-    --glow-lg: 0 8px 24px -4px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.4);
-    --glow-xl: 0 12px 32px -6px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.45);
+    // Shadow colors for dark theme (stronger for visibility)
+    --shadow-color: color-mix(in srgb, black 18%, transparent);
+    --shadow-color-strong: color-mix(in srgb, black 25%, transparent);
+    --shadow-color-subtle: color-mix(in srgb, black 12%, transparent);
 
-    --shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 0.18), 0 2px 4px -2px rgb(0 0 0 / 0.12);
-    --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.25), 0 4px 8px -4px rgb(0 0 0 / 0.15);
-    --shadow-lg: 0 12px 28px -8px rgb(0 0 0 / 0.35), 0 8px 16px -8px rgb(0 0 0 / 0.2);
-    --shadow-xl: 0 20px 40px -12px rgb(0 0 0 / 0.45), 0 12px 24px -8px rgb(0 0 0 / 0.25);
+    // Stronger glows for dark backgrounds
+    --glow-xs: 0 1px 4px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 25%, transparent);
+    --glow-sm: 0 2px 8px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 30%, transparent);
+    --glow-md: 0 4px 16px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 35%, transparent);
+    --glow-lg: 0 8px 24px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 40%, transparent);
+    --glow-xl: 0 12px 32px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 45%, transparent);
+
+    --shadow-xs: 0 1px 3px 0 var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in srgb, black 10%, transparent);
+    --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
+    --shadow-md: 0 6px 16px -4px var(--shadow-color-strong), 0 4px 8px -4px var(--shadow-color-strong);
+    --shadow-lg: 0 12px 28px -8px color-mix(in srgb, black 35%, transparent), 0 8px 16px -8px color-mix(in srgb, black 20%, transparent);
+    --shadow-xl: 0 20px 40px -12px color-mix(in srgb, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
     --panel-bg: var(--surface-raised);
     --panel-border-color: var(--border);
   }
 }
 
 body[data-theme="dark"] {
-  // Stronger glows for dark backgrounds
-  --glow-xs: 0 1px 4px 0 hsla(var(--primary-hue), var(--primary-sat), 55%, 0.25);
-  --glow-sm: 0 2px 8px -1px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.3);
-  --glow-md: 0 4px 16px -2px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.35);
-  --glow-lg: 0 8px 24px -4px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.4);
-  --glow-xl: 0 12px 32px -6px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.45);
+  // Shadow colors for dark theme (stronger for visibility)
+  --shadow-color: color-mix(in srgb, black 18%, transparent);
+  --shadow-color-strong: color-mix(in srgb, black 25%, transparent);
+  --shadow-color-subtle: color-mix(in srgb, black 12%, transparent);
 
-  --shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 0.18), 0 2px 4px -2px rgb(0 0 0 / 0.12);
-  --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.25), 0 4px 8px -4px rgb(0 0 0 / 0.15);
-  --shadow-lg: 0 12px 28px -8px rgb(0 0 0 / 0.35), 0 8px 16px -8px rgb(0 0 0 / 0.2);
-  --shadow-xl: 0 20px 40px -12px rgb(0 0 0 / 0.45), 0 12px 24px -8px rgb(0 0 0 / 0.25);
+  // Stronger glows for dark backgrounds
+  --glow-xs: 0 1px 4px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 25%, transparent);
+  --glow-sm: 0 2px 8px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 30%, transparent);
+  --glow-md: 0 4px 16px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 35%, transparent);
+  --glow-lg: 0 8px 24px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 40%, transparent);
+  --glow-xl: 0 12px 32px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 45%, transparent);
+
+  --shadow-xs: 0 1px 3px 0 var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in srgb, black 10%, transparent);
+  --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
+  --shadow-md: 0 6px 16px -4px var(--shadow-color-strong), 0 4px 8px -4px var(--shadow-color-strong);
+  --shadow-lg: 0 12px 28px -8px color-mix(in srgb, black 35%, transparent), 0 8px 16px -8px color-mix(in srgb, black 20%, transparent);
+  --shadow-xl: 0 20px 40px -12px color-mix(in srgb, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
   --panel-bg: var(--surface-raised);
   --panel-border-color: var(--border);
 }
 
 body[data-theme="light"] {
+  // Shadow colors for light theme
+  --shadow-color: color-mix(in srgb, black 10%, transparent);
+  --shadow-color-strong: color-mix(in srgb, black 15%, transparent);
+  --shadow-color-subtle: color-mix(in srgb, black 5%, transparent);
+
   // Enhanced shadows for better visibility on light backgrounds
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xs: 0 1px 2px 0 var(--shadow-color-subtle);
+  --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px color-mix(in srgb, black 6%, transparent);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px color-mix(in srgb, black 6%, transparent);
+  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
+  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, black 4%, transparent);
   // Modern card: pure white background, subtle border, soft shadow
   --panel-bg: var(--surface);
-  --panel-border-color: rgba(0, 0, 0, 0.05);
+  --panel-border-color: var(--shadow-color-subtle);
   --panel-shadow: var(--shadow-md);
 }
 

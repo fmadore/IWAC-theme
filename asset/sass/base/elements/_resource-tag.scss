@@ -25,7 +25,7 @@
             color: hsl(220, 28%, 20%); // Dark text for readability on pastel backgrounds
             border-color: transparent;
         }
-    
+
         &:hover {
             background-color: var(--surface);
             border-color: var(--primary);
@@ -44,12 +44,12 @@ body[data-theme="dark"],
             // Use a semi-transparent overlay effect
             position: relative;
             color: hsl(220, 28%, 15%); // Even darker text for contrast
-            
+
             &::before {
                 content: "";
                 position: absolute;
                 inset: 0;
-                background: rgba(0, 0, 0, 0.15); // Darken the pastel slightly
+                background: color-mix(in srgb, black 15%, transparent); // Darken the pastel slightly
                 border-radius: inherit;
                 pointer-events: none;
             }
@@ -62,12 +62,12 @@ body[data-theme="dark"] {
     .resource-tag[style*="background-color"] {
         position: relative;
         color: hsl(220, 28%, 15%);
-        
+
         &::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.15);
+            background: color-mix(in srgb, black 15%, transparent);
             border-radius: inherit;
             pointer-events: none;
         }

@@ -47,37 +47,34 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --active-scale: 0.98;
   --hover-brightness: 1.05;
   --active-brightness: 0.95;
-  --gradient-primary: linear-gradient(
-    135deg,
-    hsl(var(--primary-hue), var(--primary-sat), 52%) 0%,
-    hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 42%) 100%
-  );
-  --gradient-surface: linear-gradient(
-    180deg,
-    var(--surface) 0%,
-    var(--surface-raised) 100%
-  );
-  --gradient-overlay: linear-gradient(
-    180deg,
-    transparent 0%,
-    hsla(220, 20%, 10%, 0.6) 100%
-  );
-  --glow-xs: 0 1px 3px 0 hsla(var(--primary-hue), var(--primary-sat), 50%, 0.2);
-  --glow-sm: 0 2px 6px -1px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.25);
-  --glow-md: 0 4px 12px -2px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.3);
-  --glow-lg: 0 8px 20px -4px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.35);
-  --glow-xl: 0 12px 28px -6px hsla(var(--primary-hue), var(--primary-sat), 50%, 0.4);
+  --gradient-primary: linear-gradient(135deg,
+      hsl(var(--primary-hue), var(--primary-sat), 52%) 0%,
+      hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 42%) 100%);
+  --gradient-surface: linear-gradient(180deg,
+      var(--surface) 0%,
+      var(--surface-raised) 100%);
+  --gradient-overlay: linear-gradient(180deg,
+      transparent 0%,
+      color-mix(in srgb, hsl(220, 20%, 10%) 60%, transparent) 100%);
+  --glow-xs: 0 1px 3px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 20%, transparent);
+  --glow-sm: 0 2px 6px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 25%, transparent);
+  --glow-md: 0 4px 12px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 30%, transparent);
+  --glow-lg: 0 8px 20px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 35%, transparent);
+  --glow-xl: 0 12px 28px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 40%, transparent);
   --backdrop-blur-sm: blur(4px);
   --backdrop-blur-md: blur(8px);
   --backdrop-blur-lg: blur(16px);
   --backdrop-blur-xl: blur(24px);
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-color: color-mix(in srgb, black 10%, transparent);
+  --shadow-color-strong: color-mix(in srgb, black 15%, transparent);
+  --shadow-color-subtle: color-mix(in srgb, black 5%, transparent);
+  --shadow-xs: 0 1px 2px 0 var(--shadow-color-subtle);
+  --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px color-mix(in srgb, black 6%, transparent);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px color-mix(in srgb, black 6%, transparent);
+  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
+  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, black 4%, transparent);
   --panel-bg: var(--surface);
-  --panel-border-color: rgba(0, 0, 0, 0.05);
+  --panel-border-color: var(--shadow-color-subtle);
   --panel-border: 1px solid var(--panel-border-color);
   --panel-radius: var(--radius-md);
   --panel-shadow: var(--shadow-md);
@@ -99,49 +96,58 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.7;
-  --text-shadow-dark: 0 2px 4px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
-  --text-shadow-dark-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --text-shadow-dark: 0 2px 4px color-mix(in srgb, black 30%, transparent), 0 4px 12px color-mix(in srgb, black 20%, transparent);
+  --text-shadow-dark-sm: 0 1px 3px color-mix(in srgb, black 40%, transparent), 0 2px 8px color-mix(in srgb, black 20%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme=light]) {
-    --glow-xs: 0 1px 4px 0 hsla(var(--primary-hue), var(--primary-sat), 55%, 0.25);
-    --glow-sm: 0 2px 8px -1px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.3);
-    --glow-md: 0 4px 16px -2px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.35);
-    --glow-lg: 0 8px 24px -4px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.4);
-    --glow-xl: 0 12px 32px -6px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.45);
-    --shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 0.18), 0 2px 4px -2px rgb(0 0 0 / 0.12);
-    --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.25), 0 4px 8px -4px rgb(0 0 0 / 0.15);
-    --shadow-lg: 0 12px 28px -8px rgb(0 0 0 / 0.35), 0 8px 16px -8px rgb(0 0 0 / 0.2);
-    --shadow-xl: 0 20px 40px -12px rgb(0 0 0 / 0.45), 0 12px 24px -8px rgb(0 0 0 / 0.25);
+    --shadow-color: color-mix(in srgb, black 18%, transparent);
+    --shadow-color-strong: color-mix(in srgb, black 25%, transparent);
+    --shadow-color-subtle: color-mix(in srgb, black 12%, transparent);
+    --glow-xs: 0 1px 4px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 25%, transparent);
+    --glow-sm: 0 2px 8px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 30%, transparent);
+    --glow-md: 0 4px 16px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 35%, transparent);
+    --glow-lg: 0 8px 24px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 40%, transparent);
+    --glow-xl: 0 12px 32px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 45%, transparent);
+    --shadow-xs: 0 1px 3px 0 var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in srgb, black 10%, transparent);
+    --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
+    --shadow-md: 0 6px 16px -4px var(--shadow-color-strong), 0 4px 8px -4px var(--shadow-color-strong);
+    --shadow-lg: 0 12px 28px -8px color-mix(in srgb, black 35%, transparent), 0 8px 16px -8px color-mix(in srgb, black 20%, transparent);
+    --shadow-xl: 0 20px 40px -12px color-mix(in srgb, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
     --panel-bg: var(--surface-raised);
     --panel-border-color: var(--border);
   }
 }
 body[data-theme=dark] {
-  --glow-xs: 0 1px 4px 0 hsla(var(--primary-hue), var(--primary-sat), 55%, 0.25);
-  --glow-sm: 0 2px 8px -1px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.3);
-  --glow-md: 0 4px 16px -2px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.35);
-  --glow-lg: 0 8px 24px -4px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.4);
-  --glow-xl: 0 12px 32px -6px hsla(var(--primary-hue), var(--primary-sat), 55%, 0.45);
-  --shadow-xs: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-sm: 0 2px 6px -1px rgb(0 0 0 / 0.18), 0 2px 4px -2px rgb(0 0 0 / 0.12);
-  --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.25), 0 4px 8px -4px rgb(0 0 0 / 0.15);
-  --shadow-lg: 0 12px 28px -8px rgb(0 0 0 / 0.35), 0 8px 16px -8px rgb(0 0 0 / 0.2);
-  --shadow-xl: 0 20px 40px -12px rgb(0 0 0 / 0.45), 0 12px 24px -8px rgb(0 0 0 / 0.25);
+  --shadow-color: color-mix(in srgb, black 18%, transparent);
+  --shadow-color-strong: color-mix(in srgb, black 25%, transparent);
+  --shadow-color-subtle: color-mix(in srgb, black 12%, transparent);
+  --glow-xs: 0 1px 4px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 25%, transparent);
+  --glow-sm: 0 2px 8px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 30%, transparent);
+  --glow-md: 0 4px 16px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 35%, transparent);
+  --glow-lg: 0 8px 24px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 40%, transparent);
+  --glow-xl: 0 12px 32px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 45%, transparent);
+  --shadow-xs: 0 1px 3px 0 var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in srgb, black 10%, transparent);
+  --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
+  --shadow-md: 0 6px 16px -4px var(--shadow-color-strong), 0 4px 8px -4px var(--shadow-color-strong);
+  --shadow-lg: 0 12px 28px -8px color-mix(in srgb, black 35%, transparent), 0 8px 16px -8px color-mix(in srgb, black 20%, transparent);
+  --shadow-xl: 0 20px 40px -12px color-mix(in srgb, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
   --panel-bg: var(--surface-raised);
   --panel-border-color: var(--border);
 }
 
 body[data-theme=light] {
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-color: color-mix(in srgb, black 10%, transparent);
+  --shadow-color-strong: color-mix(in srgb, black 15%, transparent);
+  --shadow-color-subtle: color-mix(in srgb, black 5%, transparent);
+  --shadow-xs: 0 1px 2px 0 var(--shadow-color-subtle);
+  --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px color-mix(in srgb, black 6%, transparent);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px color-mix(in srgb, black 6%, transparent);
+  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
+  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, black 4%, transparent);
   --panel-bg: var(--surface);
-  --panel-border-color: rgba(0, 0, 0, 0.05);
+  --panel-border-color: var(--shadow-color-subtle);
   --panel-shadow: var(--shadow-md);
 }
 
@@ -162,14 +168,14 @@ body[data-theme=light] {
   --black: #000;
   --surface: hsl(0, 0%, 100%);
   --surface-raised: hsl(210, 33%, 97%);
-  --surface-overlay: hsla(0, 0%, 100%, 0.94);
+  --surface-overlay: color-mix(in srgb, white 94%, transparent);
   --background: hsl(210, 40%, 96%);
   --border: hsl(210, 24%, 86%);
   --border-light: hsl(210, 24%, 92%);
   --accent: var(--primary);
   --focus-color: var(--primary);
-  --focus-ring: hsla(var(--primary-hue), var(--primary-sat), 49%, 0.25);
-  --selection-bg: hsla(var(--primary-hue), var(--primary-sat), 49%, 0.15);
+  --focus-ring: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 49%) 25%, transparent);
+  --selection-bg: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 49%) 15%, transparent);
   --text-primary: var(--ink);
   --text-heading: var(--ink);
   --text-secondary: var(--muted);
@@ -195,7 +201,7 @@ body[data-theme=light] {
   --footer-divider: hsl(214, 28%, 30%);
   --footer-text: hsl(210, 20%, 96%);
   --footer-text-muted: hsl(214, 22%, 80%);
-  --footer-glow: hsla(var(--primary-hue), 70%, 60%, 0.22);
+  --footer-glow: color-mix(in srgb, hsl(var(--primary-hue), 70%, 60%) 22%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -212,7 +218,7 @@ body[data-theme=light] {
     --muted: hsl(215, 12%, 65%);
     --surface: hsl(220, 18%, 12%);
     --surface-raised: hsl(220, 16%, 14%);
-    --surface-overlay: hsla(220, 18%, 12%, 0.95);
+    --surface-overlay: color-mix(in srgb, hsl(220, 18%, 12%) 95%, transparent);
     --background: hsl(220, 20%, 9%);
     --border: hsl(220, 12%, 22%);
     --border-light: hsl(220, 12%, 18%);
@@ -226,13 +232,13 @@ body[data-theme=light] {
     --border-color: var(--border);
     --primary-contrast: white;
     --success: hsl(152, 50%, 55%);
-    --success-bg: hsla(152, 45%, 40%, 0.2);
+    --success-bg: color-mix(in srgb, hsl(152, 45%, 40%) 20%, transparent);
     --warning: hsl(22, 100%, 58%);
-    --warning-bg: hsla(22, 90%, 45%, 0.2);
+    --warning-bg: color-mix(in srgb, hsl(22, 90%, 45%) 20%, transparent);
     --error: hsl(355, 85%, 58%);
-    --error-bg: hsla(355, 80%, 45%, 0.2);
+    --error-bg: color-mix(in srgb, hsl(355, 80%, 45%) 20%, transparent);
     --info: hsl(210, 80%, 60%);
-    --info-bg: hsla(210, 70%, 45%, 0.2);
+    --info-bg: color-mix(in srgb, hsl(210, 70%, 45%) 20%, transparent);
     --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
     --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
     --blockquote-quote: color-mix(in srgb, var(--primary) 75%, white 25%);
@@ -241,7 +247,7 @@ body[data-theme=light] {
     --footer-divider: color-mix(in srgb, var(--border) 85%, var(--ink) 15%);
     --footer-text: var(--ink);
     --footer-text-muted: var(--ink-light);
-    --footer-glow: hsla(var(--primary-hue), var(--primary-sat), 55%, 0.28);
+    --footer-glow: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 28%, transparent);
   }
 }
 body[data-theme=dark] {
@@ -254,7 +260,7 @@ body[data-theme=dark] {
   --muted: hsl(215, 12%, 65%);
   --surface: hsl(220, 18%, 12%);
   --surface-raised: hsl(220, 16%, 14%);
-  --surface-overlay: hsla(220, 18%, 12%, 0.95);
+  --surface-overlay: color-mix(in srgb, hsl(220, 18%, 12%) 95%, transparent);
   --background: hsl(220, 20%, 9%);
   --border: hsl(220, 12%, 22%);
   --border-light: hsl(220, 12%, 18%);
@@ -268,13 +274,13 @@ body[data-theme=dark] {
   --border-color: var(--border);
   --primary-contrast: white;
   --success: hsl(152, 50%, 55%);
-  --success-bg: hsla(152, 45%, 40%, 0.2);
+  --success-bg: color-mix(in srgb, hsl(152, 45%, 40%) 20%, transparent);
   --warning: hsl(22, 100%, 58%);
-  --warning-bg: hsla(22, 90%, 45%, 0.2);
+  --warning-bg: color-mix(in srgb, hsl(22, 90%, 45%) 20%, transparent);
   --error: hsl(355, 85%, 58%);
-  --error-bg: hsla(355, 80%, 45%, 0.2);
+  --error-bg: color-mix(in srgb, hsl(355, 80%, 45%) 20%, transparent);
   --info: hsl(210, 80%, 60%);
-  --info-bg: hsla(210, 70%, 45%, 0.2);
+  --info-bg: color-mix(in srgb, hsl(210, 70%, 45%) 20%, transparent);
   --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
   --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
   --blockquote-quote: color-mix(in srgb, var(--primary) 75%, white 25%);
@@ -283,7 +289,7 @@ body[data-theme=dark] {
   --footer-divider: color-mix(in srgb, var(--border) 85%, var(--ink) 15%);
   --footer-text: var(--ink);
   --footer-text-muted: var(--ink-light);
-  --footer-glow: hsla(var(--primary-hue), var(--primary-sat), 55%, 0.28);
+  --footer-glow: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 28%, transparent);
 }
 
 body[data-theme=light] {
@@ -296,7 +302,7 @@ body[data-theme=light] {
   --muted: hsl(222, 14%, 52%);
   --surface: hsl(0, 0%, 100%);
   --surface-raised: hsl(210, 33%, 97%);
-  --surface-overlay: hsla(0, 0%, 100%, 0.94);
+  --surface-overlay: color-mix(in srgb, white 94%, transparent);
   --background: hsl(210, 40%, 96%);
   --border: hsl(210, 24%, 86%);
   --border-light: hsl(210, 24%, 92%);
@@ -313,7 +319,7 @@ body[data-theme=light] {
   --footer-divider: hsl(214, 28%, 30%);
   --footer-text: hsl(210, 20%, 96%);
   --footer-text-muted: hsl(214, 22%, 80%);
-  --footer-glow: hsla(var(--primary-hue), 70%, 60%, 0.22);
+  --footer-glow: color-mix(in srgb, hsl(var(--primary-hue), 70%, 60%) 22%, transparent);
 }
 
 :root {
@@ -1200,7 +1206,7 @@ figcaption {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.15);
+    background: color-mix(in srgb, black 15%, transparent);
     border-radius: inherit;
     pointer-events: none;
   }
@@ -1214,7 +1220,7 @@ body[data-theme=dark] .resource-tag[style*=background-color]::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.15);
+  background: color-mix(in srgb, black 15%, transparent);
   border-radius: inherit;
   pointer-events: none;
 }
@@ -3542,14 +3548,14 @@ body.menu-drawer-toggled {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, hsla(var(--ink-hue), var(--ink-sat), 5%, 0.2) 0%, hsla(var(--ink-hue), var(--ink-sat), 5%, 0.6) 50%, hsla(var(--ink-hue), var(--ink-sat), 5%, 0.85) 100%);
+  background: linear-gradient(to bottom, color-mix(in srgb, hsl(var(--ink-hue), var(--ink-sat), 5%) 20%, transparent) 0%, color-mix(in srgb, hsl(var(--ink-hue), var(--ink-sat), 5%) 60%, transparent) 50%, color-mix(in srgb, hsl(var(--ink-hue), var(--ink-sat), 5%) 85%, transparent) 100%);
   z-index: 1;
 }
 .banner.has-text::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, hsla(var(--primary-hue), var(--primary-sat), 50%, 0.6) 0%, transparent 70%);
+  background: linear-gradient(135deg, color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 60%, transparent) 0%, transparent 70%);
   mix-blend-mode: overlay;
   z-index: 1;
   pointer-events: none;
@@ -3623,7 +3629,7 @@ body.menu-drawer-toggled {
   max-width: 900px;
   margin-block-end: var(--space-4);
   position: relative;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 4px 12px color-mix(in srgb, black 50%, transparent);
   letter-spacing: -0.01em;
 }
 @media (min-width: 768px) {
@@ -3660,7 +3666,7 @@ body.menu-drawer-toggled {
   margin-block-end: 0;
   margin-block-start: var(--space-2);
   color: hsla(0, 0%, 100%, 0.95);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 4px color-mix(in srgb, black 50%, transparent);
 }
 @media (min-width: 768px) {
   .banner__description {
@@ -3970,7 +3976,7 @@ body.menu-drawer-toggled {
   position: absolute;
   inset: 0;
   border-radius: var(--radius-lg);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 0 color-mix(in srgb, white 8%, transparent);
   pointer-events: none;
 }
 .block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle)) {
@@ -4101,7 +4107,8 @@ body.menu-drawer-toggled {
 .block-html p a:hover {
   text-decoration-thickness: 0.12em;
 }
-.block-blockGroup .block-html em, .block-blockGroup .block-html i,
+.block-blockGroup .block-html em,
+.block-blockGroup .block-html i,
 .block-html em,
 .block-html i {
   color: var(--ink);
