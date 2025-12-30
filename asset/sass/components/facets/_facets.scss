@@ -569,15 +569,11 @@
                         text-overflow: ellipsis;
                     }
 
-                    // Middle columns (summaries, descriptions) - limit lines
+                    // Middle columns (summaries, descriptions) - allow wrapping
                     &:not(:first-child):not(:last-child) {
-                        // Allow wrapping but limit to 3 lines max
-                        display: -webkit-box;
-                        -webkit-line-clamp: 3;
-                        -webkit-box-orient: vertical;
-                        overflow: hidden;
                         white-space: normal;
                         line-height: 1.5;
+                        word-break: break-word;
                     }
 
                     // Resource links - constrained display
@@ -587,11 +583,11 @@
                         gap: var(--space-2);
                         max-width: 100%;
                         text-decoration: none;
-                        color: var(--link-color);
+                        color: var(--primary);
                         transition: color var(--transition-fast);
 
                         &:hover {
-                            color: var(--link-hover);
+                            color: var(--primary-hover);
                         }
 
                         img {

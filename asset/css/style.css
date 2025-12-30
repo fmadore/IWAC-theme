@@ -2417,19 +2417,28 @@ body.main-header--center {
   line-height: 1;
   padding: var(--space-1);
   box-shadow: none;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
 }
 .main-navigation .navigation > li.menu-item-has-children button::after {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   content: "\f107" !important;
   display: inline-block;
-  font-weight: 600;
-  font-size: var(--text-xs);
-  color: var(--primary);
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--ink-light);
+  transition: color var(--transition-fast), transform var(--transition-fast);
 }
 .main-navigation .navigation > li.menu-item-has-children button:hover {
   transform: none;
   box-shadow: none;
+}
+.main-navigation .navigation > li.menu-item-has-children button:hover::after {
+  color: var(--primary);
+}
+.main-navigation .navigation > li.menu-item-has-children.open button::after {
+  transform: rotate(180deg);
 }
 .main-navigation .navigation > li.menu-item-has-children.open > ul {
   display: flex;
@@ -5481,12 +5490,9 @@ body.menu-drawer-toggled {
 }
 .faceted-browse-page table.faceted-results tbody tr td:not(:first-child):not(:last-child),
 .block-facetedBrowsePreview table.faceted-results tbody tr td:not(:first-child):not(:last-child) {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
   white-space: normal;
   line-height: 1.5;
+  word-break: break-word;
 }
 .faceted-browse-page table.faceted-results tbody tr td .resource-link,
 .block-facetedBrowsePreview table.faceted-results tbody tr td .resource-link {
@@ -5495,12 +5501,12 @@ body.menu-drawer-toggled {
   gap: var(--space-2);
   max-width: 100%;
   text-decoration: none;
-  color: var(--link-color);
+  color: var(--primary);
   transition: color var(--transition-fast);
 }
 .faceted-browse-page table.faceted-results tbody tr td .resource-link:hover,
 .block-facetedBrowsePreview table.faceted-results tbody tr td .resource-link:hover {
-  color: var(--link-hover);
+  color: var(--primary-hover);
 }
 .faceted-browse-page table.faceted-results tbody tr td .resource-link img,
 .block-facetedBrowsePreview table.faceted-results tbody tr td .resource-link img {
