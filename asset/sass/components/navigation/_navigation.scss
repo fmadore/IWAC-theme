@@ -164,9 +164,8 @@
                         @include font-awesome;
                         content: "\f107" !important;
                         display: inline-block;
-                        font-weight: 400; // Lighter weight for subtlety
-                        font-size: 0.75rem;
-                        color: var(--ink-light);
+                        font-size: var(--text-xs);
+                        color: var(--primary);
                         transition: color var(--transition-fast), transform var(--transition-fast);
                     }
 
@@ -175,7 +174,7 @@
                         box-shadow: none;
 
                         &::after {
-                            color: var(--primary);
+                            color: var(--primary-hover);
                         }
                     }
                 }

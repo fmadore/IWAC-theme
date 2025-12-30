@@ -2425,9 +2425,8 @@ body.main-header--center {
   font-weight: 900;
   content: "\f107" !important;
   display: inline-block;
-  font-weight: 400;
-  font-size: 0.75rem;
-  color: var(--ink-light);
+  font-size: var(--text-xs);
+  color: var(--primary);
   transition: color var(--transition-fast), transform var(--transition-fast);
 }
 .main-navigation .navigation > li.menu-item-has-children button:hover {
@@ -2435,7 +2434,7 @@ body.main-header--center {
   box-shadow: none;
 }
 .main-navigation .navigation > li.menu-item-has-children button:hover::after {
-  color: var(--primary);
+  color: var(--primary-hover);
 }
 .main-navigation .navigation > li.menu-item-has-children.open button::after {
   transform: rotate(180deg);
@@ -5521,9 +5520,8 @@ body.menu-drawer-toggled {
 }
 .faceted-browse-page table.faceted-results tbody tr td .resource-link .resource-name,
 .block-facetedBrowsePreview table.faceted-results tbody tr td .resource-link .resource-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
   min-width: 0;
 }
 .faceted-browse-page table.faceted-results tbody tr td > .resource-link + br + .resource-link,
