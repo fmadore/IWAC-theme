@@ -3190,10 +3190,12 @@ body.menu-drawer-toggled {
   height: 44px;
   padding: var(--space-sm) var(--space-md);
   padding-inline-end: 2.5rem;
-  background: var(--panel-bg);
-  border: var(--panel-border);
+  background: var(--panel-bg) !important;
+  background-image: none !important;
+  border: var(--panel-border) !important;
   border-radius: var(--panel-radius);
-  color: var(--text-primary);
+  box-shadow: none !important;
+  color: var(--text-primary) !important;
   font-size: var(--text-base);
   line-height: 1.4;
   text-decoration: none;
@@ -3230,7 +3232,7 @@ body.menu-drawer-toggled {
   border-color: var(--primary);
 }
 .chosen-container.chosen-container-active .chosen-single {
-  box-shadow: 0 0 0 3px var(--focus-ring);
+  box-shadow: 0 0 0 3px var(--focus-ring) !important;
 }
 .chosen-container.chosen-with-drop .chosen-single div b {
   transform: rotate(180deg);
@@ -3243,10 +3245,10 @@ body.menu-drawer-toggled {
   z-index: 1050;
   width: 100%;
   margin-top: var(--space-1);
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--border-color) !important;
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-lg) !important;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   clip-path: inset(100% 0 0 0);
@@ -3266,17 +3268,17 @@ body.menu-drawer-toggled {
   width: 100%;
   height: 38px;
   padding: var(--space-2) var(--space-3);
-  background: var(--bg-muted);
-  border: 1px solid var(--border-color);
+  background: var(--bg-muted) !important;
+  border: 1px solid var(--border-color) !important;
   border-radius: var(--radius-sm);
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   font-size: var(--text-sm);
   outline: none;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .chosen-container .chosen-search input.chosen-search-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px var(--focus-ring);
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px var(--focus-ring) !important;
 }
 .chosen-container .chosen-search input.chosen-search-input::-moz-placeholder {
   color: var(--muted);
@@ -3340,23 +3342,23 @@ body.menu-drawer-toggled {
 .chosen-container .chosen-results .active-result {
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   font-size: var(--text-sm);
   cursor: pointer;
-  background: transparent;
+  background: transparent !important;
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 .chosen-container .chosen-results .active-result:hover, .chosen-container .chosen-results .active-result.highlighted {
-  background: var(--bg-muted);
-  color: var(--text-primary);
+  background: var(--bg-muted) !important;
+  color: var(--text-primary) !important;
 }
 .chosen-container .chosen-results .active-result.result-selected {
-  background: color-mix(in srgb, var(--primary) 12%, transparent 88%);
-  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 12%, transparent 88%) !important;
+  color: var(--primary) !important;
   font-weight: 500;
 }
 .chosen-container .chosen-results .active-result.result-selected:hover, .chosen-container .chosen-results .active-result.result-selected.highlighted {
-  background: color-mix(in srgb, var(--primary) 18%, transparent 82%);
+  background: color-mix(in srgb, var(--primary) 18%, transparent 82%) !important;
 }
 .chosen-container .chosen-results .no-results {
   padding: var(--space-4) var(--space-3);
@@ -3371,9 +3373,11 @@ body.menu-drawer-toggled {
   min-height: 44px;
   padding: var(--space-2) var(--space-3);
   padding-inline-start: var(--space-3);
-  background: var(--panel-bg);
-  border: var(--panel-border);
+  background: var(--panel-bg) !important;
+  background-image: none !important;
+  border: var(--panel-border) !important;
   border-radius: var(--panel-radius);
+  box-shadow: none !important;
   list-style: none !important;
   margin: 0 !important;
   cursor: text;
