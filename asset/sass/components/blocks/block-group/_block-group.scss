@@ -116,12 +116,24 @@
 
 // Standalone asset blocks (not in a block group with text)
 .block-asset:not(.block-blockGroup .block-asset) {
+
+    // Center the assets container
+    .assets {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--space-4);
+    }
+
     .asset {
         background: var(--panel-bg);
         border: var(--panel-border);
         border-radius: var(--radius-lg);
         box-shadow: var(--panel-shadow);
         overflow: hidden;
+        // Prevent extremely large standalone images
+        max-width: min(100%, 600px);
+        margin-inline: auto;
         transition:
             transform var(--transition-base),
             box-shadow var(--transition-base);
@@ -132,9 +144,12 @@
         }
 
         img {
-            width: 100%;
+            // Use max-width instead of width to respect natural size
+            max-width: 100%;
+            width: auto;
             height: auto;
             display: block;
+            object-fit: contain;
         }
     }
 }

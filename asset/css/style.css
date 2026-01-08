@@ -4078,12 +4078,20 @@ body.menu-drawer-toggled {
   display: grid;
 }
 
+.block-asset:not(.block-blockGroup .block-asset) .assets {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4);
+}
 .block-asset:not(.block-blockGroup .block-asset) .asset {
   background: var(--panel-bg);
   border: var(--panel-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--panel-shadow);
   overflow: hidden;
+  max-width: min(100%, 600px);
+  margin-inline: auto;
   transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 .block-asset:not(.block-blockGroup .block-asset) .asset:hover {
@@ -4091,9 +4099,12 @@ body.menu-drawer-toggled {
   box-shadow: var(--shadow-md);
 }
 .block-asset:not(.block-blockGroup .block-asset) .asset img {
-  width: 100%;
+  max-width: 100%;
+  width: auto;
   height: auto;
   display: block;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 
 .block-html h3:first-child:only-child {
