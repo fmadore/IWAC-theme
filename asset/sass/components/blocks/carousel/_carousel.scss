@@ -40,7 +40,7 @@
             text-decoration: none;
 
             &:hover {
-                transform: translateY(var(--lift-sm));
+                transform: translateY(var(--lift-xs));
                 box-shadow: var(--shadow-xl), var(--glow-sm);
                 border-color: var(--primary);
             }
