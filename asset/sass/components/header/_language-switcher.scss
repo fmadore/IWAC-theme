@@ -22,7 +22,7 @@
         border-radius: var(--radius-full);
         color: var(--ink-light);
         cursor: pointer;
-        transition: 
+        transition:
             color var(--transition-fast),
             background-color var(--transition-fast);
 
@@ -43,12 +43,18 @@
     }
 
     // Globe icon using Font Awesome
+    // Translate icon
     &__icon {
-        @include font-awesome;
-        font-size: 1.125rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.125rem;
+        height: 1.125rem;
 
-        &::before {
-            content: "\f0ac"; // fa-globe
+        svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
         }
     }
 
@@ -82,9 +88,9 @@
         opacity: 0;
         visibility: hidden;
         transform: translateY(calc(-1 * var(--space-2)));
-        transition: 
-            opacity var(--transition-fast), 
-            transform var(--transition-fast), 
+        transition:
+            opacity var(--transition-fast),
+            transform var(--transition-fast),
             visibility var(--transition-fast);
     }
 
@@ -118,8 +124,8 @@
         font-size: var(--text-sm);
         text-decoration: none;
         color: var(--ink);
-        transition: 
-            color var(--transition-fast), 
+        transition:
+            color var(--transition-fast),
             background-color var(--transition-fast);
 
         &:hover {
