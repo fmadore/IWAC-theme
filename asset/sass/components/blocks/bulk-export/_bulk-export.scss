@@ -59,7 +59,10 @@
             }
         }
 
-        &.download-csv {
+        &.download-csv,
+        &.download-json-ld,
+        &.download-tsv,
+        &.download-txt {
             &::before {
                 content: "";
                 display: block;

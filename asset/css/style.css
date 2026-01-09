@@ -4772,7 +4772,7 @@ body.menu-drawer-toggled {
 .bulk-export .exporter:hover::before {
   background-color: var(--primary);
 }
-.bulk-export .exporter.download-csv::before {
+.bulk-export .exporter.download-csv::before, .bulk-export .exporter.download-json-ld::before, .bulk-export .exporter.download-tsv::before, .bulk-export .exporter.download-txt::before {
   content: "";
   display: block;
   width: 1em;
