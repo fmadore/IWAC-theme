@@ -167,7 +167,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: var(--space-lg);
+        gap: var(--space-xl);
         margin-block-end: var(--space-md);
         flex-wrap: wrap;
 
@@ -186,10 +186,13 @@
         }
 
         .main-footer__logo {
-            max-height: 50px;
+            height: 60px;
             width: auto;
-            max-width: 140px;
+            max-width: 160px;
             object-fit: contain;
+            background: var(--white);
+            padding: var(--space-2);
+            border-radius: var(--radius-sm);
         }
     }
 

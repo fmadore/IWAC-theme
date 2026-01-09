@@ -6325,7 +6325,7 @@ body.search .results .highlight {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
   margin-block-end: var(--space-md);
   flex-wrap: wrap;
 }
@@ -6343,11 +6343,14 @@ body.search .results .highlight {
   opacity: 0.9;
 }
 .main-footer__logos .main-footer__logo {
-  max-height: 50px;
+  height: 60px;
   width: auto;
-  max-width: 140px;
+  max-width: 160px;
   -o-object-fit: contain;
      object-fit: contain;
+  background: var(--white);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
 }
 .main-footer__col2 {
   display: flex;
