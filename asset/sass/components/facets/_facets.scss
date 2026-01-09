@@ -571,7 +571,8 @@
 
                     // Middle columns (summaries, descriptions) - allow wrapping
                     &:not(:first-child):not(:last-child) {
-                        white-space: normal;
+                        white-space: normal !important; // Override Tablesaw
+                        overflow: visible;
                         line-height: 1.5;
                         word-break: break-word;
                     }

@@ -5528,7 +5528,8 @@ body.menu-drawer-toggled {
 }
 .faceted-browse-page table.faceted-results tbody tr td:not(:first-child):not(:last-child),
 .block-facetedBrowsePreview table.faceted-results tbody tr td:not(:first-child):not(:last-child) {
-  white-space: normal;
+  white-space: normal !important;
+  overflow: visible;
   line-height: 1.5;
   word-break: break-word;
 }
