@@ -203,15 +203,10 @@
                 font-weight: 500;
                 letter-spacing: 0.025em;
                 padding: var(--space-sm) var(--space-md);
-                margin-block: var(--space-lg) 0;
                 position: relative;
                 border-radius: var(--radius-md);
                 white-space: nowrap;
                 transition: color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
-
-                .main-header--center & {
-                    margin: var(--space-md) 0;
-                }
             }
 
             >ul {

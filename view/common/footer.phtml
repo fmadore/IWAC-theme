@@ -1,8 +1,8 @@
 <?php
 $escHtml = $this->plugin('escapeHtml');
 $escAttr = $this->plugin('escapeHtmlAttr');
+$translate = $this->plugin('translate');
 
-$footerLogo = $this->themeSetting('footer_logo');
 $footerSiteInfo = $this->themeSetting('footer_site_info');
 $footerMenu = $this->themeSetting('footer_menu');
 $footerMenuDepth = $this->themeSetting('footer_menu_depth');
@@ -13,11 +13,11 @@ $additional_classes = '';
 
 if (!$footerMenu) {
 	$additional_classes .= ' no-menu';
-} elseif (!$footerLogo && !$footerSiteInfo && !$footerContent) {
+} elseif (!$footerSiteInfo && !$footerContent) {
 	$additional_classes .= ' menu-only';
 }
 
-if ($footerMenu && ($footerLogo || $footerSiteInfo) && $footerContent) {
+if ($footerMenu && $footerSiteInfo && $footerContent) {
 	$additional_classes .= ' all-columns';
 
 	if ($footerMenuDepth > 1) {
@@ -38,28 +38,31 @@ foreach ($socialNetworks as $social_network) {
 <footer class="main-footer">
 
 	<!-- Footer Top -->
-	<?php if ($footerLogo || $footerSiteInfo || $footerMenu || $footerContent): ?>
+	<?php if ($footerSiteInfo || $footerMenu || $footerContent): ?>
 		<div class="main-footer__top">
 			<div class="container main-footer__top-container <?php echo $additional_classes; ?>">
 
-				<!-- Column 1 -->
-				<?php if ($footerLogo || $footerSiteInfo): ?>
-
-					<div class="main-footer__col1">
-						<?php if ($footerLogo): ?>
-							<img src="<?php echo $this->themeSettingAssetUrl('footer_logo'); ?>"
-								alt="<?php echo $escHtml($site->title()); ?>"
-								class="<?php echo $footerSiteInfo ? 'main-footer__logo--with-info' : ''; ?>" />
-						<?php endif; ?>
-
-						<div class="footer_site_info">
-							<?php if ($footerSiteInfo): ?>
-								<?php echo $footerSiteInfo; ?>
-							<?php endif; ?>
-						</div>
+				<!-- Column 1: Logos and Site Info -->
+				<div class="main-footer__col1">
+					<div class="main-footer__logos">
+						<a href="https://www.zmo.de/en" target="_blank" rel="noopener noreferrer">
+							<img src="<?php echo $this->assetUrl('img/ZMO-logo.png'); ?>" 
+								alt="<?php echo $escAttr($translate('Leibniz-Zentrum Moderner Orient')); ?>" 
+								class="main-footer__logo" />
+						</a>
+						<a href="https://www.berlin.de/sen/wgp/" target="_blank" rel="noopener noreferrer">
+							<img src="<?php echo $this->assetUrl('img/senate-logo.webp'); ?>" 
+								alt="<?php echo $escAttr($translate('Berlin Senate Department')); ?>" 
+								class="main-footer__logo" />
+						</a>
 					</div>
 
-				<?php endif; ?>
+					<div class="footer_site_info">
+						<?php if ($footerSiteInfo): ?>
+							<?php echo $footerSiteInfo; ?>
+						<?php endif; ?>
+					</div>
+				</div>
 
 				<!-- Column 2 -->
 				<?php if ($footerMenu): ?>
@@ -111,10 +114,9 @@ foreach ($socialNetworks as $social_network) {
 				<div class="main-footer__social-network">
 					<?php foreach ($socialNetworks as $social_network): ?>
 						<?php if ($social_network_url = $this->themeSetting("{$social_network}_url")): ?>
-							<a href="<?php echo $social_network_url; ?>" 
-							   aria-label="<?php echo $escAttr(ucfirst($social_network)); ?>"
-							   target="_blank" 
-							   rel="noopener noreferrer">
+							<a href="<?php echo $social_network_url; ?>"
+								aria-label="<?php echo $escAttr(ucfirst($social_network)); ?>" target="_blank"
+								rel="noopener noreferrer">
 								<?php echo $socialIcons[$social_network] ?? ''; ?>
 							</a>
 						<?php endif; ?>

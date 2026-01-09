@@ -163,6 +163,36 @@
         }
     }
 
+    &__logos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-lg);
+        margin-block-end: var(--space-md);
+        flex-wrap: wrap;
+
+        @media (min-width: $lg) {
+            justify-content: flex-start;
+        }
+
+        a {
+            display: block;
+            transition: transform var(--transition-fast), opacity var(--transition-fast);
+
+            &:hover {
+                transform: translateY(var(--lift-xs));
+                opacity: 0.9;
+            }
+        }
+
+        .main-footer__logo {
+            max-height: 50px;
+            width: auto;
+            max-width: 140px;
+            object-fit: contain;
+        }
+    }
+
     &__col2 {
         display: flex;
         justify-content: center;
