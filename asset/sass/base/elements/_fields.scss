@@ -156,12 +156,14 @@ select {
     -webkit-appearance: none;
     /* Safari and Chrome */
     appearance: none;
-    background-image: url("../img/arrow-down-blue.svg");
-    background-position: calc(100% - 15px) center;
-    background-size: 18px;
-    background-repeat: no-repeat;
     height: 44px;
     padding-inline-end: 45px;
+
+    // Dropdown arrow - using secondary color for visibility on both themes
+    background-image: url("../img/arrow-down.svg");
+    background-position: calc(100% - 15px) center;
+    background-size: 12px;
+    background-repeat: no-repeat;
 }
 
 label,

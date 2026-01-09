@@ -1774,12 +1774,12 @@ select {
   -webkit-appearance: none;
   /* Safari and Chrome */
   appearance: none;
-  background-image: url("../img/arrow-down-blue.svg");
-  background-position: calc(100% - 15px) center;
-  background-size: 18px;
-  background-repeat: no-repeat;
   height: 44px;
   padding-inline-end: 45px;
+  background-image: url("../img/arrow-down.svg");
+  background-position: calc(100% - 15px) center;
+  background-size: 12px;
+  background-repeat: no-repeat;
 }
 
 label,
@@ -6509,6 +6509,12 @@ body.search .results .highlight {
 }
 .main-footer__social-network a:visited {
   color: var(--footer-text);
+}
+.main-footer__social-network a img {
+  width: 1.25rem;
+  height: 1.25rem;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 .main-footer__social-network a svg,
 .main-footer__social-network a i {
