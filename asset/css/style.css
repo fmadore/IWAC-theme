@@ -78,9 +78,12 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --panel-border: 1px solid var(--panel-border-color);
   --panel-radius: var(--radius-md);
   --panel-shadow: var(--shadow-md);
-  --transition-fast: 150ms ease;
-  --transition-base: 200ms ease;
-  --transition-slow: 300ms ease;
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --transition-fast: 150ms var(--ease-out-quart);
+  --transition-base: 200ms var(--ease-out-quart);
+  --transition-slow: 300ms var(--ease-out-quart);
   --z-dropdown: 100;
   --z-sticky: 200;
   --z-modal: 300;
@@ -1689,6 +1692,14 @@ input[type=checkbox] {
   place-content: center;
   flex-shrink: 0;
   transition: border-color var(--transition-fast), background-color var(--transition-fast);
+  position: relative;
+  cursor: pointer;
+}
+input[type=checkbox]::after {
+  content: "";
+  position: absolute;
+  inset: -0.75rem;
+  border-radius: var(--radius-sm);
 }
 input[type=checkbox]:checked {
   border: 2px solid var(--primary);
@@ -1727,6 +1738,14 @@ input[type=radio] {
   place-content: center;
   flex-shrink: 0;
   transition: border-color var(--transition-fast);
+  position: relative;
+  cursor: pointer;
+}
+input[type=radio]::after {
+  content: "";
+  position: absolute;
+  inset: -0.75rem;
+  border-radius: var(--radius-full);
 }
 input[type=radio]::before {
   content: "";
@@ -1744,11 +1763,16 @@ input[type=radio]:checked {
 input[type=radio]:checked::before {
   transform: scale(1);
 }
+input[type=radio]:focus-visible {
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
 
 select {
   position: relative;
-  -moz-appearance: none; /* Firefox */
-  -webkit-appearance: none; /* Safari and Chrome */
+  -moz-appearance: none;
+  /* Firefox */
+  -webkit-appearance: none;
+  /* Safari and Chrome */
   appearance: none;
   background-image: url("../img/arrow-down-blue.svg");
   background-position: calc(100% - 15px) center;
