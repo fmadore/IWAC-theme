@@ -2118,9 +2118,14 @@ body.main-header--center {
 }
 .main-header__main-bar {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   padding-block: var(--space-xs);
+}
+@media (min-width: 1460px) {
+  .main-header__main-bar {
+    justify-content: center;
+  }
 }
 .main-header__site-title {
   flex-shrink: 0;

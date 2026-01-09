@@ -169,9 +169,14 @@
 
     &__main-bar {
         display: flex;
-        justify-content: center;
+        justify-content: flex-end;
         align-items: center;
         padding-block: var(--space-xs);
+
+        // Center the navigation only when it's visible (desktop)
+        @media (min-width: $xxl) {
+            justify-content: center;
+        }
     }
 
     &__site-title {
