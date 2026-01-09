@@ -40,6 +40,13 @@
     font-weight: 900;
 }
 
+@mixin icon-mask($url) {
+    mask: url($url) no-repeat center / contain;
+    -webkit-mask: url($url) no-repeat center / contain;
+    background-color: currentColor;
+    display: inline-block;
+}
+
 @mixin button {
     -webkit-appearance: none;
     -moz-appearance: none;

@@ -434,10 +434,11 @@
         }
 
         &::before {
-            @include font-awesome;
-            content: "\f053";
+            @include icon-mask("../img/chevron-left.svg");
+            content: "";
             display: inline-block;
-            font-size: 0.7rem;
+            width: var(--text-xs);
+            height: var(--text-xs);
             text-decoration: none;
         }
     }

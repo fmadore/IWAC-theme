@@ -36,8 +36,8 @@
         display: flex; // Ensure SVG centers
         align-items: center;
         justify-content: center;
-        width: 1.25rem;
-        height: 1.25rem;
+        width: var(--text-lg);
+        height: var(--text-lg);
         transition: transform var(--transition-fast);
         color: inherit;
 

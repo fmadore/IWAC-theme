@@ -9,15 +9,16 @@
     position: relative;
 
     &::before {
-        @include font-awesome;
-        content: "\f059";
+        @include icon-mask("../img/question-circle.svg");
+        content: "";
         color: var(--muted);
-        font-size: var(--text-lg);
-        transition: color var(--transition-fast);
+        width: var(--text-lg);
+        height: var(--text-lg);
+        transition: background-color var(--transition-fast);
     }
 
     &:hover::before {
-        color: var(--primary);
+        background-color: var(--primary);
     }
 }
 

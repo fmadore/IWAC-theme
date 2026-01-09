@@ -14,11 +14,12 @@
             margin-block-end: var(--space-8) !important;
 
             &:before {
-                @include font-awesome;
-                content: "\f054" !important;
+                @include icon-mask("../img/chevron-right.svg");
+                content: "" !important;
                 display: inline-block;
+                width: var(--text-xs);
+                height: var(--text-xs);
                 font-weight: 600;
-                font-size: var(--text-xs);
                 color: var(--primary);
                 margin-inline-end: var(--space-4);
             }
@@ -36,10 +37,11 @@
                 margin-block-end: var(--space-1);
 
                 &:before {
-                    @include font-awesome;
-                    content: "\f111" !important;
+                    @include icon-mask("../img/circle-fill.svg");
+                    content: "" !important;
                     font-weight: 600;
-                    font-size: 0.4rem;
+                    width: 0.4rem;
+                    height: 0.4rem;
                     color: var(--primary) !important;
                     margin-inline-end: var(--space-4);
                 }

@@ -1012,23 +1012,35 @@ hr {
 }
 
 .o-icon-list::before {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "\f03a";
+  mask: url("../img/list-ul.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/list-ul.svg") no-repeat center/contain;
+  background-color: currentColor;
+  display: inline-block;
+  content: "";
+  width: var(--text-base);
+  height: var(--text-base);
   color: var(--ink);
 }
 
 .o-icon-grid::before {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "\f009";
+  mask: url("../img/grid-fill.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/grid-fill.svg") no-repeat center/contain;
+  background-color: currentColor;
+  display: inline-block;
+  content: "";
+  width: var(--text-base);
+  height: var(--text-base);
   color: var(--ink);
 }
 
 .o-icon-chevron-down::before {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "\f078";
+  mask: url("../img/chevron-down.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/chevron-down.svg") no-repeat center/contain;
+  background-color: currentColor;
+  display: inline-block;
+  content: "";
+  width: 0.8em;
+  height: 0.8em;
   color: var(--ink);
 }
 
@@ -1319,15 +1331,18 @@ table.striped tbody tr:nth-child(even):hover {
   position: relative;
 }
 .tooltip::before {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "\f059";
+  mask: url("../img/question-circle.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/question-circle.svg") no-repeat center/contain;
+  background-color: currentColor;
+  display: inline-block;
+  content: "";
   color: var(--muted);
-  font-size: var(--text-lg);
-  transition: color var(--transition-fast);
+  width: var(--text-lg);
+  height: var(--text-lg);
+  transition: background-color var(--transition-fast);
 }
 .tooltip:hover::before {
-  color: var(--primary);
+  background-color: var(--primary);
 }
 
 .tooltip .tooltiptext {
@@ -2097,10 +2112,13 @@ body.main-header--center {
   transition: color var(--transition-fast), background-color var(--transition-fast);
 }
 .main-header__search-form button::before {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "\f002";
-  font-size: var(--text-base);
+  mask: url("../img/search.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/search.svg") no-repeat center/contain;
+  background-color: currentColor;
+  display: inline-block;
+  content: "";
+  width: var(--text-base);
+  height: var(--text-base);
 }
 .main-header__search-form button:hover, .main-header__search-form button:focus {
   background: var(--selection-bg);
@@ -2179,8 +2197,8 @@ body.main-header--center {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--text-lg);
+  height: var(--text-lg);
   transition: transform var(--transition-fast);
   color: inherit;
 }
@@ -2456,13 +2474,16 @@ body.main-header--center {
   transition: transform var(--transition-fast);
 }
 .main-navigation .navigation > li.menu-item-has-children button::after {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "\f107" !important;
+  mask: url("../img/chevron-down.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/chevron-down.svg") no-repeat center/contain;
+  background-color: currentColor;
   display: inline-block;
-  font-size: var(--text-xs);
+  content: "" !important;
+  display: inline-block;
+  width: var(--text-xs);
+  height: var(--text-xs);
   color: var(--primary);
-  transition: color var(--transition-fast), transform var(--transition-fast);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 .main-navigation .navigation > li.menu-item-has-children button:hover {
   transform: none;
@@ -4364,18 +4385,29 @@ body.menu-drawer-toggled {
 }
 .block-carousel .slick-arrow .slick-prev-icon::before,
 .block-carousel .slick-arrow .slick-next-icon::before {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  font-size: var(--text-base);
+  mask: url("../img/chevron-left.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/chevron-left.svg") no-repeat center/contain;
+  background-color: currentColor;
+  display: inline-block;
+  width: var(--text-base);
+  height: var(--text-base);
   line-height: 1;
-  transition: color var(--transition-fast);
+  transition: background-color var(--transition-fast);
   color: inherit;
 }
 .block-carousel .slick-arrow .slick-prev-icon::before {
-  content: "\f053";
+  mask: url("../img/chevron-left.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/chevron-left.svg") no-repeat center/contain;
+  background-color: currentColor;
+  display: inline-block;
+  content: "";
 }
 .block-carousel .slick-arrow .slick-next-icon::before {
-  content: "\f054";
+  mask: url("../img/chevron-right.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/chevron-right.svg") no-repeat center/contain;
+  background-color: currentColor;
+  display: inline-block;
+  content: "";
 }
 .block-carousel .slick-dots {
   display: flex !important;
@@ -4639,12 +4671,15 @@ body.menu-drawer-toggled {
   margin-block-end: var(--space-8) !important;
 }
 .toc-block > ul > li:before {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "\f054" !important;
+  mask: url("../img/chevron-right.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/chevron-right.svg") no-repeat center/contain;
+  background-color: currentColor;
   display: inline-block;
+  content: "" !important;
+  display: inline-block;
+  width: var(--text-xs);
+  height: var(--text-xs);
   font-weight: 600;
-  font-size: var(--text-xs);
   color: var(--primary);
   margin-inline-end: var(--space-4);
 }
@@ -4658,11 +4693,14 @@ body.menu-drawer-toggled {
   margin-block-end: var(--space-1);
 }
 .toc-block > ul ul > li:before {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "\f111" !important;
+  mask: url("../img/circle-fill.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/circle-fill.svg") no-repeat center/contain;
+  background-color: currentColor;
+  display: inline-block;
+  content: "" !important;
   font-weight: 600;
-  font-size: 0.4rem;
+  width: 0.4rem;
+  height: 0.4rem;
   color: var(--primary) !important;
   margin-inline-end: var(--space-4);
 }
@@ -5405,11 +5443,14 @@ body.menu-drawer-toggled {
 }
 .faceted-browse-page #categories-return::before,
 .block-facetedBrowsePreview #categories-return::before {
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  content: "\f053";
+  mask: url("../img/chevron-left.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/chevron-left.svg") no-repeat center/contain;
+  background-color: currentColor;
   display: inline-block;
-  font-size: 0.7rem;
+  content: "";
+  display: inline-block;
+  width: var(--text-xs);
+  height: var(--text-xs);
   text-decoration: none;
 }
 .faceted-browse-page #section-content,

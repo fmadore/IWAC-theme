@@ -120,23 +120,26 @@
         .slick-prev-icon,
         .slick-next-icon {
             &::before {
-                @include font-awesome;
-                font-size: var(--text-base);
+                @include icon-mask("../img/chevron-left.svg"); // Default to left, override below
+                width: var(--text-base);
+                height: var(--text-base);
                 line-height: 1;
-                transition: color var(--transition-fast);
+                transition: background-color var(--transition-fast);
                 color: inherit;
             }
         }
 
         .slick-prev-icon {
             &::before {
-                content: "\f053";
+                @include icon-mask("../img/chevron-left.svg");
+                content: "";
             }
         }
 
         .slick-next-icon {
             &::before {
-                content: "\f054";
+                @include icon-mask("../img/chevron-right.svg");
+                content: "";
             }
         }
     }

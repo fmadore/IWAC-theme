@@ -6,19 +6,25 @@
 // ==========================================================================
 
 .o-icon-list::before {
-    @include font-awesome;
-    content: "\f03a";
+    @include icon-mask("../img/list-ul.svg");
+    content: "";
+    width: var(--text-base);
+    height: var(--text-base);
     color: var(--ink);
 }
 
 .o-icon-grid::before {
-    @include font-awesome;
-    content: "\f009";
+    @include icon-mask("../img/grid-fill.svg");
+    content: "";
+    width: var(--text-base);
+    height: var(--text-base);
     color: var(--ink);
 }
 
 .o-icon-chevron-down::before {
-    @include font-awesome;
-    content: "\f078";
+    @include icon-mask("../img/chevron-down.svg");
+    content: "";
+    width: 0.8em; // Keep em for inline scaling
+    height: 0.8em;
     color: var(--ink);
 }
