@@ -7,14 +7,14 @@
 
 .bulk-export {
     margin-block: var(--space-xl);
-    padding: var(--space-4);
+    padding: var(--space-md);
     background: var(--surface);
     border-radius: var(--radius-md);
     border: 1px solid var(--border);
 
     h3 {
         margin-block-start: 0;
-        margin-block-end: var(--space-2);
+        margin-block-end: var(--space-sm);
         font-size: var(--text-lg);
         color: var(--ink);
     }
@@ -22,7 +22,7 @@
     ul.exporters {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--space-2);
+        gap: var(--space-sm);
         list-style: none;
         padding: 0;
         margin: 0;
@@ -36,8 +36,8 @@
     .exporter {
         display: inline-flex;
         align-items: center;
-        gap: var(--space-2);
-        padding: var(--space-2) var(--space-3);
+        gap: var(--space-sm);
+        padding: var(--space-sm) var(--space-3);
         background: var(--surface-raised);
         border: 1px solid var(--border);
         border-radius: var(--radius-sm);
@@ -66,8 +66,8 @@
                 width: 1em;
                 height: 1em;
                 background-color: var(--ink-light);
-                -webkit-mask-image: url(../../img/download.svg);
-                mask-image: url(../../img/download.svg);
+                -webkit-mask-image: url(../img/download.svg);
+                mask-image: url(../img/download.svg);
                 -webkit-mask-size: contain;
                 mask-size: contain;
                 -webkit-mask-repeat: no-repeat;
