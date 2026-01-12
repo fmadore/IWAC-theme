@@ -3,15 +3,51 @@
 // ==========================================================================
 // Media Embed Block
 // Embedded media display with thumbnail and file positioning variants
+// Masonry-style responsive layout to prevent cropping
 // ==========================================================================
 
 .media-embed {
+    // Override Omeka's layout-horizontal grid to prevent cropping
+    &.layout-horizontal {
+        // Use CSS columns for masonry-like layout
+        column-count: 1;
+        column-gap: var(--space-6);
+        
+        @media (min-width: $sm) {
+            column-count: 2;
+        }
+        
+        @media (min-width: $md) {
+            column-count: 3;
+        }
+        
+        @media (min-width: $lg) {
+            column-count: 4;
+        }
+        
+        // Reset Omeka's grid properties
+        display: block !important;
+        grid-template-columns: unset !important;
+        grid-gap: unset !important;
+        width: 100% !important;
+        align-items: unset !important;
+        
+        // Media items within the layout
+        .item.resource,
+        > * {
+            break-inside: avoid;
+            page-break-inside: avoid;
+            margin-block-end: var(--space-6);
+            display: inline-block;
+            width: 100%;
+        }
+    }
+    
     &.media-display-thumbnail {
         margin-block-end: var(--space-12);
 
         .item.resource {
             width: 100%;
-            max-width: 325px;
             background: var(--panel-bg);
             border: var(--panel-border);
             box-shadow: var(--panel-shadow);
@@ -31,19 +67,86 @@
                 color: var(--ink);
                 font-family: $font__body;
                 font-weight: 600;
+                font-size: var(--text-base);
+                line-height: 1.4;
                 margin: var(--space-4);
             }
 
             .caption {
                 margin: var(--space-4);
+                font-size: var(--text-sm);
+                color: var(--text-secondary);
+                line-height: 1.5;
             }
 
             img {
                 max-height: none;
-                height: 150px;
+                height: auto;
                 width: 100%;
                 object-fit: cover;
+                display: block;
             }
+        }
+    }
+}
+
+// Alternative: Media embeds container (for resource-page-block-layout)
+.media-embeds {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-6);
+    margin-block-end: var(--space-12);
+    
+    @media (min-width: $md) {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+    
+    // Individual media items
+    .media {
+        background: var(--panel-bg);
+        border: var(--panel-border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        box-shadow: var(--panel-shadow);
+        transition:
+            box-shadow var(--transition-fast),
+            transform var(--transition-fast);
+        
+        &:hover {
+            box-shadow: var(--shadow-lg), var(--glow-sm);
+            transform: translateY(var(--lift-xs));
+        }
+        
+        img,
+        video,
+        audio {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        img {
+            object-fit: contain;
+            background: var(--bg-muted);
+        }
+    }
+    
+    // Handle different media types
+    .media-render {
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        video {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border: none;
         }
     }
 }
