@@ -3,43 +3,35 @@
 // ==========================================================================
 // Media Embed Block
 // Embedded media display with thumbnail and file positioning variants
-// Masonry-style responsive layout to prevent cropping
+// Responsive grid layout - cards adapt to their natural content height
 // ==========================================================================
 
 .media-embed {
-    // Override Omeka's layout-horizontal grid to prevent cropping
+    // Override Omeka's layout-horizontal grid
     &.layout-horizontal {
-        // Use CSS columns for masonry-like layout
-        column-count: 1;
-        column-gap: var(--space-6);
+        // Use CSS Grid for consistent, responsive layout
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: var(--space-6) !important;
+        width: 100% !important;
+        // Cards align to top, each at natural height
+        align-items: start !important;
         
         @media (min-width: $sm) {
-            column-count: 2;
+            grid-template-columns: repeat(2, 1fr) !important;
         }
         
         @media (min-width: $md) {
-            column-count: 3;
+            grid-template-columns: repeat(3, 1fr) !important;
         }
         
         @media (min-width: $lg) {
-            column-count: 4;
+            grid-template-columns: repeat(4, 1fr) !important;
         }
         
-        // Reset Omeka's grid properties
-        display: block !important;
-        grid-template-columns: unset !important;
-        grid-gap: unset !important;
-        width: 100% !important;
-        align-items: unset !important;
-        
         // Media items within the layout
-        .item.resource,
-        > * {
-            break-inside: avoid;
-            page-break-inside: avoid;
-            margin-block-end: var(--space-6);
-            display: inline-block;
-            width: 100%;
+        .item.resource {
+            margin: 0;
         }
     }
     
@@ -62,6 +54,19 @@
                 box-shadow: var(--shadow-lg), var(--glow-sm);
                 transform: translateY(var(--lift-xs));
             }
+            
+            // Image link container
+            > a:first-child {
+                display: block;
+                width: 100%;
+                overflow: hidden;
+                
+                img {
+                    width: 100%;
+                    height: auto;
+                    display: block;
+                }
+            }
 
             h3 {
                 color: var(--ink);
@@ -70,13 +75,28 @@
                 font-size: var(--text-base);
                 line-height: 1.4;
                 margin: var(--space-4);
+                margin-block-end: var(--space-2);
+                
+                a {
+                    color: var(--primary);
+                    text-decoration: none;
+                    
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
             }
 
             .caption {
                 margin: var(--space-4);
+                margin-block-start: 0;
                 font-size: var(--text-sm);
                 color: var(--text-secondary);
                 line-height: 1.5;
+                
+                p {
+                    margin: 0;
+                }
             }
 
             img {

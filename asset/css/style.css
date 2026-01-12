@@ -4608,44 +4608,29 @@ body.menu-drawer-toggled {
 /* Media Embed
 --------------------------------------------- */
 .media-embed.layout-horizontal {
-  -moz-column-count: 1;
-       column-count: 1;
-  -moz-column-gap: var(--space-6);
-       column-gap: var(--space-6);
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: var(--space-6) !important;
+  width: 100% !important;
+  align-items: start !important;
 }
 @media (min-width: 600px) {
   .media-embed.layout-horizontal {
-    -moz-column-count: 2;
-         column-count: 2;
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }
 @media (min-width: 768px) {
   .media-embed.layout-horizontal {
-    -moz-column-count: 3;
-         column-count: 3;
+    grid-template-columns: repeat(3, 1fr) !important;
   }
 }
 @media (min-width: 1024px) {
   .media-embed.layout-horizontal {
-    -moz-column-count: 4;
-         column-count: 4;
+    grid-template-columns: repeat(4, 1fr) !important;
   }
 }
-.media-embed.layout-horizontal {
-  display: block !important;
-  grid-template-columns: unset !important;
-  grid-gap: unset !important;
-  width: 100% !important;
-  align-items: unset !important;
-}
-.media-embed.layout-horizontal .item.resource,
-.media-embed.layout-horizontal > * {
-  -moz-column-break-inside: avoid;
-       break-inside: avoid;
-  page-break-inside: avoid;
-  margin-block-end: var(--space-6);
-  display: inline-block;
-  width: 100%;
+.media-embed.layout-horizontal .item.resource {
+  margin: 0;
 }
 .media-embed.media-display-thumbnail {
   margin-block-end: var(--space-12);
@@ -4664,6 +4649,16 @@ body.menu-drawer-toggled {
   box-shadow: var(--shadow-lg), var(--glow-sm);
   transform: translateY(var(--lift-xs));
 }
+.media-embed.media-display-thumbnail .item.resource > a:first-child {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+.media-embed.media-display-thumbnail .item.resource > a:first-child img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 .media-embed.media-display-thumbnail .item.resource h3 {
   color: var(--ink);
   font-family: "Inter", "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -4671,12 +4666,24 @@ body.menu-drawer-toggled {
   font-size: var(--text-base);
   line-height: 1.4;
   margin: var(--space-4);
+  margin-block-end: var(--space-2);
+}
+.media-embed.media-display-thumbnail .item.resource h3 a {
+  color: var(--primary);
+  text-decoration: none;
+}
+.media-embed.media-display-thumbnail .item.resource h3 a:hover {
+  text-decoration: underline;
 }
 .media-embed.media-display-thumbnail .item.resource .caption {
   margin: var(--space-4);
+  margin-block-start: 0;
   font-size: var(--text-sm);
   color: var(--text-secondary);
   line-height: 1.5;
+}
+.media-embed.media-display-thumbnail .item.resource .caption p {
+  margin: 0;
 }
 .media-embed.media-display-thumbnail .item.resource img {
   max-height: none;
