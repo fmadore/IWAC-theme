@@ -1990,7 +1990,12 @@ body.main-header--center {
   inset-inline-start: 0;
   z-index: var(--z-sticky);
   border-bottom: 1px solid var(--border);
-  transition: box-shadow var(--transition-base);
+  transition: box-shadow var(--transition-base), top var(--transition-base);
+}
+@media (prefers-reduced-motion: reduce) {
+  .main-header {
+    transition: none;
+  }
 }
 @supports ((-webkit-backdrop-filter: blur(0.5rem)) or (backdrop-filter: blur(0.5rem))) {
   .main-header {
@@ -2896,7 +2901,7 @@ body.menu-drawer-toggled {
   max-height: 0;
   overflow: hidden;
   padding: 0 var(--space-6);
-  transition: max-height 0.4s ease-out;
+  transition: max-height var(--transition-slow);
 }
 
 /* Advanced Search
@@ -4429,7 +4434,7 @@ body.menu-drawer-toggled {
   border-radius: var(--radius-full);
   background: var(--border);
   border: none;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
   cursor: pointer;
 }
 .block-carousel .slick-dots li button:hover {
@@ -6817,6 +6822,16 @@ body.search .results .highlight {
   z-index: var(--z-tooltip);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 /* Alignments
 --------------------------------------------- */
 .alignleft {

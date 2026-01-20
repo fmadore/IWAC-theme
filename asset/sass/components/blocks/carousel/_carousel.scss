@@ -164,7 +164,9 @@
                 border-radius: var(--radius-full);
                 background: var(--border);
                 border: none;
-                transition: all var(--transition-fast);
+                transition:
+                    background-color var(--transition-fast),
+                    transform var(--transition-fast);
                 cursor: pointer;
 
                 &:hover {

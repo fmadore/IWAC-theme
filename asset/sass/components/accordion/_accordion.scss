@@ -66,6 +66,6 @@
         max-height: 0;
         overflow: hidden;
         padding: 0 var(--space-6);
-        transition: max-height 0.4s ease-out;
+        transition: max-height var(--transition-slow);
     }
 }

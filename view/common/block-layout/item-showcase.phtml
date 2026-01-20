@@ -9,8 +9,6 @@ $decoration = $this->themeSetting('image_decoration');
     $item = $attachment->item();
     $caption = $attachment->caption();
     if ($item):
-    ?>
-        <?php
         $media = $attachment->media() ?: $item->primaryMedia();
         if ($media):
             $mediaClass = 'item-showcase__media';
@@ -25,18 +23,13 @@ $decoration = $this->themeSetting('image_decoration');
             <div class="item-showcase__text">
                 <?php $showTitleOption = $this->showTitleOption; ?>
                 <?php if ($showTitleOption == 'item_title'): ?>
-                <h3><?php echo $item->link($item->displayTitle()); ?></h3>
+                    <h3><?php echo $item->link($item->displayTitle()); ?></h3>
                 <?php elseif ($showTitleOption == 'file_name'): ?>
-                <h3><?php echo $media->displayTitle(); ?></h3>
+                    <h3><?php echo $media->displayTitle(); ?></h3>
                 <?php endif; ?>
-        <?php if (!$caption): ?>
-            </div>
-        </div>
-        <?php endif; ?>
-    <?php endif; ?>
-
-    <?php if ($caption): ?>
-                <div class="caption"><?php echo $caption; ?></div>
+                <?php if ($caption): ?>
+                    <div class="caption"><?php echo $caption; ?></div>
+                <?php endif; ?>
             </div>
         </div>
     <?php endif; ?>

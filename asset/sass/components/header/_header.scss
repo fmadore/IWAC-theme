@@ -13,7 +13,13 @@
     inset-inline-start: 0;
     z-index: var(--z-sticky);
     border-bottom: 1px solid var(--border);
-    transition: box-shadow var(--transition-base);
+    transition:
+        box-shadow var(--transition-base),
+        top var(--transition-base);
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
 
     // Glassmorphism effect with backdrop-filter
     @supports ((-webkit-backdrop-filter: blur(0.5rem)) or (backdrop-filter: blur(0.5rem))) {
