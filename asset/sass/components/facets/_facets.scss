@@ -34,8 +34,27 @@
             overflow: visible;
         }
 
+        // Mobile fullscreen filter modal
         &.open {
             z-index: var(--z-modal) !important;
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100vh !important;
+            height: 100dvh !important; // Dynamic viewport height for mobile browsers
+            background: var(--bg-surface) !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain; // Prevent scroll chaining to body
+            padding: var(--space-4) !important;
+
+            @media (min-width: $xl) {
+                position: static !important;
+                height: auto !important;
+                padding: 0 !important;
+                padding-inline-end: var(--space-6) !important;
+                overflow: visible !important;
+            }
         }
 
         &-modal-toggle {
@@ -54,6 +73,15 @@
 
         button.close-button {
             background-color: var(--primary);
+        }
+    }
+
+    // Prevent body scroll when filter sidebar is open on mobile
+    &.sidebar-open {
+        overflow: hidden;
+
+        @media (min-width: $xl) {
+            overflow: visible;
         }
     }
 
@@ -684,5 +712,18 @@
                 }
             }
         }
+    }
+}
+
+// =============================================================================
+// Body scroll lock when filter sidebar is open (mobile)
+// Uses :has() for automatic detection without JavaScript
+// =============================================================================
+body:has(.faceted-browse-page #section-sidebar.open),
+body:has(.block-facetedBrowsePreview #section-sidebar.open) {
+    overflow: hidden !important;
+
+    @media (min-width: $xl) {
+        overflow: visible !important;
     }
 }
