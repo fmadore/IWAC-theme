@@ -2,6 +2,7 @@
 use Laminas\Form\Element\Select;
 
 $this->inlineScript()->appendFile($this->assetUrl('js/accordion.js'));
+$this->inlineScript()->appendFile($this->assetUrl('js/linked-resources.js'));
 
 // Set up pagination.
 $pagination = $this->pagination(null, $totalCount, $page, $perPage);
@@ -26,8 +27,10 @@ $resourcePropertiesSelect = new Select('resource_property');
 $resourcePropertiesSelect->setValue($resourceProperty);
 $resourcePropertiesSelect->setAttributes([
     'id' => 'resource-property-select',
+    'class' => 'linked-resources__filter-select',
     'data-url' => $this->url(null, [], true),
     'data-fragment' => $fragment,
+    'aria-label' => $this->translate('Filter by resource type and property'),
 ]);
 $valueOptions = [];
 foreach ($resourcePropertiesAll as $type => $resourceProperties) {
@@ -53,16 +56,59 @@ foreach ($resourcePropertiesAll as $type => $resourceProperties) {
     }
 }
 $resourcePropertiesSelect->setValueOptions($valueOptions);
+
+// Sort options
+$sortOptions = [
+    'default' => $this->translate('Default'),
+    'alpha-asc' => $this->translate('Title (A-Z)'),
+    'alpha-desc' => $this->translate('Title (Z-A)'),
+    'date-desc' => $this->translate('Newest first'),
+    'date-asc' => $this->translate('Oldest first'),
+];
+
+// Translations for JS
+$noResultsText = $this->translate('No resources found');
+$resultsFoundText = $this->translate('{count} resources found');
 ?>
 <div id="linked-resources">
 
-<div class="linked-header">
-    <div id="linked-filter">
-        <label>
-            <?php echo $this->translate('Filter by resource type and property:'); ?>
-            <?php echo $this->formElement($resourcePropertiesSelect); ?>
-        </label>
+<div class="linked-resources__controls">
+    <div class="linked-resources__search">
+        <img src="<?php echo $this->assetUrl('img/search.svg'); ?>"
+             class="linked-resources__search-icon"
+             alt=""
+             aria-hidden="true">
+        <input type="search"
+               class="linked-resources__search-input"
+               placeholder="<?php echo $this->escapeHtmlAttr($this->translate('Filter by title...')); ?>"
+               aria-label="<?php echo $this->escapeHtmlAttr($this->translate('Filter linked resources by title')); ?>">
     </div>
+
+    <div class="linked-resources__sort">
+        <label for="linked-resources-sort" class="sr-only">
+            <?php echo $this->translate('Sort by'); ?>
+        </label>
+        <select id="linked-resources-sort" class="linked-resources__sort-select">
+            <?php foreach ($sortOptions as $value => $label): ?>
+                <option value="<?php echo $this->escapeHtmlAttr($value); ?>">
+                    <?php echo $this->escapeHtml($label); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <div class="linked-resources__filter">
+        <label for="resource-property-select" class="sr-only">
+            <?php echo $this->translate('Filter by type'); ?>
+        </label>
+        <?php echo $this->formElement($resourcePropertiesSelect); ?>
+    </div>
+</div>
+
+<div class="linked-resources__status" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<div class="linked-resources__no-results" style="display: none;" aria-hidden="true">
+    <p><?php echo $this->escapeHtml($this->translate('No resources match your search.')); ?></p>
 </div>
 
 <?php foreach ($subjectValues as $values): ?>
@@ -73,6 +119,7 @@ $resourcePropertiesSelect->setValueOptions($valueOptions);
         $values[0]['property_alternate_label'] ?? $this->translate($values[0]['property_label']),
         $objectResource->displayTitle()
     );
+    $itemCount = count($values);
     ?>
 
     <div class="linked-resource-accordion accordion__container">
@@ -84,6 +131,7 @@ $resourcePropertiesSelect->setValueOptions($valueOptions);
                     id="accordion-<?php echo $values[0]['property_id']; ?>">
                 <span class="accordion__title">
                     <?php echo $this->escapeHtml($caption); ?>
+                    <span class="linked-resource-count" data-original-count="<?php echo $itemCount; ?>">(<?php echo $itemCount; ?>)</span>
                     <span class="accordion__icon o-icon-chevron-down"></span>
                 </span>
             </button>
@@ -94,9 +142,16 @@ $resourcePropertiesSelect->setValueOptions($valueOptions);
             role="region"
             aria-labelledby="accordion-<?php echo $values[0]['property_id']; ?>">
             <?php foreach ($values as $value): ?>
-                <div class="linked-resource">
-                    <span><?php echo $value['val']->resource()->linkPretty('square', null, null, null, $valueLang); ?></span>
-                    <?php echo $this->ResourceTags($value['val']->resource()); ?>
+                <?php
+                $valueResource = $value['val']->resource();
+                $resourceTitle = $valueResource->displayTitle(null, $valueLang);
+                $resourceCreated = $valueResource->created() ? $valueResource->created()->format('c') : '';
+                ?>
+                <div class="linked-resource"
+                     data-title="<?php echo $this->escapeHtmlAttr($resourceTitle); ?>"
+                     data-date="<?php echo $this->escapeHtmlAttr($resourceCreated); ?>">
+                    <span class="linked-resource__link"><?php echo $valueResource->linkPretty('square', null, null, null, $valueLang); ?></span>
+                    <?php echo $this->ResourceTags($valueResource); ?>
                 </div>
             <?php endforeach; ?>
         </div>
@@ -109,12 +164,16 @@ $resourcePropertiesSelect->setValueOptions($valueOptions);
 </div>
 
 <script>
-const propertySelect = $('#resource-property-select');
-const url = propertySelect.data('url');
-const fragment = propertySelect.data('fragment');
-propertySelect.on('change', function(e) {
-    const selectedOption = propertySelect.find(':selected');
-    const resourceProperty = selectedOption.val();
-    window.location = url + '?' + $.param({resource_property: resourceProperty}) + '#' + fragment;
-});
+const linkedResourcesNoResults = <?php echo json_encode($noResultsText); ?>;
+const linkedResourcesResultsFound = <?php echo json_encode($resultsFoundText); ?>;
+
+const propertySelect = document.getElementById('resource-property-select');
+if (propertySelect) {
+    const url = propertySelect.dataset.url;
+    const fragment = propertySelect.dataset.fragment;
+    propertySelect.addEventListener('change', function(e) {
+        const resourceProperty = this.value;
+        window.location = url + '?' + new URLSearchParams({resource_property: resourceProperty}).toString() + '#' + fragment;
+    });
+}
 </script>

@@ -14,6 +14,19 @@ const freedomScripts = () => {
     let scrollDirection = 'up';
 
     function onScroll(scrollPos) {
+        // Skip header auto-hide when an input is focused to prevent scroll jitter
+        const activeElement = document.activeElement;
+        const isInputFocused = activeElement && (
+            activeElement.tagName === 'INPUT' ||
+            activeElement.tagName === 'TEXTAREA' ||
+            activeElement.tagName === 'SELECT' ||
+            activeElement.isContentEditable
+        );
+
+        if (isInputFocused) {
+            return;
+        }
+
         if(scrollPos > 60 && scrollDirection == 'down') {
             mainHeader.style.top = - (userBarHeight + mainHeaderTopBar.offsetHeight) + 'px';
             // Update menu drawer position to match visible header area

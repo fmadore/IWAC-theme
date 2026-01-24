@@ -1,5 +1,11 @@
 @use "../../abstracts/abstracts" as *;
 
+// ==========================================================================
+// Linked Resources Component
+// ==========================================================================
+// Displays linked resources with search, sort, and filter controls.
+// Uses accordion pattern for grouping by property.
+
 .resources-linked {
 
     &__header {
@@ -30,37 +36,282 @@
     .resource-tag {
         margin-block-end: 0;
     }
+}
 
-    .linked-resource {
+// ==========================================================================
+// Controls Toolbar
+// ==========================================================================
+
+#linked-resources {
+
+    .linked-resources__controls {
         display: flex;
-        align-items: flex-start;
-        flex-direction: column-reverse;
-        justify-content: space-between;
-        padding: var(--space-3) var(--space-2);
-        border-block-end: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        transition: background-color var(--transition-fast);
+        flex-direction: column;
+        gap: var(--space-3);
+        margin-block-end: var(--space-6);
+        padding: var(--space-4);
+        background-color: var(--surface-raised);
+        border-radius: var(--radius-md);
 
-        @media (min-width: $lg) {
-            align-items: center;
+        @media (min-width: $md) {
             flex-direction: row;
+            align-items: center;
+            gap: var(--space-4);
         }
+    }
 
-        &:last-child {
-            border-block-end: none;
+    // Search input container
+    .linked-resources__search {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+
+        @media (min-width: $md) {
+            max-width: 320px;
+        }
+    }
+
+    .linked-resources__search-icon {
+        position: absolute;
+        inset-inline-start: var(--space-3);
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    .linked-resources__search-input {
+        width: 100%;
+        height: 44px;
+        padding: var(--space-2) var(--space-3);
+        padding-inline-start: calc(var(--space-3) + 20px + var(--space-2));
+        font-size: var(--text-sm);
+        color: var(--ink);
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        transition:
+            border-color var(--transition-fast),
+            box-shadow var(--transition-fast);
+
+        &::placeholder {
+            color: var(--ink-muted);
         }
 
         &:hover {
-            background-color: var(--surface-raised);
+            border-color: var(--border-strong);
         }
 
-        .resource-tags {
-            margin-block-end: var(--space-4);
-            margin-inline-start: calc(var(--space-3) * -1);
+        &:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--focus-ring);
+        }
 
-            @media (min-width: $lg) {
-                margin: 0;
-            }
+        // Hide browser's default clear button
+        &::-webkit-search-cancel-button {
+            -webkit-appearance: none;
+            appearance: none;
         }
     }
+
+    // Sort dropdown
+    .linked-resources__sort {
+        flex-shrink: 0;
+    }
+
+    .linked-resources__sort-select,
+    .linked-resources__filter-select {
+        height: 44px;
+        min-width: 160px;
+        padding: var(--space-2) var(--space-8) var(--space-2) var(--space-3);
+        font-size: var(--text-sm);
+        color: var(--ink);
+        background-color: var(--surface);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right var(--space-3) center;
+        background-size: 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        appearance: none;
+        transition:
+            border-color var(--transition-fast),
+            box-shadow var(--transition-fast);
+
+        &:hover {
+            border-color: var(--border-strong);
+        }
+
+        &:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--focus-ring);
+        }
+    }
+
+    // Filter dropdown
+    .linked-resources__filter {
+        flex-shrink: 0;
+
+        @media (min-width: $md) {
+            margin-inline-start: auto;
+        }
+    }
+
+    .linked-resources__filter-select {
+        width: 100%;
+
+        @media (min-width: $md) {
+            width: auto;
+            min-width: 200px;
+        }
+    }
+
+    // Screen reader status announcements
+    .linked-resources__status {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    // No results message
+    .linked-resources__no-results {
+        padding: var(--space-8) var(--space-4);
+        text-align: center;
+        color: var(--ink-muted);
+        background-color: var(--surface-raised);
+        border-radius: var(--radius-md);
+
+        p {
+            margin: 0;
+        }
+    }
+}
+
+// ==========================================================================
+// Linked Resource Item
+// ==========================================================================
+
+.linked-resource {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-2);
+    border-block-end: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+
+    @media (min-width: $lg) {
+        align-items: center;
+        flex-direction: row;
+        gap: var(--space-4);
+    }
+
+    &:last-child {
+        border-block-end: none;
+    }
+
+    &:hover {
+        background-color: var(--surface-raised);
+    }
+
+    // Hidden by search filter
+    &[aria-hidden="true"] {
+        display: none;
+    }
+
+    // Link container
+    &__link {
+        flex: 1;
+        min-width: 0;
+
+        a {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            color: var(--ink);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+
+            &:hover {
+                color: var(--primary);
+            }
+
+            &:focus {
+                outline: 2px solid var(--primary);
+                outline-offset: 2px;
+                border-radius: var(--radius-sm);
+            }
+        }
+
+        // Thumbnail
+        img {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            background-color: var(--surface-raised);
+        }
+    }
+
+    // Resource tags (type badges)
+    .resource-tags {
+        margin-block-end: var(--space-2);
+        margin-inline-start: calc(var(--space-3) * -1);
+
+        @media (min-width: $lg) {
+            margin: 0;
+            flex-shrink: 0;
+        }
+    }
+
+    .resource-tag {
+        margin-block-end: 0;
+    }
+}
+
+// ==========================================================================
+// Count Badge in Accordion Heading
+// ==========================================================================
+
+.linked-resource-count {
+    display: inline-block;
+    margin-inline-start: var(--space-2);
+    font-weight: 400;
+    color: var(--ink-muted);
+}
+
+// ==========================================================================
+// Legacy Header (deprecated - kept for backward compatibility)
+// ==========================================================================
+
+.linked-header {
+    margin-block-end: var(--space-4);
+
+    #linked-filter {
+        display: none; // Hidden - controls moved to new toolbar
+    }
+}
+
+// ==========================================================================
+// Pagination Footer
+// ==========================================================================
+
+.linked-footer {
+    margin-block-start: var(--space-6);
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid var(--border);
 }
