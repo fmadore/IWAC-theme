@@ -69,20 +69,27 @@ Key rules:
 
 ### CSS Custom Properties (Design Tokens)
 
-**Always use CSS custom properties instead of hardcoded values.**
+**CRITICAL: Only use tokens defined in `_colors.scss`, `_tokens.scss`, `_typography.scss`. Do NOT invent token names - undefined tokens fail silently at runtime.**
 
-| Category | Examples |
-|----------|----------|
-| Colors | `--primary`, `--ink`, `--surface`, `--border` |
-| HSL Components | `--primary-hue`, `--primary-sat`, `--ink-lum` |
-| Spacing | `--space-1` through `--space-40` |
-| Shadows | `--shadow-xs` through `--shadow-xl` |
-| Glows | `--glow-xs` through `--glow-xl` (primary-colored) |
-| Radii | `--radius-sm`, `--radius-md`, `--radius-lg` |
-| Transitions | `--transition-fast`, `--transition-base`, `--transition-slow` |
-| Lifts | `--lift-xxs`, `--lift-xs`, `--lift-sm` (hover translateY) |
+| Category | Pattern | Examples |
+|----------|---------|----------|
+| Colors | direct names | `--primary`, `--primary-hover`, `--ink`, `--muted`, `--surface`, `--surface-raised`, `--border`, `--border-light` |
+| Text sizes | `--text-{size}` | `--text-xs`, `--text-sm`, `--text-base`, `--text-lg`, `--text-2xl` |
+| Spacing | `--space-{n}` | `--space-1` through `--space-40` (also `--space-sm`, `--space-md`, etc.) |
+| Effects | `--shadow-{size}`, `--radius-{size}` | `--shadow-sm`, `--shadow-md`, `--radius-md`, `--radius-lg` |
+| Transitions | `--transition-{speed}` | `--transition-fast`, `--transition-base`, `--transition-slow` |
+| Line height | `--line-height-{type}` | `--line-height-tight`, `--line-height-normal`, `--line-height-relaxed` |
 
-For opacity/color mixing, use `color-mix()`:
+**Common mistakes - these tokens DON'T exist:**
+| Wrong | Correct |
+|-------|---------|
+| `--surface-alt`, `--surface-hover` | `--surface-raised` |
+| `--ink-muted`, `--text-muted` | `--muted` |
+| `--font-size-*` | `--text-*` |
+| `--leading-*` | `--line-height-*` |
+| `--border-dark`, `--border-strong`, `--border-hover` | `--border` |
+
+For color variations, use `color-mix()`:
 ```scss
 background: color-mix(in srgb, var(--primary) 20%, transparent);
 ```
@@ -145,5 +152,7 @@ The theme integrates with: Internationalisation (language switching), Mapping, C
 - Never edit files in `asset/css/` - they're auto-generated
 - Never use deprecated Sass `@import` syntax
 - Never hardcode colors, spacing, or other design tokens
+- **Never invent CSS custom property names** - only use tokens explicitly listed in the "CSS Custom Properties" section above
 - Respect `prefers-reduced-motion` for animations
 - Test both light and dark modes
+- Run `npm run build` after changes to verify compilation
