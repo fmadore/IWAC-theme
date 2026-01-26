@@ -1,0 +1,109 @@
+// ==========================================================================
+// Error Page Component
+// Styles for 404, 403, and generic error pages
+// ==========================================================================
+
+@use "../../abstracts/abstracts" as *;
+
+.error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    padding: var(--space-10) var(--space-4);
+    text-align: center;
+}
+
+.error-page__content {
+    max-width: 32rem;
+}
+
+.error-page__code {
+    display: block;
+    font-size: clamp(4rem, 15vw, 8rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--primary);
+    opacity: 0.15;
+    margin-block-end: var(--space-4);
+
+    // For SVG icon (used in generic error)
+    svg {
+        width: 4rem;
+        height: 4rem;
+        color: var(--primary);
+        opacity: 0.6;
+    }
+}
+
+.error-page__title {
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    color: var(--ink);
+    margin-block-end: var(--space-4);
+}
+
+.error-page__message {
+    font-size: var(--text-base);
+    color: var(--muted);
+    line-height: 1.6;
+    margin-block-end: var(--space-8);
+}
+
+.error-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+}
+
+.error-page__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast),
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+
+    &:hover {
+        transform: translateY(var(--lift-xxs));
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+.error-page__button--primary {
+    background-color: var(--primary);
+    color: var(--primary-contrast);
+    box-shadow: var(--shadow-sm);
+
+    &:hover {
+        background-color: var(--primary-hover);
+        box-shadow: var(--shadow-md);
+    }
+
+    &:active {
+        background-color: var(--primary-active);
+    }
+}
+
+.error-page__button--secondary {
+    background-color: var(--surface-raised);
+    color: var(--ink);
+    border: 1px solid var(--border);
+
+    &:hover {
+        background-color: var(--surface);
+        border-color: var(--border);
+        box-shadow: var(--shadow-sm);
+    }
+}

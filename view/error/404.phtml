@@ -1,0 +1,36 @@
+<?php
+/**
+ * 404 Page Not Found error template
+ */
+$translate = $this->plugin('translate');
+$escHtml = $this->plugin('escapeHtml');
+$escAttr = $this->plugin('escapeHtmlAttr');
+
+$this->htmlElement('body')->appendAttribute('class', 'error error-404');
+$this->headTitle($translate('Page not found'));
+?>
+
+<div class="error-page">
+    <div class="error-page__content">
+        <span class="error-page__code">404</span>
+        <h1 class="error-page__title"><?php echo $escHtml($translate('Page not found')); ?></h1>
+        <p class="error-page__message">
+            <?php echo $escHtml($translate('The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.')); ?>
+        </p>
+
+        <div class="error-page__actions">
+            <?php if (isset($site)): ?>
+                <a href="<?php echo $escAttr($site->url()); ?>" class="error-page__button error-page__button--primary">
+                    <?php echo $escHtml($translate('Go to homepage')); ?>
+                </a>
+                <a href="<?php echo $escAttr($site->url() . '/item'); ?>" class="error-page__button error-page__button--secondary">
+                    <?php echo $escHtml($translate('Browse items')); ?>
+                </a>
+            <?php else: ?>
+                <a href="/" class="error-page__button error-page__button--primary">
+                    <?php echo $escHtml($translate('Go to homepage')); ?>
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

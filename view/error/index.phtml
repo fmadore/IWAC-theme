@@ -1,0 +1,37 @@
+<?php
+/**
+ * Generic error template (fallback for non-404 errors)
+ */
+$translate = $this->plugin('translate');
+$escHtml = $this->plugin('escapeHtml');
+$escAttr = $this->plugin('escapeHtmlAttr');
+
+$this->htmlElement('body')->appendAttribute('class', 'error error-general');
+$this->headTitle($translate('Error'));
+?>
+
+<div class="error-page">
+    <div class="error-page__content">
+        <span class="error-page__code">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+            </svg>
+        </span>
+        <h1 class="error-page__title"><?php echo $escHtml($translate('Something went wrong')); ?></h1>
+        <p class="error-page__message">
+            <?php echo $escHtml($translate('An error occurred while processing your request. Please try again later.')); ?>
+        </p>
+
+        <div class="error-page__actions">
+            <?php if (isset($site)): ?>
+                <a href="<?php echo $escAttr($site->url()); ?>" class="error-page__button error-page__button--primary">
+                    <?php echo $escHtml($translate('Go to homepage')); ?>
+                </a>
+            <?php else: ?>
+                <a href="/" class="error-page__button error-page__button--primary">
+                    <?php echo $escHtml($translate('Go to homepage')); ?>
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

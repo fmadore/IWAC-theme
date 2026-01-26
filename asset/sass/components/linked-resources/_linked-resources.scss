@@ -97,11 +97,11 @@
             box-shadow var(--transition-fast);
 
         &::placeholder {
-            color: var(--ink-muted);
+            color: var(--muted);
         }
 
         &:hover {
-            border-color: var(--border-strong);
+            border-color: var(--border);
         }
 
         &:focus {
@@ -143,7 +143,7 @@
             box-shadow var(--transition-fast);
 
         &:hover {
-            border-color: var(--border-strong);
+            border-color: var(--border);
         }
 
         &:focus {
@@ -188,7 +188,7 @@
     .linked-resources__no-results {
         padding: var(--space-8) var(--space-4);
         text-align: center;
-        color: var(--ink-muted);
+        color: var(--muted);
         background-color: var(--surface-raised);
         border-radius: var(--radius-md);
 
@@ -291,7 +291,7 @@
     display: inline-block;
     margin-inline-start: var(--space-2);
     font-weight: 400;
-    color: var(--ink-muted);
+    color: var(--muted);
 }
 
 // ==========================================================================
