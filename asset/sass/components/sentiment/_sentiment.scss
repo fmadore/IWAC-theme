@@ -8,28 +8,31 @@
 
 // --------------------------------------------------------------------------
 // Hide Sentiment Properties from Metadata Display
-// These properties are displayed via the IwacSentiment module block instead
+// Only on public item show pages where the sentiment block displays them
+// Properties remain visible in admin and other contexts for verification
 // --------------------------------------------------------------------------
 
-.property[data-property-term="iwac:geminiCentralite"],
-.property[data-property-term="iwac:geminiCentraliteJustification"],
-.property[data-property-term="iwac:geminiPolarite"],
-.property[data-property-term="iwac:geminiPolariteJustification"],
-.property[data-property-term="iwac:geminiSubjectiviteScore"],
-.property[data-property-term="iwac:geminiSubjectiviteJustification"],
-.property[data-property-term="iwac:chatgptCentralite"],
-.property[data-property-term="iwac:chatgptCentraliteJustification"],
-.property[data-property-term="iwac:chatgptPolarite"],
-.property[data-property-term="iwac:chatgptPolariteJustification"],
-.property[data-property-term="iwac:chatgptSubjectiviteScore"],
-.property[data-property-term="iwac:chatgptSubjectiviteJustification"],
-.property[data-property-term="iwac:mistralCentralite"],
-.property[data-property-term="iwac:mistralCentraliteJustification"],
-.property[data-property-term="iwac:mistralPolarite"],
-.property[data-property-term="iwac:mistralPolariteJustification"],
-.property[data-property-term="iwac:mistralSubjectiviteScore"],
-.property[data-property-term="iwac:mistralSubjectiviteJustification"] {
-    display: none;
+body.item.show {
+    .property[data-property-term="iwac:geminiCentralite"],
+    .property[data-property-term="iwac:geminiCentraliteJustification"],
+    .property[data-property-term="iwac:geminiPolarite"],
+    .property[data-property-term="iwac:geminiPolariteJustification"],
+    .property[data-property-term="iwac:geminiSubjectiviteScore"],
+    .property[data-property-term="iwac:geminiSubjectiviteJustification"],
+    .property[data-property-term="iwac:chatgptCentralite"],
+    .property[data-property-term="iwac:chatgptCentraliteJustification"],
+    .property[data-property-term="iwac:chatgptPolarite"],
+    .property[data-property-term="iwac:chatgptPolariteJustification"],
+    .property[data-property-term="iwac:chatgptSubjectiviteScore"],
+    .property[data-property-term="iwac:chatgptSubjectiviteJustification"],
+    .property[data-property-term="iwac:mistralCentralite"],
+    .property[data-property-term="iwac:mistralCentraliteJustification"],
+    .property[data-property-term="iwac:mistralPolarite"],
+    .property[data-property-term="iwac:mistralPolariteJustification"],
+    .property[data-property-term="iwac:mistralSubjectiviteScore"],
+    .property[data-property-term="iwac:mistralSubjectiviteJustification"] {
+        display: none;
+    }
 }
 
 // --------------------------------------------------------------------------

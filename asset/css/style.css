@@ -6447,24 +6447,24 @@ body.search .results .highlight {
 
 /* Sentiment Analysis (IwacSentiment module)
 --------------------------------------------- */
-.property[data-property-term="iwac:geminiCentralite"],
-.property[data-property-term="iwac:geminiCentraliteJustification"],
-.property[data-property-term="iwac:geminiPolarite"],
-.property[data-property-term="iwac:geminiPolariteJustification"],
-.property[data-property-term="iwac:geminiSubjectiviteScore"],
-.property[data-property-term="iwac:geminiSubjectiviteJustification"],
-.property[data-property-term="iwac:chatgptCentralite"],
-.property[data-property-term="iwac:chatgptCentraliteJustification"],
-.property[data-property-term="iwac:chatgptPolarite"],
-.property[data-property-term="iwac:chatgptPolariteJustification"],
-.property[data-property-term="iwac:chatgptSubjectiviteScore"],
-.property[data-property-term="iwac:chatgptSubjectiviteJustification"],
-.property[data-property-term="iwac:mistralCentralite"],
-.property[data-property-term="iwac:mistralCentraliteJustification"],
-.property[data-property-term="iwac:mistralPolarite"],
-.property[data-property-term="iwac:mistralPolariteJustification"],
-.property[data-property-term="iwac:mistralSubjectiviteScore"],
-.property[data-property-term="iwac:mistralSubjectiviteJustification"] {
+body.item.show .property[data-property-term="iwac:geminiCentralite"],
+body.item.show .property[data-property-term="iwac:geminiCentraliteJustification"],
+body.item.show .property[data-property-term="iwac:geminiPolarite"],
+body.item.show .property[data-property-term="iwac:geminiPolariteJustification"],
+body.item.show .property[data-property-term="iwac:geminiSubjectiviteScore"],
+body.item.show .property[data-property-term="iwac:geminiSubjectiviteJustification"],
+body.item.show .property[data-property-term="iwac:chatgptCentralite"],
+body.item.show .property[data-property-term="iwac:chatgptCentraliteJustification"],
+body.item.show .property[data-property-term="iwac:chatgptPolarite"],
+body.item.show .property[data-property-term="iwac:chatgptPolariteJustification"],
+body.item.show .property[data-property-term="iwac:chatgptSubjectiviteScore"],
+body.item.show .property[data-property-term="iwac:chatgptSubjectiviteJustification"],
+body.item.show .property[data-property-term="iwac:mistralCentralite"],
+body.item.show .property[data-property-term="iwac:mistralCentraliteJustification"],
+body.item.show .property[data-property-term="iwac:mistralPolarite"],
+body.item.show .property[data-property-term="iwac:mistralPolariteJustification"],
+body.item.show .property[data-property-term="iwac:mistralSubjectiviteScore"],
+body.item.show .property[data-property-term="iwac:mistralSubjectiviteJustification"] {
   display: none;
 }
 
