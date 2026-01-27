@@ -6469,16 +6469,8 @@ body.search .results .highlight {
 }
 
 .iwac-sentiment-block {
-  --sentiment-border-radius: var(--radius-lg);
-  --sentiment-spacing: var(--space-4);
-  --sentiment-card-shadow: var(--shadow-sm);
-  --sentiment-transition: all var(--transition-fast);
-  background: var(--surface);
+  background: var(--surface-raised);
   border-color: var(--border);
-  font-family: inherit;
-}
-.iwac-sentiment-block.compact {
-  --sentiment-spacing: var(--space-3);
 }
 
 .sentiment-header {
@@ -6487,31 +6479,18 @@ body.search .results .highlight {
 
 .sentiment-title {
   color: var(--ink);
-  font-size: var(--text-lg);
 }
 
 .title-icon {
   color: var(--muted);
 }
 
-.consensus-badge {
-  background: color-mix(in srgb, #22c55e 15%, transparent);
-  color: #166534;
-}
-body[data-theme=dark] .consensus-badge {
-  background: color-mix(in srgb, #22c55e 20%, transparent);
-  color: #86efac;
-}
-
 .view-toggle {
-  background: var(--surface-raised);
-  border-radius: var(--radius-md);
+  background: var(--border);
 }
 
 .view-toggle-btn {
   color: var(--muted);
-  border-radius: var(--radius-sm);
-  transition: color var(--transition-fast), background var(--transition-fast);
 }
 .view-toggle-btn:hover {
   color: var(--ink);
@@ -6519,18 +6498,10 @@ body[data-theme=dark] .consensus-badge {
 .view-toggle-btn.active {
   background: var(--surface);
   color: var(--ink);
-  box-shadow: var(--shadow-xs);
 }
 
 .sentiment-card {
   background: var(--surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
-}
-.sentiment-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
 }
 
 .card-header {
@@ -6539,36 +6510,26 @@ body[data-theme=dark] .consensus-badge {
 
 .model-name {
   color: var(--ink);
-  font-size: var(--text-base);
-}
-
-.card-body {
-  gap: var(--space-3);
 }
 
 .metric-label {
   color: var(--muted);
-  font-size: var(--text-xs);
 }
 
 .metric-value {
   color: var(--ink);
-  font-size: var(--text-base);
 }
 
 .subjectivity-bar {
   background: var(--border);
-  border-radius: var(--radius-full);
 }
 
 .bar-fill {
   background: linear-gradient(90deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #8b5cf6));
-  border-radius: var(--radius-full);
 }
 
 .score-label {
   color: var(--muted);
-  font-size: var(--text-sm);
 }
 
 .justifications {
@@ -6577,41 +6538,36 @@ body[data-theme=dark] .consensus-badge {
 
 .justifications summary {
   color: var(--muted);
-  font-size: var(--text-sm);
-  transition: color var(--transition-fast);
 }
 .justifications summary:hover {
   color: var(--ink);
 }
 
-.justification-item {
-  font-size: var(--text-sm);
-  line-height: var(--line-height-relaxed);
+.justification-item:not(:last-child) {
+  border-bottom-color: var(--border-light);
 }
+
 .justification-item strong {
   color: var(--ink);
 }
+
 .justification-item p {
   color: var(--muted);
+  border-left-color: var(--border);
 }
 
 .chart-container {
   background: var(--surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
 }
 .chart-container h4 {
   color: var(--ink);
-  font-size: var(--text-base);
 }
 
 .charts-legend {
   background: var(--surface-raised);
-  border-radius: var(--radius-md);
 }
 .charts-legend p {
   color: var(--muted);
-  font-size: var(--text-sm);
 }
 .charts-legend strong {
   color: var(--ink);
@@ -6623,41 +6579,34 @@ body[data-theme=dark] .consensus-badge {
 
 .methodology-note {
   color: var(--muted);
-  font-size: var(--text-xs);
 }
 
 .iwac-sentiment-error,
 .iwac-sentiment-none {
   background: var(--surface-raised);
   border-color: var(--border);
-  border-radius: var(--radius-lg);
   color: var(--muted);
-  font-size: var(--text-base);
 }
 
 .iwac-sentiment-error {
-  background: color-mix(in srgb, #ef4444 10%, var(--surface));
-  border-color: color-mix(in srgb, #ef4444 30%, var(--border));
-  color: #dc2626;
-}
-body[data-theme=dark] .iwac-sentiment-error {
-  color: #fca5a5;
+  background: var(--error-bg);
+  border-color: color-mix(in srgb, var(--error) 30%, var(--border));
+  color: var(--error);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .sentiment-card {
-    transition: none;
-  }
-  .sentiment-card:hover {
-    transform: none;
-  }
-  .bar-fill {
-    transition: none;
-  }
-  .justifications .summary-icon {
-    transition: none;
-  }
+.consensus-badge {
+  background: var(--success-bg);
+  color: var(--success);
 }
+
+.centrality-dots .dot.filled {
+  color: var(--primary);
+}
+
+.centrality-dots .dot.empty {
+  color: var(--border);
+}
+
 /* URI Dereferencer
 --------------------------------------------- */
 .uri-dereferencer-toggle, .uri-dereferencer-fetch {
