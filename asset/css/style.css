@@ -3537,27 +3537,32 @@ body.menu-drawer-toggled {
 /* Annotation
 --------------------------------------------- */
 .annotation-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: 0 var(--space-2);
   position: relative;
 }
-.annotation-btn:hover .annotation-tooltip {
-  height: auto;
-  opacity: 1;
-  padding: var(--space-5);
-}
 .annotation-btn .has-annotation {
   color: var(--primary);
+  transition: color var(--transition-fast);
+}
+.annotation-btn .has-annotation:hover {
+  color: var(--primary-hover);
+}
+.annotation-btn:hover .annotation-tooltip, .annotation-btn:focus-within .annotation-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 .annotation-btn .annotation-tooltip {
-  height: 0;
   opacity: 0;
-  overflow: hidden;
+  visibility: hidden;
+  transform: translateY(4px);
   position: absolute;
   inset-inline-start: 0;
   bottom: var(--space-2);
-  transition: opacity var(--transition-base);
-  z-index: var(--z-dropdown);
+  transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
+  z-index: var(--z-tooltip);
 }
 @media (min-width: 1024px) {
   .annotation-btn .annotation-tooltip {
@@ -3565,13 +3570,12 @@ body.menu-drawer-toggled {
   }
 }
 .annotation-btn .annotation-tooltip__wrapper {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 0;
   box-shadow: var(--shadow-lg);
   font-size: var(--text-xs);
   width: 230px;
-  height: auto;
   padding: var(--space-4) var(--space-4) var(--space-8);
 }
 @media (min-width: 1024px) {
@@ -3580,7 +3584,7 @@ body.menu-drawer-toggled {
   }
 }
 .annotation-btn .annotation-tooltip__wrapper.below-button {
-  border-radius: 0 var(--radius-lg) var(--radius-lg) var(--radius-lg);
+  border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
 }
 .annotation-btn .annotation-tooltip__heading {
   font-size: var(--text-sm);
@@ -6441,6 +6445,219 @@ body.search .results .highlight {
   font-weight: 500;
 }
 
+/* Sentiment Analysis (IwacSentiment module)
+--------------------------------------------- */
+.property[data-property-term="iwac:geminiCentralite"],
+.property[data-property-term="iwac:geminiCentraliteJustification"],
+.property[data-property-term="iwac:geminiPolarite"],
+.property[data-property-term="iwac:geminiPolariteJustification"],
+.property[data-property-term="iwac:geminiSubjectiviteScore"],
+.property[data-property-term="iwac:geminiSubjectiviteJustification"],
+.property[data-property-term="iwac:chatgptCentralite"],
+.property[data-property-term="iwac:chatgptCentraliteJustification"],
+.property[data-property-term="iwac:chatgptPolarite"],
+.property[data-property-term="iwac:chatgptPolariteJustification"],
+.property[data-property-term="iwac:chatgptSubjectiviteScore"],
+.property[data-property-term="iwac:chatgptSubjectiviteJustification"],
+.property[data-property-term="iwac:mistralCentralite"],
+.property[data-property-term="iwac:mistralCentraliteJustification"],
+.property[data-property-term="iwac:mistralPolarite"],
+.property[data-property-term="iwac:mistralPolariteJustification"],
+.property[data-property-term="iwac:mistralSubjectiviteScore"],
+.property[data-property-term="iwac:mistralSubjectiviteJustification"] {
+  display: none;
+}
+
+.iwac-sentiment-block {
+  --sentiment-border-radius: var(--radius-lg);
+  --sentiment-spacing: var(--space-4);
+  --sentiment-card-shadow: var(--shadow-sm);
+  --sentiment-transition: all var(--transition-fast);
+  background: var(--surface);
+  border-color: var(--border);
+  font-family: inherit;
+}
+.iwac-sentiment-block.compact {
+  --sentiment-spacing: var(--space-3);
+}
+
+.sentiment-header {
+  border-color: var(--border);
+}
+
+.sentiment-title {
+  color: var(--ink);
+  font-size: var(--text-lg);
+}
+
+.title-icon {
+  color: var(--muted);
+}
+
+.consensus-badge {
+  background: color-mix(in srgb, #22c55e 15%, transparent);
+  color: #166534;
+}
+body[data-theme=dark] .consensus-badge {
+  background: color-mix(in srgb, #22c55e 20%, transparent);
+  color: #86efac;
+}
+
+.view-toggle {
+  background: var(--surface-raised);
+  border-radius: var(--radius-md);
+}
+
+.view-toggle-btn {
+  color: var(--muted);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+.view-toggle-btn:hover {
+  color: var(--ink);
+}
+.view-toggle-btn.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-xs);
+}
+
+.sentiment-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+.sentiment-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  background: var(--surface-raised);
+}
+
+.model-name {
+  color: var(--ink);
+  font-size: var(--text-base);
+}
+
+.card-body {
+  gap: var(--space-3);
+}
+
+.metric-label {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+.metric-value {
+  color: var(--ink);
+  font-size: var(--text-base);
+}
+
+.subjectivity-bar {
+  background: var(--border);
+  border-radius: var(--radius-full);
+}
+
+.bar-fill {
+  background: linear-gradient(90deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #8b5cf6));
+  border-radius: var(--radius-full);
+}
+
+.score-label {
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.justifications {
+  border-color: var(--border);
+}
+
+.justifications summary {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  transition: color var(--transition-fast);
+}
+.justifications summary:hover {
+  color: var(--ink);
+}
+
+.justification-item {
+  font-size: var(--text-sm);
+  line-height: var(--line-height-relaxed);
+}
+.justification-item strong {
+  color: var(--ink);
+}
+.justification-item p {
+  color: var(--muted);
+}
+
+.chart-container {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.chart-container h4 {
+  color: var(--ink);
+  font-size: var(--text-base);
+}
+
+.charts-legend {
+  background: var(--surface-raised);
+  border-radius: var(--radius-md);
+}
+.charts-legend p {
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+.charts-legend strong {
+  color: var(--ink);
+}
+
+.sentiment-footer {
+  border-color: var(--border);
+}
+
+.methodology-note {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+.iwac-sentiment-error,
+.iwac-sentiment-none {
+  background: var(--surface-raised);
+  border-color: var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--muted);
+  font-size: var(--text-base);
+}
+
+.iwac-sentiment-error {
+  background: color-mix(in srgb, #ef4444 10%, var(--surface));
+  border-color: color-mix(in srgb, #ef4444 30%, var(--border));
+  color: #dc2626;
+}
+body[data-theme=dark] .iwac-sentiment-error {
+  color: #fca5a5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sentiment-card {
+    transition: none;
+  }
+  .sentiment-card:hover {
+    transform: none;
+  }
+  .bar-fill {
+    transition: none;
+  }
+  .justifications .summary-icon {
+    transition: none;
+  }
+}
 /* URI Dereferencer
 --------------------------------------------- */
 .uri-dereferencer-toggle, .uri-dereferencer-fetch {

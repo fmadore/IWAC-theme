@@ -1,44 +1,51 @@
 @use "../../abstracts/abstracts" as *;
 
 .annotation-btn {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     padding: 0 var(--space-2);
     position: relative;
 
-    &:hover {
-        .annotation-tooltip {
-            height: auto;
-            opacity: 1;
-            padding: var(--space-5);
+    .has-annotation {
+        color: var(--primary);
+        transition: color var(--transition-fast);
+
+        &:hover {
+            color: var(--primary-hover);
         }
     }
 
-    .has-annotation {
-        color: var(--primary);
+    &:hover .annotation-tooltip,
+    &:focus-within .annotation-tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
     }
 
     .annotation-tooltip {
-        height: 0;
         opacity: 0;
-        overflow: hidden;
+        visibility: hidden;
+        transform: translateY(4px);
         position: absolute;
         inset-inline-start: 0;
         bottom: var(--space-2);
-        transition: opacity var(--transition-base);
-        z-index: var(--z-dropdown);
+        transition:
+            opacity var(--transition-fast),
+            transform var(--transition-fast),
+            visibility var(--transition-fast);
+        z-index: var(--z-tooltip);
 
         @media (min-width: $lg) {
             bottom: var(--space-1);
         }
 
         &__wrapper {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 0;
             box-shadow: var(--shadow-lg);
             font-size: var(--text-xs);
             width: 230px;
-            height: auto;
             padding: var(--space-4) var(--space-4) var(--space-8);
 
             @media (min-width: $lg) {
@@ -46,7 +53,7 @@
             }
 
             &.below-button {
-                border-radius: 0 var(--radius-lg) var(--radius-lg) var(--radius-lg);
+                border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
             }
         }
 

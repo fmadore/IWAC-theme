@@ -42,7 +42,7 @@ foreach ($values as $term => $propertyData):
         $propertyTerm = null;
     }
     ?>
-    <div class="property">
+    <div class="property" data-property-term="<?php echo $escape($term); ?>">
         <dt>
         <?php echo $escape($propertyLabel); ?>
         <?php if ($propertyTerm !== null) : ?>

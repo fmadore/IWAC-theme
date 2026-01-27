@@ -1,0 +1,268 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Sentiment Analysis
+// Styles for the IwacSentiment module integration
+// - Hides sentiment properties from normal metadata display
+// - Provides theme-specific overrides for the sentiment block
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Hide Sentiment Properties from Metadata Display
+// These properties are displayed via the IwacSentiment module block instead
+// --------------------------------------------------------------------------
+
+// List of sentiment property terms to hide
+// Gemini properties (319-324)
+// ChatGPT properties (325-330)
+// Mistral properties (331-336)
+
+.property[data-property-term="iwac:geminiCentralite"],
+.property[data-property-term="iwac:geminiCentraliteJustification"],
+.property[data-property-term="iwac:geminiPolarite"],
+.property[data-property-term="iwac:geminiPolariteJustification"],
+.property[data-property-term="iwac:geminiSubjectiviteScore"],
+.property[data-property-term="iwac:geminiSubjectiviteJustification"],
+.property[data-property-term="iwac:chatgptCentralite"],
+.property[data-property-term="iwac:chatgptCentraliteJustification"],
+.property[data-property-term="iwac:chatgptPolarite"],
+.property[data-property-term="iwac:chatgptPolariteJustification"],
+.property[data-property-term="iwac:chatgptSubjectiviteScore"],
+.property[data-property-term="iwac:chatgptSubjectiviteJustification"],
+.property[data-property-term="iwac:mistralCentralite"],
+.property[data-property-term="iwac:mistralCentraliteJustification"],
+.property[data-property-term="iwac:mistralPolarite"],
+.property[data-property-term="iwac:mistralPolariteJustification"],
+.property[data-property-term="iwac:mistralSubjectiviteScore"],
+.property[data-property-term="iwac:mistralSubjectiviteJustification"] {
+    display: none;
+}
+
+// --------------------------------------------------------------------------
+// Sentiment Block Theme Overrides
+// Override module's CSS custom properties with IWAC design tokens
+// --------------------------------------------------------------------------
+
+.iwac-sentiment-block {
+    // Override module's custom properties with theme tokens
+    --sentiment-border-radius: var(--radius-lg);
+    --sentiment-spacing: var(--space-4);
+    --sentiment-card-shadow: var(--shadow-sm);
+    --sentiment-transition: all var(--transition-fast);
+
+    // Use theme surface colors
+    background: var(--surface);
+    border-color: var(--border);
+    font-family: inherit;
+
+    // Compact mode spacing
+    &.compact {
+        --sentiment-spacing: var(--space-3);
+    }
+}
+
+// Header
+.sentiment-header {
+    border-color: var(--border);
+}
+
+.sentiment-title {
+    color: var(--ink);
+    font-size: var(--text-lg);
+}
+
+.title-icon {
+    color: var(--muted);
+}
+
+// Consensus badge - use success semantic color
+.consensus-badge {
+    background: color-mix(in srgb, #22c55e 15%, transparent);
+    color: #166534;
+
+    body[data-theme="dark"] & {
+        background: color-mix(in srgb, #22c55e 20%, transparent);
+        color: #86efac;
+    }
+}
+
+// View toggle
+.view-toggle {
+    background: var(--surface-raised);
+    border-radius: var(--radius-md);
+}
+
+.view-toggle-btn {
+    color: var(--muted);
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast), background var(--transition-fast);
+
+    &:hover {
+        color: var(--ink);
+    }
+
+    &.active {
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow: var(--shadow-xs);
+    }
+}
+
+// Cards
+.sentiment-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+
+    &:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+    }
+}
+
+.card-header {
+    background: var(--surface-raised);
+}
+
+.model-name {
+    color: var(--ink);
+    font-size: var(--text-base);
+}
+
+.card-body {
+    gap: var(--space-3);
+}
+
+// Metrics
+.metric-label {
+    color: var(--muted);
+    font-size: var(--text-xs);
+}
+
+.metric-value {
+    color: var(--ink);
+    font-size: var(--text-base);
+}
+
+// Subjectivity bar
+.subjectivity-bar {
+    background: var(--border);
+    border-radius: var(--radius-full);
+}
+
+.bar-fill {
+    background: linear-gradient(90deg, var(--primary), color-mix(in srgb, var(--primary) 70%, #8b5cf6));
+    border-radius: var(--radius-full);
+}
+
+.score-label {
+    color: var(--muted);
+    font-size: var(--text-sm);
+}
+
+// Justifications
+.justifications {
+    border-color: var(--border);
+}
+
+.justifications summary {
+    color: var(--muted);
+    font-size: var(--text-sm);
+    transition: color var(--transition-fast);
+
+    &:hover {
+        color: var(--ink);
+    }
+}
+
+.justification-item {
+    font-size: var(--text-sm);
+    line-height: var(--line-height-relaxed);
+
+    strong {
+        color: var(--ink);
+    }
+
+    p {
+        color: var(--muted);
+    }
+}
+
+// Charts
+.chart-container {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+
+    h4 {
+        color: var(--ink);
+        font-size: var(--text-base);
+    }
+}
+
+.charts-legend {
+    background: var(--surface-raised);
+    border-radius: var(--radius-md);
+
+    p {
+        color: var(--muted);
+        font-size: var(--text-sm);
+    }
+
+    strong {
+        color: var(--ink);
+    }
+}
+
+// Footer
+.sentiment-footer {
+    border-color: var(--border);
+}
+
+.methodology-note {
+    color: var(--muted);
+    font-size: var(--text-xs);
+}
+
+// Error & empty states
+.iwac-sentiment-error,
+.iwac-sentiment-none {
+    background: var(--surface-raised);
+    border-color: var(--border);
+    border-radius: var(--radius-lg);
+    color: var(--muted);
+    font-size: var(--text-base);
+}
+
+.iwac-sentiment-error {
+    background: color-mix(in srgb, #ef4444 10%, var(--surface));
+    border-color: color-mix(in srgb, #ef4444 30%, var(--border));
+    color: #dc2626;
+
+    body[data-theme="dark"] & {
+        color: #fca5a5;
+    }
+}
+
+// --------------------------------------------------------------------------
+// Reduced Motion
+// --------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+    .sentiment-card {
+        transition: none;
+
+        &:hover {
+            transform: none;
+        }
+    }
+
+    .bar-fill {
+        transition: none;
+    }
+
+    .justifications .summary-icon {
+        transition: none;
+    }
+}

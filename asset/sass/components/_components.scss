@@ -80,6 +80,10 @@
 --------------------------------------------- */
 @forward "search-results/search-results";
 
+/* Sentiment Analysis (IwacSentiment module)
+--------------------------------------------- */
+@forward "sentiment/sentiment";
+
 /* URI Dereferencer
 --------------------------------------------- */
 @forward "uri-dereferencer/uri-dereferencer";
