@@ -20,14 +20,34 @@
             box-shadow var(--transition-base),
             border-color var(--transition-base);
 
+        // Subtle accent line at top of card
         &::before {
-            content: none !important;
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--accent-line-md);
+            background: linear-gradient(
+                90deg,
+                color-mix(in srgb, var(--primary) 20%, transparent) 0%,
+                color-mix(in srgb, var(--primary) 40%, var(--border)) 50%,
+                color-mix(in srgb, var(--primary) 20%, transparent) 100%
+            );
+            opacity: 0;
+            transition: opacity var(--transition-base);
+            z-index: 1;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
         }
 
         &:hover {
             transform: translateY(var(--lift-xs));
             box-shadow: var(--shadow-lg), var(--glow-sm);
             border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+
+            &::before {
+                opacity: 1;
+            }
         }
 
         &__thumbnail {

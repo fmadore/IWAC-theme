@@ -44,6 +44,13 @@
   --radius-full: 9999px;
 
   // ========================================================================
+  // Accent Line Widths
+  // For decorative borders, underlines, and visual accents
+  // ========================================================================
+  --accent-line-sm: 2px;
+  --accent-line-md: 3px;
+
+  // ========================================================================
   // Lift (negative translate) for hover effects
   // ========================================================================
   --lift-xxs: -0.0625rem; // -1px
@@ -92,19 +99,20 @@
 
   // ========================================================================
   // Shadow Color Tokens (semantic, theme-aware)
+  // Warm-tinted shadows for light theme cohesion
   // ========================================================================
-  --shadow-color: color-mix(in srgb, black 10%, transparent);
-  --shadow-color-strong: color-mix(in srgb, black 15%, transparent);
-  --shadow-color-subtle: color-mix(in srgb, black 5%, transparent);
+  --shadow-color: color-mix(in srgb, hsl(30, 20%, 15%) 12%, transparent);
+  --shadow-color-strong: color-mix(in srgb, hsl(30, 20%, 15%) 18%, transparent);
+  --shadow-color-subtle: color-mix(in srgb, hsl(30, 15%, 20%) 6%, transparent);
 
   // ========================================================================
-  // Shadows - Light Theme (layered for depth)
+  // Shadows - Light Theme (layered for depth, warm undertone)
   // ========================================================================
   --shadow-xs: 0 1px 2px 0 var(--shadow-color-subtle);
-  --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px color-mix(in srgb, black 6%, transparent);
-  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px color-mix(in srgb, black 6%, transparent);
+  --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px color-mix(in srgb, hsl(30, 15%, 20%) 8%, transparent);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px color-mix(in srgb, hsl(30, 15%, 20%) 8%, transparent);
   --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
-  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, black 4%, transparent);
+  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, hsl(30, 15%, 20%) 5%, transparent);
 
   // ========================================================================
   // Panel/Card Elevation Helpers
@@ -215,18 +223,18 @@ body[data-theme="dark"] {
 }
 
 body[data-theme="light"] {
-  // Shadow colors for light theme
-  --shadow-color: color-mix(in srgb, black 10%, transparent);
-  --shadow-color-strong: color-mix(in srgb, black 15%, transparent);
-  --shadow-color-subtle: color-mix(in srgb, black 5%, transparent);
+  // Shadow colors for light theme - warm tinted for cohesion
+  --shadow-color: color-mix(in srgb, hsl(30, 20%, 15%) 12%, transparent);
+  --shadow-color-strong: color-mix(in srgb, hsl(30, 20%, 15%) 18%, transparent);
+  --shadow-color-subtle: color-mix(in srgb, hsl(30, 15%, 20%) 6%, transparent);
 
-  // Enhanced shadows for better visibility on light backgrounds
+  // Enhanced shadows with warm undertone for light backgrounds
   --shadow-xs: 0 1px 2px 0 var(--shadow-color-subtle);
-  --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px color-mix(in srgb, black 6%, transparent);
-  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px color-mix(in srgb, black 6%, transparent);
+  --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px color-mix(in srgb, hsl(30, 15%, 20%) 8%, transparent);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px color-mix(in srgb, hsl(30, 15%, 20%) 8%, transparent);
   --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
-  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, black 4%, transparent);
-  // Modern card: pure white background, subtle border, soft shadow
+  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, hsl(30, 15%, 20%) 5%, transparent);
+  // Modern card with warm surface
   --panel-bg: var(--surface);
   --panel-border-color: var(--shadow-color-subtle);
   --panel-shadow: var(--shadow-md);

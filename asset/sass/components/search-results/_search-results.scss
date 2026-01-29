@@ -14,15 +14,17 @@ body.search {
             padding: var(--space-4);
             border-radius: var(--radius-md);
             border: 1px solid transparent;
-            transition: 
-                background-color var(--transition-fast), 
+            border-left: var(--accent-line-md) solid transparent;
+            transition:
+                background-color var(--transition-fast),
                 border-color var(--transition-fast),
                 box-shadow var(--transition-fast);
 
             &:hover {
                 background-color: var(--surface-raised);
                 border-color: var(--border-light);
-                box-shadow: var(--shadow-xs);
+                border-left-color: color-mix(in srgb, var(--primary) 60%, var(--border));
+                box-shadow: var(--shadow-sm);
             }
         }
 

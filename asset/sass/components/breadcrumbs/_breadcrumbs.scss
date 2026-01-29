@@ -22,16 +22,31 @@
         }
     }
 
-    // Separator
+    // Separator - accent-tinted for warmth
     span:not(:last-child)::after {
-        content: "/";
-        color: var(--border);
+        content: "›";
+        color: color-mix(in srgb, var(--primary) 40%, var(--muted));
         margin-inline-start: var(--space-2);
+        font-weight: 400;
     }
 
-    // Current page
+    // Current page - with accent marker
     span:last-child {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
         color: var(--ink);
         font-weight: 600;
+
+        // Accent dot marker
+        &::before {
+            content: "";
+            display: inline-block;
+            width: var(--space-1);
+            height: var(--space-1);
+            background: var(--primary);
+            border-radius: var(--radius-full);
+            flex-shrink: 0;
+        }
     }
 }

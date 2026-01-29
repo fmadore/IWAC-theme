@@ -20,4 +20,34 @@ body {
   // Reset problematic padding from upstream theme
   padding-top: 0 !important;
   margin-top: 0 !important;
+
+  // Subtle warm atmospheric gradient for light theme
+  // Creates gentle depth without being distracting
+  &:not([data-theme="dark"])::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 100% 50% at 50% -5%,
+      color-mix(in srgb, hsl(var(--primary-hue), 60%, 55%) 3%, transparent) 0%,
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: -1;
+
+    @media (prefers-reduced-motion: reduce) {
+      display: none;
+    }
+  }
+}
+
+// Override atmospheric effect for dark theme
+@media (prefers-color-scheme: dark) {
+  body:not([data-theme="light"])::before {
+    display: none;
+  }
+}
+
+body[data-theme="dark"]::before {
+  display: none;
 }

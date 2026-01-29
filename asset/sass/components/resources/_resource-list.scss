@@ -19,14 +19,28 @@
         overflow: hidden;
         transition: box-shadow var(--transition-base), border-color var(--transition-base);
         margin-bottom: var(--space-md);
+        position: relative;
 
+        // Subtle accent line on left side
         &::before {
-            content: none !important;
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: var(--accent-line-md);
+            background: color-mix(in srgb, var(--primary) 30%, var(--border));
+            border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+            transition: background var(--transition-fast);
         }
 
         &:hover {
             box-shadow: var(--shadow-md);
             border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+
+            &::before {
+                background: var(--primary);
+            }
         }
 
         &__thumbnail {

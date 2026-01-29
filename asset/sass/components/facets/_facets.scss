@@ -202,9 +202,13 @@
         width: 100%;
         padding: var(--space-3) var(--space-4);
         margin: 0;
-        background: transparent; // Remove background for cleaner look
-        border-block-end: 1px solid var(--border);
-        color: var(--text-heading);
+        background: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--primary) 4%, var(--surface)) 0%,
+            var(--surface) 100%
+        );
+        border-block-end: 1px solid color-mix(in srgb, var(--primary) 20%, var(--border));
+        color: color-mix(in srgb, var(--primary) 40%, var(--text-heading));
         font-family: $font__headings;
         font-weight: 600;
         font-size: var(--text-sm);

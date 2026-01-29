@@ -17,26 +17,28 @@
   --primary-active: hsl(var(--primary-hue), var(--primary-sat), 40%);
 
   // Semantic ink colors (text) - with HSL components for derived colors
-  --ink-hue: 220;
-  --ink-sat: 28%;
+  // Warm neutral base (shifted from cool 220 to warm 215 with reduced saturation)
+  --ink-hue: 215;
+  --ink-sat: 20%;
   --ink-lum: 12%;
   --ink: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum));
-  --ink-light: hsl(220, 18%, 32%);
-  --muted: hsl(220, 14%, 50%);
+  --ink-light: hsl(210, 14%, 34%);
+  --muted: hsl(200, 10%, 48%);
 
   // Pure colors for overlays
   --white: #fff;
   --black: #000;
 
-  // Surface colors (backgrounds)
-  --surface: hsl(0, 0%, 100%);
-  --surface-raised: hsl(210, 33%, 97%);
-  --surface-overlay: color-mix(in srgb, white 94%, transparent);
-  --background: hsl(210, 40%, 96%);
+  // Surface colors (backgrounds) - warm neutral undertone
+  // Shifted from cool blue (210) to warm neutral (40-45) with low saturation
+  --surface: hsl(40, 20%, 99%);
+  --surface-raised: hsl(38, 18%, 97%);
+  --surface-overlay: color-mix(in srgb, hsl(40, 15%, 99%) 94%, transparent);
+  --background: hsl(40, 15%, 95.5%);
 
-  // Border colors
-  --border: hsl(210, 24%, 86%);
-  --border-light: hsl(210, 24%, 92%);
+  // Border colors - warm gray
+  --border: hsl(35, 12%, 85%);
+  --border-light: hsl(35, 10%, 91%);
 
   // Semantic colors
   --accent: var(--primary);
@@ -70,12 +72,12 @@
   --blockquote-border: color-mix(in srgb, var(--primary) 60%, var(--border) 40%);
   --blockquote-quote: color-mix(in srgb, var(--primary) 80%, var(--ink) 20%);
 
-  // Footer theme
-  --footer-surface: hsl(214, 32%, 17%);
-  --footer-surface-alt: hsl(214, 32%, 14%);
-  --footer-divider: hsl(214, 28%, 30%);
-  --footer-text: hsl(210, 20%, 96%);
-  --footer-text-muted: hsl(214, 22%, 80%);
+  // Footer theme - warm dark tones to complement light theme
+  --footer-surface: hsl(25, 18%, 18%);
+  --footer-surface-alt: hsl(25, 20%, 14%);
+  --footer-divider: hsl(25, 14%, 30%);
+  --footer-text: hsl(40, 15%, 96%);
+  --footer-text-muted: hsl(35, 12%, 78%);
   --footer-glow: color-mix(in srgb, hsl(var(--primary-hue), 70%, 60%) 22%, transparent);
 }
 
@@ -205,17 +207,20 @@ body[data-theme="light"] {
   --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 47%);
   --primary-active: hsl(var(--primary-hue), var(--primary-sat), 42%);
 
-  --ink: hsl(222, 24%, 14%);
-  --ink-light: hsl(222, 18%, 36%);
-  --muted: hsl(222, 14%, 52%);
+  // Warm neutral ink colors
+  --ink: hsl(215, 20%, 14%);
+  --ink-light: hsl(210, 14%, 36%);
+  --muted: hsl(200, 10%, 50%);
 
-  --surface: hsl(0, 0%, 100%);
-  --surface-raised: hsl(210, 33%, 97%);
-  --surface-overlay: color-mix(in srgb, white 94%, transparent);
-  --background: hsl(210, 40%, 96%);
+  // Warm neutral surfaces
+  --surface: hsl(40, 20%, 99%);
+  --surface-raised: hsl(38, 18%, 97%);
+  --surface-overlay: color-mix(in srgb, hsl(40, 15%, 99%) 94%, transparent);
+  --background: hsl(40, 15%, 95.5%);
 
-  --border: hsl(210, 24%, 86%);
-  --border-light: hsl(210, 24%, 92%);
+  // Warm gray borders
+  --border: hsl(35, 12%, 85%);
+  --border-light: hsl(35, 10%, 91%);
 
   // Semantic aliases for text and backgrounds
   --text-primary: var(--ink);
@@ -228,10 +233,11 @@ body[data-theme="light"] {
   --blockquote-border: color-mix(in srgb, var(--primary) 60%, var(--border) 40%);
   --blockquote-quote: color-mix(in srgb, var(--primary) 80%, var(--ink) 20%);
 
-  --footer-surface: hsl(214, 32%, 17%);
-  --footer-surface-alt: hsl(214, 32%, 14%);
-  --footer-divider: hsl(214, 28%, 30%);
-  --footer-text: hsl(210, 20%, 96%);
-  --footer-text-muted: hsl(214, 22%, 80%);
+  // Footer remains dark for contrast
+  --footer-surface: hsl(25, 18%, 18%);
+  --footer-surface-alt: hsl(25, 20%, 14%);
+  --footer-divider: hsl(25, 14%, 30%);
+  --footer-text: hsl(40, 15%, 96%);
+  --footer-text-muted: hsl(35, 12%, 78%);
   --footer-glow: color-mix(in srgb, hsl(var(--primary-hue), 70%, 60%) 22%, transparent);
 }

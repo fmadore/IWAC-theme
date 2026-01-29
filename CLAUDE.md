@@ -12,27 +12,52 @@ IWAC-theme is a customized Omeka S theme (fork of Freedom theme) for the Islam W
 
 ## Design Philosophy
 
-**Modern, professional, academic—but not flashy or gimmicky.**
+**Modern, professional, academic—warm and inviting without being flashy.**
+
+This is primarily a **newspaper collection** (not manuscripts), so the aesthetic should feel clean, editorial, and journalistic rather than archival or antiquarian.
 
 ### Core Principles
-- **Subtle Elegance** - Sophisticated without being showy
-- **Academic Appropriateness** - Clean typography for scholarly content
+- **Warm Professionalism** - Inviting warmth through color while maintaining scholarly credibility
+- **Editorial Clarity** - Clean typography suited for reading newspaper content
 - **Cultural Sensitivity** - Respectful presentation of Islamic heritage materials
-- **Functional Beauty** - Design serves usability
+- **Functional Beauty** - Design serves usability and readability
+
+### Color Philosophy
+The light theme uses **warm neutral tones** (hue ~35-40) rather than cold blue-grays:
+- Surfaces have a subtle cream undertone (not stark white)
+- Borders and shadows carry warm gray tones
+- The primary orange (IWAC brand) harmonizes with the warm base
+- A subtle atmospheric gradient adds depth without distraction
+
+This warmth creates visual comfort for extended reading sessions while differentiating the site from generic "default Bootstrap" aesthetics.
 
 ### Visual Guidelines
 - Use the primary orange (IWAC brand) as accent, not dominant
-- Subtle, muted backgrounds with high contrast for readability
+- Warm neutral backgrounds with high contrast for readability
 - Generous whitespace and breathing room between sections
-- Subtle shadows for elevation; avoid heavy drop shadows
+- Warm-tinted shadows for elevation; avoid harsh black shadows
 - Fast, purposeful transitions (150-200ms); no bouncing/elastic effects
 - Clear hover feedback and visible focus states
+- Subtle atmospheric depth in light theme (warm glow from top)
+
+### Component Styling Approach
+Key UI components use subtle accent integration for visual cohesion:
+- **Metadata properties** have accent-tinted left borders and card treatment
+- **Breadcrumbs** show current page with accent dot marker
+- **Resource cards** reveal accent line on hover
+- **Pagination** has subtle accent-tinted top border
+- **Facet legends** use accent-tinted backgrounds and borders
+- **Search results** show accent border on hover
+
+This creates consistent visual language without overwhelming the content.
 
 ### What to Avoid
+- Cold, clinical blue-gray color schemes (feels like a generic template)
+- Parchment/manuscript aesthetics (this is newspapers, not illuminated texts)
 - Overly flashy animations or jarring color combinations
 - Too many competing visual elements
 - Unnecessary decorative elements or Web 2.0 glossy effects
-- Harsh borders
+- Harsh borders or stark black shadows
 
 ## Build Commands
 
@@ -77,6 +102,7 @@ Key rules:
 | Text sizes | `--text-{size}` | `--text-xs`, `--text-sm`, `--text-base`, `--text-lg`, `--text-2xl` |
 | Spacing | `--space-{n}` | `--space-1` through `--space-40` (also `--space-sm`, `--space-md`, etc.) |
 | Effects | `--shadow-{size}`, `--radius-{size}` | `--shadow-sm`, `--shadow-md`, `--radius-md`, `--radius-lg` |
+| Accent lines | `--accent-line-{size}` | `--accent-line-sm` (2px), `--accent-line-md` (3px) |
 | Transitions | `--transition-{speed}` | `--transition-fast`, `--transition-base`, `--transition-slow` |
 | Line height | `--line-height-{type}` | `--line-height-tight`, `--line-height-normal`, `--line-height-relaxed` |
 

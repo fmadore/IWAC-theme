@@ -28,6 +28,25 @@
         backdrop-filter: blur(12px) saturate(1.2);
     }
 
+    // Subtle accent line at bottom for brand presence
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: var(--accent-line-sm);
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            color-mix(in srgb, var(--primary) 35%, var(--border)) 15%,
+            color-mix(in srgb, var(--primary) 50%, var(--border)) 50%,
+            color-mix(in srgb, var(--primary) 35%, var(--border)) 85%,
+            transparent 100%
+        );
+        pointer-events: none;
+    }
+
     &__top-bar {
         display: flex;
         align-items: center;
