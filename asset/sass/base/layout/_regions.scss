@@ -13,7 +13,7 @@
     padding-block-end: var(--space-12);
     border-block-end: 1px solid var(--border);
 
-    @media (min-width: $md) {
+    @media (min-width: $lg) {
         flex-direction: row;
     }
 
@@ -21,7 +21,7 @@
         order: -1;
         width: 100%;
 
-        @media (min-width: $md) {
+        @media (min-width: $lg) {
             order: initial;
         }
     }
@@ -31,7 +31,7 @@
         position: relative;
         width: 100%;
 
-        @media (min-width: $md) {
+        @media (min-width: $lg) {
             width: 27%;
         }
 

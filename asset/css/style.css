@@ -1886,7 +1886,7 @@ fieldset .field .field-meta label {
   padding-block-end: var(--space-12);
   border-block-end: 1px solid var(--border);
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .regions-container {
     flex-direction: row;
   }
@@ -1895,7 +1895,7 @@ fieldset .field .field-meta label {
   order: -1;
   width: 100%;
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .regions-container .main-region {
     order: initial;
   }
@@ -1905,7 +1905,7 @@ fieldset .field .field-meta label {
   position: relative;
   width: 100%;
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .regions-container .sidebar-region {
     width: 27%;
   }
