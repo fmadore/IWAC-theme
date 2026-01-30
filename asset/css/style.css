@@ -3725,6 +3725,114 @@ body.menu-drawer-toggled {
   font-weight: 500;
 }
 
+#advanced-search select[multiple],
+select[multiple].chosen-select,
+select.query-property[multiple],
+select.query-filter[multiple] {
+  height: auto !important;
+  min-height: 120px !important;
+  max-height: 200px !important;
+  background: var(--panel-bg) !important;
+  background-color: var(--panel-bg) !important;
+  border: var(--panel-border) !important;
+  border-radius: var(--radius-md) !important;
+  padding: var(--space-2) !important;
+  color: var(--ink) !important;
+  font-size: var(--text-sm) !important;
+  line-height: 1.6 !important;
+}
+#advanced-search select[multiple]::-webkit-scrollbar,
+select[multiple].chosen-select::-webkit-scrollbar,
+select.query-property[multiple]::-webkit-scrollbar,
+select.query-filter[multiple]::-webkit-scrollbar {
+  width: 8px;
+}
+#advanced-search select[multiple]::-webkit-scrollbar-track,
+select[multiple].chosen-select::-webkit-scrollbar-track,
+select.query-property[multiple]::-webkit-scrollbar-track,
+select.query-filter[multiple]::-webkit-scrollbar-track {
+  background: var(--surface-raised);
+  border-radius: var(--radius-sm);
+}
+#advanced-search select[multiple]::-webkit-scrollbar-thumb,
+select[multiple].chosen-select::-webkit-scrollbar-thumb,
+select.query-property[multiple]::-webkit-scrollbar-thumb,
+select.query-filter[multiple]::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-sm);
+}
+#advanced-search select[multiple]::-webkit-scrollbar-thumb:hover,
+select[multiple].chosen-select::-webkit-scrollbar-thumb:hover,
+select.query-property[multiple]::-webkit-scrollbar-thumb:hover,
+select.query-filter[multiple]::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+#advanced-search select[multiple],
+select[multiple].chosen-select,
+select.query-property[multiple],
+select.query-filter[multiple] {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) var(--surface-raised);
+}
+#advanced-search select[multiple]:focus,
+select[multiple].chosen-select:focus,
+select.query-property[multiple]:focus,
+select.query-filter[multiple]:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px var(--focus-ring) !important;
+  outline: none !important;
+}
+
+#advanced-search select option,
+#advanced-search select[multiple] option,
+select.chosen-select option,
+select.query-property option,
+select.query-filter option {
+  color: var(--ink) !important;
+  padding: var(--space-2) var(--space-3) !important;
+  line-height: 1.6 !important;
+  background-color: var(--surface) !important;
+  min-height: 2rem !important;
+}
+
+#advanced-search select option:checked,
+#advanced-search select[multiple] option:checked,
+select.chosen-select option:checked,
+select.query-property option:checked,
+select.query-filter option:checked {
+  background: linear-gradient(0deg, color-mix(in srgb, var(--primary) 15%, var(--surface) 85%) 0%, color-mix(in srgb, var(--primary) 15%, var(--surface) 85%) 100%) !important;
+  color: var(--ink) !important;
+  font-weight: 500 !important;
+}
+
+#advanced-search select option:hover,
+#advanced-search select[multiple] option:hover {
+  background-color: var(--surface-raised) !important;
+}
+
+#advanced-search select optgroup,
+#advanced-search select[multiple] optgroup,
+select.chosen-select optgroup,
+select.query-property optgroup,
+select.query-filter optgroup {
+  color: var(--muted) !important;
+  font-weight: 600 !important;
+  font-style: normal !important;
+  font-size: var(--text-xs) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  background-color: var(--surface) !important;
+  padding: var(--space-2) var(--space-3) !important;
+}
+
+#advanced-search select optgroup option,
+#advanced-search select[multiple] optgroup option {
+  padding-inline-start: var(--space-6) !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
 /* Annotation
 --------------------------------------------- */
 .annotation-btn {

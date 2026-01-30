@@ -904,3 +904,134 @@
         font-weight: 500;
     }
 }
+
+// =============================================================================
+// NATIVE MULTI-SELECT LIST BOXES
+// Limited styling for native <select multiple> elements
+// NOTE: <option> elements have VERY limited CSS support - only color and
+// background-color work, and even those are browser-dependent
+// =============================================================================
+
+// Multi-select list box container
+#advanced-search select[multiple],
+select[multiple].chosen-select,
+select.query-property[multiple],
+select.query-filter[multiple] {
+    // Override the 44px height for multi-selects - they need to show multiple options
+    height: auto !important;
+    min-height: 120px !important;
+    max-height: 200px !important;
+
+    // Container styling
+    background: var(--panel-bg) !important;
+    background-color: var(--panel-bg) !important;
+    border: var(--panel-border) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--space-2) !important;
+
+    // Text styling
+    color: var(--ink) !important;
+    font-size: var(--text-sm) !important;
+    line-height: 1.6 !important;
+
+    // Scrollbar styling (webkit)
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--surface-raised);
+        border-radius: var(--radius-sm);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: var(--radius-sm);
+
+        &:hover {
+            background: var(--muted);
+        }
+    }
+
+    // Firefox scrollbar
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) var(--surface-raised);
+
+    &:focus {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 3px var(--focus-ring) !important;
+        outline: none !important;
+    }
+}
+
+// Native <option> elements - VERY limited styling support
+// Only color and background-color work, and they're browser-dependent
+#advanced-search select option,
+#advanced-search select[multiple] option,
+select.chosen-select option,
+select.query-property option,
+select.query-filter option {
+    // Text color - works in most browsers
+    color: var(--ink) !important;
+
+    // Padding - works in Firefox, ignored in Chrome/Safari
+    padding: var(--space-2) var(--space-3) !important;
+
+    // Line height - limited support
+    line-height: 1.6 !important;
+
+    // Background for unselected options
+    background-color: var(--surface) !important;
+
+    // Minimum height - limited support
+    min-height: 2rem !important;
+}
+
+// Selected option styling
+#advanced-search select option:checked,
+#advanced-search select[multiple] option:checked,
+select.chosen-select option:checked,
+select.query-property option:checked,
+select.query-filter option:checked {
+    // Primary color tint for selected items
+    background: linear-gradient(0deg,
+        color-mix(in srgb, var(--primary) 15%, var(--surface) 85%) 0%,
+        color-mix(in srgb, var(--primary) 15%, var(--surface) 85%) 100%) !important;
+    color: var(--ink) !important;
+    font-weight: 500 !important;
+}
+
+// Hover state - limited browser support
+#advanced-search select option:hover,
+#advanced-search select[multiple] option:hover {
+    background-color: var(--surface-raised) !important;
+}
+
+// Option groups (categories)
+#advanced-search select optgroup,
+#advanced-search select[multiple] optgroup,
+select.chosen-select optgroup,
+select.query-property optgroup,
+select.query-filter optgroup {
+    // Group header styling
+    color: var(--muted) !important;
+    font-weight: 600 !important;
+    font-style: normal !important;
+    font-size: var(--text-xs) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    background-color: var(--surface) !important;
+
+    // Padding - Firefox only
+    padding: var(--space-2) var(--space-3) !important;
+}
+
+// Options within groups
+#advanced-search select optgroup option,
+#advanced-search select[multiple] optgroup option {
+    // Indent options within groups
+    padding-inline-start: var(--space-6) !important;
+    font-weight: 400 !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
