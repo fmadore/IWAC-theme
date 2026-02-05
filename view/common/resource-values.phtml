@@ -76,8 +76,10 @@ foreach ($values as $term => $propertyData):
                 <?php endif; ?>
                 <?php if ($valueAnnotation && $showValueAnnotations) : ?>
                     <div class="annotation-btn">
-                        <span class="has-annotation o-icon-annotation" aria-role="tooltip" title="<?php echo $this->escapeHtml($translate('Has annotation')); ?>" aria-label="<?php echo $this->escapeHtml($translate('Has annotation')); ?>"></span>
-                        <div class="annotation-tooltip">
+                        <button type="button" class="annotation-trigger" aria-expanded="false" aria-label="<?php echo $this->escapeHtml($translate('Show annotation')); ?>">
+                            <span class="o-icon-annotation" aria-hidden="true"></span>
+                        </button>
+                        <div class="annotation-tooltip" role="tooltip">
                             <div class="annotation-tooltip__wrapper">
                                 <h6 class="annotation-tooltip__heading"><?php echo $this->escapeHtml($translate('Value Annotations')); ?></h6>
                                 <?php echo $valueAnnotation->displayValues(); ?>

@@ -1,88 +1,180 @@
 @use "../../abstracts/abstracts" as *;
 
+// ==========================================================================
+// Annotation Button & Tooltip
+// Shows value annotations in a tooltip triggered by click (mobile) or hover
+// ==========================================================================
+
 .annotation-btn {
     display: inline-flex;
     align-items: center;
-    padding: 0 var(--space-2);
     position: relative;
+    margin-inline-start: var(--space-1);
 
-    .has-annotation {
-        color: var(--primary);
-        transition: color var(--transition-fast);
+    // The clickable trigger button
+    .annotation-trigger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.75rem;
+        height: 1.75rem;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full);
+        background: var(--surface);
+        color: var(--info);
+        cursor: pointer;
+        transition:
+            background-color var(--transition-fast),
+            border-color var(--transition-fast),
+            color var(--transition-fast),
+            box-shadow var(--transition-fast);
 
         &:hover {
-            color: var(--primary-hover);
+            background: color-mix(in srgb, var(--info) 10%, var(--surface));
+            border-color: var(--info);
+            color: var(--info);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--focus-color);
+            outline-offset: 2px;
+        }
+
+        .o-icon-annotation {
+            font-size: var(--text-sm);
+            line-height: 1;
+
+            &::before {
+                display: block;
+            }
         }
     }
 
+    // Show tooltip on hover (desktop) or when active (mobile via JS)
     &:hover .annotation-tooltip,
-    &:focus-within .annotation-tooltip {
+    &.is-active .annotation-tooltip {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
     }
 
+    // The tooltip container
     .annotation-tooltip {
         opacity: 0;
         visibility: hidden;
         transform: translateY(4px);
         position: absolute;
         inset-inline-start: 0;
-        bottom: var(--space-2);
+        bottom: calc(100% + var(--space-2));
         transition:
             opacity var(--transition-fast),
             transform var(--transition-fast),
             visibility var(--transition-fast);
         z-index: var(--z-tooltip);
 
-        @media (min-width: $lg) {
-            bottom: var(--space-1);
-        }
-
+        // Tooltip panel
         &__wrapper {
             background-color: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 0;
             box-shadow: var(--shadow-lg);
-            font-size: var(--text-xs);
-            width: 230px;
-            padding: var(--space-4) var(--space-4) var(--space-8);
+            font-size: var(--text-sm);
+            width: 300px;
+            max-width: calc(100vw - var(--space-8));
+            padding: var(--space-4);
 
-            @media (min-width: $lg) {
-                padding: var(--space-4);
-            }
-
+            // When tooltip appears below the button
             &.below-button {
                 border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
             }
         }
 
+        // Heading
         &__heading {
             font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--ink);
+            margin: 0 0 var(--space-3);
+            padding-block-end: var(--space-2);
+            border-bottom: 1px solid var(--border-light);
         }
 
-        .property:not(:last-child) {
-            margin-block-end: var(--space-4);
+        // Property list styling
+        dl {
+            margin: 0;
+        }
+
+        .property {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+            align-items: baseline;
+
+            &:not(:last-child) {
+                margin-block-end: var(--space-3);
+                padding-block-end: var(--space-3);
+                border-bottom: 1px solid var(--border-light);
+            }
         }
 
         dt {
-            float: left;
+            flex: 0 0 auto;
             font-size: var(--text-xs);
-            margin-block-end: var(--space-2);
-            padding-inline-end: var(--space-3);
-            width: 70px !important;
+            font-weight: 500;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            margin: 0;
+            padding: 0;
+            float: none;
+            width: auto !important;
         }
 
         dd {
-            font-size: var(--text-xs);
-            margin: 0;
-            margin-inline-start: 70px !important;
+            flex: 1 1 auto;
+            font-size: var(--text-sm);
+            color: var(--ink);
+            margin: 0 !important;
+
+            a {
+                color: var(--primary);
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
 
             &.resource.media img {
                 display: block;
-                max-width: 80px;
+                max-width: 100px;
                 border-radius: var(--radius-sm);
+                margin-block-start: var(--space-2);
             }
         }
+    }
+}
+
+// Legacy support: style old span-based triggers the same way
+.annotation-btn > .has-annotation:not(.annotation-trigger .o-icon-annotation) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    background: var(--surface);
+    color: var(--info);
+    cursor: pointer;
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast);
+
+    &:hover {
+        background: color-mix(in srgb, var(--info) 10%, var(--surface));
+        border-color: var(--info);
     }
 }

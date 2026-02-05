@@ -28,3 +28,10 @@
     height: 0.8em;
     color: var(--ink);
 }
+
+.o-icon-annotation::before {
+    @include icon-mask("../img/info.svg");
+    content: "";
+    width: 1em;
+    height: 1em;
+}

@@ -88,24 +88,56 @@ const freedomScripts = () => {
         }
     }
 
-    // Annotations tooltip position
+    // Annotations tooltip - click toggle and positioning
 
     const annotationBtns = document.querySelectorAll('.annotation-btn');
 
+    function closeAllAnnotations(except = null) {
+        annotationBtns.forEach((btn) => {
+            if (btn !== except) {
+                btn.classList.remove('is-active');
+                const trigger = btn.querySelector('.annotation-trigger');
+                if (trigger) {
+                    trigger.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+    }
+
     annotationBtns.forEach((annotationBtn) => {
         const annotationTooltip = annotationBtn.querySelector('.annotation-tooltip');
-        const annotationTooltipWrapper = annotationTooltip.querySelector('.annotation-tooltip__wrapper');
+        const annotationTooltipWrapper = annotationTooltip?.querySelector('.annotation-tooltip__wrapper');
+        const trigger = annotationBtn.querySelector('.annotation-trigger');
 
-        const eventList = ['click', 'mouseover'];
-        eventList.forEach((event) => {
-            annotationBtn.addEventListener(event, setAnnotationTooltipPos);
-        });
+        if (!annotationTooltip || !annotationTooltipWrapper) return;
+
+        // Click to toggle (for mobile and accessibility)
+        if (trigger) {
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isActive = annotationBtn.classList.contains('is-active');
+
+                closeAllAnnotations(annotationBtn);
+
+                if (!isActive) {
+                    annotationBtn.classList.add('is-active');
+                    trigger.setAttribute('aria-expanded', 'true');
+                    setAnnotationTooltipPos();
+                } else {
+                    annotationBtn.classList.remove('is-active');
+                    trigger.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        // Position tooltip on hover
+        annotationBtn.addEventListener('mouseover', setAnnotationTooltipPos);
 
         function setAnnotationTooltipPos() {
             const annotationBtnOffset = annotationBtn.getBoundingClientRect();
             const { top, left } = annotationBtnOffset;
             const distanceToRightEdge = window.innerWidth - (left + annotationBtn.offsetWidth);
-            
+
             if (distanceToRightEdge < (annotationTooltipWrapper.offsetWidth + 15)) {
                 annotationTooltip.style.left = (distanceToRightEdge - annotationTooltipWrapper.offsetWidth - 15) + 'px';
             } else {
@@ -123,6 +155,13 @@ const freedomScripts = () => {
                     annotationTooltip.style.bottom = '5px';
                 }
             }
+        }
+    });
+
+    // Close annotations when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.annotation-btn')) {
+            closeAllAnnotations();
         }
     });
 
