@@ -8,7 +8,7 @@
 // Block groups containing HTML blocks (text content cards)
 // Excludes: page title blocks, blocks with assets (handled separately)
 // Includes: blocks with line breaks (spacing elements are fine)
-.block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle)) {
+.block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle)):not(.block-group-grid) {
     // Text content blocks get card styling with visual interest
     position: relative;
     background: var(--panel-bg);
@@ -35,6 +35,45 @@
     &:hover {
         transform: translateY(var(--lift-xs));
         box-shadow: var(--shadow-xl), var(--glow-sm);
+    }
+}
+
+// Cards inside grids - equal height with flex layout
+.block-group-grid > .block-blockGroup:has(.block-html):not(:has(.block-asset)) {
+    position: relative;
+    background: var(--panel-bg);
+    border: var(--panel-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md), var(--glow-xs);
+    padding: var(--space-lg);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    // Subtle inner glow for depth
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius-lg);
+        box-shadow: inset 0 1px 0 0 color-mix(in srgb, white 8%, transparent);
+        pointer-events: none;
+    }
+
+    // Hover effect
+    transition: transform var(--transition-base),
+    box-shadow var(--transition-base);
+
+    &:hover {
+        transform: translateY(var(--lift-xs));
+        box-shadow: var(--shadow-xl), var(--glow-sm);
+    }
+
+    // Content inside card
+    .block-html {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 }
 
@@ -86,10 +125,31 @@
 }
 
 // ==========================================================================
-// Block groups that are just containers (no special styling)
+// Grid layout for block groups (team members, cards, etc.)
 // ==========================================================================
-.block-blockGroup.block-group-grid:not(:has(.block-asset)) {
+.block-blockGroup.block-group-grid {
     display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: var(--space-6);
+    align-items: stretch;
+
+    // Remove margin from direct children - gap handles spacing
+    > .block {
+        margin-block-end: 0;
+    }
+
+    // Cards inside grid stretch to equal height
+    > .block-blockGroup,
+    > .block-html {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        // Push last element to bottom for consistent card layout
+        > :last-child {
+            margin-block-start: auto;
+        }
+    }
 }
 
 // ==========================================================================
