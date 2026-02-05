@@ -4742,7 +4742,6 @@ select.query-filter optgroup {
   font-size: var(--text-lg);
 }
 .block-blockGroup:has(.block-asset) .block-html p {
-  color: var(--ink-light);
   margin-block-end: 0;
 }
 .block-blockGroup:has(.block-asset) .block-html p:last-child {
