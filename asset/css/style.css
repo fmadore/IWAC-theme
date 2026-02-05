@@ -4741,9 +4741,6 @@ select.query-filter optgroup {
   color: var(--ink);
   font-size: var(--text-lg);
 }
-.block-blockGroup:has(.block-asset) .block-html p {
-  margin-block-end: 0;
-}
 .block-blockGroup:has(.block-asset) .block-html p:last-child {
   margin-block-end: 0;
 }
@@ -4763,7 +4760,7 @@ select.query-filter optgroup {
   border-radius: var(--radius-lg);
   box-shadow: var(--panel-shadow);
   overflow: hidden;
-  max-width: min(100%, 600px);
+  max-width: 320px;
   margin-inline: auto;
   transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
