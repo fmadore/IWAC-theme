@@ -193,6 +193,117 @@ Theme colors defined in `_colors.scss`, persistence via `localStorage` key `iwac
 
 The theme integrates with: Internationalisation (language switching), Mapping, Collecting, Faceted Browse, URI Dereferencer, Universal Viewer. Always check module availability before using their helpers.
 
+### Faceted Browse Module (Critical Integration)
+
+**Source:** [omeka-s-modules/FacetedBrowse](https://github.com/omeka-s-modules/FacetedBrowse)
+
+The Faceted Browse module is heavily used on the site. It is **entirely AJAX-driven** — the page loads a skeleton, then fetches sidebar facets and browse results via AJAX. This means:
+- Content inside `#section-sidebar` and `#section-content` is replaced on every filter/page change
+- Inline `<script>` tags in AJAX responses execute when jQuery processes the HTML
+- Tablesaw re-initializes each time column results are loaded
+
+#### DOM Structure (Rendered Page)
+
+```
+body.faceted-browse-page.resource.browse
+  #container [data-url-categories, data-url-facets, data-url-browse, data-category-id]
+    button#section-sidebar-modal-toggle          (mobile only)
+    #section-sidebar.mobile.modal-panel          (AJAX content)
+      button#section-sidebar-modal-close.close-button
+      fieldset.categories-container              (if multiple categories)
+        legend
+        ul#categories > li > a.category[data-category-id]
+      — OR —
+      a#categories-return.button                 (back to categories)
+      fieldset.facets-container
+        legend                                   (category name, e.g. "Bénin")
+        div#facets[data-category-id, data-category-options]
+          fieldset.facet[data-facet-id, data-facet-type, data-facet-data]
+            legend                               (facet name, e.g. "Type")
+            ul.select-list > li.select-list-item > label > input + span
+            a.select-list-expand / a.select-list-collapse
+            — OR —
+            input.full-text[type="text"]
+            — OR —
+            select.value
+    #section-content                             (AJAX content)
+      div.browse-controls                        (pagination, permalink, sort)
+      ul.resource-list > li.item.resource        (default list view)
+      — OR —
+      table.faceted-results.tablesaw.tablesaw-swipe  (column/table view)
+      div.browse-controls                        (bottom pagination)
+```
+
+#### Template Overrides in This Theme
+
+| Theme Path | Overrides | Purpose |
+|------------|-----------|---------|
+| `view/faceted-browse/site/page/browse-items-columns.phtml` | Module's table template | Wraps `<table>` in `<div class="faceted-browse-table-wrapper">` for horizontal scroll |
+
+**IMPORTANT:** The module's original template renders the table **directly** inside `#section-content` with NO wrapper element. Without the template override, `.faceted-browse-table-wrapper` CSS targets nothing.
+
+#### Key CSS Classes from the Module
+
+| Class | Element | Notes |
+|-------|---------|-------|
+| `.faceted-browse-page` | `<body>` | Top-level page scope |
+| `.block-facetedBrowsePreview` | Block wrapper | For embedded preview blocks on site pages |
+| `.categories-container` | `<fieldset>` | Wraps category list |
+| `.facets-container` | `<fieldset>` | Wraps all facets for current category |
+| `.facet` | `<fieldset>` | Individual facet; has `data-facet-type` attribute |
+| `.select-list` | `<ul>` | Facet options list; has `data-truncate-list-items` |
+| `.select-list-item` | `<li>` | Individual option with label + input |
+| `.select-list-expand` / `.select-list-collapse` | `<a>` | "See more" / "See less" toggle buttons |
+| `.full-text` | `<input>` | Full-text search input inside a facet |
+| `.faceted-results` | `<table>` | Results table (column view) |
+| `.tablesaw` / `.tablesaw-swipe` | `<table>` | Tablesaw responsive table classes |
+| `.resource-list` | `<ul>` | Default list view results |
+| `.browse-controls` | `<div>` | Pagination + sort + permalink wrapper |
+| `.permalink` | `<a>` | Copy permalink button |
+| `#section-content.loading` | state | Shows spinner, hides children via CSS |
+
+#### Facet Types and Their Input Classes
+
+| Facet Type (`data-facet-type`) | Input Class | Modes |
+|-------------------------------|-------------|-------|
+| `value` | `.value` | `text_input`, `single_select`, `single_list`, `multiple_list` |
+| `item_set` | `.item-set` | Select dropdown or checkbox/radio list |
+| `resource_class` | `.resource-class` | Select dropdown or checkbox/radio list |
+| `resource_template` | `.resource-template` | Select dropdown or checkbox/radio list |
+| `full_text` | `.full-text` | Text input with 350ms debounce |
+
+#### Tablesaw Vendor Library
+
+The module bundles Tablesaw for responsive tables. Key points:
+- Mode: `swipe` — hides columns and provides left/right navigation arrows
+- Classes added by JS: `.tablesaw-swipe-cellhidden` (hidden columns), `.tablesaw-cell-persist` (pinned first column)
+- Tablesaw sets `max-width: 100%` on `.tablesaw` — use our wrapper's `overflow-x: auto` instead
+- Arrow buttons: `a.tablesaw-nav-btn.btn.btn-micro.left|right` — use CSS border triangles via `::before`, positioned with `position: absolute`
+- Navigation container: `.tablesaw-advance` — module sets `float: right`, we override to `float: none`
+- Tablesaw wraps the table in `.tablesaw-bar` at runtime
+
+#### Module CSS Gotchas (Things That Need `!important` Overrides)
+
+| Module Style | Issue | Theme Fix |
+|-------------|-------|-----------|
+| `.tablesaw { max-width: 100% }` | Prevents table from exceeding container | Wrapper with `overflow-x: auto` handles scroll |
+| `.tablesaw-advance { float: right }` | Breaks flex layout | `float: none !important` |
+| `.tablesaw-advance a.tablesaw-nav-btn { width: 1.8em; height: 1.8em; text-indent: -9999px }` | Tiny buttons, arrow positioning based on small size | Override dimensions and re-center `::before` arrows |
+| `.tablesaw-btn` / `.btn-micro` | Generic button styles conflict | Use high-specificity selectors with `!important` |
+| `#section-sidebar.open { background-color: #fff }` | Hardcoded white background | Override with `var(--bg-surface)` for dark mode |
+
+#### Breakpoints
+
+- **Module CSS mobile:** `max-width: 39.9988em` (~640px) — sidebar stacks, toggle appears
+- **Module JS modal:** `896px` — sidebar modal behavior
+- **Theme overrides:** Uses `$xl` (1200px) for sidebar layout, `$lg` (1024px) for tablesaw columns
+
+#### Theme SCSS Location
+
+All faceted browse styles: `asset/sass/components/facets/_facets.scss`
+
+Selectors are scoped under `.faceted-browse-page, .block-facetedBrowsePreview { ... }` to target both the full page and embedded block previews.
+
 ## Constraints
 
 - Never edit files in `asset/css/` - they're auto-generated
