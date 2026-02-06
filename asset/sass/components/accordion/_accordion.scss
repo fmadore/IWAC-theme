@@ -1,3 +1,10 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Accordion
+// Expandable content panels with accent line and smooth transitions
+// ==========================================================================
+
 .accordion {
     &__container {
         background-color: var(--bg-surface);
@@ -31,15 +38,16 @@
             inset-inline-start: 0;
             position: absolute;
             top: 0;
-            width: 3px;
+            width: var(--accent-line-md);
         }
 
         &:hover,
-        &:active,
-        &:focus {
-            background-color: var(--bg-muted) !important;
-            color: var(--text-primary) !important;
+        &:active {
+            background-color: var(--bg-muted);
+            color: var(--text-primary);
         }
+
+        @include focus-ring;
     }
 
     &__icon {
@@ -47,7 +55,7 @@
         align-items: center;
         border: 1px solid var(--border-color);
         border-radius: 50%;
-        height: var(--space-9, 36px);
+        height: 36px;
         justify-content: center;
         pointer-events: none;
         position: absolute;
@@ -55,7 +63,7 @@
         top: 50%;
         transform: translateY(-50%) rotate(0);
         transition: transform var(--transition-base);
-        width: var(--space-9, 36px);
+        width: 36px;
 
         .accordion__trigger.expanded & {
             transform: translateY(-50%) rotate(-180deg);

@@ -1,3 +1,5 @@
+@use "../../abstracts/abstracts" as *;
+
 // ==========================================================================
 // Resource List
 // Horizontal card layout with hover effects and modern styling
@@ -5,7 +7,7 @@
 
 .resource-list {
     height: auto !important;
-	list-style: none;
+    list-style: none;
     padding-inline-start: 0;
 
     .resource {
@@ -22,21 +24,11 @@
         position: relative;
 
         // Subtle accent line on left side
-        &::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: var(--accent-line-md);
-            background: color-mix(in srgb, var(--primary) 30%, var(--border));
-            border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-            transition: background var(--transition-fast);
-        }
+        @include accent-line-left;
 
         &:hover {
             box-shadow: var(--shadow-md);
-            border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+            border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
 
             &::before {
                 background: var(--primary);
@@ -74,14 +66,7 @@
         }
 
         .title a {
-            color: var(--ink);
-            font-weight: 500;
-            text-decoration: none;
-            transition: color var(--transition-fast);
-
-            &:hover {
-                color: var(--primary);
-            }
+            @include title-link;
         }
     }
 }

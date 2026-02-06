@@ -104,7 +104,8 @@ Key rules:
 | Effects | `--shadow-{size}`, `--radius-{size}` | `--shadow-sm`, `--shadow-md`, `--radius-md`, `--radius-lg` |
 | Accent lines | `--accent-line-{size}` | `--accent-line-sm` (2px), `--accent-line-md` (3px) |
 | Transitions | `--transition-{speed}` | `--transition-fast`, `--transition-base`, `--transition-slow` |
-| Line height | `--line-height-{type}` | `--line-height-tight`, `--line-height-normal`, `--line-height-relaxed` |
+| Line height | `--line-height-{type}` | `--line-height-normal`, `--line-height-relaxed` |
+| Accent mix | `--accent-mix-{strength}` | `--accent-mix-subtle` (25%), `--accent-mix-medium` (40%), `--accent-mix-strong` (60%) |
 
 **Common mistakes - these tokens DON'T exist:**
 | Wrong | Correct |
@@ -114,11 +115,30 @@ Key rules:
 | `--font-size-*` | `--text-*` |
 | `--leading-*` | `--line-height-*` |
 | `--border-dark`, `--border-strong`, `--border-hover` | `--border` |
+| `--accent` | `--primary` (accent alias was removed) |
+| `--line-height-tight` | Use `1.25` directly or `$font__headings-line-height` |
+| `--font-weight-*` | Use numeric values directly (400, 500, 600, 700) |
 
-For color variations, use `color-mix()`:
+For color variations, use `color-mix()` with accent-mix tokens for consistency:
 ```scss
+// Use standardized accent-mix tokens for consistent accent tinting
+border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
 background: color-mix(in srgb, var(--primary) 20%, transparent);
 ```
+
+### Shared Mixins (`_mixins.scss`)
+
+Use these mixins for consistent component patterns:
+
+| Mixin | Purpose | Usage |
+|-------|---------|-------|
+| `@include card-hover` | Lift + shadow + accent border on hover | Resource cards, carousel slides |
+| `@include focus-ring` | Consistent `focus-visible` outline | Interactive elements (buttons, links) |
+| `@include accent-line-top($opacity)` | Accent gradient line at top of element | Resource grid cards (opacity: 0 on load) |
+| `@include accent-line-left` | Accent line on left side | Resource list cards, metadata |
+| `@include pagination-container` | Shared pagination layout with accent border | All pagination components |
+| `@include title-link` | Consistent resource title link styling | Resource grid/list titles |
+| `@include primary-button` / `@include secondary-button` | Button variants | Buttons, pagination controls |
 
 ### Dark/Light Theme System
 

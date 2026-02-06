@@ -387,7 +387,11 @@
             border: 1px solid color-mix(in srgb, var(--footer-text) 24%, var(--footer-divider) 76%);
             border-radius: var(--radius-full);
             color: var(--footer-text);
-            transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+            transition:
+                background-color var(--transition-fast),
+                border-color var(--transition-fast),
+                color var(--transition-fast),
+                transform var(--transition-fast);
             box-shadow: 0 12px 24px -18px color-mix(in srgb, black 55%, transparent);
 
             &:hover {

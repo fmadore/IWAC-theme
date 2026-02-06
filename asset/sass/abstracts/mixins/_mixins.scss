@@ -103,6 +103,109 @@
     }
 }
 
+// ==========================================================================
+// Card hover effect
+// Consistent lift + shadow + accent border for interactive cards
+// ==========================================================================
+@mixin card-hover {
+    transition:
+        transform var(--transition-base),
+        box-shadow var(--transition-base),
+        border-color var(--transition-base);
+
+    &:hover {
+        transform: translateY(var(--lift-xs));
+        box-shadow: var(--shadow-lg), var(--glow-sm);
+        border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+    }
+}
+
+// ==========================================================================
+// Focus ring
+// Consistent focus-visible outline for interactive elements
+// ==========================================================================
+@mixin focus-ring {
+    &:focus-visible {
+        outline: 2px solid var(--focus-color);
+        outline-offset: 2px;
+    }
+}
+
+// ==========================================================================
+// Accent line (decorative border)
+// Position: top or left, with configurable strength
+// ==========================================================================
+@mixin accent-line-top($opacity: 0) {
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--accent-line-md);
+        background: linear-gradient(
+            90deg,
+            color-mix(in srgb, var(--primary) 20%, transparent) 0%,
+            color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border)) 50%,
+            color-mix(in srgb, var(--primary) 20%, transparent) 100%
+        );
+        opacity: $opacity;
+        transition: opacity var(--transition-base);
+        z-index: 1;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+}
+
+@mixin accent-line-left {
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: var(--accent-line-md);
+        background: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+        border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+        transition: background var(--transition-fast);
+    }
+}
+
+// ==========================================================================
+// Pagination container
+// Shared layout for all pagination components
+// ==========================================================================
+@mixin pagination-container {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    justify-content: center;
+    margin-block: var(--space-8);
+    padding-block: var(--space-8);
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--primary) 2%, var(--surface)) 0%,
+        var(--surface) 100%
+    );
+}
+
+// ==========================================================================
+// Title link
+// Consistent styling for resource title links
+// ==========================================================================
+@mixin title-link {
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+
+    &:hover {
+        color: var(--primary);
+    }
+}
+
 @mixin secondary-button {
     @include button;
     background: var(--surface);

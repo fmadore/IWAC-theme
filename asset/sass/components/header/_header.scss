@@ -39,9 +39,9 @@
         background: linear-gradient(
             90deg,
             transparent 0%,
-            color-mix(in srgb, var(--primary) 35%, var(--border)) 15%,
-            color-mix(in srgb, var(--primary) 50%, var(--border)) 50%,
-            color-mix(in srgb, var(--primary) 35%, var(--border)) 85%,
+            color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border)) 15%,
+            color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border)) 50%,
+            color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border)) 85%,
             transparent 100%
         );
         pointer-events: none;

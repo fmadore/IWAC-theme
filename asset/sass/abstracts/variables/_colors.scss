@@ -41,7 +41,6 @@
   --border-light: hsl(35, 10%, 91%);
 
   // Semantic colors
-  --accent: var(--primary);
   --focus-color: var(--primary);
   --focus-ring: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 49%) 25%, transparent);
   --selection-bg: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 49%) 15%, transparent);
@@ -50,7 +49,6 @@
   --text-primary: var(--ink);
   --text-heading: var(--ink);
   --text-secondary: var(--muted);
-  --bg-body: var(--background);
   --bg-surface: var(--surface);
   --bg-muted: var(--surface-raised);
   --bg-elevated: var(--surface);
@@ -168,7 +166,6 @@ body[data-theme="dark"] {
   --text-primary: var(--ink);
   --text-heading: var(--ink);
   --text-secondary: var(--muted);
-  --bg-body: var(--background);
   --bg-surface: var(--surface);
   --bg-muted: var(--surface-raised);
   --bg-elevated: var(--surface-raised);

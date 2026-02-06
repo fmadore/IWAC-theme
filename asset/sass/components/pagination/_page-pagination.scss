@@ -6,19 +6,7 @@
 // ==========================================================================
 
 .site-page-pagination {
-    display: flex;
-    // Accent-tinted top border for visual interest
-    border-top: 1px solid color-mix(in srgb, var(--primary) 25%, var(--border));
-    border-bottom: 1px solid var(--border);
-    gap: var(--space-4);
-    justify-content: center;
-    margin-block: var(--space-8);
-    padding-block: var(--space-8);
-    background: linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--primary) 2%, var(--surface)) 0%,
-        var(--surface) 100%
-    );
+    @include pagination-container;
 
     a {
         @include secondary-button;
