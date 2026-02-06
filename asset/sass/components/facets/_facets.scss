@@ -1,7 +1,7 @@
 @use "../../abstracts/abstracts" as *;
 
 // =============================================================================
-// FACETED BROWSE - Modern Filter Sidebar
+// FACETED BROWSE - Modern Filter Sidebar & Results Table
 // =============================================================================
 
 .faceted-browse-page,
@@ -41,11 +41,11 @@
             inset: 0 !important;
             width: 100% !important;
             height: 100vh !important;
-            height: 100dvh !important; // Dynamic viewport height for mobile browsers
+            height: 100dvh !important;
             background: var(--bg-surface) !important;
             overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain; // Prevent scroll chaining to body
+            overscroll-behavior: contain;
             padding: var(--space-4) !important;
 
             @media (min-width: $xl) {
@@ -91,7 +91,7 @@
     #facets {
         display: flex;
         flex-direction: column;
-        gap: var(--space-2);
+        gap: var(--space-3);
         margin-block-end: var(--space-4);
         overflow: hidden;
 
@@ -137,7 +137,7 @@
             box-shadow var(--transition-fast);
 
         &:hover {
-            border-color: color-mix(in srgb, var(--primary) 30%, var(--border-color) 70%);
+            border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
         }
 
         &:last-child {
@@ -169,7 +169,7 @@
                 &:focus {
                     outline: none;
                     border-color: var(--primary);
-                    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent 80%);
+                    box-shadow: 0 0 0 3px var(--focus-ring);
                 }
 
                 &::placeholder {
@@ -182,7 +182,7 @@
         >select,
         select.value {
             margin: var(--space-3) var(--space-4);
-            width: calc(100% - var(--space-8)) !important; // Account for left+right margins
+            width: calc(100% - var(--space-8)) !important;
             margin-block-end: 0;
         }
 
@@ -204,11 +204,11 @@
         margin: 0;
         background: linear-gradient(
             180deg,
-            color-mix(in srgb, var(--primary) 4%, var(--surface)) 0%,
+            color-mix(in srgb, var(--primary) 5%, var(--surface)) 0%,
             var(--surface) 100%
         );
-        border-block-end: 1px solid color-mix(in srgb, var(--primary) 20%, var(--border));
-        color: color-mix(in srgb, var(--primary) 40%, var(--text-heading));
+        border-block-end: 1px solid color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+        color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--text-heading));
         font-family: $font__headings;
         font-weight: 600;
         font-size: var(--text-sm);
@@ -253,19 +253,25 @@
             margin: var(--space-2) var(--space-2) var(--space-1);
             padding: var(--space-2) var(--space-3);
             background: transparent;
-            border: 1px dashed var(--border);
+            border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             color: var(--primary);
             font-size: var(--text-sm);
             font-weight: 500;
             cursor: pointer;
             transition:
-                background var(--transition-fast),
-                border-color var(--transition-fast);
+                background-color var(--transition-fast),
+                border-color var(--transition-fast),
+                color var(--transition-fast);
 
             &:hover {
-                background: var(--bg-muted);
+                background: color-mix(in srgb, var(--primary) 8%, transparent);
                 border-color: var(--primary);
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--focus-color);
+                outline-offset: 2px;
             }
         }
     }
@@ -283,7 +289,7 @@
         margin: 0;
         border-radius: var(--radius-sm);
         cursor: pointer;
-        transition: background var(--transition-fast);
+        transition: background-color var(--transition-fast);
         overflow: hidden;
 
         &:hover {
@@ -293,7 +299,6 @@
         // Custom radio button styling
         input[type="radio"],
         input[type="checkbox"] {
-            // Hide default input but keep accessible
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
@@ -306,7 +311,7 @@
             border: 2px solid var(--border);
             cursor: pointer;
             transition:
-                background var(--transition-fast),
+                background-color var(--transition-fast),
                 border-color var(--transition-fast),
                 box-shadow var(--transition-fast);
 
@@ -315,7 +320,7 @@
             }
 
             &:focus-visible {
-                outline: 2px solid var(--primary);
+                outline: 2px solid var(--focus-color);
                 outline-offset: 2px;
             }
 
@@ -389,10 +394,10 @@
     // Selected/active state for the whole label
     .select-list-item.active label,
     .facet label:has(input:checked) {
-        background: color-mix(in srgb, var(--primary) 8%, transparent 92%);
+        background: color-mix(in srgb, var(--primary) 8%, transparent);
 
         &:hover {
-            background: color-mix(in srgb, var(--primary) 12%, transparent 88%);
+            background: color-mix(in srgb, var(--primary) 12%, transparent);
         }
     }
 
@@ -423,12 +428,18 @@
                 font-size: var(--text-sm);
                 text-decoration: none;
                 transition:
-                    background var(--transition-fast),
+                    background-color var(--transition-fast),
                     color var(--transition-fast);
 
                 &:hover {
                     background: var(--bg-muted);
                     color: var(--primary);
+                }
+
+                &:focus-visible {
+                    outline: 2px solid var(--focus-color);
+                    outline-offset: -2px;
+                    border-radius: var(--radius-sm);
                 }
 
                 &::before {
@@ -439,6 +450,11 @@
                     background: var(--primary);
                     border-radius: 50%;
                     opacity: 0.6;
+                    transition: opacity var(--transition-fast);
+                }
+
+                &:hover::before {
+                    opacity: 1;
                 }
             }
         }
@@ -451,18 +467,26 @@
         margin-block-end: var(--space-3);
         padding: var(--space-2) var(--space-3);
         background: var(--bg-muted);
+        border: 1px solid var(--border);
         border-radius: var(--radius-sm);
         color: var(--primary);
         font-size: var(--text-sm);
         font-weight: 500;
         text-decoration: none;
         transition:
-            background var(--transition-fast),
+            background-color var(--transition-fast),
+            border-color var(--transition-fast),
             color var(--transition-fast);
 
         &:hover {
-            background: color-mix(in srgb, var(--primary) 15%, var(--bg-muted) 85%);
+            background: color-mix(in srgb, var(--primary) 10%, var(--bg-muted));
+            border-color: var(--primary);
             color: var(--primary-hover);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--focus-color);
+            outline-offset: 2px;
         }
 
         &::before {
@@ -496,7 +520,7 @@
     }
 
     // -------------------------------------------------------------------------
-    // Results Display
+    // Results Display (list/grid mode)
     // -------------------------------------------------------------------------
     .faceted-results,
     .resource-list {
@@ -530,150 +554,140 @@
         }
     }
 
-    // -------------------------------------------------------------------------
+    // =========================================================================
     // Table Layout
-    // -------------------------------------------------------------------------
+    // Responsive table with accent-tinted header and warm row hover
+    // =========================================================================
     .faceted-browse-table-wrapper {
         overflow-x: auto;
-        padding: 0 var(--space-1);
         -webkit-overflow-scrolling: touch;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
     }
 
     table.faceted-results {
         width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 var(--space-3);
-        table-layout: fixed; // Key for consistent column widths
+        border-collapse: collapse;
+        border-spacing: 0;
 
-        // Flexible column widths - works for various configurations
-        // First column (usually main content like Title) is wider
-        // Last column (usually Date) is narrower and doesn't wrap
-        colgroup col,
-        thead th,
-        tbody td {
-            &:first-child {
-                width: 40%;
-            }
-
-            // Middle columns get equal share of remaining space
-            &:not(:first-child):not(:last-child) {
-                width: auto;
-            }
-
-            // Last column is narrower (typically Date)
-            &:last-child {
-                width: 15%;
-                min-width: 6rem;
-            }
-        }
-
+        // ---- Table header ----
         thead {
-            background-color: var(--bg-muted);
-            color: var(--text-primary);
-
             th {
-                padding: var(--space-3);
+                padding: var(--space-3) var(--space-4);
                 font-weight: 600;
+                font-size: var(--text-sm);
                 text-align: start;
+                color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--text-heading));
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                background: linear-gradient(
+                    180deg,
+                    color-mix(in srgb, var(--primary) 5%, var(--surface-raised)) 0%,
+                    var(--surface-raised) 100%
+                );
+                border-block-end: var(--accent-line-sm) solid color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+
+                &:not(:last-child) {
+                    border-inline-end: 1px solid var(--border-light);
+                }
             }
         }
 
+        // ---- Table body ----
         tbody {
             tr {
                 background-color: var(--bg-surface);
-                box-shadow: var(--shadow-sm);
-                transition: box-shadow var(--transition-fast);
+                transition:
+                    background-color var(--transition-fast);
 
                 &:hover {
-                    box-shadow: var(--shadow-md);
-                }
-
-                td {
-                    padding: var(--space-3);
-                    vertical-align: middle;
-                    overflow: hidden;
-
-                    // Date column - prevent breaking
-                    &:last-child {
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                    }
-
-                    // Middle columns (summaries, descriptions) - allow wrapping
-                    &:not(:first-child):not(:last-child) {
-                        white-space: normal !important; // Override Tablesaw
-                        overflow: visible;
-                        line-height: 1.5;
-                        word-break: break-word;
-                    }
-
-                    // Resource links - constrained display
-                    .resource-link {
-                        display: inline-flex;
-                        align-items: center;
-                        gap: var(--space-2);
-                        max-width: 100%;
-                        text-decoration: none;
-                        color: var(--primary);
-                        transition: color var(--transition-fast);
-
-                        &:hover {
-                            color: var(--primary-hover);
-                        }
-
-                        img {
-                            flex-shrink: 0;
-                            width: 2.5rem;
-                            height: 2.5rem;
-                            max-width: 2.5rem;
-                            max-height: 2.5rem;
-                            object-fit: cover;
-                            border-radius: var(--radius-sm);
-                        }
-
-                        .resource-name {
-                            white-space: normal;
-                            word-break: break-word;
-                            min-width: 0;
-                        }
-                    }
-
-                    // When multiple authors, stack them
-                    >.resource-link+br+.resource-link,
-                    >br+.resource-link {
-                        margin-block-start: var(--space-1);
-                    }
+                    background-color: color-mix(in srgb, var(--primary) 3%, var(--surface));
                 }
             }
-        }
 
-        // Mobile: Adjust column widths for small screens
-        @media (max-width: $md) {
+            td {
+                padding: var(--space-3) var(--space-4);
+                vertical-align: middle;
+                font-size: var(--text-sm);
+                line-height: var(--line-height-normal);
+                border-block-end: 1px solid var(--border-light);
 
-            thead th,
-            tbody td {
-                &:first-child {
-                    width: 45%;
+                &:not(:last-child) {
+                    border-inline-end: 1px solid var(--border-light);
                 }
 
+                // Date column - prevent breaking
                 &:last-child {
-                    width: 20%;
-                    min-width: 5rem;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
                 }
+
+                // Middle columns - allow wrapping
+                &:not(:first-child):not(:last-child) {
+                    white-space: normal;
+                    word-break: break-word;
+                }
+
+                // Resource links
+                .resource-link {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: var(--space-2);
+                    max-width: 100%;
+                    text-decoration: none;
+                    color: var(--primary);
+                    transition: color var(--transition-fast);
+
+                    &:hover {
+                        color: var(--primary-hover);
+                    }
+
+                    &:focus-visible {
+                        outline: 2px solid var(--focus-color);
+                        outline-offset: 2px;
+                        border-radius: var(--radius-sm);
+                    }
+
+                    img {
+                        flex-shrink: 0;
+                        width: 2.5rem;
+                        height: 2.5rem;
+                        max-width: 2.5rem;
+                        max-height: 2.5rem;
+                        object-fit: cover;
+                        border-radius: var(--radius-sm);
+                    }
+
+                    .resource-name {
+                        white-space: normal;
+                        word-break: break-word;
+                        min-width: 0;
+                    }
+                }
+
+                // When multiple values, stack them
+                >.resource-link+br+.resource-link,
+                >br+.resource-link {
+                    margin-block-start: var(--space-1);
+                }
+            }
+
+            // Last row: no bottom border (the wrapper handles it)
+            tr:last-child td {
+                border-block-end: none;
             }
         }
     }
 
-    // -------------------------------------------------------------------------
+    // =========================================================================
     // Tablesaw Overrides (Responsive Tables)
-    // Show all columns on desktop, use swipe navigation on mobile
-    // -------------------------------------------------------------------------
+    // Desktop: show all columns; Mobile: swipe with navigation
+    // =========================================================================
     .tablesaw {
 
-        // On desktop, show all columns
+        // Desktop: force all columns visible
         @media (min-width: $lg) {
 
             th.tablesaw-swipe-cellhidden,
@@ -682,46 +696,79 @@
             }
         }
 
-        // Navigation buttons for mobile swipe
+        // Highlight the persistent/pinned column on mobile
+        @media (max-width: #{$lg - 1}) {
+            td.tablesaw-cell-persist {
+                font-weight: 500;
+            }
+        }
+
+        // Tablesaw navigation bar for mobile column swiping
         &-advance {
             display: flex;
-            gap: var(--space-2);
-            margin-block-start: var(--space-3);
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-3);
+            margin-block-start: var(--space-4);
+            padding: var(--space-3);
+            background: var(--surface-raised);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
 
             @media (min-width: $lg) {
-                display: none; // Hide navigation on desktop
+                display: none;
             }
 
             .tablesaw-nav-btn {
-                padding: var(--space-2) var(--space-3);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 2.25rem;
+                padding: var(--space-2) var(--space-4);
                 font-size: var(--text-sm);
-                background: var(--bg-surface);
-                border: 1px solid var(--border-color);
+                font-weight: 500;
+                background: var(--surface);
+                border: 1px solid var(--border);
                 border-radius: var(--radius-sm);
                 color: var(--text-primary);
                 cursor: pointer;
                 transition:
-                    background var(--transition-fast),
-                    border-color var(--transition-fast);
+                    background-color var(--transition-fast),
+                    border-color var(--transition-fast),
+                    color var(--transition-fast);
 
                 &:hover:not(.disabled) {
-                    background: var(--bg-muted);
+                    background: color-mix(in srgb, var(--primary) 8%, var(--surface));
                     border-color: var(--primary);
                     color: var(--primary);
                 }
 
+                &:focus-visible {
+                    outline: 2px solid var(--focus-color);
+                    outline-offset: 2px;
+                }
+
                 &.disabled {
-                    opacity: 0.5;
+                    opacity: 0.35;
                     cursor: not-allowed;
+                    color: var(--muted);
                 }
             }
+        }
+
+        // Column label in mobile stacked/swipe mode
+        &-cell-label {
+            font-weight: 600;
+            font-size: var(--text-xs);
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
         }
     }
 }
 
 // =============================================================================
 // Body scroll lock when filter sidebar is open (mobile)
-// Uses :has() for automatic detection without JavaScript
 // =============================================================================
 body:has(.faceted-browse-page #section-sidebar.open),
 body:has(.block-facetedBrowsePreview #section-sidebar.open) {
