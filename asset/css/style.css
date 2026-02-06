@@ -5986,7 +5986,7 @@ select.query-filter optgroup {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-4) var(--space-5);
   margin: 0;
   background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 5%, var(--surface)) 0%, var(--surface) 100%);
   border-block-end: 1px solid color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
@@ -6415,6 +6415,7 @@ select.query-filter optgroup {
 .faceted-browse-page table.faceted-results,
 .block-facetedBrowsePreview table.faceted-results {
   width: 100%;
+  min-width: 600px;
   border-collapse: collapse;
   border-spacing: 0;
 }
@@ -6425,9 +6426,6 @@ select.query-filter optgroup {
   font-size: var(--text-sm);
   text-align: start;
   color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--text-heading));
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 5%, var(--surface-raised)) 0%, var(--surface-raised) 100%);
   border-block-end: var(--accent-line-sm) solid color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
 }
@@ -6456,16 +6454,20 @@ select.query-filter optgroup {
 .block-facetedBrowsePreview table.faceted-results tbody td:not(:last-child) {
   border-inline-end: 1px solid var(--border-light);
 }
+.faceted-browse-page table.faceted-results tbody td:first-child,
+.block-facetedBrowsePreview table.faceted-results tbody td:first-child {
+  min-width: 12.5rem;
+}
 .faceted-browse-page table.faceted-results tbody td:last-child,
 .block-facetedBrowsePreview table.faceted-results tbody td:last-child {
   white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  min-width: 6.25rem;
 }
 .faceted-browse-page table.faceted-results tbody td:not(:first-child):not(:last-child),
 .block-facetedBrowsePreview table.faceted-results tbody td:not(:first-child):not(:last-child) {
   white-space: normal;
   word-break: break-word;
+  min-width: 7.5rem;
 }
 .faceted-browse-page table.faceted-results tbody td .resource-link,
 .block-facetedBrowsePreview table.faceted-results tbody td .resource-link {
@@ -6514,6 +6516,11 @@ select.query-filter optgroup {
 .block-facetedBrowsePreview table.faceted-results tbody tr:last-child td {
   border-block-end: none;
 }
+.faceted-browse-page .tablesaw-bar,
+.block-facetedBrowsePreview .tablesaw-bar {
+  clear: both;
+  overflow: visible;
+}
 @media (min-width: 1024px) {
   .faceted-browse-page .tablesaw th.tablesaw-swipe-cellhidden,
   .faceted-browse-page .tablesaw td.tablesaw-swipe-cellhidden,
@@ -6530,12 +6537,13 @@ select.query-filter optgroup {
 }
 .faceted-browse-page .tablesaw-advance,
 .block-facetedBrowsePreview .tablesaw-advance {
-  display: flex;
+  display: flex !important;
+  float: none !important;
   align-items: center;
   justify-content: center;
   gap: var(--space-3);
   margin-block-start: var(--space-4);
-  padding: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   background: var(--surface-raised);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
@@ -6543,41 +6551,53 @@ select.query-filter optgroup {
 @media (min-width: 1024px) {
   .faceted-browse-page .tablesaw-advance,
   .block-facetedBrowsePreview .tablesaw-advance {
-    display: none;
+    display: none !important;
   }
 }
 .faceted-browse-page .tablesaw-advance .tablesaw-nav-btn,
-.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn {
-  display: inline-flex;
+.faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn,
+.block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn {
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  min-width: 2.25rem;
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--text-sm);
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  padding: var(--space-2) var(--space-3) !important;
+  font-size: var(--text-base) !important;
   font-weight: 500;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
+  line-height: 1 !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--text-primary) !important;
+  text-decoration: none !important;
   cursor: pointer;
   transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 .faceted-browse-page .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled),
-.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled) {
-  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
-  border-color: var(--primary);
-  color: var(--primary);
+.faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn:hover:not(.disabled),
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled),
+.block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn:hover:not(.disabled) {
+  background: color-mix(in srgb, var(--primary) 10%, var(--surface)) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
 }
 .faceted-browse-page .tablesaw-advance .tablesaw-nav-btn:focus-visible,
-.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn:focus-visible {
+.faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn:focus-visible,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn:focus-visible,
+.block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn:focus-visible {
   outline: 2px solid var(--focus-color);
   outline-offset: 2px;
 }
 .faceted-browse-page .tablesaw-advance .tablesaw-nav-btn.disabled,
-.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn.disabled {
+.faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn.disabled,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn.disabled,
+.block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn.disabled {
   opacity: 0.35;
   cursor: not-allowed;
-  color: var(--muted);
+  color: var(--muted) !important;
+  pointer-events: none;
 }
 .faceted-browse-page .tablesaw-cell-label,
 .block-facetedBrowsePreview .tablesaw-cell-label {

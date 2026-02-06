@@ -200,7 +200,7 @@
         display: flex;
         align-items: center;
         width: 100%;
-        padding: var(--space-3) var(--space-4);
+        padding: var(--space-4) var(--space-5);
         margin: 0;
         background: linear-gradient(
             180deg,
@@ -567,6 +567,7 @@
 
     table.faceted-results {
         width: 100%;
+        min-width: $sm;
         border-collapse: collapse;
         border-spacing: 0;
 
@@ -578,9 +579,6 @@
                 font-size: var(--text-sm);
                 text-align: start;
                 color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--text-heading));
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
                 background: linear-gradient(
                     180deg,
                     color-mix(in srgb, var(--primary) 5%, var(--surface-raised)) 0%,
@@ -617,17 +615,22 @@
                     border-inline-end: 1px solid var(--border-light);
                 }
 
-                // Date column - prevent breaking
+                // Title column - ensure adequate width
+                &:first-child {
+                    min-width: 12.5rem;
+                }
+
+                // Date column - keep compact but readable
                 &:last-child {
                     white-space: nowrap;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
+                    min-width: 6.25rem;
                 }
 
                 // Middle columns - allow wrapping
                 &:not(:first-child):not(:last-child) {
                     white-space: normal;
                     word-break: break-word;
+                    min-width: 7.5rem;
                 }
 
                 // Resource links
@@ -685,6 +688,12 @@
     // Tablesaw Overrides (Responsive Tables)
     // Desktop: show all columns; Mobile: swipe with navigation
     // =========================================================================
+    // Reset tablesaw bar container defaults
+    .tablesaw-bar {
+        clear: both;
+        overflow: visible;
+    }
+
     .tablesaw {
 
         // Desktop: force all columns visible
@@ -705,32 +714,38 @@
 
         // Tablesaw navigation bar for mobile column swiping
         &-advance {
-            display: flex;
+            display: flex !important;
+            float: none !important;
             align-items: center;
             justify-content: center;
             gap: var(--space-3);
             margin-block-start: var(--space-4);
-            padding: var(--space-3);
+            padding: var(--space-3) var(--space-4);
             background: var(--surface-raised);
             border: 1px solid var(--border-light);
             border-radius: var(--radius-md);
 
             @media (min-width: $lg) {
-                display: none;
+                display: none !important;
             }
 
-            .tablesaw-nav-btn {
-                display: inline-flex;
+            // Override module's .btn / .btn-micro classes
+            .tablesaw-nav-btn,
+            a.tablesaw-nav-btn.btn {
+                display: inline-flex !important;
                 align-items: center;
                 justify-content: center;
-                min-width: 2.25rem;
-                padding: var(--space-2) var(--space-4);
-                font-size: var(--text-sm);
+                min-width: 2.5rem;
+                min-height: 2.5rem;
+                padding: var(--space-2) var(--space-3) !important;
+                font-size: var(--text-base) !important;
                 font-weight: 500;
-                background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: var(--radius-sm);
-                color: var(--text-primary);
+                line-height: 1 !important;
+                background: var(--surface) !important;
+                border: 1px solid var(--border) !important;
+                border-radius: var(--radius-sm) !important;
+                color: var(--text-primary) !important;
+                text-decoration: none !important;
                 cursor: pointer;
                 transition:
                     background-color var(--transition-fast),
@@ -738,9 +753,9 @@
                     color var(--transition-fast);
 
                 &:hover:not(.disabled) {
-                    background: color-mix(in srgb, var(--primary) 8%, var(--surface));
-                    border-color: var(--primary);
-                    color: var(--primary);
+                    background: color-mix(in srgb, var(--primary) 10%, var(--surface)) !important;
+                    border-color: var(--primary) !important;
+                    color: var(--primary) !important;
                 }
 
                 &:focus-visible {
@@ -751,7 +766,8 @@
                 &.disabled {
                     opacity: 0.35;
                     cursor: not-allowed;
-                    color: var(--muted);
+                    color: var(--muted) !important;
+                    pointer-events: none;
                 }
             }
         }
