@@ -5582,40 +5582,115 @@ select.query-filter optgroup {
   margin-block: var(--space-8);
   padding-block: var(--space-8);
   background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 2%, var(--surface)) 0%, var(--surface) 100%);
-  gap: var(--space-6);
+  gap: var(--space-4);
   width: 100%;
+}
+@media (min-width: 600px) {
+  .pagination {
+    gap: var(--space-6);
+  }
+}
+.pagination .row-count {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  padding: var(--space-1) var(--space-3);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
 }
 .pagination .pager-wrapper {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 @media (min-width: 600px) {
   .pagination .pager-wrapper {
-    gap: var(--space-6);
+    gap: var(--space-4);
   }
+}
+.pagination .pager {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-1);
+}
+.pagination .pager label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+.pagination .pager .page-count {
+  color: var(--muted);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+.pagination .pager .gotopage-btn {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: var(--primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: white;
+  font-size: 0;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+.pagination .pager .gotopage-btn::after {
+  mask: url("../img/chevron-right.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/chevron-right.svg") no-repeat center/contain;
+  background-color: currentColor;
+  display: inline-block;
+  content: "";
+  width: 0.875rem;
+  height: 0.875rem;
+  background-color: white;
+  font-size: initial;
+}
+.pagination .pager .gotopage-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(var(--lift-xxs));
+}
+.pagination .pager .gotopage-btn:active {
+  background: var(--primary-active);
+  transform: translateY(0);
+}
+.pagination .pager .gotopage-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 .pagination input[type=text] {
   display: inline-block;
-  margin-inline: var(--space-1);
-  padding: var(--space-2) !important;
+  width: 2.5rem;
+  padding: var(--space-1) var(--space-2) !important;
+  margin: 0;
   text-align: center;
-  width: auto;
-}
-.pagination .row-count {
-  color: var(--muted);
   font-size: var(--text-sm);
-  margin-inline-end: var(--space-4);
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
-.pagination .pager label,
-.pagination .pager .page-count {
-  color: var(--muted);
-}
-.pagination .pager .gotopage-btn {
-  margin-inline-start: var(--space-1);
-  padding: var(--space-2) var(--space-4);
-  width: 54px;
+.pagination input[type=text]:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
 }
 .pagination .button {
   -webkit-appearance: none;
@@ -5662,11 +5737,11 @@ select.query-filter optgroup {
   align-items: center;
   flex-shrink: 0;
   font-size: var(--text-lg);
-  height: 40px;
+  height: 2.5rem;
   justify-content: center;
   padding: 0;
   position: relative;
-  width: 37px;
+  width: 2.5rem;
 }
 .pagination .button:hover:not(.disabled), .pagination .button:active:not(.disabled) {
   transform: translateY(var(--lift-xxs));

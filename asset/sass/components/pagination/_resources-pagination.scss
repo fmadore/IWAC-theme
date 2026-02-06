@@ -7,58 +7,144 @@
 
 .pagination {
     @include pagination-container;
-    gap: var(--space-6);
+    gap: var(--space-4);
     width: 100%;
 
+    @media (min-width: $sm) {
+        gap: var(--space-6);
+    }
+
+    // ---- Item count badge ----
+    .row-count {
+        color: var(--muted);
+        font-size: var(--text-sm);
+        padding: var(--space-1) var(--space-3);
+        background: var(--surface-raised);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-full);
+        white-space: nowrap;
+    }
+
+    // ---- Prev/Next + Pager group ----
     .pager-wrapper {
         display: flex;
         align-items: center;
         flex-shrink: 0;
-        gap: var(--space-4);
+        gap: var(--space-3);
 
         @media (min-width: $sm) {
-            gap: var(--space-6);
+            gap: var(--space-4);
         }
     }
 
-    input[type=text] {
-        display: inline-block;
-        margin-inline: var(--space-1);
-        padding: var(--space-2) !important;
-        text-align: center;
-        width: auto;
-    }
-
-    .row-count {
-        color: var(--muted);
-        font-size: var(--text-sm);
-        margin-inline-end: var(--space-4);
-    }
-
+    // ---- Pager form (page input + count + go button) ----
     .pager {
-        label,
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-1);
+
+        label {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--muted);
+            font-size: var(--text-sm);
+            white-space: nowrap;
+        }
+
         .page-count {
             color: var(--muted);
+            font-size: var(--text-sm);
+            white-space: nowrap;
         }
 
         .gotopage-btn {
-            margin-inline-start: var(--space-1);
-            padding: var(--space-2) var(--space-4);
-            width: 54px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+            background: var(--primary);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: white;
+            font-size: 0; // Hide the translated text
+            cursor: pointer;
+            transition:
+                background-color var(--transition-fast),
+                transform var(--transition-fast);
+
+            // Arrow icon
+            &::after {
+                @include icon-mask("../img/chevron-right.svg");
+                content: "";
+                width: 0.875rem;
+                height: 0.875rem;
+                background-color: white;
+                font-size: initial;
+            }
+
+            &:hover {
+                background: var(--primary-hover);
+                transform: translateY(var(--lift-xxs));
+            }
+
+            &:active {
+                background: var(--primary-active);
+                transform: translateY(0);
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--primary);
+                outline-offset: 2px;
+            }
         }
     }
 
+    // ---- Page number input ----
+    input[type=text] {
+        display: inline-block;
+        width: 2.5rem;
+        padding: var(--space-1) var(--space-2) !important;
+        margin: 0;
+        text-align: center;
+        font-size: var(--text-sm);
+        font-weight: 500;
+        color: var(--ink);
+        background: var(--surface-raised);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-sm);
+        transition:
+            border-color var(--transition-fast),
+            box-shadow var(--transition-fast);
+
+        &:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
+        }
+    }
+
+    // ---- Prev / Next buttons ----
     .button {
         @include secondary-button;
         display: flex;
         align-items: center;
         flex-shrink: 0;
         font-size: var(--text-lg);
-        height: 40px;
+        height: 2.5rem;
         justify-content: center;
         padding: 0;
         position: relative;
-        width: 37px;
+        width: 2.5rem;
 
         &:hover:not(.disabled),
         &:active:not(.disabled) {
