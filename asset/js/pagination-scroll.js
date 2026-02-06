@@ -50,7 +50,7 @@
 
     // Mark pagination actions so we scroll after the reload
     document.addEventListener('click', function (e) {
-        var link = e.target.closest('.pagination a.button:not(.disabled)');
+        var link = e.target.closest('.pagination a.pagination-nav:not(.disabled)');
         if (link) {
             sessionStorage.setItem(STORAGE_KEY, '1');
         }
@@ -72,7 +72,7 @@
 
         // Use event delegation on sectionContent since its children are replaced by AJAX
         sectionContent.addEventListener('click', function (e) {
-            if (e.target.closest('.pagination a.button:not(.disabled)')) {
+            if (e.target.closest('.pagination a.pagination-nav:not(.disabled)')) {
                 paginationClicked = true;
             }
         });

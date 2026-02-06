@@ -2,50 +2,91 @@
 
 // ==========================================================================
 // Resources Pagination
-// Pagination controls for browse pages with pager and navigation
+// Unified pagination control bar: [ count | ‹ | Page X of Y | › ]
 // ==========================================================================
 
 .pagination {
     @include pagination-container;
-    gap: var(--space-4);
     width: 100%;
 
-    @media (min-width: $sm) {
-        gap: var(--space-6);
+    // ---- Unified control bar ----
+    .pager-wrapper {
+        display: inline-flex;
+        align-items: center;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
     }
 
-    // ---- Item count badge ----
+    // ---- Item count ----
     .row-count {
         color: var(--muted);
         font-size: var(--text-sm);
-        padding: var(--space-1) var(--space-3);
-        background: var(--surface-raised);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius-full);
+        padding: var(--space-2) var(--space-4);
         white-space: nowrap;
+        border-inline-end: 1px solid var(--border-light);
     }
 
-    // ---- Prev/Next + Pager group ----
-    .pager-wrapper {
+    // ---- Prev / Next nav buttons ----
+    .pagination-nav {
         display: flex;
         align-items: center;
+        justify-content: center;
         flex-shrink: 0;
-        gap: var(--space-3);
+        width: 2.5rem;
+        height: 2.5rem;
+        padding: 0;
+        background: transparent;
+        border: none;
+        color: var(--primary);
+        text-decoration: none;
+        cursor: pointer;
+        transition:
+            background-color var(--transition-fast),
+            color var(--transition-fast);
 
-        @media (min-width: $sm) {
-            gap: var(--space-4);
+        &:hover:not(.disabled) {
+            background: color-mix(in srgb, var(--primary) 8%, transparent);
+            color: var(--primary-hover);
+        }
+
+        &:active:not(.disabled) {
+            background: color-mix(in srgb, var(--primary) 14%, transparent);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: -2px;
+        }
+
+        &.disabled {
+            color: var(--muted);
+            opacity: 0.4;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        // Divider between prev and pager
+        &.previous {
+            border-inline-end: 1px solid var(--border-light);
+        }
+
+        // Divider between pager and next
+        &.next {
+            border-inline-start: 1px solid var(--border-light);
         }
     }
 
-    // ---- Pager form (page input + count + go button) ----
+    // ---- Pager form (page input + count) ----
     .pager {
         display: inline-flex;
         align-items: center;
         gap: var(--space-2);
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-md);
-        padding: var(--space-1);
+        padding: 0 var(--space-3);
+        margin: 0;
+        background: transparent;
+        border: none;
 
         label {
             display: inline-flex;
@@ -60,55 +101,6 @@
             color: var(--muted);
             font-size: var(--text-sm);
             white-space: nowrap;
-        }
-
-        .gotopage-btn {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 2rem;
-            height: 2rem;
-            padding: 0;
-            background: var(--primary);
-            border: none;
-            border-radius: var(--radius-sm);
-            box-shadow: none;
-            color: white;
-            font-size: 0; // Hide the translated text
-            cursor: pointer;
-            transition:
-                background-color var(--transition-fast),
-                transform var(--transition-fast);
-
-            // Arrow icon
-            &::after {
-                @include icon-mask("../img/chevron-right.svg");
-                content: "";
-                width: 0.875rem;
-                height: 0.875rem;
-                background-color: white;
-                font-size: initial;
-            }
-
-            &:hover {
-                background: var(--primary-hover);
-                transform: translateY(var(--lift-xxs));
-                box-shadow: none;
-            }
-
-            &:active {
-                background: var(--primary-active);
-                transform: translateY(0);
-                box-shadow: none;
-            }
-
-            &:focus-visible {
-                outline: 2px solid var(--primary);
-                outline-offset: 2px;
-            }
         }
     }
 
@@ -133,38 +125,6 @@
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
-        }
-    }
-
-    // ---- Prev / Next buttons ----
-    .button {
-        @include secondary-button;
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-        font-size: var(--text-lg);
-        height: 2.5rem;
-        justify-content: center;
-        padding: 0;
-        position: relative;
-        width: 2.5rem;
-
-        &:hover:not(.disabled),
-        &:active:not(.disabled) {
-            transform: translateY(var(--lift-xxs));
-
-            &::before {
-                color: var(--primary-contrast);
-            }
-        }
-
-        &.disabled {
-            background-color: var(--surface-raised);
-            border-color: var(--border-light);
-            color: var(--muted);
-            cursor: default;
-            pointer-events: none;
-            opacity: 0.6;
         }
     }
 }
