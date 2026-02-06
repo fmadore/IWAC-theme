@@ -102,6 +102,19 @@
             font-size: var(--text-sm);
             white-space: nowrap;
         }
+
+        // Go button — matches nav buttons but uses CSS icon
+        .gotopage-btn {
+            box-shadow: none;
+            margin-inline-start: var(--space-1);
+
+            &::after {
+                @include icon-mask("../img/chevron-right.svg");
+                content: "";
+                width: 0.875rem;
+                height: 0.875rem;
+            }
+        }
     }
 
     // ---- Page number input ----

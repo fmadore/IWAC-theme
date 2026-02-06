@@ -29,6 +29,7 @@ $translate = $this->plugin('translate');
                         <input type="text" id="pagination-page-input" name="page" class="page-input-top" value="<?php echo $currentPage; ?>" size="4" <?php echo ($pageCount == 1) ? 'readonly' : ''; ?> aria-label="<?php echo $translate('Page'); ?>">
                     </label>
                     <span class="page-count"><?php echo sprintf($translate('of %s'), $pageCount); ?></span>
+                    <button type="submit" class="pagination-nav gotopage-btn" aria-label="<?php echo $this->escapeHtmlAttr($translate('Go')); ?>"><span class="sr-only"><?php echo $translate('Go'); ?></span></button>
                 </form>
 
                 <!-- Next Button -->

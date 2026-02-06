@@ -5659,6 +5659,19 @@ select.query-filter optgroup {
   font-size: var(--text-sm);
   white-space: nowrap;
 }
+.pagination .pager .gotopage-btn {
+  box-shadow: none;
+  margin-inline-start: var(--space-1);
+}
+.pagination .pager .gotopage-btn::after {
+  mask: url("../img/chevron-right.svg") no-repeat center/contain;
+  -webkit-mask: url("../img/chevron-right.svg") no-repeat center/contain;
+  background-color: currentColor;
+  display: inline-block;
+  content: "";
+  width: 0.875rem;
+  height: 0.875rem;
+}
 .pagination input[type=text] {
   display: inline-block;
   width: 2.5rem;
