@@ -568,8 +568,10 @@
     table.faceted-results {
         width: 100%;
         min-width: $sm;
+        max-width: none !important; // Override .tablesaw max-width: 100%
         border-collapse: collapse;
         border-spacing: 0;
+        overflow: visible; // Override base table overflow: hidden
 
         // ---- Table header ----
         thead {
@@ -735,27 +737,56 @@
                 display: inline-flex !important;
                 align-items: center;
                 justify-content: center;
-                min-width: 2.5rem;
-                min-height: 2.5rem;
-                padding: var(--space-2) var(--space-3) !important;
-                font-size: var(--text-base) !important;
+                width: 2.5rem;
+                height: 2.5rem;
+                padding: 0 !important;
+                margin: 0 !important;
+                font-size: 1rem !important;
                 font-weight: 500;
                 line-height: 1 !important;
                 background: var(--surface) !important;
                 border: 1px solid var(--border) !important;
                 border-radius: var(--radius-sm) !important;
                 color: var(--text-primary) !important;
+                text-indent: -9999px !important; // Hide text, show arrow only
                 text-decoration: none !important;
+                overflow: hidden !important;
                 cursor: pointer;
                 transition:
                     background-color var(--transition-fast),
                     border-color var(--transition-fast),
                     color var(--transition-fast);
 
+                // Center the CSS triangle arrows
+                &::before {
+                    top: 50% !important;
+                    left: 50% !important;
+                    transform: translate(-50%, -50%) !important;
+                    border-top-width: 6px !important;
+                    border-bottom-width: 6px !important;
+                }
+
+                &.left::before {
+                    border-right: 6px solid var(--text-primary) !important;
+                    margin-left: -1px; // Optical centering for left triangle
+                }
+
+                &.right::before {
+                    border-left: 6px solid var(--text-primary) !important;
+                    margin-left: 1px; // Optical centering for right triangle
+                }
+
                 &:hover:not(.disabled) {
                     background: color-mix(in srgb, var(--primary) 10%, var(--surface)) !important;
                     border-color: var(--primary) !important;
-                    color: var(--primary) !important;
+
+                    &.left::before {
+                        border-right-color: var(--primary) !important;
+                    }
+
+                    &.right::before {
+                        border-left-color: var(--primary) !important;
+                    }
                 }
 
                 &:focus-visible {
@@ -766,8 +797,15 @@
                 &.disabled {
                     opacity: 0.35;
                     cursor: not-allowed;
-                    color: var(--muted) !important;
                     pointer-events: none;
+
+                    &.left::before {
+                        border-right-color: var(--muted) !important;
+                    }
+
+                    &.right::before {
+                        border-left-color: var(--muted) !important;
+                    }
                 }
             }
         }

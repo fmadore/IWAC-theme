@@ -6416,8 +6416,10 @@ select.query-filter optgroup {
 .block-facetedBrowsePreview table.faceted-results {
   width: 100%;
   min-width: 600px;
+  max-width: none !important;
   border-collapse: collapse;
   border-spacing: 0;
+  overflow: visible;
 }
 .faceted-browse-page table.faceted-results thead th,
 .block-facetedBrowsePreview table.faceted-results thead th {
@@ -6561,19 +6563,46 @@ select.query-filter optgroup {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  min-width: 2.5rem;
-  min-height: 2.5rem;
-  padding: var(--space-2) var(--space-3) !important;
-  font-size: var(--text-base) !important;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 1rem !important;
   font-weight: 500;
   line-height: 1 !important;
   background: var(--surface) !important;
   border: 1px solid var(--border) !important;
   border-radius: var(--radius-sm) !important;
   color: var(--text-primary) !important;
+  text-indent: -9999px !important;
   text-decoration: none !important;
+  overflow: hidden !important;
   cursor: pointer;
   transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+.faceted-browse-page .tablesaw-advance .tablesaw-nav-btn::before,
+.faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn::before,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn::before,
+.block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn::before {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  border-top-width: 6px !important;
+  border-bottom-width: 6px !important;
+}
+.faceted-browse-page .tablesaw-advance .tablesaw-nav-btn.left::before,
+.faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn.left::before,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn.left::before,
+.block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn.left::before {
+  border-right: 6px solid var(--text-primary) !important;
+  margin-left: -1px;
+}
+.faceted-browse-page .tablesaw-advance .tablesaw-nav-btn.right::before,
+.faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn.right::before,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn.right::before,
+.block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn.right::before {
+  border-left: 6px solid var(--text-primary) !important;
+  margin-left: 1px;
 }
 .faceted-browse-page .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled),
 .faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn:hover:not(.disabled),
@@ -6581,7 +6610,18 @@ select.query-filter optgroup {
 .block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn:hover:not(.disabled) {
   background: color-mix(in srgb, var(--primary) 10%, var(--surface)) !important;
   border-color: var(--primary) !important;
-  color: var(--primary) !important;
+}
+.faceted-browse-page .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled).left::before,
+.faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn:hover:not(.disabled).left::before,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled).left::before,
+.block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn:hover:not(.disabled).left::before {
+  border-right-color: var(--primary) !important;
+}
+.faceted-browse-page .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled).right::before,
+.faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn:hover:not(.disabled).right::before,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled).right::before,
+.block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn:hover:not(.disabled).right::before {
+  border-left-color: var(--primary) !important;
 }
 .faceted-browse-page .tablesaw-advance .tablesaw-nav-btn:focus-visible,
 .faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn:focus-visible,
@@ -6596,8 +6636,19 @@ select.query-filter optgroup {
 .block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn.disabled {
   opacity: 0.35;
   cursor: not-allowed;
-  color: var(--muted) !important;
   pointer-events: none;
+}
+.faceted-browse-page .tablesaw-advance .tablesaw-nav-btn.disabled.left::before,
+.faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn.disabled.left::before,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn.disabled.left::before,
+.block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn.disabled.left::before {
+  border-right-color: var(--muted) !important;
+}
+.faceted-browse-page .tablesaw-advance .tablesaw-nav-btn.disabled.right::before,
+.faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn.disabled.right::before,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn.disabled.right::before,
+.block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn.disabled.right::before {
+  border-left-color: var(--muted) !important;
 }
 .faceted-browse-page .tablesaw-cell-label,
 .block-facetedBrowsePreview .tablesaw-cell-label {
