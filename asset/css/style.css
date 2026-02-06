@@ -5645,6 +5645,7 @@ select.query-filter optgroup {
   background: var(--primary);
   border: none;
   border-radius: var(--radius-sm);
+  box-shadow: none;
   color: white;
   font-size: 0;
   cursor: pointer;
@@ -5664,10 +5665,12 @@ select.query-filter optgroup {
 .pagination .pager .gotopage-btn:hover {
   background: var(--primary-hover);
   transform: translateY(var(--lift-xxs));
+  box-shadow: none;
 }
 .pagination .pager .gotopage-btn:active {
   background: var(--primary-active);
   transform: translateY(0);
+  box-shadow: none;
 }
 .pagination .pager .gotopage-btn:focus-visible {
   outline: 2px solid var(--primary);

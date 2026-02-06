@@ -75,6 +75,7 @@
             background: var(--primary);
             border: none;
             border-radius: var(--radius-sm);
+            box-shadow: none;
             color: white;
             font-size: 0; // Hide the translated text
             cursor: pointer;
@@ -95,11 +96,13 @@
             &:hover {
                 background: var(--primary-hover);
                 transform: translateY(var(--lift-xxs));
+                box-shadow: none;
             }
 
             &:active {
                 background: var(--primary-active);
                 transform: translateY(0);
+                box-shadow: none;
             }
 
             &:focus-visible {
