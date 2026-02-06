@@ -26,7 +26,6 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
-  --space-32: 8rem;
   --space-40: 10rem;
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
@@ -45,28 +44,15 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --lift-xxs: -0.0625rem;
   --lift-xs: -0.125rem;
   --lift-sm: -0.25rem;
-  --hover-scale: 1.02;
-  --active-scale: 0.98;
-  --hover-brightness: 1.05;
-  --active-brightness: 0.95;
+  --accent-mix-subtle: 25%;
+  --accent-mix-medium: 40%;
+  --accent-mix-strong: 60%;
   --gradient-primary: linear-gradient(135deg,
       hsl(var(--primary-hue), var(--primary-sat), 52%) 0%,
       hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 42%) 100%);
-  --gradient-surface: linear-gradient(180deg,
-      var(--surface) 0%,
-      var(--surface-raised) 100%);
-  --gradient-overlay: linear-gradient(180deg,
-      transparent 0%,
-      color-mix(in srgb, hsl(220, 20%, 10%) 60%, transparent) 100%);
   --glow-xs: 0 1px 3px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 20%, transparent);
   --glow-sm: 0 2px 6px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 25%, transparent);
   --glow-md: 0 4px 12px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 30%, transparent);
-  --glow-lg: 0 8px 20px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 35%, transparent);
-  --glow-xl: 0 12px 28px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 40%, transparent);
-  --backdrop-blur-sm: blur(4px);
-  --backdrop-blur-md: blur(8px);
-  --backdrop-blur-lg: blur(16px);
-  --backdrop-blur-xl: blur(24px);
   --shadow-color: color-mix(in srgb, hsl(30, 20%, 15%) 12%, transparent);
   --shadow-color-strong: color-mix(in srgb, hsl(30, 20%, 15%) 18%, transparent);
   --shadow-color-subtle: color-mix(in srgb, hsl(30, 15%, 20%) 6%, transparent);
@@ -81,28 +67,16 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --panel-radius: var(--radius-md);
   --panel-shadow: var(--shadow-md);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
   --transition-fast: 150ms var(--ease-out-quart);
   --transition-base: 200ms var(--ease-out-quart);
   --transition-slow: 300ms var(--ease-out-quart);
   --z-dropdown: 100;
   --z-sticky: 200;
   --z-modal: 300;
-  --z-popover: 400;
   --z-tooltip: 500;
   --content-max-width: 1200px;
-  --content-max-width-narrow: 800px;
-  --content-max-width-wide: 1400px;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.7;
-  --text-shadow-dark: 0 2px 4px color-mix(in srgb, black 30%, transparent), 0 4px 12px color-mix(in srgb, black 20%, transparent);
-  --text-shadow-dark-sm: 0 1px 3px color-mix(in srgb, black 40%, transparent), 0 2px 8px color-mix(in srgb, black 20%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -113,8 +87,6 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
     --glow-xs: 0 1px 4px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 25%, transparent);
     --glow-sm: 0 2px 8px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 30%, transparent);
     --glow-md: 0 4px 16px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 35%, transparent);
-    --glow-lg: 0 8px 24px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 40%, transparent);
-    --glow-xl: 0 12px 32px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 45%, transparent);
     --shadow-xs: 0 1px 3px 0 var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in srgb, black 10%, transparent);
     --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
     --shadow-md: 0 6px 16px -4px var(--shadow-color-strong), 0 4px 8px -4px var(--shadow-color-strong);
@@ -131,8 +103,6 @@ body[data-theme=dark] {
   --glow-xs: 0 1px 4px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 25%, transparent);
   --glow-sm: 0 2px 8px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 30%, transparent);
   --glow-md: 0 4px 16px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 35%, transparent);
-  --glow-lg: 0 8px 24px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 40%, transparent);
-  --glow-xl: 0 12px 32px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 45%, transparent);
   --shadow-xs: 0 1px 3px 0 var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in srgb, black 10%, transparent);
   --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
   --shadow-md: 0 6px 16px -4px var(--shadow-color-strong), 0 4px 8px -4px var(--shadow-color-strong);
@@ -177,14 +147,12 @@ body[data-theme=light] {
   --background: hsl(40, 15%, 95.5%);
   --border: hsl(35, 12%, 85%);
   --border-light: hsl(35, 10%, 91%);
-  --accent: var(--primary);
   --focus-color: var(--primary);
   --focus-ring: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 49%) 25%, transparent);
   --selection-bg: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 49%) 15%, transparent);
   --text-primary: var(--ink);
   --text-heading: var(--ink);
   --text-secondary: var(--muted);
-  --bg-body: var(--background);
   --bg-surface: var(--surface);
   --bg-muted: var(--surface-raised);
   --bg-elevated: var(--surface);
@@ -272,7 +240,6 @@ body[data-theme=dark] {
   --text-primary: var(--ink);
   --text-heading: var(--ink);
   --text-secondary: var(--muted);
-  --bg-body: var(--background);
   --bg-surface: var(--surface);
   --bg-muted: var(--surface-raised);
   --bg-elevated: var(--surface-raised);
@@ -1527,7 +1494,7 @@ input[type=button].link-style,
 input[type=reset].link-style,
 input[type=submit].link-style {
   background-color: transparent !important;
-  color: var(--accent);
+  color: var(--primary);
   padding-inline: 0;
   text-transform: none;
   text-decoration: underline;
@@ -2045,7 +2012,7 @@ body.main-header--center {
   left: 0;
   right: 0;
   height: var(--accent-line-sm);
-  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--primary) 35%, var(--border)) 15%, color-mix(in srgb, var(--primary) 50%, var(--border)) 50%, color-mix(in srgb, var(--primary) 35%, var(--border)) 85%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border)) 15%, color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border)) 50%, color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border)) 85%, transparent 100%);
   pointer-events: none;
 }
 .main-header__top-bar {
@@ -2917,18 +2884,22 @@ body.menu-drawer-toggled {
   inset-inline-start: 0;
   position: absolute;
   top: 0;
-  width: 3px;
+  width: var(--accent-line-md);
 }
-.accordion__trigger:hover, .accordion__trigger:active, .accordion__trigger:focus {
-  background-color: var(--bg-muted) !important;
-  color: var(--text-primary) !important;
+.accordion__trigger:hover, .accordion__trigger:active {
+  background-color: var(--bg-muted);
+  color: var(--text-primary);
+}
+.accordion__trigger:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
 }
 .accordion__icon {
   display: flex;
   align-items: center;
   border: 1px solid var(--border-color);
   border-radius: 50%;
-  height: var(--space-9, 36px);
+  height: 36px;
   justify-content: center;
   pointer-events: none;
   position: absolute;
@@ -2936,7 +2907,7 @@ body.menu-drawer-toggled {
   top: 50%;
   transform: translateY(-50%) rotate(0);
   transition: transform var(--transition-base);
-  width: var(--space-9, 36px);
+  width: 36px;
 }
 .accordion__trigger.expanded .accordion__icon {
   transform: translateY(-50%) rotate(-180deg);
@@ -4190,14 +4161,19 @@ select.query-filter optgroup {
 .breadcrumbs a {
   color: var(--muted);
   text-decoration: none;
+  border-radius: var(--radius-sm);
   transition: color var(--transition-fast);
 }
 .breadcrumbs a:hover {
   color: var(--primary);
 }
+.breadcrumbs a:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 1px;
+}
 .breadcrumbs span:not(:last-child)::after {
   content: "›";
-  color: color-mix(in srgb, var(--primary) 40%, var(--muted));
+  color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--muted));
   margin-inline-start: var(--space-2);
   font-weight: 400;
 }
@@ -4650,13 +4626,14 @@ select.query-filter optgroup {
   padding: var(--space-4);
   background: var(--surface);
   border-radius: var(--radius-sm);
-  border-left: var(--accent-line-md) solid color-mix(in srgb, var(--primary) 50%, var(--border));
+  border-left: var(--accent-line-md) solid color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
   box-shadow: var(--shadow-xs);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
 }
 .metadata dl > .property:hover {
   border-left-color: var(--primary);
   box-shadow: var(--shadow-sm);
+  background: color-mix(in srgb, var(--primary) 2%, var(--surface));
 }
 .metadata dl > .property::after {
   content: "";
@@ -5067,6 +5044,13 @@ select.query-filter optgroup {
 .block-carousel .slick-arrow:hover .slick-next-icon::before {
   color: var(--white);
 }
+.block-carousel .slick-arrow:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+}
 .block-carousel .slick-arrow.slick-next {
   inset-inline-end: 0;
 }
@@ -5124,6 +5108,11 @@ select.query-filter optgroup {
 }
 .block-carousel .slick-dots li button:hover {
   background: var(--primary-hover);
+}
+.block-carousel .slick-dots li button:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+  background: var(--primary);
 }
 .block-carousel .slick-dots li.slick-active button {
   background: var(--primary);
@@ -5585,15 +5574,16 @@ select.query-filter optgroup {
 .pagination {
   display: flex;
   align-items: center;
-  border-top: 1px solid color-mix(in srgb, var(--primary) 25%, var(--border));
+  border-top: 1px solid color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
-  gap: var(--space-6);
+  gap: var(--space-4);
   justify-content: center;
   margin-block: var(--space-8);
   padding-block: var(--space-8);
-  width: 100%;
   background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 2%, var(--surface)) 0%, var(--surface) 100%);
+  gap: var(--space-6);
+  width: 100%;
 }
 .pagination .pager-wrapper {
   display: flex;
@@ -5695,8 +5685,10 @@ select.query-filter optgroup {
 
 .site-page-pagination {
   display: flex;
-  border-top: 1px solid color-mix(in srgb, var(--primary) 25%, var(--border));
+  align-items: center;
+  border-top: 1px solid color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
   border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
   gap: var(--space-4);
   justify-content: center;
   margin-block: var(--space-8);
@@ -5835,7 +5827,7 @@ select.query-filter optgroup {
 .block-facetedBrowsePreview #facets {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
   margin-block-end: var(--space-4);
   overflow: hidden;
 }
@@ -5885,7 +5877,7 @@ select.query-filter optgroup {
 .faceted-browse-page .facet:hover,
 .block-facetedBrowsePreview .category:hover,
 .block-facetedBrowsePreview .facet:hover {
-  border-color: color-mix(in srgb, var(--primary) 30%, var(--border-color) 70%);
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
 }
 .faceted-browse-page .category:last-child,
 .faceted-browse-page .facet:last-child,
@@ -5947,7 +5939,7 @@ select.query-filter optgroup {
 .block-facetedBrowsePreview .facet:has(.full-text) input[type=text]:not([type=hidden]):focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent 80%);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 .faceted-browse-page .category[data-facet-type=full_text] input.full-text::-moz-placeholder, .faceted-browse-page .category[data-facet-type=full_text] input[type=text]:not([type=hidden])::-moz-placeholder, .faceted-browse-page .category:has(.full-text) input.full-text::-moz-placeholder, .faceted-browse-page .category:has(.full-text) input[type=text]:not([type=hidden])::-moz-placeholder, .faceted-browse-page .facet[data-facet-type=full_text] input.full-text::-moz-placeholder, .faceted-browse-page .facet[data-facet-type=full_text] input[type=text]:not([type=hidden])::-moz-placeholder, .faceted-browse-page .facet:has(.full-text) input.full-text::-moz-placeholder, .faceted-browse-page .facet:has(.full-text) input[type=text]:not([type=hidden])::-moz-placeholder, .block-facetedBrowsePreview .category[data-facet-type=full_text] input.full-text::-moz-placeholder, .block-facetedBrowsePreview .category[data-facet-type=full_text] input[type=text]:not([type=hidden])::-moz-placeholder, .block-facetedBrowsePreview .category:has(.full-text) input.full-text::-moz-placeholder, .block-facetedBrowsePreview .category:has(.full-text) input[type=text]:not([type=hidden])::-moz-placeholder, .block-facetedBrowsePreview .facet[data-facet-type=full_text] input.full-text::-moz-placeholder, .block-facetedBrowsePreview .facet[data-facet-type=full_text] input[type=text]:not([type=hidden])::-moz-placeholder, .block-facetedBrowsePreview .facet:has(.full-text) input.full-text::-moz-placeholder, .block-facetedBrowsePreview .facet:has(.full-text) input[type=text]:not([type=hidden])::-moz-placeholder {
   color: var(--muted);
@@ -5996,9 +5988,9 @@ select.query-filter optgroup {
   width: 100%;
   padding: var(--space-3) var(--space-4);
   margin: 0;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 4%, var(--surface)) 0%, var(--surface) 100%);
-  border-block-end: 1px solid color-mix(in srgb, var(--primary) 20%, var(--border));
-  color: color-mix(in srgb, var(--primary) 40%, var(--text-heading));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 5%, var(--surface)) 0%, var(--surface) 100%);
+  border-block-end: 1px solid color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+  color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--text-heading));
   font-family: "Noto Serif", serif;
   font-weight: 600;
   font-size: var(--text-sm);
@@ -6041,19 +6033,25 @@ select.query-filter optgroup {
   margin: var(--space-2) var(--space-2) var(--space-1);
   padding: var(--space-2) var(--space-3);
   background: transparent;
-  border: 1px dashed var(--border);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--primary);
   font-size: var(--text-sm);
   font-weight: 500;
   cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 .faceted-browse-page .select-list-expand:hover, .faceted-browse-page .select-list-collapse:hover,
 .block-facetedBrowsePreview .select-list-expand:hover,
 .block-facetedBrowsePreview .select-list-collapse:hover {
-  background: var(--bg-muted);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
   border-color: var(--primary);
+}
+.faceted-browse-page .select-list-expand:focus-visible, .faceted-browse-page .select-list-collapse:focus-visible,
+.block-facetedBrowsePreview .select-list-expand:focus-visible,
+.block-facetedBrowsePreview .select-list-collapse:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
 }
 .faceted-browse-page .facet label,
 .faceted-browse-page .category label,
@@ -6068,7 +6066,7 @@ select.query-filter optgroup {
   margin: 0;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background var(--transition-fast);
+  transition: background-color var(--transition-fast);
   overflow: hidden;
 }
 .faceted-browse-page .facet label:hover,
@@ -6102,7 +6100,7 @@ select.query-filter optgroup {
   background: var(--bg-surface);
   border: 2px solid var(--border);
   cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .faceted-browse-page .facet label input[type=radio]:hover,
 .faceted-browse-page .facet label input[type=checkbox]:hover,
@@ -6130,7 +6128,7 @@ select.query-filter optgroup {
 .block-facetedBrowsePreview .category label input[type=checkbox]:focus-visible,
 .block-facetedBrowsePreview .select-list-item label input[type=radio]:focus-visible,
 .block-facetedBrowsePreview .select-list-item label input[type=checkbox]:focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--focus-color);
   outline-offset: 2px;
 }
 .faceted-browse-page .facet label input[type=radio]:checked,
@@ -6258,13 +6256,13 @@ select.query-filter optgroup {
 .faceted-browse-page .facet label:has(input:checked),
 .block-facetedBrowsePreview .select-list-item.active label,
 .block-facetedBrowsePreview .facet label:has(input:checked) {
-  background: color-mix(in srgb, var(--primary) 8%, transparent 92%);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
 }
 .faceted-browse-page .select-list-item.active label:hover,
 .faceted-browse-page .facet label:has(input:checked):hover,
 .block-facetedBrowsePreview .select-list-item.active label:hover,
 .block-facetedBrowsePreview .facet label:has(input:checked):hover {
-  background: color-mix(in srgb, var(--primary) 12%, transparent 88%);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
 }
 .faceted-browse-page #categories,
 .block-facetedBrowsePreview #categories {
@@ -6292,12 +6290,18 @@ select.query-filter optgroup {
   color: var(--text-primary);
   font-size: var(--text-sm);
   text-decoration: none;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 .faceted-browse-page #categories li a:hover,
 .block-facetedBrowsePreview #categories li a:hover {
   background: var(--bg-muted);
   color: var(--primary);
+}
+.faceted-browse-page #categories li a:focus-visible,
+.block-facetedBrowsePreview #categories li a:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm);
 }
 .faceted-browse-page #categories li a::before,
 .block-facetedBrowsePreview #categories li a::before {
@@ -6308,6 +6312,11 @@ select.query-filter optgroup {
   background: var(--primary);
   border-radius: 50%;
   opacity: 0.6;
+  transition: opacity var(--transition-fast);
+}
+.faceted-browse-page #categories li a:hover::before,
+.block-facetedBrowsePreview #categories li a:hover::before {
+  opacity: 1;
 }
 .faceted-browse-page #categories-return,
 .block-facetedBrowsePreview #categories-return {
@@ -6317,17 +6326,24 @@ select.query-filter optgroup {
   margin-block-end: var(--space-3);
   padding: var(--space-2) var(--space-3);
   background: var(--bg-muted);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--primary);
   font-size: var(--text-sm);
   font-weight: 500;
   text-decoration: none;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 .faceted-browse-page #categories-return:hover,
 .block-facetedBrowsePreview #categories-return:hover {
-  background: color-mix(in srgb, var(--primary) 15%, var(--bg-muted) 85%);
+  background: color-mix(in srgb, var(--primary) 10%, var(--bg-muted));
+  border-color: var(--primary);
   color: var(--primary-hover);
+}
+.faceted-browse-page #categories-return:focus-visible,
+.block-facetedBrowsePreview #categories-return:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
 }
 .faceted-browse-page #categories-return::before,
 .block-facetedBrowsePreview #categories-return::before {
@@ -6392,85 +6408,67 @@ select.query-filter optgroup {
 .faceted-browse-page .faceted-browse-table-wrapper,
 .block-facetedBrowsePreview .faceted-browse-table-wrapper {
   overflow-x: auto;
-  padding: 0 var(--space-1);
   -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
 }
 .faceted-browse-page table.faceted-results,
 .block-facetedBrowsePreview table.faceted-results {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 var(--space-3);
-  table-layout: fixed;
-}
-.faceted-browse-page table.faceted-results colgroup col:first-child,
-.faceted-browse-page table.faceted-results thead th:first-child,
-.faceted-browse-page table.faceted-results tbody td:first-child,
-.block-facetedBrowsePreview table.faceted-results colgroup col:first-child,
-.block-facetedBrowsePreview table.faceted-results thead th:first-child,
-.block-facetedBrowsePreview table.faceted-results tbody td:first-child {
-  width: 40%;
-}
-.faceted-browse-page table.faceted-results colgroup col:not(:first-child):not(:last-child),
-.faceted-browse-page table.faceted-results thead th:not(:first-child):not(:last-child),
-.faceted-browse-page table.faceted-results tbody td:not(:first-child):not(:last-child),
-.block-facetedBrowsePreview table.faceted-results colgroup col:not(:first-child):not(:last-child),
-.block-facetedBrowsePreview table.faceted-results thead th:not(:first-child):not(:last-child),
-.block-facetedBrowsePreview table.faceted-results tbody td:not(:first-child):not(:last-child) {
-  width: auto;
-}
-.faceted-browse-page table.faceted-results colgroup col:last-child,
-.faceted-browse-page table.faceted-results thead th:last-child,
-.faceted-browse-page table.faceted-results tbody td:last-child,
-.block-facetedBrowsePreview table.faceted-results colgroup col:last-child,
-.block-facetedBrowsePreview table.faceted-results thead th:last-child,
-.block-facetedBrowsePreview table.faceted-results tbody td:last-child {
-  width: 15%;
-  min-width: 6rem;
-}
-.faceted-browse-page table.faceted-results thead,
-.block-facetedBrowsePreview table.faceted-results thead {
-  background-color: var(--bg-muted);
-  color: var(--text-primary);
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 .faceted-browse-page table.faceted-results thead th,
 .block-facetedBrowsePreview table.faceted-results thead th {
-  padding: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   font-weight: 600;
+  font-size: var(--text-sm);
   text-align: start;
+  color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--text-heading));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 5%, var(--surface-raised)) 0%, var(--surface-raised) 100%);
+  border-block-end: var(--accent-line-sm) solid color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+}
+.faceted-browse-page table.faceted-results thead th:not(:last-child),
+.block-facetedBrowsePreview table.faceted-results thead th:not(:last-child) {
+  border-inline-end: 1px solid var(--border-light);
 }
 .faceted-browse-page table.faceted-results tbody tr,
 .block-facetedBrowsePreview table.faceted-results tbody tr {
   background-color: var(--bg-surface);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-fast);
+  transition: background-color var(--transition-fast);
 }
 .faceted-browse-page table.faceted-results tbody tr:hover,
 .block-facetedBrowsePreview table.faceted-results tbody tr:hover {
-  box-shadow: var(--shadow-md);
+  background-color: color-mix(in srgb, var(--primary) 3%, var(--surface));
 }
-.faceted-browse-page table.faceted-results tbody tr td,
-.block-facetedBrowsePreview table.faceted-results tbody tr td {
-  padding: var(--space-3);
+.faceted-browse-page table.faceted-results tbody td,
+.block-facetedBrowsePreview table.faceted-results tbody td {
+  padding: var(--space-3) var(--space-4);
   vertical-align: middle;
-  overflow: hidden;
+  font-size: var(--text-sm);
+  line-height: var(--line-height-normal);
+  border-block-end: 1px solid var(--border-light);
 }
-.faceted-browse-page table.faceted-results tbody tr td:last-child,
-.block-facetedBrowsePreview table.faceted-results tbody tr td:last-child {
+.faceted-browse-page table.faceted-results tbody td:not(:last-child),
+.block-facetedBrowsePreview table.faceted-results tbody td:not(:last-child) {
+  border-inline-end: 1px solid var(--border-light);
+}
+.faceted-browse-page table.faceted-results tbody td:last-child,
+.block-facetedBrowsePreview table.faceted-results tbody td:last-child {
   white-space: nowrap;
   text-overflow: ellipsis;
+  overflow: hidden;
 }
-.faceted-browse-page table.faceted-results tbody tr td:not(:first-child):not(:last-child),
-.block-facetedBrowsePreview table.faceted-results tbody tr td:not(:first-child):not(:last-child) {
-  white-space: normal !important;
-  overflow: visible;
-  line-height: 1.5;
+.faceted-browse-page table.faceted-results tbody td:not(:first-child):not(:last-child),
+.block-facetedBrowsePreview table.faceted-results tbody td:not(:first-child):not(:last-child) {
+  white-space: normal;
   word-break: break-word;
 }
-.faceted-browse-page table.faceted-results tbody tr td .resource-link,
-.block-facetedBrowsePreview table.faceted-results tbody tr td .resource-link {
+.faceted-browse-page table.faceted-results tbody td .resource-link,
+.block-facetedBrowsePreview table.faceted-results tbody td .resource-link {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -6479,12 +6477,18 @@ select.query-filter optgroup {
   color: var(--primary);
   transition: color var(--transition-fast);
 }
-.faceted-browse-page table.faceted-results tbody tr td .resource-link:hover,
-.block-facetedBrowsePreview table.faceted-results tbody tr td .resource-link:hover {
+.faceted-browse-page table.faceted-results tbody td .resource-link:hover,
+.block-facetedBrowsePreview table.faceted-results tbody td .resource-link:hover {
   color: var(--primary-hover);
 }
-.faceted-browse-page table.faceted-results tbody tr td .resource-link img,
-.block-facetedBrowsePreview table.faceted-results tbody tr td .resource-link img {
+.faceted-browse-page table.faceted-results tbody td .resource-link:focus-visible,
+.block-facetedBrowsePreview table.faceted-results tbody td .resource-link:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+.faceted-browse-page table.faceted-results tbody td .resource-link img,
+.block-facetedBrowsePreview table.faceted-results tbody td .resource-link img {
   flex-shrink: 0;
   width: 2.5rem;
   height: 2.5rem;
@@ -6494,32 +6498,21 @@ select.query-filter optgroup {
      object-fit: cover;
   border-radius: var(--radius-sm);
 }
-.faceted-browse-page table.faceted-results tbody tr td .resource-link .resource-name,
-.block-facetedBrowsePreview table.faceted-results tbody tr td .resource-link .resource-name {
+.faceted-browse-page table.faceted-results tbody td .resource-link .resource-name,
+.block-facetedBrowsePreview table.faceted-results tbody td .resource-link .resource-name {
   white-space: normal;
   word-break: break-word;
   min-width: 0;
 }
-.faceted-browse-page table.faceted-results tbody tr td > .resource-link + br + .resource-link,
-.faceted-browse-page table.faceted-results tbody tr td > br + .resource-link,
-.block-facetedBrowsePreview table.faceted-results tbody tr td > .resource-link + br + .resource-link,
-.block-facetedBrowsePreview table.faceted-results tbody tr td > br + .resource-link {
+.faceted-browse-page table.faceted-results tbody td > .resource-link + br + .resource-link,
+.faceted-browse-page table.faceted-results tbody td > br + .resource-link,
+.block-facetedBrowsePreview table.faceted-results tbody td > .resource-link + br + .resource-link,
+.block-facetedBrowsePreview table.faceted-results tbody td > br + .resource-link {
   margin-block-start: var(--space-1);
 }
-@media (max-width: 768px) {
-  .faceted-browse-page table.faceted-results thead th:first-child,
-  .faceted-browse-page table.faceted-results tbody td:first-child,
-  .block-facetedBrowsePreview table.faceted-results thead th:first-child,
-  .block-facetedBrowsePreview table.faceted-results tbody td:first-child {
-    width: 45%;
-  }
-  .faceted-browse-page table.faceted-results thead th:last-child,
-  .faceted-browse-page table.faceted-results tbody td:last-child,
-  .block-facetedBrowsePreview table.faceted-results thead th:last-child,
-  .block-facetedBrowsePreview table.faceted-results tbody td:last-child {
-    width: 20%;
-    min-width: 5rem;
-  }
+.faceted-browse-page table.faceted-results tbody tr:last-child td,
+.block-facetedBrowsePreview table.faceted-results tbody tr:last-child td {
+  border-block-end: none;
 }
 @media (min-width: 1024px) {
   .faceted-browse-page .tablesaw th.tablesaw-swipe-cellhidden,
@@ -6529,11 +6522,23 @@ select.query-filter optgroup {
     display: table-cell !important;
   }
 }
+@media (max-width: 1023px) {
+  .faceted-browse-page .tablesaw td.tablesaw-cell-persist,
+  .block-facetedBrowsePreview .tablesaw td.tablesaw-cell-persist {
+    font-weight: 500;
+  }
+}
 .faceted-browse-page .tablesaw-advance,
 .block-facetedBrowsePreview .tablesaw-advance {
   display: flex;
-  gap: var(--space-2);
-  margin-block-start: var(--space-3);
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-4);
+  padding: var(--space-3);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
 }
 @media (min-width: 1024px) {
   .faceted-browse-page .tablesaw-advance,
@@ -6543,25 +6548,44 @@ select.query-filter optgroup {
 }
 .faceted-browse-page .tablesaw-advance .tablesaw-nav-btn,
 .block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn {
-  padding: var(--space-2) var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  padding: var(--space-2) var(--space-4);
   font-size: var(--text-sm);
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
+  font-weight: 500;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
 .faceted-browse-page .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled),
 .block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled) {
-  background: var(--bg-muted);
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
   border-color: var(--primary);
   color: var(--primary);
 }
+.faceted-browse-page .tablesaw-advance .tablesaw-nav-btn:focus-visible,
+.block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+}
 .faceted-browse-page .tablesaw-advance .tablesaw-nav-btn.disabled,
 .block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn.disabled {
-  opacity: 0.5;
+  opacity: 0.35;
   cursor: not-allowed;
+  color: var(--muted);
+}
+.faceted-browse-page .tablesaw-cell-label,
+.block-facetedBrowsePreview .tablesaw-cell-label {
+  font-weight: 600;
+  font-size: var(--text-xs);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 body:has(.faceted-browse-page #section-sidebar.open),
@@ -6710,6 +6734,11 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   overflow: hidden;
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
 }
+.resource-grid .resource:hover {
+  transform: translateY(var(--lift-xs));
+  box-shadow: var(--shadow-lg), var(--glow-sm);
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+}
 .resource-grid .resource::before {
   content: "";
   position: absolute;
@@ -6717,16 +6746,11 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   left: 0;
   right: 0;
   height: var(--accent-line-md);
-  background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 20%, transparent) 0%, color-mix(in srgb, var(--primary) 40%, var(--border)) 50%, color-mix(in srgb, var(--primary) 20%, transparent) 100%);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 20%, transparent) 0%, color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border)) 50%, color-mix(in srgb, var(--primary) 20%, transparent) 100%);
   opacity: 0;
   transition: opacity var(--transition-base);
   z-index: 1;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-}
-.resource-grid .resource:hover {
-  transform: translateY(var(--lift-xs));
-  box-shadow: var(--shadow-lg), var(--glow-sm);
-  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
 }
 .resource-grid .resource:hover::before {
   opacity: 1;
@@ -6786,13 +6810,13 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   left: 0;
   bottom: 0;
   width: var(--accent-line-md);
-  background: color-mix(in srgb, var(--primary) 30%, var(--border));
+  background: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
   border-radius: var(--radius-lg) 0 0 var(--radius-lg);
   transition: background var(--transition-fast);
 }
 .resource-list .resource:hover {
   box-shadow: var(--shadow-md);
-  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
 }
 .resource-list .resource:hover::before {
   background: var(--primary);
@@ -6854,7 +6878,7 @@ body.search .results .result {
 body.search .results .result:hover {
   background-color: var(--surface-raised);
   border-color: var(--border-light);
-  border-left-color: color-mix(in srgb, var(--primary) 60%, var(--border));
+  border-left-color: color-mix(in srgb, var(--primary) var(--accent-mix-strong), var(--border));
   box-shadow: var(--shadow-sm);
 }
 body.search .results mark,
@@ -7676,7 +7700,7 @@ body[data-theme=dark] .iframe-embed__wrapper {
   border: 1px solid color-mix(in srgb, var(--footer-text) 24%, var(--footer-divider) 76%);
   border-radius: var(--radius-full);
   color: var(--footer-text);
-  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
   box-shadow: 0 12px 24px -18px color-mix(in srgb, black 55%, transparent);
 }
 .main-footer__social-network a:hover {

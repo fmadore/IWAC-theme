@@ -20,11 +20,11 @@
   --space-16: 4rem; // 64px
   --space-20: 5rem; // 80px
   --space-24: 6rem; // 96px
-  --space-32: 8rem; // 128px
   --space-40: 10rem; // 160px
 
   // ========================================================================
-  // Spacing Scale (Semantic - legacy aliases)
+  // Spacing Scale (Semantic aliases)
+  // Maps to numeric scale: xs=1, sm=2, md=4, lg=6, xl=8, 2xl=12, 3xl=16
   // ========================================================================
   --space-xs: 0.25rem; // 4px
   --space-sm: 0.5rem; // 8px
@@ -58,27 +58,19 @@
   --lift-sm: -0.25rem; // -4px
 
   // ========================================================================
-  // Interactive States / Motion
-  // Subtle animations for modern, polished feel
+  // Accent Color Mix Strength
+  // Standardized ratios for color-mix() with primary across components
   // ========================================================================
-  --hover-scale: 1.02;
-  --active-scale: 0.98;
-  --hover-brightness: 1.05;
-  --active-brightness: 0.95;
+  --accent-mix-subtle: 25%; // borders, separators
+  --accent-mix-medium: 40%; // hover borders, accent lines
+  --accent-mix-strong: 60%; // active states, prominent accents
 
   // ========================================================================
   // Gradients
-  // Subtle gradients for depth and visual interest
   // ========================================================================
   --gradient-primary: linear-gradient(135deg,
       hsl(var(--primary-hue), var(--primary-sat), 52%) 0%,
       hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 42%) 100%);
-  --gradient-surface: linear-gradient(180deg,
-      var(--surface) 0%,
-      var(--surface-raised) 100%);
-  --gradient-overlay: linear-gradient(180deg,
-      transparent 0%,
-      color-mix(in srgb, hsl(220, 20%, 10%) 60%, transparent) 100%);
 
   // ========================================================================
   // Glow Effects (primary-colored shadows for buttons/accents)
@@ -86,16 +78,6 @@
   --glow-xs: 0 1px 3px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 20%, transparent);
   --glow-sm: 0 2px 6px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 25%, transparent);
   --glow-md: 0 4px 12px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 30%, transparent);
-  --glow-lg: 0 8px 20px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 35%, transparent);
-  --glow-xl: 0 12px 28px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 40%, transparent);
-
-  // ========================================================================
-  // Backdrop Blur (for frosted glass effects)
-  // ========================================================================
-  --backdrop-blur-sm: blur(4px);
-  --backdrop-blur-md: blur(8px);
-  --backdrop-blur-lg: blur(16px);
-  --backdrop-blur-xl: blur(24px);
 
   // ========================================================================
   // Shadow Color Tokens (semantic, theme-aware)
@@ -129,8 +111,6 @@
   // Custom cubic-bezier for refined, modern motion
   // ========================================================================
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 
   // ========================================================================
   // Transitions
@@ -145,32 +125,18 @@
   --z-dropdown: 100;
   --z-sticky: 200;
   --z-modal: 300;
-  --z-popover: 400;
   --z-tooltip: 500;
 
   // ========================================================================
   // Layout
   // ========================================================================
   --content-max-width: 1200px;
-  --content-max-width-narrow: 800px;
-  --content-max-width-wide: 1400px;
 
   // ========================================================================
   // Typography Utilities
   // ========================================================================
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.7;
-
-  // ========================================================================
-  // Text Shadows (for dark overlays)
-  // ========================================================================
-  --text-shadow-dark: 0 2px 4px color-mix(in srgb, black 30%, transparent), 0 4px 12px color-mix(in srgb, black 20%, transparent);
-  --text-shadow-dark-sm: 0 1px 3px color-mix(in srgb, black 40%, transparent), 0 2px 8px color-mix(in srgb, black 20%, transparent);
 }
 
 // ==========================================================================
@@ -187,8 +153,6 @@
     --glow-xs: 0 1px 4px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 25%, transparent);
     --glow-sm: 0 2px 8px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 30%, transparent);
     --glow-md: 0 4px 16px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 35%, transparent);
-    --glow-lg: 0 8px 24px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 40%, transparent);
-    --glow-xl: 0 12px 32px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 45%, transparent);
 
     --shadow-xs: 0 1px 3px 0 var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in srgb, black 10%, transparent);
     --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
@@ -210,8 +174,6 @@ body[data-theme="dark"] {
   --glow-xs: 0 1px 4px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 25%, transparent);
   --glow-sm: 0 2px 8px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 30%, transparent);
   --glow-md: 0 4px 16px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 35%, transparent);
-  --glow-lg: 0 8px 24px -4px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 40%, transparent);
-  --glow-xl: 0 12px 32px -6px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 45%, transparent);
 
   --shadow-xs: 0 1px 3px 0 var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in srgb, black 10%, transparent);
   --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);

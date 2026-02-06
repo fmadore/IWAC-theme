@@ -27,35 +27,8 @@ $font__code: monaco, consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
 $font__pre: "Courier 10 Pitch", courier, monospace;
 
 // ==========================================================================
-// Sass Variables (for backward compatibility and Sass operations)
+// Sass Variables (used in base typography and headings)
 // ==========================================================================
-
-// Base sizes - now using CSS custom properties
-$font__xxs-size: var(--text-xs);
-$font__xs-size: var(--text-xs);
-$font__sm-size: var(--text-sm);
-$font__base-size: var(--text-base);
-
-// Line heights
 $font__base-line-height: 1.6;
 $font__headings-line-height: 1.25;
 $font__pre-base-line-height: 1.6;
-
-// Heading sizes - fluid scale
-$font__h1-sm-size: var(--text-2xl);
-$font__h1-base-size: var(--text-3xl);
-
-$font__h2-sm-size: var(--text-xl);
-$font__h2-base-size: var(--text-2xl);
-
-$font__h3-sm-size: var(--text-lg);
-$font__h3-base-size: var(--text-xl);
-
-$font__h4-sm-size: var(--text-base);
-$font__h4-base-size: var(--text-lg);
-
-$font__h5-sm-size: var(--text-sm);
-$font__h5-base-size: var(--text-base);
-
-$font__h6-sm-size: var(--text-xs);
-$font__h6-base-size: var(--text-sm);

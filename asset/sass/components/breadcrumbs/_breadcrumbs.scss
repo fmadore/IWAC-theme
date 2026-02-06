@@ -15,17 +15,23 @@
     a {
         color: var(--muted);
         text-decoration: none;
+        border-radius: var(--radius-sm);
         transition: color var(--transition-fast);
 
         &:hover {
             color: var(--primary);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--focus-color);
+            outline-offset: 1px;
         }
     }
 
     // Separator - accent-tinted for warmth
     span:not(:last-child)::after {
         content: "›";
-        color: color-mix(in srgb, var(--primary) 40%, var(--muted));
+        color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--muted));
         margin-inline-start: var(--space-2);
         font-weight: 400;
     }

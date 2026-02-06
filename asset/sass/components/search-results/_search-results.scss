@@ -23,7 +23,7 @@ body.search {
             &:hover {
                 background-color: var(--surface-raised);
                 border-color: var(--border-light);
-                border-left-color: color-mix(in srgb, var(--primary) 60%, var(--border));
+                border-left-color: color-mix(in srgb, var(--primary) var(--accent-mix-strong), var(--border));
                 box-shadow: var(--shadow-sm);
             }
         }

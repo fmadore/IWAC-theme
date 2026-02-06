@@ -109,6 +109,14 @@
             }
         }
 
+        &:focus-visible {
+            outline: 2px solid var(--focus-color);
+            outline-offset: 2px;
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: var(--white);
+        }
+
         &.slick-next {
             inset-inline-end: 0;
         }
@@ -171,6 +179,12 @@
 
                 &:hover {
                     background: var(--primary-hover);
+                }
+
+                &:focus-visible {
+                    outline: 2px solid var(--focus-color);
+                    outline-offset: 2px;
+                    background: var(--primary);
                 }
             }
 
