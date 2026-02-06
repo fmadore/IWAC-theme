@@ -612,8 +612,12 @@
                 line-height: var(--line-height-normal);
                 border-block-end: 1px solid var(--border-light);
 
+                // Use normal word-break so the browser respects natural word
+                // widths during column sizing. overflow-wrap: break-word only
+                // breaks long words when they'd overflow their cell.
                 white-space: normal;
-                word-break: break-word;
+                word-break: normal !important;
+                overflow-wrap: break-word !important;
 
                 &:not(:last-child) {
                     border-inline-end: 1px solid var(--border-light);

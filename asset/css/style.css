@@ -6451,7 +6451,8 @@ select.query-filter optgroup {
   line-height: var(--line-height-normal);
   border-block-end: 1px solid var(--border-light);
   white-space: normal;
-  word-break: break-word;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
 }
 .faceted-browse-page table.faceted-results tbody td:not(:last-child),
 .block-facetedBrowsePreview table.faceted-results tbody td:not(:last-child) {
