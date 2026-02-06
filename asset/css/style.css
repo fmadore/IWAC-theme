@@ -6450,25 +6450,12 @@ select.query-filter optgroup {
   font-size: var(--text-sm);
   line-height: var(--line-height-normal);
   border-block-end: 1px solid var(--border-light);
+  white-space: normal;
+  word-break: break-word;
 }
 .faceted-browse-page table.faceted-results tbody td:not(:last-child),
 .block-facetedBrowsePreview table.faceted-results tbody td:not(:last-child) {
   border-inline-end: 1px solid var(--border-light);
-}
-.faceted-browse-page table.faceted-results tbody td:first-child,
-.block-facetedBrowsePreview table.faceted-results tbody td:first-child {
-  min-width: 12.5rem;
-}
-.faceted-browse-page table.faceted-results tbody td:last-child,
-.block-facetedBrowsePreview table.faceted-results tbody td:last-child {
-  white-space: nowrap;
-  min-width: 6.25rem;
-}
-.faceted-browse-page table.faceted-results tbody td:not(:first-child):not(:last-child),
-.block-facetedBrowsePreview table.faceted-results tbody td:not(:first-child):not(:last-child) {
-  white-space: normal;
-  word-break: break-word;
-  min-width: 7.5rem;
 }
 .faceted-browse-page table.faceted-results tbody td .resource-link,
 .block-facetedBrowsePreview table.faceted-results tbody td .resource-link {

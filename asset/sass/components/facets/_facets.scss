@@ -612,26 +612,11 @@
                 line-height: var(--line-height-normal);
                 border-block-end: 1px solid var(--border-light);
 
+                white-space: normal;
+                word-break: break-word;
+
                 &:not(:last-child) {
                     border-inline-end: 1px solid var(--border-light);
-                }
-
-                // Title column - ensure adequate width
-                &:first-child {
-                    min-width: 12.5rem;
-                }
-
-                // Date column - keep compact but readable
-                &:last-child {
-                    white-space: nowrap;
-                    min-width: 6.25rem;
-                }
-
-                // Middle columns - allow wrapping
-                &:not(:first-child):not(:last-child) {
-                    white-space: normal;
-                    word-break: break-word;
-                    min-width: 7.5rem;
                 }
 
                 // Resource links
