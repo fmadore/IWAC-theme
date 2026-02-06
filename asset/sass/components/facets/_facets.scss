@@ -568,10 +568,9 @@
     table.faceted-results {
         width: 100%;
         min-width: $sm;
-        max-width: none !important; // Override .tablesaw max-width: 100%
         border-collapse: collapse;
         border-spacing: 0;
-        overflow: visible; // Override base table overflow: hidden
+        margin-block-end: 0; // Wrapper handles spacing
 
         // ---- Table header ----
         thead {

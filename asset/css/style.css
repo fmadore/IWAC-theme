@@ -6416,10 +6416,9 @@ select.query-filter optgroup {
 .block-facetedBrowsePreview table.faceted-results {
   width: 100%;
   min-width: 600px;
-  max-width: none !important;
   border-collapse: collapse;
   border-spacing: 0;
-  overflow: visible;
+  margin-block-end: 0;
 }
 .faceted-browse-page table.faceted-results thead th,
 .block-facetedBrowsePreview table.faceted-results thead th {
