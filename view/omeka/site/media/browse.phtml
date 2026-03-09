@@ -61,12 +61,19 @@ if (is_array($decoration) && in_array('media', $decoration)) {
     foreach ($medias as $media):
         $body = $bodyTerm ? $media->value($bodyTerm, ['lang' => ($valueLang)]) : $media->displayDescription(null, ($valueLang));
         $primaryMedia = $media->primaryMedia();
+        $altText = '';
+        if ($primaryMedia) {
+            $altText = method_exists($primaryMedia, 'altText') ? (string) $primaryMedia->altText() : '';
+        }
+        if (!$altText) {
+            $altText = $media->displayTitle(null, $valueLang);
+        }
         ?>
         <li class="item-set resource <?php echo ($isGrid) ? '' : 'media-object'; ?>">
             <!-- Thumbnail -->
             <?php if ($primaryMedia): ?>
                 <div class="resource__thumbnail <?php echo $decorationClass; ?>">
-                    <?php echo $media->linkRaw($this->thumbnail($primaryMedia, 'large')); ?>
+                    <?php echo $media->linkRaw($this->thumbnail($primaryMedia, 'large', ['alt' => $altText])); ?>
                 </div>
             <?php endif; ?>
 

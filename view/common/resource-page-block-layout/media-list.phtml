@@ -7,8 +7,17 @@ $decoration = $this->themeSetting('image_decoration');
     <div class="property">
         <dt><?php echo $this->translate('Media'); ?></dt>
         <?php foreach ($resourceMedia as $media): ?>
+        <?php
+        $altText = '';
+        if (method_exists($media, 'altText')) {
+            $altText = (string) $media->altText();
+        }
+        if (!$altText) {
+            $altText = $media->displayTitle();
+        }
+        ?>
         <dd class="value <?php echo is_array($decoration) && in_array('media', $decoration) ? 'decoration decoration--thumbnail' : ''; ?>">
-            <?php echo $media->linkPretty(); ?>
+            <?php echo $media->linkRaw($this->thumbnail($media, 'square', ['alt' => $altText])); ?>
         </dd>
         <?php endforeach; ?>
     </div>

@@ -2369,6 +2369,11 @@ body.main-header--center {
   }
 }
 .main-navigation__toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
   width: 35px;
   height: 28px;
   position: relative;
@@ -2392,7 +2397,7 @@ body.main-header--center {
     display: none;
   }
 }
-.main-navigation__toggle span {
+.main-navigation__toggle span[aria-hidden] {
   display: block;
   position: absolute;
   height: 4px;
@@ -2404,28 +2409,28 @@ body.main-header--center {
   transform: rotate(0deg);
   transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out, top 0.25s ease-in-out, width 0.25s ease-in-out;
 }
-.main-navigation__toggle span:nth-child(1) {
+.main-navigation__toggle span:nth-child(2) {
   top: 0px;
   transform-origin: left center;
 }
-.main-navigation__toggle span:nth-child(2) {
+.main-navigation__toggle span:nth-child(3) {
   top: 11px;
   transform-origin: left center;
 }
-.main-navigation__toggle span:nth-child(3) {
+.main-navigation__toggle span:nth-child(4) {
   top: 22px;
   transform-origin: left center;
 }
-.main-navigation__toggle.open span:nth-child(1) {
+.main-navigation__toggle.open span:nth-child(2) {
   transform: rotate(45deg);
   top: -1px;
   inset-inline-start: 5px;
 }
-.main-navigation__toggle.open span:nth-child(2) {
+.main-navigation__toggle.open span:nth-child(3) {
   width: 0%;
   opacity: 0;
 }
-.main-navigation__toggle.open span:nth-child(3) {
+.main-navigation__toggle.open span:nth-child(4) {
   transform: rotate(-45deg);
   top: 24px;
   inset-inline-start: 5px;

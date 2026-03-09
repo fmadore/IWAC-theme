@@ -10,6 +10,8 @@ $previousText = $this->translate('Previous');
 				id="menu-backer"
 				class="menu-backer is-empty"
 				aria-label="<?php echo $closeText; ?>"
+				aria-hidden="true"
+				tabindex="-1"
 				title="<?php echo $closeText; ?>"
 			>
                 <?php echo $closeText; ?>
@@ -30,4 +32,5 @@ $previousText = $this->translate('Previous');
 <script>
     const closeText = <?php echo json_encode($closeText); ?>;
     const previousText = <?php echo json_encode($previousText); ?>;
+    const openMenuText = <?php echo json_encode($this->translate('Open menu')); ?>;
 </script>

@@ -7,7 +7,19 @@ $decoration = $this->themeSetting('image_decoration');
   <?php foreach ($attachments as $attachment): ?>
     <?php $asset = $attachment['asset']; ?>
     <div class="asset <?php echo is_array($decoration) && in_array('asset', $decoration) ? 'decoration' : ''; ?>">
-        <?php $assetImage = ($asset) ? $this->thumbnail($asset, 'large') : ''; ?>
+        <?php
+        $altText = '';
+        if ($asset) {
+            $altText = method_exists($asset, 'altText') ? (string) ($asset->altText() ?: '') : '';
+            if (!$altText && $attachment['caption'] !== '') {
+                $altText = strip_tags($attachment['caption']);
+            }
+            if (!$altText) {
+                $altText = ucwords(str_replace(['-', '_'], ' ', pathinfo($asset->name(), PATHINFO_FILENAME)));
+            }
+        }
+        $assetImage = ($asset) ? $this->thumbnail($asset, 'large', ['alt' => $altText]) : '';
+        ?>
         <?php $page = (array_key_exists('page', $attachment)) ? $attachment['page'] : null; ?>
         <?php if ($page): ?>
             <a href="<?php echo $escape($page->siteUrl()); ?>">
