@@ -11,7 +11,7 @@
             <?php foreach ($items as $item): ?>
             <tr>
                 <?php foreach ($columns as $column): ?>
-                <td><?php echo $column->content($item); ?></td>
+                <td><div class="td-content"><?php echo $column->content($item); ?></div></td>
                 <?php endforeach; ?>
             </tr>
             <?php endforeach; ?>

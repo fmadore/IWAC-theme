@@ -2374,6 +2374,7 @@ body.main-header--center {
   padding: 0;
   font: inherit;
   color: inherit;
+  box-shadow: none;
   width: 35px;
   height: 28px;
   position: relative;
@@ -2382,6 +2383,11 @@ body.main-header--center {
   transform: rotate(0deg);
   transition: transform 0.5s ease-in-out;
   cursor: pointer;
+}
+.main-navigation__toggle:hover, .main-navigation__toggle:active, .main-navigation__toggle:focus {
+  background: none;
+  box-shadow: none;
+  transform: rotate(0deg);
 }
 @media (min-width: 1024px) {
   .main-navigation__toggle {
@@ -2507,6 +2513,7 @@ body.main-header--center {
   transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 .main-navigation .navigation > li.menu-item-has-children button:hover {
+  background: transparent;
   transform: none;
   box-shadow: none;
 }
@@ -5814,9 +5821,9 @@ select.query-filter optgroup {
   margin-block-end: var(--space-6);
 }
 .faceted-browse-page #section-sidebar .field,
-.faceted-browse-page #section-sidebar fieldset,
+.faceted-browse-page #section-sidebar fieldset:not(.facet):not(.category),
 .block-facetedBrowsePreview #section-sidebar .field,
-.block-facetedBrowsePreview #section-sidebar fieldset {
+.block-facetedBrowsePreview #section-sidebar fieldset:not(.facet):not(.category) {
   background: transparent;
   border: none;
   box-shadow: none;
@@ -6384,7 +6391,7 @@ select.query-filter optgroup {
 .faceted-browse-page #section-content .browse-controls,
 .block-facetedBrowsePreview #section-content .browse-controls {
   border-block-end: none;
-  margin-block-end: 0;
+  margin-block-end: var(--space-4);
 }
 .faceted-browse-page #section-content .browse-controls .pagination,
 .block-facetedBrowsePreview #section-content .browse-controls .pagination {
@@ -6434,6 +6441,12 @@ select.query-filter optgroup {
   border-spacing: 0;
   margin-block-end: 0;
 }
+.faceted-browse-page table.faceted-results thead,
+.block-facetedBrowsePreview table.faceted-results thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
 .faceted-browse-page table.faceted-results thead th,
 .block-facetedBrowsePreview table.faceted-results thead th {
   padding: var(--space-3) var(--space-4);
@@ -6442,7 +6455,8 @@ select.query-filter optgroup {
   text-align: start;
   color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--text-heading));
   background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 5%, var(--surface-raised)) 0%, var(--surface-raised) 100%);
-  border-block-end: var(--accent-line-sm) solid color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+  border-block-end: none;
+  box-shadow: inset 0 calc(-1 * var(--accent-line-sm)) 0 color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
 }
 .faceted-browse-page table.faceted-results thead th:not(:last-child),
 .block-facetedBrowsePreview table.faceted-results thead th:not(:last-child) {
@@ -6457,10 +6471,18 @@ select.query-filter optgroup {
 .block-facetedBrowsePreview table.faceted-results tbody tr:hover {
   background-color: color-mix(in srgb, var(--primary) 3%, var(--surface));
 }
+.faceted-browse-page table.faceted-results tbody tr:nth-child(even),
+.block-facetedBrowsePreview table.faceted-results tbody tr:nth-child(even) {
+  background-color: color-mix(in srgb, var(--primary) 1.5%, var(--bg-surface));
+}
+.faceted-browse-page table.faceted-results tbody tr:nth-child(even):hover,
+.block-facetedBrowsePreview table.faceted-results tbody tr:nth-child(even):hover {
+  background-color: color-mix(in srgb, var(--primary) 4%, var(--surface));
+}
 .faceted-browse-page table.faceted-results tbody td,
 .block-facetedBrowsePreview table.faceted-results tbody td {
   padding: var(--space-3) var(--space-4);
-  vertical-align: middle;
+  vertical-align: top;
   font-size: var(--text-sm);
   line-height: var(--line-height-normal);
   border-block-end: 1px solid var(--border-light);
@@ -6468,9 +6490,20 @@ select.query-filter optgroup {
   word-break: normal !important;
   overflow-wrap: break-word !important;
 }
+.faceted-browse-page table.faceted-results tbody td .td-content:not(:has(.resource-link)),
+.block-facetedBrowsePreview table.faceted-results tbody td .td-content:not(:has(.resource-link)) {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .faceted-browse-page table.faceted-results tbody td:not(:last-child),
 .block-facetedBrowsePreview table.faceted-results tbody td:not(:last-child) {
   border-inline-end: 1px solid var(--border-light);
+}
+.faceted-browse-page table.faceted-results tbody td .td-content,
+.block-facetedBrowsePreview table.faceted-results tbody td .td-content {
+  min-width: 0;
 }
 .faceted-browse-page table.faceted-results tbody td .resource-link,
 .block-facetedBrowsePreview table.faceted-results tbody td .resource-link {
@@ -6480,6 +6513,7 @@ select.query-filter optgroup {
   max-width: 100%;
   text-decoration: none;
   color: var(--primary);
+  font-weight: 500;
   transition: color var(--transition-fast);
 }
 .faceted-browse-page table.faceted-results tbody td .resource-link:hover,
@@ -6789,7 +6823,9 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   color: var(--primary);
 }
 .browse-controls .permalink {
-  padding: var(--space-3) var(--space-5);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  text-transform: none;
 }
 
 .resource-grid {

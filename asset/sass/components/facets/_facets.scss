@@ -62,8 +62,9 @@
         }
 
         // Reset default field/fieldset styles in sidebar
+        // Use :not(.facet):not(.category) to preserve styled facet card borders
         .field,
-        fieldset {
+        fieldset:not(.facet):not(.category) {
             background: transparent;
             border: none;
             box-shadow: none;
@@ -511,7 +512,7 @@
 
         .browse-controls {
             border-block-end: none;
-            margin-block-end: 0;
+            margin-block-end: var(--space-4);
 
             .pagination {
                 margin-block-start: 0;
@@ -572,8 +573,14 @@
         border-spacing: 0;
         margin-block-end: 0; // Wrapper handles spacing
 
-        // ---- Table header ----
+        // ---- Table header (sticky) ----
+        // Note: border-collapse eats borders on sticky elements, so we use
+        // box-shadow on th to simulate the bottom accent line when stuck.
         thead {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+
             th {
                 padding: var(--space-3) var(--space-4);
                 font-weight: 600;
@@ -585,7 +592,9 @@
                     color-mix(in srgb, var(--primary) 5%, var(--surface-raised)) 0%,
                     var(--surface-raised) 100%
                 );
-                border-block-end: var(--accent-line-sm) solid color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+                // Use box-shadow instead of border for sticky compatibility
+                border-block-end: none;
+                box-shadow: inset 0 calc(-1 * var(--accent-line-sm)) 0 color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
 
                 &:not(:last-child) {
                     border-inline-end: 1px solid var(--border-light);
@@ -603,11 +612,20 @@
                 &:hover {
                     background-color: color-mix(in srgb, var(--primary) 3%, var(--surface));
                 }
+
+                // Zebra striping for readability
+                &:nth-child(even) {
+                    background-color: color-mix(in srgb, var(--primary) 1.5%, var(--bg-surface));
+
+                    &:hover {
+                        background-color: color-mix(in srgb, var(--primary) 4%, var(--surface));
+                    }
+                }
             }
 
             td {
                 padding: var(--space-3) var(--space-4);
-                vertical-align: middle;
+                vertical-align: top;
                 font-size: var(--text-sm);
                 line-height: var(--line-height-normal);
                 border-block-end: 1px solid var(--border-light);
@@ -619,8 +637,21 @@
                 word-break: normal !important;
                 overflow-wrap: break-word !important;
 
+                // Clamp long text in non-link cells (e.g. AI summaries)
+                .td-content:not(:has(.resource-link)) {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 4;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
                 &:not(:last-child) {
                     border-inline-end: 1px solid var(--border-light);
+                }
+
+                // Wrapper div for line-clamp support in table cells
+                .td-content {
+                    min-width: 0;
                 }
 
                 // Resource links
@@ -631,6 +662,7 @@
                     max-width: 100%;
                     text-decoration: none;
                     color: var(--primary);
+                    font-weight: 500;
                     transition: color var(--transition-fast);
 
                     &:hover {
