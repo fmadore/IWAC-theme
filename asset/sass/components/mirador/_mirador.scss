@@ -1,0 +1,251 @@
+// ==========================================================================
+// Mirador Viewer Component
+// Integrates the Mirador IIIF viewer with the IWAC theme, fixing z-index
+// overlay issues, contrast problems, and adding dark mode support.
+// ==========================================================================
+
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Z-Index Containment
+// MUI uses z-indexes up to 1300+. Creating a stacking context on the
+// container keeps them from escaping above the site header (z-index: 200).
+// ==========================================================================
+
+.block-mirador {
+    position: relative;
+    z-index: 1;
+}
+
+// ==========================================================================
+// Viewer Container
+// ==========================================================================
+
+.mirador.viewer {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+}
+
+// ==========================================================================
+// Reset Theme Styles Inside Mirador
+// The global dt/dd styles (color, font-size, weight) leak into Mirador's
+// info panels, causing white-on-white text in dark mode and oversized labels.
+// ==========================================================================
+
+.mirador-viewer {
+
+    // Reset definition list styles to MUI defaults
+    dt {
+        color: inherit;
+        font-size: inherit;
+        font-weight: 500;
+    }
+
+    dd {
+        margin-block: 0;
+        margin-inline: 0;
+    }
+
+    // Reset heading styles that may leak in
+    h1, h2, h3, h4, h5, h6 {
+        color: inherit;
+        letter-spacing: inherit;
+    }
+
+    // Reset link styles
+    a {
+        color: inherit;
+        text-decoration: inherit;
+        border-bottom: none;
+        transition: none;
+
+        &:hover {
+            color: inherit;
+            background: none;
+            transform: none;
+        }
+    }
+
+    // Reset button styles
+    button,
+    .MuiButtonBase-root {
+        color: inherit;
+        background: inherit;
+        border: inherit;
+        border-radius: inherit;
+        box-shadow: inherit;
+        transform: none;
+        transition: inherit;
+
+        &:hover {
+            transform: none;
+        }
+    }
+
+    // Reset list styles
+    ul, ol, li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    // Reset input styles
+    input, select, textarea {
+        color: inherit;
+        background: inherit;
+        border: inherit;
+        box-shadow: none;
+
+        &:focus {
+            outline: inherit;
+            box-shadow: inherit;
+            transform: none;
+        }
+    }
+}
+
+// ==========================================================================
+// Dark Mode Overrides
+// MUI hardcodes white backgrounds. Override them for dark mode.
+// ==========================================================================
+
+@mixin mirador-dark {
+    // Main MUI Paper surfaces (panels, toolbars, sidebars)
+    .MuiPaper-root {
+        background-color: var(--surface-raised);
+        color: var(--ink);
+        border-color: var(--border);
+    }
+
+    // AppBar / toolbar
+    .MuiAppBar-root {
+        background-color: var(--surface);
+    }
+
+    // Toolbar buttons and icons
+    .MuiIconButton-root,
+    .MuiButtonBase-root {
+        color: var(--ink-light);
+
+        &:hover {
+            background-color: color-mix(in srgb, var(--ink) 10%, transparent);
+        }
+    }
+
+    // FAB button
+    .MuiFab-root.MuiFab-primary {
+        background-color: var(--primary);
+        color: var(--primary-contrast);
+
+        &:hover {
+            background-color: var(--primary-hover);
+        }
+    }
+
+    // Input fields
+    .MuiInputBase-root,
+    .MuiInput-root,
+    .MuiOutlinedInput-root {
+        color: var(--ink);
+
+        .MuiOutlinedInput-notchedOutline {
+            border-color: var(--border);
+        }
+    }
+
+    // Accordion panels (metadata info)
+    .MuiAccordion-root {
+        background-color: var(--surface-raised);
+        color: var(--ink);
+
+        &::before {
+            background-color: var(--border);
+        }
+    }
+
+    .MuiAccordionSummary-root {
+        color: var(--ink);
+
+        .MuiAccordionSummary-expandIconWrapper {
+            color: var(--ink-light);
+        }
+    }
+
+    .MuiAccordionDetails-root {
+        color: var(--ink);
+    }
+
+    // Tabs
+    .MuiTab-root {
+        color: var(--muted);
+
+        &.Mui-selected {
+            color: var(--primary);
+        }
+    }
+
+    .MuiTabs-indicator {
+        background-color: var(--primary);
+    }
+
+    // Dividers
+    .MuiDivider-root {
+        border-color: var(--border);
+    }
+
+    // Tooltip
+    .MuiTooltip-tooltip {
+        background-color: var(--surface);
+        color: var(--ink);
+    }
+
+    // Workspace background
+    .mirador-workspace-viewport {
+        background-color: var(--background);
+    }
+
+    // Companion window (info sidebar)
+    [class*="companionWindow"] .MuiPaper-root,
+    [class*="CompanionWindow"] .MuiPaper-root {
+        border-color: var(--border);
+    }
+
+    // Scrollbar styling
+    * {
+        scrollbar-color: var(--border) var(--surface);
+    }
+
+    *::-webkit-scrollbar-track {
+        background: var(--surface);
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: var(--border);
+    }
+}
+
+// Manual dark mode
+body[data-theme="dark"] .mirador-viewer {
+    @include mirador-dark;
+}
+
+// System preference dark mode
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .mirador-viewer {
+        @include mirador-dark;
+    }
+}
+
+// Dark mode border for viewer container
+body[data-theme="dark"] .mirador.viewer {
+    border-color: var(--border);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .mirador.viewer {
+        border-color: var(--border);
+    }
+}
