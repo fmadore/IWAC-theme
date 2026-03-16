@@ -49,10 +49,16 @@
         margin-inline: 0;
     }
 
-    // Reset heading styles that may leak in
+    // Reset heading styles — theme sets h2 { color: var(--primary) } and
+    // h1-h4 { font-family: "Noto Serif" } which leak into MUI components
     h1, h2, h3, h4, h5, h6 {
         color: inherit;
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        line-height: inherit;
         letter-spacing: inherit;
+        margin: 0;
     }
 
     // Reset link styles
@@ -120,15 +126,26 @@
         border-color: var(--border);
     }
 
-    // AppBar / toolbar
+    // AppBar / toolbar — MUI uses --AppBar-background and --AppBar-color
+    // CSS custom properties, so we must override those, not just background-color
     .MuiAppBar-root {
-        background-color: var(--surface);
+        --AppBar-background: var(--surface) !important;
+        --AppBar-color: var(--ink) !important;
+        background-color: var(--surface) !important;
+        color: var(--ink);
     }
 
-    // Toolbar buttons and icons
+    // Toolbar — sits inside AppBar but has its own white background
+    .MuiToolbar-root {
+        background-color: transparent !important;
+        color: inherit;
+    }
+
+    // Toolbar buttons and icons — clear inherited white backgrounds
     .MuiIconButton-root,
     .MuiButtonBase-root {
         color: var(--ink-light);
+        background-color: transparent;
 
         &:hover {
             background-color: color-mix(in srgb, var(--ink) 10%, transparent);
@@ -202,8 +219,15 @@
         color: var(--ink);
     }
 
-    // Workspace background
+    // Workspace and mosaic background — MUI hardcodes rgb(238, 238, 238)
     .mirador-workspace-viewport {
+        background-color: var(--background);
+    }
+
+    [class*="mirador-mosaic"],
+    .mosaic,
+    .mosaic-window-body,
+    .mosaic-window-toolbar {
         background-color: var(--background);
     }
 

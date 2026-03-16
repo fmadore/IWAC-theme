@@ -7137,7 +7137,12 @@ body.item.show .property[data-property-term="iwac:mistralSubjectiviteJustificati
 }
 .mirador-viewer h1, .mirador-viewer h2, .mirador-viewer h3, .mirador-viewer h4, .mirador-viewer h5, .mirador-viewer h6 {
   color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
   letter-spacing: inherit;
+  margin: 0;
 }
 .mirador-viewer a {
   color: inherit;
@@ -7187,11 +7192,19 @@ body[data-theme=dark] .mirador-viewer .MuiPaper-root {
   border-color: var(--border);
 }
 body[data-theme=dark] .mirador-viewer .MuiAppBar-root {
-  background-color: var(--surface);
+  --AppBar-background: var(--surface) !important;
+  --AppBar-color: var(--ink) !important;
+  background-color: var(--surface) !important;
+  color: var(--ink);
+}
+body[data-theme=dark] .mirador-viewer .MuiToolbar-root {
+  background-color: transparent !important;
+  color: inherit;
 }
 body[data-theme=dark] .mirador-viewer .MuiIconButton-root,
 body[data-theme=dark] .mirador-viewer .MuiButtonBase-root {
   color: var(--ink-light);
+  background-color: transparent;
 }
 body[data-theme=dark] .mirador-viewer .MuiIconButton-root:hover,
 body[data-theme=dark] .mirador-viewer .MuiButtonBase-root:hover {
@@ -7249,6 +7262,12 @@ body[data-theme=dark] .mirador-viewer .MuiTooltip-tooltip {
 body[data-theme=dark] .mirador-viewer .mirador-workspace-viewport {
   background-color: var(--background);
 }
+body[data-theme=dark] .mirador-viewer [class*=mirador-mosaic],
+body[data-theme=dark] .mirador-viewer .mosaic,
+body[data-theme=dark] .mirador-viewer .mosaic-window-body,
+body[data-theme=dark] .mirador-viewer .mosaic-window-toolbar {
+  background-color: var(--background);
+}
 body[data-theme=dark] .mirador-viewer [class*=companionWindow] .MuiPaper-root,
 body[data-theme=dark] .mirador-viewer [class*=CompanionWindow] .MuiPaper-root {
   border-color: var(--border);
@@ -7270,11 +7289,19 @@ body[data-theme=dark] .mirador-viewer *::-webkit-scrollbar-thumb {
     border-color: var(--border);
   }
   :root:not([data-theme=light]) .mirador-viewer .MuiAppBar-root {
-    background-color: var(--surface);
+    --AppBar-background: var(--surface) !important;
+    --AppBar-color: var(--ink) !important;
+    background-color: var(--surface) !important;
+    color: var(--ink);
+  }
+  :root:not([data-theme=light]) .mirador-viewer .MuiToolbar-root {
+    background-color: transparent !important;
+    color: inherit;
   }
   :root:not([data-theme=light]) .mirador-viewer .MuiIconButton-root,
   :root:not([data-theme=light]) .mirador-viewer .MuiButtonBase-root {
     color: var(--ink-light);
+    background-color: transparent;
   }
   :root:not([data-theme=light]) .mirador-viewer .MuiIconButton-root:hover,
   :root:not([data-theme=light]) .mirador-viewer .MuiButtonBase-root:hover {
@@ -7330,6 +7357,12 @@ body[data-theme=dark] .mirador-viewer *::-webkit-scrollbar-thumb {
     color: var(--ink);
   }
   :root:not([data-theme=light]) .mirador-viewer .mirador-workspace-viewport {
+    background-color: var(--background);
+  }
+  :root:not([data-theme=light]) .mirador-viewer [class*=mirador-mosaic],
+  :root:not([data-theme=light]) .mirador-viewer .mosaic,
+  :root:not([data-theme=light]) .mirador-viewer .mosaic-window-body,
+  :root:not([data-theme=light]) .mirador-viewer .mosaic-window-toolbar {
     background-color: var(--background);
   }
   :root:not([data-theme=light]) .mirador-viewer [class*=companionWindow] .MuiPaper-root,
