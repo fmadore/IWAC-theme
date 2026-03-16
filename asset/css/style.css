@@ -7268,6 +7268,9 @@ body[data-theme=dark] .mirador-viewer .mosaic-window-body,
 body[data-theme=dark] .mirador-viewer .mosaic-window-toolbar {
   background-color: var(--background);
 }
+body[data-theme=dark] .mirador-viewer [class*=companion-area] > div {
+  background-color: var(--surface) !important;
+}
 body[data-theme=dark] .mirador-viewer [class*=companionWindow] .MuiPaper-root,
 body[data-theme=dark] .mirador-viewer [class*=CompanionWindow] .MuiPaper-root {
   border-color: var(--border);
@@ -7364,6 +7367,9 @@ body[data-theme=dark] .mirador-viewer *::-webkit-scrollbar-thumb {
   :root:not([data-theme=light]) .mirador-viewer .mosaic-window-body,
   :root:not([data-theme=light]) .mirador-viewer .mosaic-window-toolbar {
     background-color: var(--background);
+  }
+  :root:not([data-theme=light]) .mirador-viewer [class*=companion-area] > div {
+    background-color: var(--surface) !important;
   }
   :root:not([data-theme=light]) .mirador-viewer [class*=companionWindow] .MuiPaper-root,
   :root:not([data-theme=light]) .mirador-viewer [class*=CompanionWindow] .MuiPaper-root {

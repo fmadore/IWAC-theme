@@ -231,7 +231,13 @@
         background-color: var(--background);
     }
 
-    // Companion window (info sidebar)
+    // Companion area toggle strip and sidebar
+    [class*="companion-area"] {
+        > div {
+            background-color: var(--surface) !important;
+        }
+    }
+
     [class*="companionWindow"] .MuiPaper-root,
     [class*="CompanionWindow"] .MuiPaper-root {
         border-color: var(--border);
