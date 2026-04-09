@@ -119,7 +119,7 @@ foreach ($socialNetworks as $social_network) {
 				<div class="main-footer__social-network">
 					<?php foreach ($socialNetworks as $social_network): ?>
 						<?php if ($social_network_url = $this->themeSetting("{$social_network}_url")): ?>
-							<a href="<?php echo $social_network_url; ?>"
+							<a href="<?php echo $escAttr($social_network_url); ?>"
 								aria-label="<?php echo $escAttr(ucfirst($social_network)); ?>" target="_blank"
 								rel="noopener noreferrer">
 								<?php echo $socialIcons[$social_network] ?? ''; ?>

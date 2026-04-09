@@ -67,8 +67,4 @@
     });
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', browseScripts);
-} else {
-    browseScripts();
-}
+IWACUtils.onReady(browseScripts);

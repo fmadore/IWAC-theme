@@ -10,7 +10,7 @@
 (function () {
     'use strict';
 
-    var STORAGE_KEY = 'pagination-scroll';
+    const STORAGE_KEY = 'pagination-scroll';
 
     /**
      * Find the best element to scroll to (the results area).
@@ -25,38 +25,34 @@
      * Scroll to the results area, accounting for fixed header.
      */
     function scrollToResults(behavior) {
-        var target = findScrollTarget();
+        const target = findScrollTarget();
         if (!target) return;
 
-        var headerHeight = 0;
-        var header = document.querySelector('.main-header__main-bar');
+        let headerHeight = 0;
+        const header = document.querySelector('.main-header__main-bar');
         if (header) headerHeight = header.offsetHeight + 20;
 
-        var top = target.getBoundingClientRect().top + window.scrollY - headerHeight;
+        const top = target.getBoundingClientRect().top + window.scrollY - headerHeight;
         window.scrollTo({ top: top, behavior: behavior || 'instant' });
     }
 
     // --- Regular browse pages: sessionStorage-based scroll ---
 
     // On page load, check if we should scroll
-    var shouldScroll = sessionStorage.getItem(STORAGE_KEY);
-    if (shouldScroll) {
+    if (sessionStorage.getItem(STORAGE_KEY)) {
         sessionStorage.removeItem(STORAGE_KEY);
         // Wait for layout to settle
-        requestAnimationFrame(function () {
-            scrollToResults('instant');
-        });
+        requestAnimationFrame(() => scrollToResults('instant'));
     }
 
     // Mark pagination actions so we scroll after the reload
-    document.addEventListener('click', function (e) {
-        var link = e.target.closest('.pagination a.pagination-nav:not(.disabled)');
-        if (link) {
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.pagination a.pagination-nav:not(.disabled)')) {
             sessionStorage.setItem(STORAGE_KEY, '1');
         }
     });
 
-    document.addEventListener('submit', function (e) {
+    document.addEventListener('submit', (e) => {
         if (e.target.closest('.pagination .pager')) {
             sessionStorage.setItem(STORAGE_KEY, '1');
         }
@@ -64,33 +60,31 @@
 
     // --- Faceted browse pages: MutationObserver-based scroll ---
 
-    var sectionContent = document.getElementById('section-content');
-    var isFacetedBrowse = document.querySelector('.faceted-browse-page, .block-facetedBrowsePreview');
+    const sectionContent = document.getElementById('section-content');
+    const isFacetedBrowse = document.querySelector('.faceted-browse-page, .block-facetedBrowsePreview');
 
     if (sectionContent && isFacetedBrowse) {
-        var paginationClicked = false;
+        let paginationClicked = false;
 
         // Use event delegation on sectionContent since its children are replaced by AJAX
-        sectionContent.addEventListener('click', function (e) {
+        sectionContent.addEventListener('click', (e) => {
             if (e.target.closest('.pagination a.pagination-nav:not(.disabled)')) {
                 paginationClicked = true;
             }
         });
 
-        sectionContent.addEventListener('submit', function (e) {
+        sectionContent.addEventListener('submit', (e) => {
             if (e.target.closest('.pagination .pager')) {
                 paginationClicked = true;
             }
         });
 
         // Watch for AJAX content replacement
-        var observer = new MutationObserver(function () {
+        const observer = new MutationObserver(() => {
             if (!paginationClicked) return;
             paginationClicked = false;
             // Small delay to let new content render
-            requestAnimationFrame(function () {
-                scrollToResults('smooth');
-            });
+            requestAnimationFrame(() => scrollToResults('smooth'));
         });
 
         observer.observe(sectionContent, { childList: true });

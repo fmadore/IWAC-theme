@@ -27,10 +27,7 @@
         background-color: var(--selection-bg);
     }
 
-    &:focus-visible {
-        outline: 2px solid var(--focus-color);
-        outline-offset: 2px;
-    }
+    @include focus-ring;
 
     &__icon {
         display: flex; // Ensure SVG centers

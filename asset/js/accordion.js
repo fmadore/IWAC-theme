@@ -51,23 +51,9 @@ const accordionScript = () => {
 
     // Resize Events
 
-    let timeout = false;
-    const delay = 250;
+    refreshPanelsHeight();
 
-    onResize();
-
-    function onResize() {
-        refreshPanelsHeight();
-    }
-
-    window.addEventListener('resize', function() {
-        clearTimeout(timeout);
-        timeout = setTimeout(onResize, delay);
-    });
+    window.addEventListener('resize', IWACUtils.debounce(refreshPanelsHeight, 250));
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', accordionScript);
-} else {
-    accordionScript();
-}
+IWACUtils.onReady(accordionScript);

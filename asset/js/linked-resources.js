@@ -13,18 +13,7 @@ const linkedResourcesScript = () => {
 
     if (!searchInput || !sortSelect) return;
 
-    let debounceTimer = null;
-    const DEBOUNCE_DELAY = 200;
-
-    /**
-     * Debounced search filter
-     */
-    function handleSearch() {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            filterResources();
-        }, DEBOUNCE_DELAY);
-    }
+    const handleSearch = IWACUtils.debounce(filterResources, 200);
 
     /**
      * Filter resources by search term
@@ -173,9 +162,4 @@ const linkedResourcesScript = () => {
     }
 };
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', linkedResourcesScript);
-} else {
-    linkedResourcesScript();
-}
+IWACUtils.onReady(linkedResourcesScript);

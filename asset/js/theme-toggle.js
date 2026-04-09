@@ -96,11 +96,7 @@
     }
 
     // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+    IWACUtils.onReady(init);
 
     // Expose for external use if needed
     window.IWACTheme = {

@@ -42,8 +42,4 @@ const advancedSearchScripts = () => {
     window.addEventListener('resize', placeLabels);
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', advancedSearchScripts);
-} else {
-    advancedSearchScripts();
-}
+IWACUtils.onReady(advancedSearchScripts);

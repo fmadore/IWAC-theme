@@ -36,8 +36,8 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 ## Requirements
 
 - **Omeka S**: 4.1.0 or higher
-- **PHP**: 7.4 or higher
-- **Node.js**: 16.x or higher (for Sass compilation)
+- **PHP**: 8.1 or higher
+- **Node.js**: 18.x or higher (for Sass compilation)
 
 ### Optional Modules
 - [Internationalisation](https://github.com/Daniel-KM/Omeka-S-module-Internationalisation) - For language switching functionality
@@ -46,7 +46,7 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 
 For basic out-of-the-box use of the theme, follow the [Omeka S User Manual instructions for installing themes](https://omeka.org/s/docs/user-manual/sites/site_theme/#installing-themes).
 
-For more advanced use, such as customizing the theme with Sass, you'll need to install the tools with [NodeJS](https://nodejs.org/en/) (16.x or greater). Navigate to your theme directory and run:
+For more advanced use, such as customizing the theme with Sass, you'll need to install the tools with [NodeJS](https://nodejs.org/en/) (18.x or greater). Navigate to your theme directory and run:
 
 ```bash
 npm install
@@ -55,9 +55,9 @@ npm install
 ## Theme Settings
 
 ### General Settings
-- **Primary Color** - The theme's primary color (default: #e77f11)
-- **Secondary Color** - Background and secondary elements color
-- **Accent Color** - Links and accent elements color
+- **Primary Color** - The theme's primary brand color (default: `#E64A19`, IWAC Burnt Orange). Automatically adapts for dark mode.
+- **Secondary Color** - Footer and secondary UI elements (default: `#394f68`, slate blue)
+- **Accent Color** - Alternative accent color for special highlights (default: `#394f68`)
 
 ### Header Layout
 - Inline logo and menu
@@ -140,78 +140,32 @@ This theme uses the modern Sass module system with `@use` and `@forward` (not de
 
 ### Sass File Structure
 
-```bash
-sass
-    ├── abstracts
-    │   ├── mixins
-    │   └── variables
-    │       ├── breakpoints
-    │       ├── colors
-    │       ├── layout
-    │       └── typography
-    ├── base
-    │   ├── elements
-    │   │   ├── body
-    │   │   ├── buttons
-    │   │   ├── caption
-    │   │   ├── fields
-    │   │   ├── hr
-    │   │   ├── icons
-    │   │   ├── language-tag
-    │   │   ├── links
-    │   │   ├── lists
-    │   │   ├── media
-    │   │   ├── resource-description
-    │   │   ├── resource-tag
-    │   │   ├── tables
-    │   │   ├── titles
-    │   │   └── tooltip
-    │   ├── layout
-    │   │   ├── layout
-    │   │   └── regions
-    │   └── typography
-    │       ├── copy
-    │       ├── headings
-    │       └── typography
-    ├── components
-    │   ├── accordion
-    │   ├── advanced-search
-    │   ├── annotation
-    │   ├── banner
-    │   ├── blocks
-    │   │   ├── assets
-    │   │   ├── browse-preview
-    │   │   ├── carousel
-    │   │   ├── collecting
-    │   │   ├── item-showcase
-    │   │   ├── item-with-metadata
-    │   │   ├── list-of-sites
-    │   │   ├── media-embed
-    │   │   ├── table-of-contents
-    │   │   └── timeline
-    │   ├── breadcrumbs
-    │   ├── facets
-    │   ├── footer
-    │   ├── header
-    │   ├── linked-resources
-    │   ├── metadata
-    │   ├── navigation
-    │   ├── pagination
-    │   ├── resources
-    │   │   ├── browse-controls
-    │   │   ├── resource-grid
-    │   │   ├── resource-list
-    │   ├── search-results
-    │   ├── uri-dereferencer
-    │   └── user-bar
-    ├── generic
-    │   ├── box-sizing
-    │   └── normalize
-    └── utilities
-        ├── accessibility
-        ├── alignments
-        └── clearfix
+The full, authoritative structure lives under `asset/sass/`. The high-level layout is:
+
+```text
+sass/
+├── abstracts/          # Variables, tokens, mixins (no output)
+│   ├── mixins/
+│   └── variables/      # _breakpoints, _colors, _layout, _tokens, _typography
+├── base/               # Element & layout baseline (buttons, fields, links…)
+│   ├── elements/
+│   ├── layout/
+│   ├── typography/
+│   └── _theme.scss     # Dark/light theme infrastructure
+├── components/         # Component styles (BEM-scoped)
+│   ├── accordion, advanced-search, annotation, banner
+│   ├── blocks/         # Block-layout styles (carousel, timeline, …)
+│   ├── breadcrumbs, error-page, facets, footer, header
+│   ├── hierarchy, iframe-embed, linked-resources, local-contexts
+│   ├── mapping, metadata, mirador, navigation, pagination
+│   ├── resources/      # resource-grid, resource-list, browse-controls
+│   └── search-results, sentiment, uri-dereferencer, user-bar
+├── generic/            # Box-sizing, normalize
+└── utilities/          # Accessibility, alignments, clearfix, print
 ```
+
+See `CLAUDE.md` for design-token guidelines and the canonical list of CSS
+custom properties.
 
 ## Utility Classes
 
@@ -259,25 +213,40 @@ The theme includes styling for:
 
 ## Design Tokens
 
-The theme uses CSS custom properties for consistent theming:
+The theme uses CSS custom properties for consistent theming. Only the tokens
+listed below are stable — do **not** invent new token names, and see
+`CLAUDE.md` for the full reference and common-mistake table.
 
 ```css
-/* Spacing scale */
+/* Colors (semantic, auto-adapted for light/dark theme) */
+--primary, --primary-hover, --primary-active
+--ink          /* primary text */
+--muted        /* secondary/muted text */
+--surface      /* page background */
+--surface-raised  /* cards, panels, hover surfaces */
+--border, --border-light
+--focus-color
+
+/* Spacing scale (4px base) */
 --space-1 through --space-40
+--space-sm, --space-md, --space-lg, --space-xl
 
-/* Typography scale */
---text-xs, --text-sm, --text-base, --text-lg, --text-xl, --text-2xl, --text-3xl, --text-4xl
+/* Typography (fluid clamp-based) */
+--text-xs, --text-sm, --text-base, --text-lg
+--text-xl, --text-2xl, --text-3xl, --text-4xl
+--line-height-normal, --line-height-relaxed
 
-/* Colors (auto-generated from admin settings) */
---primary, --primary-hue, --primary-sat, --primary-light
---secondary, --accent
---bg-body, --bg-surface, --text-primary, --text-secondary
-
-/* Shadows, borders, transitions */
+/* Effects */
 --shadow-sm, --shadow-md, --shadow-lg
---radius-sm, --radius-md, --radius-lg
---transition-fast, --transition-base
+--radius-sm, --radius-md, --radius-lg, --radius-full
+--transition-fast, --transition-base, --transition-slow
+
+/* Accent mixing (for tinted borders/backgrounds) */
+--accent-mix-subtle, --accent-mix-medium, --accent-mix-strong
 ```
+
+The primary-color HSL components (`--primary-hue`, `--primary-sat`) are
+injected at runtime from the admin settings in `view/layout/layout.phtml`.
 
 ## Credits & Acknowledgments
 

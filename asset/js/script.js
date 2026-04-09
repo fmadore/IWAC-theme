@@ -61,8 +61,6 @@ const freedomScripts = () => {
     // Resize Events
 
     let userBarHeight = 0;
-    let timeout = false;
-    const delay = 250;
 
     onResize();
 
@@ -72,10 +70,7 @@ const freedomScripts = () => {
         onScroll(lastKnownScrollPosition);
     }
 
-    window.addEventListener('resize', function() {
-        clearTimeout(timeout);
-        timeout = setTimeout(onResize, delay);
-    });
+    window.addEventListener('resize', IWACUtils.debounce(onResize, 250));
 
     function refreshBodyPaddingTop() {
         body.style.paddingTop = mainHeader.offsetHeight + 'px';
@@ -209,8 +204,4 @@ const freedomScripts = () => {
     }
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', freedomScripts);
-} else {
-    freedomScripts();
-}
+IWACUtils.onReady(freedomScripts);

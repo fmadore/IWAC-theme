@@ -31,10 +31,7 @@
             background-color: var(--selection-bg);
         }
 
-        &:focus-visible {
-            outline: 2px solid var(--focus-color);
-            outline-offset: 2px;
-        }
+        @include focus-ring;
 
         &[aria-expanded="true"] {
             color: var(--primary);
