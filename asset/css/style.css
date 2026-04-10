@@ -769,7 +769,8 @@ h1 {
   clear: both;
   font-size: var(--text-3xl);
   font-weight: 500;
-  line-height: 1.25;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   margin-block-end: var(--space-8);
 }
 @media (min-width: 768px) {
@@ -1208,10 +1209,12 @@ figcaption {
   display: inline-block;
   background-color: var(--surface-raised);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-full);
   color: var(--ink);
   font-size: var(--text-xs);
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   padding: var(--space-1) var(--space-3);
   transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
@@ -3972,10 +3975,12 @@ select.query-filter optgroup {
   position: relative;
   overflow: hidden;
   margin-block-start: var(--space-4);
+  margin-block-end: var(--space-8);
 }
 @media (min-width: 768px) {
   .banner {
     margin-block-start: var(--space-6);
+    margin-block-end: var(--space-10);
   }
 }
 .banner {
@@ -4166,6 +4171,7 @@ select.query-filter optgroup {
   border-radius: var(--radius-sm);
   font-size: var(--text-xs);
   padding: var(--space-2) var(--space-3);
+  margin-block-end: var(--space-6);
   text-transform: uppercase;
   letter-spacing: 0.025em;
   width: auto;
@@ -4733,6 +4739,171 @@ select.query-filter optgroup {
 }
 .metadata .media-list .resource-link .resource-name {
   padding: var(--space-4);
+}
+
+/* Resource Show (item, item-set, media)
+--------------------------------------------- */
+body.resource.show .resource-tags,
+body.item-set .resource-tags {
+  margin-block-start: var(--space-6);
+  margin-block-end: var(--space-5);
+}
+@media (min-width: 768px) {
+  body.resource.show .resource-tags,
+  body.item-set .resource-tags {
+    margin-block-start: var(--space-8);
+    margin-block-end: var(--space-6);
+  }
+}
+body.resource.show .main-region > .metadata dl,
+body.item-set .main-region > .metadata dl {
+  margin-block-end: 0;
+}
+body.resource.show .main-region > .metadata dl > .property,
+body.item-set .main-region > .metadata dl > .property {
+  margin-block-end: 0;
+  padding: var(--space-4) 0;
+  background: transparent;
+  border: none;
+  border-block-end: 1px solid var(--border-light);
+  border-radius: 0;
+  box-shadow: none;
+  transition: none;
+}
+body.resource.show .main-region > .metadata dl > .property:last-child,
+body.item-set .main-region > .metadata dl > .property:last-child {
+  border-block-end: none;
+}
+body.resource.show .main-region > .metadata dl > .property:hover,
+body.item-set .main-region > .metadata dl > .property:hover {
+  background: transparent;
+  box-shadow: none;
+  border-left: none;
+}
+body.resource.show .main-region > .metadata dl > .property dt,
+body.item-set .main-region > .metadata dl > .property dt {
+  margin-block-end: var(--space-2);
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-inline-end: var(--space-4);
+}
+@media (min-width: 768px) {
+  body.resource.show .main-region > .metadata dl > .property dt,
+  body.item-set .main-region > .metadata dl > .property dt {
+    float: left;
+    width: 140px;
+    margin-block-end: 0;
+    padding-block-start: 2px;
+  }
+}
+body.resource.show .main-region > .metadata dl > .property dd,
+body.item-set .main-region > .metadata dl > .property dd {
+  color: var(--ink);
+  font-size: var(--text-base);
+  line-height: var(--line-height-normal);
+}
+@media (min-width: 768px) {
+  body.resource.show .main-region > .metadata dl > .property dd,
+  body.item-set .main-region > .metadata dl > .property dd {
+    margin-inline-start: 140px;
+  }
+}
+body.resource.show .main-region > .metadata .property[data-property-term="bibo:shortDescription"],
+body.item-set .main-region > .metadata .property[data-property-term="bibo:shortDescription"] {
+  padding-block: var(--space-5) var(--space-5);
+}
+@media (min-width: 768px) {
+  body.resource.show .main-region > .metadata .property[data-property-term="bibo:shortDescription"] dt,
+  body.item-set .main-region > .metadata .property[data-property-term="bibo:shortDescription"] dt {
+    float: none;
+    width: auto;
+    margin-block-end: var(--space-3);
+    padding-block-start: 0;
+  }
+}
+body.resource.show .main-region > .metadata .property[data-property-term="bibo:shortDescription"] dd,
+body.item-set .main-region > .metadata .property[data-property-term="bibo:shortDescription"] dd {
+  margin-inline-start: 0;
+  max-width: 62ch;
+  padding-inline-start: var(--space-4);
+  border-inline-start: var(--accent-line-md) solid color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+  font-family: "Noto Serif", serif;
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: var(--line-height-relaxed);
+  color: var(--ink);
+}
+@media (min-width: 768px) {
+  body.resource.show .main-region > .metadata .property[data-property-term="bibo:shortDescription"] dd,
+  body.item-set .main-region > .metadata .property[data-property-term="bibo:shortDescription"] dd {
+    margin-inline-start: 0;
+    font-size: var(--text-lg);
+    padding-inline-start: var(--space-5);
+  }
+}
+body.resource.show .main-region > .metadata .property[data-property-term="bibo:content"],
+body.item-set .main-region > .metadata .property[data-property-term="bibo:content"] {
+  margin-block-start: var(--space-10);
+  padding-block: var(--space-10) var(--space-4);
+  border-block-start: 1px solid var(--border);
+  border-block-end: none;
+}
+body.resource.show .main-region > .metadata .property[data-property-term="bibo:content"] dt,
+body.item-set .main-region > .metadata .property[data-property-term="bibo:content"] dt {
+  float: none;
+  width: auto;
+  margin-block-end: var(--space-5);
+  padding-inline-end: 0;
+  padding-block-start: 0;
+  font-family: "Inter", "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+@media (min-width: 768px) {
+  body.resource.show .main-region > .metadata .property[data-property-term="bibo:content"] dt,
+  body.item-set .main-region > .metadata .property[data-property-term="bibo:content"] dt {
+    float: none;
+    width: auto;
+  }
+}
+body.resource.show .main-region > .metadata .property[data-property-term="bibo:content"] dd,
+body.item-set .main-region > .metadata .property[data-property-term="bibo:content"] dd {
+  margin-inline-start: 0;
+  max-width: 68ch;
+  font-size: var(--text-lg);
+  line-height: var(--line-height-relaxed);
+  color: var(--ink);
+}
+@media (min-width: 768px) {
+  body.resource.show .main-region > .metadata .property[data-property-term="bibo:content"] dd,
+  body.item-set .main-region > .metadata .property[data-property-term="bibo:content"] dd {
+    margin-inline-start: 0;
+  }
+}
+body.resource.show .main-region > .metadata .property[data-property-term="bibo:content"] dd p + p,
+body.item-set .main-region > .metadata .property[data-property-term="bibo:content"] dd p + p {
+  margin-block-start: var(--space-4);
+}
+
+body.media.show .media-parent-item {
+  margin-block-start: var(--space-10);
+  padding-block-start: var(--space-6);
+  border-block-start: 1px solid var(--border-light);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+body.media.show .media-parent-item a {
+  color: var(--ink);
+  text-decoration: none;
+  border-block-end: 1px solid var(--border);
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+body.media.show .media-parent-item a:hover {
+  color: var(--primary);
+  border-block-end-color: var(--primary);
 }
 
 /* Blocks

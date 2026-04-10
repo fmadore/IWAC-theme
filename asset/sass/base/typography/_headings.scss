@@ -29,7 +29,8 @@ h1 {
     clear: both;
     font-size: var(--text-3xl);
     font-weight: 500;
-    line-height: $font__headings-line-height;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
     margin-block-end: var(--space-8);
 
     @media (min-width: $md) {

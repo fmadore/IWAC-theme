@@ -14,9 +14,12 @@
 
     // Top spacing for separation from header/navigation
     margin-block-start: var(--space-4);
+    // Bottom spacing so page content (breadcrumbs, titles) has breathing room
+    margin-block-end: var(--space-8);
 
     @media (min-width: $md) {
         margin-block-start: var(--space-6);
+        margin-block-end: var(--space-10);
     }
 
     // Rounded corners for modern card-like appearance

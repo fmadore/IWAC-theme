@@ -8,6 +8,8 @@ IWAC-theme is a customized Omeka S theme (fork of Freedom theme) for the Islam W
 
 **Live site**: https://islam.zmo.de/s/westafrica/
 
+**Visual debugging**: When diagnosing visual/layout issues on the live site, use Playwright MCP (`browser_navigate`, `browser_snapshot`, `browser_take_screenshot`, `browser_evaluate`) to inspect the rendered DOM and computed styles before proposing fixes. Requires ZMO VPN connection for `islam.zmo.de`.
+
 **Stack**: Omeka S 4.1.0+ (PHP), Sass with modern module system, Gulp build, vanilla JavaScript
 
 ## Design Philosophy
@@ -42,22 +44,45 @@ This warmth creates visual comfort for extended reading sessions while different
 
 ### Component Styling Approach
 Key UI components use subtle accent integration for visual cohesion:
-- **Metadata properties** have accent-tinted left borders and card treatment
+- **Resource show metadata** (item, media, item-set) is editorial: flat rows of facts with one lede and an optional body section — see `components/resource-show/_resource-show.scss`
 - **Breadcrumbs** show current page with accent dot marker
-- **Resource cards** reveal accent line on hover
+- **Resource cards** (browse grid/list) keep their card treatment for visual density; they use the shared pill tag style so the language stays consistent
 - **Pagination** has subtle accent-tinted top border
 - **Facet legends** use accent-tinted backgrounds and borders
 - **Search results** show accent border on hover
 
 This creates consistent visual language without overwhelming the content.
 
+### Global Editorial Type & Tag Tokens
+Two base-level rules enforce consistency across every page type:
+
+1. **All h1 headings** (`base/typography/_headings.scss`) use `line-height: 1.15` and `letter-spacing: -0.02em`. This gives every page title the same editorial weight — show pages, search results, site pages, item-set titles.
+2. **All `.resource-tag` pills** (`base/elements/_resource-tag.scss`) use `border-radius: var(--radius-full)`, `text-transform: uppercase`, and `letter-spacing: 0.06em`. Browse card tags and show-page resource tags look identical.
+
+### Editorial Hierarchy on Resource Show Pages
+The `components/resource-show/_resource-show.scss` file scopes its rules to `body.resource.show, body.item-set` — this covers:
+- Item show (`body.item.resource.show`)
+- Media show (`body.media.resource.show`)
+- Item-set show (rendered by `item/browse.phtml` with appended `item-set` class)
+
+Show pages follow a journalism-inspired flow rather than a uniform property grid:
+
+1. **Resource tag pills** — breathing room from the banner, pill shape, uppercase
+2. **Display title** — inherits global h1 editorial treatment (tight leading, negative tracking)
+3. **Metadata rows** — flat rows of facts with hairline separators, uppercase small-caps labels in `--muted`, 140px label column on desktop
+4. **Lede** (`bibo:shortDescription`, labelled "DescriptionAI" on this site) — serif, orange left rule, text-lg. Label stays visible so readers know it's AI-generated.
+5. **Full body** (`bibo:content`) — treated as a distinct section at the end with its own top border, section-style label, and readable 68ch measure
+
+The editorial treatment only applies inside `.main-region > .metadata` — sidebar regions (including the AI Sentiment Analysis block) are untouched.
+
 ### What to Avoid
 - Cold, clinical blue-gray color schemes (feels like a generic template)
 - Parchment/manuscript aesthetics (this is newspapers, not illuminated texts)
 - Overly flashy animations or jarring color combinations
 - Too many competing visual elements
-- Unnecessary decorative elements or Web 2.0 glossy effects
+- Glossy Web 2.0 effects, or frosted-glass applied indiscriminately as an aesthetic — `backdrop-filter` is reserved for the sticky header (functional chrome over content)
 - Harsh borders or stark black shadows
+- Uniform card treatments that flatten information hierarchy
 
 ## Build Commands
 
