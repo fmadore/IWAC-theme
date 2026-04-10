@@ -100,7 +100,7 @@
         }
     }
 
-    .value.resource {
+    .value {
         .resource-link {
             display: inline-flex;
             align-items: center;
@@ -109,15 +109,15 @@
             &:hover {
                 color: var(--primary);
             }
-        }
 
-        img {
-            flex-shrink: 0;
-            height: 60px;
-            margin-inline-end: var(--space-4);
-            object-fit: cover;
-            width: 60px;
-            border-radius: var(--radius-sm);
+            img {
+                flex-shrink: 0;
+                height: 60px;
+                width: 60px;
+                margin-inline-end: var(--space-4);
+                object-fit: cover;
+                border-radius: var(--radius-sm);
+            }
         }
     }
 

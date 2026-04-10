@@ -4696,21 +4696,21 @@ select.query-filter optgroup {
 .metadata dl > .property .language {
   margin-inline-end: var(--space-2);
 }
-.metadata .value.resource .resource-link {
+.metadata .value .resource-link {
   display: inline-flex;
   align-items: center;
   transition: color var(--transition-fast);
 }
-.metadata .value.resource .resource-link:hover {
+.metadata .value .resource-link:hover {
   color: var(--primary);
 }
-.metadata .value.resource img {
+.metadata .value .resource-link img {
   flex-shrink: 0;
   height: 60px;
+  width: 60px;
   margin-inline-end: var(--space-4);
   -o-object-fit: cover;
      object-fit: cover;
-  width: 60px;
   border-radius: var(--radius-sm);
 }
 .metadata .media-list dd {
