@@ -3402,8 +3402,8 @@ body.menu-drawer-toggled {
   border-color: var(--primary) transparent transparent transparent;
 }
 
-.chosen-container .chosen-drop,
-.chosen-container-single .chosen-drop {
+.chosen-container.chosen-container-single .chosen-drop,
+.chosen-container.chosen-container-multi .chosen-drop {
   position: absolute;
   top: 100%;
   left: 0;
@@ -3412,7 +3412,9 @@ body.menu-drawer-toggled {
   margin-top: var(--space-1);
   background: var(--surface);
   background-color: var(--surface);
+  background-image: none;
   border: 1px solid var(--border);
+  border-top: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
@@ -3422,25 +3424,30 @@ body.menu-drawer-toggled {
   transition: opacity var(--transition-fast), clip-path var(--transition-fast);
 }
 
-.chosen-container.chosen-with-drop .chosen-drop,
-.chosen-container-single.chosen-with-drop .chosen-drop {
+.chosen-container.chosen-container-single.chosen-container-active .chosen-drop,
+.chosen-container.chosen-container-multi.chosen-container-active .chosen-drop {
+  border-color: var(--border);
+}
+
+.chosen-container.chosen-container-single.chosen-with-drop .chosen-drop,
+.chosen-container.chosen-container-multi.chosen-with-drop .chosen-drop {
   clip: auto;
   clip-path: inset(0 0 0 0);
   opacity: 1;
 }
 
-.chosen-container .chosen-search,
-.chosen-container-single .chosen-search {
+.chosen-container.chosen-container-single .chosen-search,
+.chosen-container.chosen-container-multi .chosen-search {
   padding: var(--space-3);
   margin: 0;
   border-block-end: 1px solid var(--border);
   background: transparent;
 }
 
-.chosen-container .chosen-search input[type=text],
-.chosen-container-single .chosen-search input[type=text],
-.chosen-container .chosen-search input.chosen-search-input,
-.chosen-container-single .chosen-search input.chosen-search-input {
+.chosen-container.chosen-container-single .chosen-search input[type=text],
+.chosen-container.chosen-container-multi .chosen-search input[type=text],
+.chosen-container.chosen-container-single .chosen-search input.chosen-search-input,
+.chosen-container.chosen-container-multi .chosen-search input.chosen-search-input {
   width: 100%;
   height: 38px;
   padding: var(--space-2) var(--space-3);
@@ -3455,30 +3462,29 @@ body.menu-drawer-toggled {
   box-shadow: none;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
-.chosen-container .chosen-search input[type=text]:focus,
-.chosen-container-single .chosen-search input[type=text]:focus,
-.chosen-container .chosen-search input.chosen-search-input:focus,
-.chosen-container-single .chosen-search input.chosen-search-input:focus {
+.chosen-container.chosen-container-single .chosen-search input[type=text]:focus,
+.chosen-container.chosen-container-multi .chosen-search input[type=text]:focus,
+.chosen-container.chosen-container-single .chosen-search input.chosen-search-input:focus,
+.chosen-container.chosen-container-multi .chosen-search input.chosen-search-input:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 2px var(--focus-ring);
 }
-.chosen-container .chosen-search input[type=text]::-moz-placeholder, .chosen-container-single .chosen-search input[type=text]::-moz-placeholder, .chosen-container .chosen-search input.chosen-search-input::-moz-placeholder, .chosen-container-single .chosen-search input.chosen-search-input::-moz-placeholder {
+.chosen-container.chosen-container-single .chosen-search input[type=text]::-moz-placeholder, .chosen-container.chosen-container-multi .chosen-search input[type=text]::-moz-placeholder, .chosen-container.chosen-container-single .chosen-search input.chosen-search-input::-moz-placeholder, .chosen-container.chosen-container-multi .chosen-search input.chosen-search-input::-moz-placeholder {
   color: var(--muted);
 }
-.chosen-container .chosen-search input[type=text]::placeholder,
-.chosen-container-single .chosen-search input[type=text]::placeholder,
-.chosen-container .chosen-search input.chosen-search-input::placeholder,
-.chosen-container-single .chosen-search input.chosen-search-input::placeholder {
+.chosen-container.chosen-container-single .chosen-search input[type=text]::placeholder,
+.chosen-container.chosen-container-multi .chosen-search input[type=text]::placeholder,
+.chosen-container.chosen-container-single .chosen-search input.chosen-search-input::placeholder,
+.chosen-container.chosen-container-multi .chosen-search input.chosen-search-input::placeholder {
   color: var(--muted);
 }
 
-.chosen-container.chosen-container-single-nosearch .chosen-search,
-.chosen-container-single.chosen-container-single-nosearch .chosen-search {
+.chosen-container.chosen-container-single-nosearch .chosen-search {
   display: none;
 }
 
-.chosen-container .chosen-results,
-.chosen-container-single .chosen-results {
+.chosen-container.chosen-container-single .chosen-results,
+.chosen-container.chosen-container-multi .chosen-results {
   max-height: 280px;
   margin: 0;
   margin-block-start: 0;
@@ -3491,34 +3497,34 @@ body.menu-drawer-toggled {
   color: var(--ink);
   background: transparent;
 }
-.chosen-container .chosen-results::-webkit-scrollbar,
-.chosen-container-single .chosen-results::-webkit-scrollbar {
+.chosen-container.chosen-container-single .chosen-results::-webkit-scrollbar,
+.chosen-container.chosen-container-multi .chosen-results::-webkit-scrollbar {
   width: 8px;
 }
-.chosen-container .chosen-results::-webkit-scrollbar-track,
-.chosen-container-single .chosen-results::-webkit-scrollbar-track {
+.chosen-container.chosen-container-single .chosen-results::-webkit-scrollbar-track,
+.chosen-container.chosen-container-multi .chosen-results::-webkit-scrollbar-track {
   background: var(--surface-raised);
   border-radius: var(--radius-sm);
 }
-.chosen-container .chosen-results::-webkit-scrollbar-thumb,
-.chosen-container-single .chosen-results::-webkit-scrollbar-thumb {
+.chosen-container.chosen-container-single .chosen-results::-webkit-scrollbar-thumb,
+.chosen-container.chosen-container-multi .chosen-results::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: var(--radius-sm);
 }
-.chosen-container .chosen-results::-webkit-scrollbar-thumb:hover,
-.chosen-container-single .chosen-results::-webkit-scrollbar-thumb:hover {
+.chosen-container.chosen-container-single .chosen-results::-webkit-scrollbar-thumb:hover,
+.chosen-container.chosen-container-multi .chosen-results::-webkit-scrollbar-thumb:hover {
   background: var(--muted);
 }
-.chosen-container .chosen-results li,
-.chosen-container-single .chosen-results li {
+.chosen-container.chosen-container-single .chosen-results li,
+.chosen-container.chosen-container-multi .chosen-results li {
   margin: 0;
   padding: 0;
   list-style: none;
   color: var(--ink);
   background: transparent;
 }
-.chosen-container .chosen-results .group-result,
-.chosen-container-single .chosen-results .group-result {
+.chosen-container.chosen-container-single .chosen-results .group-result,
+.chosen-container.chosen-container-multi .chosen-results .group-result {
   padding: var(--space-2) var(--space-3);
   margin-block-start: var(--space-3);
   color: var(--muted);
@@ -3530,16 +3536,16 @@ body.menu-drawer-toggled {
   background: transparent;
   border-bottom: 1px solid var(--border-light);
 }
-.chosen-container .chosen-results .group-result:first-child,
-.chosen-container-single .chosen-results .group-result:first-child {
+.chosen-container.chosen-container-single .chosen-results .group-result:first-child,
+.chosen-container.chosen-container-multi .chosen-results .group-result:first-child {
   margin-block-start: 0;
 }
-.chosen-container .chosen-results .group-option,
-.chosen-container-single .chosen-results .group-option {
+.chosen-container.chosen-container-single .chosen-results .group-option,
+.chosen-container.chosen-container-multi .chosen-results .group-option {
   padding-inline-start: var(--space-6);
 }
-.chosen-container .chosen-results .active-result,
-.chosen-container-single .chosen-results .active-result {
+.chosen-container.chosen-container-single .chosen-results .active-result,
+.chosen-container.chosen-container-multi .chosen-results .active-result {
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
   color: var(--ink);
@@ -3548,25 +3554,25 @@ body.menu-drawer-toggled {
   background: transparent;
   transition: background var(--transition-fast), color var(--transition-fast);
 }
-.chosen-container .chosen-results .active-result:hover, .chosen-container .chosen-results .active-result.highlighted,
-.chosen-container-single .chosen-results .active-result:hover,
-.chosen-container-single .chosen-results .active-result.highlighted {
+.chosen-container.chosen-container-single .chosen-results .active-result:hover, .chosen-container.chosen-container-single .chosen-results .active-result.highlighted,
+.chosen-container.chosen-container-multi .chosen-results .active-result:hover,
+.chosen-container.chosen-container-multi .chosen-results .active-result.highlighted {
   background: var(--surface-raised);
   color: var(--ink);
 }
-.chosen-container .chosen-results .active-result.result-selected,
-.chosen-container-single .chosen-results .active-result.result-selected {
+.chosen-container.chosen-container-single .chosen-results .active-result.result-selected,
+.chosen-container.chosen-container-multi .chosen-results .active-result.result-selected {
   background: color-mix(in srgb, var(--primary) 12%, transparent 88%);
   color: var(--primary);
   font-weight: 500;
 }
-.chosen-container .chosen-results .active-result.result-selected:hover, .chosen-container .chosen-results .active-result.result-selected.highlighted,
-.chosen-container-single .chosen-results .active-result.result-selected:hover,
-.chosen-container-single .chosen-results .active-result.result-selected.highlighted {
+.chosen-container.chosen-container-single .chosen-results .active-result.result-selected:hover, .chosen-container.chosen-container-single .chosen-results .active-result.result-selected.highlighted,
+.chosen-container.chosen-container-multi .chosen-results .active-result.result-selected:hover,
+.chosen-container.chosen-container-multi .chosen-results .active-result.result-selected.highlighted {
   background: color-mix(in srgb, var(--primary) 18%, transparent 82%);
 }
-.chosen-container .chosen-results .no-results,
-.chosen-container-single .chosen-results .no-results {
+.chosen-container.chosen-container-single .chosen-results .no-results,
+.chosen-container.chosen-container-multi .chosen-results .no-results {
   padding: var(--space-4) var(--space-3);
   color: var(--muted);
   font-size: var(--text-sm);

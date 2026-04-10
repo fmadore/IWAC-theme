@@ -563,9 +563,12 @@
 
 // -----------------------------------------------------------------------------
 // Dropdown Panel
+// Compound selectors (.chosen-container.chosen-container-single/multi) lift
+// specificity to 0,3,0 so we beat Omeka's chosen.min.css, which loads AFTER
+// our theme CSS and would otherwise win ties at 0,2,0 on source order.
 // -----------------------------------------------------------------------------
-.chosen-container .chosen-drop,
-.chosen-container-single .chosen-drop {
+.chosen-container.chosen-container-single .chosen-drop,
+.chosen-container.chosen-container-multi .chosen-drop {
     position: absolute;
     top: 100%;
     left: 0;
@@ -574,7 +577,9 @@
     margin-top: var(--space-1);
     background: var(--surface);
     background-color: var(--surface);
+    background-image: none;
     border: 1px solid var(--border);
+    border-top: 1px solid var(--border);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-lg);
     overflow: hidden;
@@ -588,9 +593,15 @@
         clip-path var(--transition-fast);
 }
 
+// Override vendor's blue active-state border (applies to .chosen-container-active .chosen-drop)
+.chosen-container.chosen-container-single.chosen-container-active .chosen-drop,
+.chosen-container.chosen-container-multi.chosen-container-active .chosen-drop {
+    border-color: var(--border);
+}
+
 // Show dropdown when active
-.chosen-container.chosen-with-drop .chosen-drop,
-.chosen-container-single.chosen-with-drop .chosen-drop {
+.chosen-container.chosen-container-single.chosen-with-drop .chosen-drop,
+.chosen-container.chosen-container-multi.chosen-with-drop .chosen-drop {
     clip: auto;
     clip-path: inset(0 0 0 0);
     opacity: 1;
@@ -599,18 +610,18 @@
 // -----------------------------------------------------------------------------
 // Search Input within Dropdown
 // -----------------------------------------------------------------------------
-.chosen-container .chosen-search,
-.chosen-container-single .chosen-search {
+.chosen-container.chosen-container-single .chosen-search,
+.chosen-container.chosen-container-multi .chosen-search {
     padding: var(--space-3);
     margin: 0;
     border-block-end: 1px solid var(--border);
     background: transparent;
 }
 
-.chosen-container .chosen-search input[type="text"],
-.chosen-container-single .chosen-search input[type="text"],
-.chosen-container .chosen-search input.chosen-search-input,
-.chosen-container-single .chosen-search input.chosen-search-input {
+.chosen-container.chosen-container-single .chosen-search input[type="text"],
+.chosen-container.chosen-container-multi .chosen-search input[type="text"],
+.chosen-container.chosen-container-single .chosen-search input.chosen-search-input,
+.chosen-container.chosen-container-multi .chosen-search input.chosen-search-input {
     width: 100%;
     height: 38px;
     padding: var(--space-2) var(--space-3);
@@ -638,16 +649,15 @@
 }
 
 // Hide search for nosearch variant
-.chosen-container.chosen-container-single-nosearch .chosen-search,
-.chosen-container-single.chosen-container-single-nosearch .chosen-search {
+.chosen-container.chosen-container-single-nosearch .chosen-search {
     display: none;
 }
 
 // -----------------------------------------------------------------------------
 // Results List
 // -----------------------------------------------------------------------------
-.chosen-container .chosen-results,
-.chosen-container-single .chosen-results {
+.chosen-container.chosen-container-single .chosen-results,
+.chosen-container.chosen-container-multi .chosen-results {
     max-height: 280px;
     margin: 0;
     margin-block-start: 0;
