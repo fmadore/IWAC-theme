@@ -1,15 +1,11 @@
 <?php
 $this->inlineScript()->appendFile($this->assetUrl('js/linked-resources.js'));
 
-// Set up pagination.
+// Set up pagination. The helper preserves current query params automatically,
+// so an active resource_property filter stays live across pages.
 $pagination = $this->pagination(null, $totalCount, $page, $perPage);
 $fragment = 'resources-linked';
 $pagination->setFragment($fragment);
-
-// Preserve the active property filter across pagination links.
-if ($resourceProperty) {
-    $pagination->setQueryParams(['resource_property' => $resourceProperty]);
-}
 
 // Set up locale.
 $valueLang = null;
