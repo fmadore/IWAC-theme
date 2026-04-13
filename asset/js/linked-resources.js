@@ -1,5 +1,6 @@
 /**
  * Linked Resources - Client-side search filtering and sorting
+ * Operates on a flat table of <tr> rows.
  */
 const linkedResourcesScript = () => {
     const container = document.getElementById('linked-resources');
@@ -8,74 +9,48 @@ const linkedResourcesScript = () => {
     const searchInput = container.querySelector('.linked-resources__search-input');
     const sortSelect = container.querySelector('.linked-resources__sort-select');
     const statusRegion = container.querySelector('.linked-resources__status');
-    const accordionPanels = container.querySelectorAll('.accordion__panel');
+    const tbody = container.querySelector('.linked-resources-table tbody');
     const noResultsEl = container.querySelector('.linked-resources__no-results');
 
-    if (!searchInput || !sortSelect) return;
+    if (!searchInput || !sortSelect || !tbody) return;
+
+    // Preserve original DOM order so "Default" sort can restore it.
+    const originalOrder = Array.from(tbody.querySelectorAll('tr'));
 
     const handleSearch = IWACUtils.debounce(filterResources, 200);
 
-    /**
-     * Filter resources by search term
-     */
     function filterResources() {
         const searchTerm = searchInput.value.toLowerCase().trim();
-        let totalVisible = 0;
-        let totalItems = 0;
+        const rows = tbody.querySelectorAll('tr');
+        let visibleCount = 0;
 
-        accordionPanels.forEach(panel => {
-            const items = panel.querySelectorAll('.linked-resource');
-            let panelVisible = 0;
+        rows.forEach(row => {
+            const title = (row.dataset.title || '').toLowerCase();
+            const matches = !searchTerm || title.includes(searchTerm);
 
-            items.forEach(item => {
-                const title = (item.dataset.title || '').toLowerCase();
-                const matches = !searchTerm || title.includes(searchTerm);
+            row.style.display = matches ? '' : 'none';
+            row.setAttribute('aria-hidden', String(!matches));
 
-                item.style.display = matches ? '' : 'none';
-                item.setAttribute('aria-hidden', !matches);
-
-                if (matches) panelVisible++;
-                totalItems++;
-            });
-
-            totalVisible += panelVisible;
-
-            // Update accordion heading count if exists
-            const accordion = panel.closest('.linked-resource-accordion');
-            if (accordion) {
-                const countEl = accordion.querySelector('.linked-resource-count');
-                if (countEl && searchTerm) {
-                    countEl.textContent = `(${panelVisible})`;
-                } else if (countEl) {
-                    countEl.textContent = `(${countEl.dataset.originalCount})`;
-                }
-            }
+            if (matches) visibleCount++;
         });
 
-        // Show/hide no results message
         if (noResultsEl) {
-            noResultsEl.style.display = (searchTerm && totalVisible === 0) ? '' : 'none';
-            noResultsEl.setAttribute('aria-hidden', !(searchTerm && totalVisible === 0));
+            const showNoResults = Boolean(searchTerm) && visibleCount === 0;
+            noResultsEl.hidden = !showNoResults;
         }
 
-        // Announce results to screen readers
-        announceStatus(searchTerm, totalVisible, totalItems);
-
-        // Refresh accordion panel heights after filtering
-        refreshAccordionHeights();
+        announceStatus(searchTerm, visibleCount, rows.length);
     }
 
-    /**
-     * Sort resources within each accordion panel
-     */
     function sortResources() {
         const sortValue = sortSelect.value;
+        let rows;
 
-        accordionPanels.forEach(panel => {
-            const items = Array.from(panel.querySelectorAll('.linked-resource'));
-            if (items.length === 0) return;
-
-            items.sort((a, b) => {
+        if (sortValue === 'default') {
+            rows = originalOrder.slice();
+        } else {
+            rows = Array.from(tbody.querySelectorAll('tr'));
+            rows.sort((a, b) => {
                 switch (sortValue) {
                     case 'alpha-asc':
                         return (a.dataset.title || '').localeCompare(b.dataset.title || '', undefined, { sensitivity: 'base' });
@@ -89,27 +64,22 @@ const linkedResourcesScript = () => {
                         return 0;
                 }
             });
+        }
 
-            // Reorder DOM elements
-            items.forEach(item => panel.appendChild(item));
-        });
-
-        // Refresh accordion panel heights after sorting
-        refreshAccordionHeights();
+        const fragment = document.createDocumentFragment();
+        rows.forEach(row => fragment.appendChild(row));
+        tbody.appendChild(fragment);
     }
 
-    /**
-     * Compare date strings (handles empty/missing dates)
-     */
     function compareDates(dateA, dateB) {
         const a = dateA ? new Date(dateA).getTime() : 0;
         const b = dateB ? new Date(dateB).getTime() : 0;
+        if (Number.isNaN(a) && Number.isNaN(b)) return 0;
+        if (Number.isNaN(a)) return 1;
+        if (Number.isNaN(b)) return -1;
         return a - b;
     }
 
-    /**
-     * Announce filter results to screen readers
-     */
     function announceStatus(searchTerm, visible, total) {
         if (!statusRegion) return;
 
@@ -124,42 +94,20 @@ const linkedResourcesScript = () => {
         }
     }
 
-    /**
-     * Refresh accordion panel heights (needed after DOM changes)
-     */
-    function refreshAccordionHeights() {
-        accordionPanels.forEach(panel => {
-            if (panel.style.maxHeight) {
-                panel.style.maxHeight = panel.scrollHeight + 'px';
-            }
-        });
-    }
-
-    /**
-     * Clear search input
-     */
     function clearSearch() {
         searchInput.value = '';
         filterResources();
         searchInput.focus();
     }
 
-    // Event listeners
     searchInput.addEventListener('input', handleSearch);
     sortSelect.addEventListener('change', sortResources);
 
-    // Escape key clears search
     searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             clearSearch();
         }
     });
-
-    // Clear button (if exists)
-    const clearBtn = container.querySelector('.linked-resources__search-clear');
-    if (clearBtn) {
-        clearBtn.addEventListener('click', clearSearch);
-    }
 };
 
 IWACUtils.onReady(linkedResourcesScript);

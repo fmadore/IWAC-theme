@@ -1,13 +1,15 @@
 <?php
-use Laminas\Form\Element\Select;
-
-$this->inlineScript()->appendFile($this->assetUrl('js/accordion.js'));
 $this->inlineScript()->appendFile($this->assetUrl('js/linked-resources.js'));
 
 // Set up pagination.
 $pagination = $this->pagination(null, $totalCount, $page, $perPage);
 $fragment = 'resources-linked';
 $pagination->setFragment($fragment);
+
+// Preserve the active property filter across pagination links.
+if ($resourceProperty) {
+    $pagination->setQueryParams(['resource_property' => $resourceProperty]);
+}
 
 // Set up locale.
 $valueLang = null;
@@ -17,47 +19,33 @@ if ($this->status()->isSiteRequest()) {
     $valueLang = $filterLocale ? [$lang, ''] : null;
 }
 
-// Set up resource property select.
 $labelMap = [
-    'items' => 'Items', // @translate
-    'item_sets' => 'Item sets', // @translate
-    'media' => 'Media', // @translate
+    'items' => $this->translate('Items'),
+    'item_sets' => $this->translate('Item sets'),
+    'media' => $this->translate('Media'),
 ];
-$resourcePropertiesSelect = new Select('resource_property');
-$resourcePropertiesSelect->setValue($resourceProperty);
-$resourcePropertiesSelect->setAttributes([
-    'id' => 'resource-property-select',
-    'class' => 'linked-resources__filter-select',
-    'data-url' => $this->url(null, [], true),
-    'data-fragment' => $fragment,
-    'aria-label' => $this->translate('Filter by resource type and property'),
-]);
-$valueOptions = [];
+
+// Build facet chip data from the same source as the legacy <select>.
+$facetChips = [];
 foreach ($resourcePropertiesAll as $type => $resourceProperties) {
     if (!$resourceProperties) {
         continue;
     }
-    $valueOptions[$type] = [
-        'label' => $labelMap[$type],
-        'options' => [sprintf('%s:', $type) => sprintf('%s: All', $labelMap[$type])],
-    ];
-    foreach ($resourceProperties as $resourceProperty) {
-        $label = $resourceProperty['label_is_translatable']
-            ? $this->translate($resourceProperty['label'])
-            : $resourceProperty['label'];
-
-        $valueOptions[$type]['options'][] = [
-            'value' => $resourceProperty['compound_id'],
-            'label' => sprintf('%s: %s', $labelMap[$type], $label),
-            'attributes' => [
-                'title' => $resourceProperty['term'],
-            ],
+    foreach ($resourceProperties as $rp) {
+        $label = $rp['label_is_translatable']
+            ? $this->translate($rp['label'])
+            : $rp['label'];
+        $facetChips[] = [
+            'compound_id' => $rp['compound_id'],
+            'label' => $label,
+            'type_label' => $labelMap[$type] ?? $type,
+            'term' => $rp['term'],
         ];
     }
 }
-$resourcePropertiesSelect->setValueOptions($valueOptions);
 
-// Sort options
+$baseUrl = $this->url(null, [], true);
+
 $sortOptions = [
     'default' => $this->translate('Default'),
     'alpha-asc' => $this->translate('Title (A-Z)'),
@@ -66,114 +54,163 @@ $sortOptions = [
     'date-asc' => $this->translate('Oldest first'),
 ];
 
-// Translations for JS
-$noResultsText = $this->translate('No resources found');
+$noResultsText = $this->translate('No resources match your search.');
 $resultsFoundText = $this->translate('{count} resources found');
 ?>
 <div id="linked-resources">
 
-<div class="linked-resources__controls">
-    <div class="linked-resources__search">
-        <img src="<?php echo $this->assetUrl('img/search.svg'); ?>"
-             class="linked-resources__search-icon"
-             alt=""
-             aria-hidden="true">
-        <input type="search"
-               class="linked-resources__search-input"
-               placeholder="<?php echo $this->escapeHtmlAttr($this->translate('Filter by title...')); ?>"
-               aria-label="<?php echo $this->escapeHtmlAttr($this->translate('Filter linked resources by title')); ?>">
-    </div>
+    <div class="linked-resources__controls">
+        <div class="linked-resources__search">
+            <img src="<?php echo $this->assetUrl('img/search.svg'); ?>"
+                 class="linked-resources__search-icon"
+                 alt=""
+                 aria-hidden="true">
+            <input type="search"
+                   class="linked-resources__search-input"
+                   placeholder="<?php echo $this->escapeHtmlAttr($this->translate('Filter by title...')); ?>"
+                   aria-label="<?php echo $this->escapeHtmlAttr($this->translate('Filter linked resources by title')); ?>">
+        </div>
 
-    <div class="linked-resources__sort">
-        <label for="linked-resources-sort" class="sr-only">
-            <?php echo $this->translate('Sort by'); ?>
-        </label>
-        <select id="linked-resources-sort" class="linked-resources__sort-select">
-            <?php foreach ($sortOptions as $value => $label): ?>
-                <option value="<?php echo $this->escapeHtmlAttr($value); ?>">
-                    <?php echo $this->escapeHtml($label); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-
-    <div class="linked-resources__filter">
-        <label for="resource-property-select" class="sr-only">
-            <?php echo $this->translate('Filter by type'); ?>
-        </label>
-        <?php echo $this->formElement($resourcePropertiesSelect); ?>
-    </div>
-</div>
-
-<div class="linked-resources__status" role="status" aria-live="polite" aria-atomic="true"></div>
-
-<div class="linked-resources__no-results" style="display: none;" aria-hidden="true">
-    <p><?php echo $this->escapeHtml($this->translate('No resources match your search.')); ?></p>
-</div>
-
-<?php foreach ($subjectValues as $values): ?>
-    <?php
-    $caption = sprintf(
-        $this->translate('%s with "%s: %s"'),
-        $this->translate($labelMap[$resourceType]),
-        $values[0]['property_alternate_label'] ?? $this->translate($values[0]['property_label']),
-        $objectResource->displayTitle()
-    );
-    $itemCount = count($values);
-    ?>
-
-    <div class="linked-resource-accordion accordion__container">
-        <h4 class="linked-resource-heading accordion__heading">
-            <button class="linked-resource-property accordion__trigger"
-                    type="button"
-                    aria-expanded="false"
-                    aria-controls="accordion__panel-<?php echo $values[0]['property_id']; ?>"
-                    id="accordion-<?php echo $values[0]['property_id']; ?>">
-                <span class="accordion__title">
-                    <?php echo $this->escapeHtml($caption); ?>
-                    <span class="linked-resource-count" data-original-count="<?php echo $itemCount; ?>">(<?php echo $itemCount; ?>)</span>
-                    <span class="accordion__icon o-icon-chevron-down"></span>
-                </span>
-            </button>
-        </h4>
-
-        <div class="linked-resource-property__panel accordion__panel"
-            id="accordion__panel-<?php echo $values[0]['property_id']; ?>"
-            role="region"
-            aria-labelledby="accordion-<?php echo $values[0]['property_id']; ?>">
-            <?php foreach ($values as $value): ?>
-                <?php
-                $valueResource = $value['val']->resource();
-                $resourceTitle = $valueResource->displayTitle(null, $valueLang);
-                $resourceCreated = $valueResource->created() ? $valueResource->created()->format('c') : '';
-                ?>
-                <div class="linked-resource"
-                     data-title="<?php echo $this->escapeHtmlAttr($resourceTitle); ?>"
-                     data-date="<?php echo $this->escapeHtmlAttr($resourceCreated); ?>">
-                    <span class="linked-resource__link"><?php echo $valueResource->linkPretty('square', null, null, null, $valueLang); ?></span>
-                    <?php echo $this->ResourceTags($valueResource); ?>
-                </div>
-            <?php endforeach; ?>
+        <div class="linked-resources__sort">
+            <label for="linked-resources-sort" class="sr-only">
+                <?php echo $this->translate('Sort by'); ?>
+            </label>
+            <select id="linked-resources-sort" class="linked-resources__sort-select">
+                <?php foreach ($sortOptions as $value => $label): ?>
+                    <option value="<?php echo $this->escapeHtmlAttr($value); ?>">
+                        <?php echo $this->escapeHtml($label); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
         </div>
     </div>
 
-<?php endforeach; ?>
+    <?php if ($facetChips): ?>
+    <div class="linked-resources__facets"
+         role="group"
+         aria-label="<?php echo $this->escapeHtmlAttr($this->translate('Filter by relation')); ?>">
+        <span class="linked-resources__facets-label">
+            <?php echo $this->translate('Filter:'); ?>
+        </span>
+        <a href="<?php echo $this->escapeHtmlAttr($baseUrl . '#' . $fragment); ?>"
+           class="linked-resources__facet<?php echo !$resourceProperty ? ' is-active' : ''; ?>"
+           <?php echo !$resourceProperty ? 'aria-current="true"' : ''; ?>>
+            <span class="linked-resources__facet-label"><?php echo $this->translate('All'); ?></span>
+            <span class="linked-resources__facet-count"><?php echo $totalCount; ?></span>
+        </a>
+        <?php foreach ($facetChips as $chip): ?>
+            <?php
+            $isActive = $resourceProperty === $chip['compound_id'];
+            $chipUrl = $baseUrl . '?' . http_build_query(['resource_property' => $chip['compound_id']]) . '#' . $fragment;
+            ?>
+            <a href="<?php echo $this->escapeHtmlAttr($chipUrl); ?>"
+               class="linked-resources__facet<?php echo $isActive ? ' is-active' : ''; ?>"
+               title="<?php echo $this->escapeHtmlAttr($chip['type_label'] . ' — ' . $chip['label']); ?>"
+               <?php echo $isActive ? 'aria-current="true"' : ''; ?>>
+                <span class="linked-resources__facet-label"><?php echo $this->escapeHtml($chip['label']); ?></span>
+            </a>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
 
-<?php echo ($totalCount > $perPage) ? '<div class="linked-footer">' . $pagination . '</div>' : ''; ?>
+    <div class="linked-resources__status" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="linked-resources__no-results" hidden>
+        <p><?php echo $this->escapeHtml($noResultsText); ?></p>
+    </div>
+
+    <div class="linked-resources-table-wrapper">
+        <table class="linked-resources-table">
+            <thead>
+                <tr>
+                    <th scope="col" class="linked-resources-table__col-thumb">
+                        <span class="sr-only"><?php echo $this->translate('Thumbnail'); ?></span>
+                    </th>
+                    <th scope="col" class="linked-resources-table__col-title">
+                        <?php echo $this->translate('Title'); ?>
+                    </th>
+                    <th scope="col" class="linked-resources-table__col-relation">
+                        <?php echo $this->translate('Relation'); ?>
+                    </th>
+                    <th scope="col" class="linked-resources-table__col-type">
+                        <?php echo $this->translate('Type'); ?>
+                    </th>
+                    <th scope="col" class="linked-resources-table__col-date">
+                        <?php echo $this->translate('Date'); ?>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($subjectValues as $values): ?>
+                    <?php
+                    $propertyLabel = $values[0]['property_alternate_label']
+                        ?? $this->translate($values[0]['property_label']);
+                    ?>
+                    <?php foreach ($values as $value): ?>
+                        <?php
+                        $valueResource = $value['val']->resource();
+                        $resourceTitle = $valueResource->displayTitle(null, $valueLang);
+                        $resourceUrl = $valueResource->url();
+
+                        // Prefer dcterms:date, fall back to record created date.
+                        $displayDate = '';
+                        $sortDate = '';
+                        $dctermsDate = $valueResource->value('dcterms:date', ['default' => null]);
+                        if ($dctermsDate) {
+                            $displayDate = (string) $dctermsDate;
+                            $sortDate = $displayDate;
+                        } elseif ($valueResource->created()) {
+                            $sortDate = $valueResource->created()->format('c');
+                        }
+                        ?>
+                        <tr class="linked-resources-table__row"
+                            data-title="<?php echo $this->escapeHtmlAttr($resourceTitle); ?>"
+                            data-date="<?php echo $this->escapeHtmlAttr($sortDate); ?>">
+                            <td class="linked-resources-table__cell linked-resources-table__cell--thumb">
+                                <a href="<?php echo $this->escapeHtmlAttr($resourceUrl); ?>"
+                                   class="linked-resources-table__thumb-link"
+                                   tabindex="-1"
+                                   aria-hidden="true">
+                                    <?php echo $this->thumbnail($valueResource, 'square', ['alt' => '']); ?>
+                                </a>
+                            </td>
+                            <td class="linked-resources-table__cell linked-resources-table__cell--title"
+                                data-label="<?php echo $this->escapeHtmlAttr($this->translate('Title')); ?>">
+                                <a href="<?php echo $this->escapeHtmlAttr($resourceUrl); ?>"
+                                   class="linked-resources-table__title-link">
+                                    <?php echo $this->escapeHtml($resourceTitle); ?>
+                                </a>
+                            </td>
+                            <td class="linked-resources-table__cell linked-resources-table__cell--relation"
+                                data-label="<?php echo $this->escapeHtmlAttr($this->translate('Relation')); ?>">
+                                <?php echo $this->escapeHtml($propertyLabel); ?>
+                            </td>
+                            <td class="linked-resources-table__cell linked-resources-table__cell--type"
+                                data-label="<?php echo $this->escapeHtmlAttr($this->translate('Type')); ?>">
+                                <?php echo $this->ResourceTags($valueResource); ?>
+                            </td>
+                            <td class="linked-resources-table__cell linked-resources-table__cell--date"
+                                data-label="<?php echo $this->escapeHtmlAttr($this->translate('Date')); ?>">
+                                <?php if ($displayDate): ?>
+                                    <span class="linked-resources-table__date">
+                                        <?php echo $this->escapeHtml($displayDate); ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="linked-resources-table__date linked-resources-table__date--empty" aria-hidden="true">—</span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <?php echo ($totalCount > $perPage) ? '<div class="linked-footer pagination">' . $pagination . '</div>' : ''; ?>
 
 </div>
 
 <script>
 const linkedResourcesNoResults = <?php echo json_encode($noResultsText); ?>;
 const linkedResourcesResultsFound = <?php echo json_encode($resultsFoundText); ?>;
-
-const propertySelect = document.getElementById('resource-property-select');
-if (propertySelect) {
-    const url = propertySelect.dataset.url;
-    const fragment = propertySelect.dataset.fragment;
-    propertySelect.addEventListener('change', function(e) {
-        const resourceProperty = this.value;
-        window.location = url + '?' + new URLSearchParams({resource_property: resourceProperty}).toString() + '#' + fragment;
-    });
-}
 </script>
