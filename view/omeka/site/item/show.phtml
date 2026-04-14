@@ -2,6 +2,16 @@
 $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
 
+// XHR fast path: linked-resources pagination fetches /item/<id>?page=N with
+// X-Requested-With: fetch and discards everything except #linked-resources.
+// Render only that block's partial so we don't pay for the heavy
+// Visualizations block, value rows, media list, etc. Layout chrome is
+// stripped by the matching early return at the top of layout/layout.phtml.
+if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'fetch') {
+    echo $this->partial('common/resource-page-block-layout/linked-resources', ['resource' => $item]);
+    return;
+}
+
 $this->headLink()->appendStylesheet($this->assetUrl('css/resource-page-blocks.css', 'Omeka'));
 $this->htmlElement('body')->appendAttribute('class', 'item resource show');
 

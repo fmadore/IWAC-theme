@@ -1,4 +1,13 @@
 <?php
+// XHR fast path for linked-resources pagination: the client sends
+// X-Requested-With: fetch and only reads #linked-resources out of the
+// response. Skip the entire layout (header, banner, footer, hex-to-HSL,
+// assetUrl work) and output just the inner content.
+if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'fetch') {
+    echo $this->content;
+    return;
+}
+
 $siteTitle = $site->title();
 $userBar = $this->userBar();
 $header_layout = ($this->themeSetting('header_layout')) ?? 'inline';

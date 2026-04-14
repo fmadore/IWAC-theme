@@ -16,6 +16,24 @@ const LINKED_ROOT_ID = 'linked-resources';
 
 let originalOrder = [];
 
+// Cache of in-flight and completed prefetch promises keyed by URL, so
+// hovering a pagination link and then clicking it reuses the warmed request.
+const prefetchCache = new Map();
+
+function prefetch(url) {
+    if (!url || prefetchCache.has(url)) return;
+    const promise = fetch(url, {
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'fetch' },
+    })
+        .then((r) => (r.ok ? r.text() : Promise.reject(new Error(`HTTP ${r.status}`))))
+        .catch(() => {
+            prefetchCache.delete(url);
+            return null;
+        });
+    prefetchCache.set(url, promise);
+}
+
 const bindLinkedResources = () => {
     const root = document.getElementById(LINKED_ROOT_ID);
     if (!root) return;
@@ -55,15 +73,28 @@ const bindLinkedResources = () => {
         a.addEventListener('click', handleAjaxLink);
     });
 
-    // AJAX: pagination prev/next links.
+    // AJAX: pagination prev/next links. Also warm a prefetch on hover/focus
+    // so clicking the arrow reuses an already-fetched response.
     root.querySelectorAll('.linked-footer a.pagination-nav').forEach((a) => {
         a.addEventListener('click', handleAjaxLink);
+        const warm = () => prefetch(a.href);
+        a.addEventListener('mouseenter', warm);
+        a.addEventListener('focus', warm);
     });
 
     // AJAX: the "go to page N" pager form.
     const pagerForm = root.querySelector('.linked-footer form.pager');
     if (pagerForm) {
         pagerForm.addEventListener('submit', handlePagerSubmit);
+    }
+
+    // Idle prefetch of the next page so the most common navigation (Next
+    // / Go-to-next-page) feels instant after the current page settles.
+    const nextLink = root.querySelector('.linked-footer a.pagination-nav.next');
+    if (nextLink) {
+        const schedule = window.requestIdleCallback
+            || ((cb) => window.setTimeout(cb, 500));
+        schedule(() => prefetch(nextLink.href));
     }
 };
 
@@ -184,14 +215,22 @@ async function swapContent(url) {
     root.setAttribute('aria-busy', 'true');
 
     try {
-        const response = await fetch(url, {
-            credentials: 'same-origin',
-            headers: { 'X-Requested-With': 'fetch' },
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+        // Reuse a warmed prefetch if one is in flight or already resolved.
+        let html;
+        if (prefetchCache.has(url)) {
+            html = await prefetchCache.get(url);
+            prefetchCache.delete(url);
         }
-        const html = await response.text();
+        if (!html) {
+            const response = await fetch(url, {
+                credentials: 'same-origin',
+                headers: { 'X-Requested-With': 'fetch' },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            html = await response.text();
+        }
         const doc = new DOMParser().parseFromString(html, 'text/html');
         const newRoot = doc.getElementById(LINKED_ROOT_ID);
         if (!newRoot) {
