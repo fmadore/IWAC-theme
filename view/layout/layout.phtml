@@ -129,6 +129,19 @@ if ($userBar) {
 	</head>
 
 	<?php echo $this->htmlElement('body')->appendAttribute('class', $body_class); ?>
+		<script>
+		// Apply theme synchronously before first paint to prevent FOUC.
+		// Mirrors getPreferredTheme() in js/theme-toggle.js.
+		(function () {
+			try {
+				var stored = localStorage.getItem('iwac-theme-preference');
+				var theme = (stored === 'light' || stored === 'dark')
+					? stored
+					: (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+				document.body.setAttribute('data-theme', theme);
+			} catch (e) {}
+		})();
+		</script>
 		<a id="skipnav" href="#content"><?php echo $this->translate('Skip to main content'); ?></a>
 
 		<?php echo $this->partial('common/header', ['userBar' => $userBar, 'site' => $site]); ?>
