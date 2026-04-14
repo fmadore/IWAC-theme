@@ -293,6 +293,9 @@
         background: transparent;
     }
 
+    // Column widths. The `width: 1%` trick combined with `white-space: nowrap`
+    // on both the th and td shrinks each column to its natural content width,
+    // leaving the title column free to consume the remaining space.
     .linked-resources-table__col-thumb {
         width: 64px;
         padding-inline-start: var(--space-2);
@@ -303,19 +306,14 @@
         width: auto;
     }
 
-    .linked-resources-table__col-relation {
-        width: 1%;
-        white-space: nowrap;
-    }
-
-    .linked-resources-table__col-type {
+    .linked-resources-table__col-relation,
+    .linked-resources-table__col-type,
+    .linked-resources-table__col-date {
         width: 1%;
         white-space: nowrap;
     }
 
     .linked-resources-table__col-date {
-        width: 1%;
-        white-space: nowrap;
         text-align: end;
     }
 
@@ -371,11 +369,27 @@
 
     .linked-resources-table__title-link {
         @include title-link;
-        display: block;
-        font-size: var(--text-base);
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        max-width: 64ch;
+        font-size: var(--text-sm);
+        font-weight: 600;
         line-height: var(--line-height-normal);
+        overflow-wrap: break-word;
 
         @include focus-ring;
+    }
+
+    // Shrink-to-content columns: match the th width:1%/nowrap rule on the td
+    // so the auto-layout table actually collapses these columns. Without this
+    // the <td> wraps and the <th> width:1% has no effect.
+    .linked-resources-table__cell--relation,
+    .linked-resources-table__cell--type,
+    .linked-resources-table__cell--date {
+        width: 1%;
+        white-space: nowrap;
     }
 
     .linked-resources-table__cell--relation {
@@ -387,11 +401,17 @@
     }
 
     .linked-resources-table__cell--type {
+        // The resource-tag wrapper is display: flex with wrap by default,
+        // which inside a narrow auto-layout cell causes each letter of
+        // "Collection" to land on its own line. Force inline layout.
         .resource-tags {
+            display: inline-flex;
+            flex-wrap: nowrap;
             margin: 0;
         }
 
         .resource-tag {
+            white-space: nowrap;
             margin-block-end: 0;
         }
     }
@@ -492,9 +512,24 @@
 
 // ==========================================================================
 // Pagination footer
-// Inherits .pagination layout from components/pagination
 // ==========================================================================
+// The wrapper is only .linked-footer; the inner <nav class="pagination">
+// rendered by Omeka's pagination partial already owns the .pagination mixin
+// (border-top/bottom, linear-gradient background, padding). Resetting the
+// mixin's margin keeps the bar visually attached to the table below it.
 
 #linked-resources .linked-footer {
-    margin-block-start: var(--space-6);
+    margin-block-start: var(--space-4);
+
+    > .pagination {
+        width: 100%;
+        margin-block: 0;
+    }
+}
+
+// Subtle loading state during AJAX facet/page swap.
+#linked-resources[aria-busy="true"] {
+    pointer-events: none;
+    opacity: 0.55;
+    transition: opacity var(--transition-base);
 }
