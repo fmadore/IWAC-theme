@@ -39,14 +39,16 @@ if ($bannerHeading || $bannerDescription) {
 <div class="<?php echo implode(' ', $class); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>">
 
     <?php if ($hasCustomBanner): ?>
-        <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true']); ?>
+        <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true', 'fetchpriority' => 'high']); ?>
     <?php else: ?>
-        <img src="<?php echo $escAttr($defaultBannerUrl); ?>" 
-             style="<?php echo $escAttr($imageInlineStyles); ?>" 
-             role="presentation" 
-             aria-hidden="true" 
+        <img src="<?php echo $escAttr($defaultBannerUrl); ?>"
+             width="1400"
+             height="787"
+             style="<?php echo $escAttr($imageInlineStyles); ?>"
+             role="presentation"
+             aria-hidden="true"
              alt=""
-             loading="lazy">
+             fetchpriority="high">
     <?php endif; ?>
 
     <div class="banner__content banner__content--<?php echo $bannerContentPosition; ?>">

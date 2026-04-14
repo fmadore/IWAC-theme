@@ -56,6 +56,10 @@ $primaryHsl = hexToHsl($primaryColor);
 $secondaryHsl = hexToHsl($secondaryColor);
 $accentHsl = hexToHsl($accentColor);
 
+// For LCP: preload default banner image when no custom banner is set
+$customBannerAsset = $this->themeSettingAsset('banner');
+$defaultBannerUrl = $this->assetUrl('img/banner.webp');
+
 $this->htmlElement('html')->setAttribute('lang', $this->lang());
 $this->headMeta()->setCharset('utf-8');
 $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1');
@@ -78,6 +82,12 @@ if ($userBar) {
 <?php echo $this->doctype(); ?>
 <?php echo $this->htmlElement('html'); ?>
 	<head>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+		<?php if (!$customBannerAsset): ?>
+		<link rel="preload" as="image" fetchpriority="high" href="<?php echo $this->escapeHtmlAttr($defaultBannerUrl); ?>">
+		<?php endif; ?>
 		<?php echo $this->headMeta(); ?>
 		<?php echo $this->headTitle(); ?>
 		<?php echo $this->headLink(); ?>
