@@ -100,11 +100,11 @@
   // Panel/Card Elevation Helpers
   // ========================================================================
   --panel-bg: var(--surface);
-  // Subtle border for light mode to define edges better
-  --panel-border-color: var(--shadow-color-subtle);
+  // Visible border to define card edges clearly in light mode
+  --panel-border-color: var(--border);
   --panel-border: 1px solid var(--panel-border-color);
   --panel-radius: var(--radius-md);
-  --panel-shadow: var(--shadow-md);
+  --panel-shadow: var(--shadow-sm);
 
   // ========================================================================
   // Easing Curves
@@ -198,8 +198,8 @@ body[data-theme="light"] {
   --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, hsl(30, 15%, 20%) 5%, transparent);
   // Modern card with warm surface
   --panel-bg: var(--surface);
-  --panel-border-color: var(--shadow-color-subtle);
-  --panel-shadow: var(--shadow-md);
+  --panel-border-color: var(--border);
+  --panel-shadow: var(--shadow-sm);
 }
 
 // ==========================================================================

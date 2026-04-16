@@ -112,7 +112,7 @@ body.item-set {
 
             dd {
                 margin-inline-start: 0;
-                max-width: 62ch;
+                max-width: none;
                 padding-inline-start: var(--space-4);
                 border-inline-start: var(--accent-line-md) solid
                     color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
@@ -124,7 +124,6 @@ body.item-set {
 
                 @media (min-width: $md) {
                     margin-inline-start: 0;
-                    font-size: var(--text-lg);
                     padding-inline-start: var(--space-5);
                 }
             }

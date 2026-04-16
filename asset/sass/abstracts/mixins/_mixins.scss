@@ -104,14 +104,12 @@
 // ==========================================================================
 @mixin card-hover {
     transition:
-        transform var(--transition-base),
-        box-shadow var(--transition-base),
-        border-color var(--transition-base);
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast);
 
     &:hover {
-        transform: translateY(var(--lift-xs));
-        box-shadow: var(--shadow-lg), var(--glow-sm);
-        border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+        box-shadow: var(--shadow-md);
+        border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
     }
 }
 

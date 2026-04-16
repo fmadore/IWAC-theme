@@ -62,10 +62,10 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
   --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, hsl(30, 15%, 20%) 5%, transparent);
   --panel-bg: var(--surface);
-  --panel-border-color: var(--shadow-color-subtle);
+  --panel-border-color: var(--border);
   --panel-border: 1px solid var(--panel-border-color);
   --panel-radius: var(--radius-md);
-  --panel-shadow: var(--shadow-md);
+  --panel-shadow: var(--shadow-sm);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --transition-fast: 150ms var(--ease-out-quart);
   --transition-base: 200ms var(--ease-out-quart);
@@ -122,8 +122,8 @@ body[data-theme=light] {
   --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
   --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, hsl(30, 15%, 20%) 5%, transparent);
   --panel-bg: var(--surface);
-  --panel-border-color: var(--shadow-color-subtle);
-  --panel-shadow: var(--shadow-md);
+  --panel-border-color: var(--border);
+  --panel-shadow: var(--shadow-sm);
 }
 
 :root {
@@ -5011,7 +5011,7 @@ body.item-set .main-region > .metadata .property[data-property-term="bibo:shortD
 body.resource.show .main-region > .metadata .property[data-property-term="bibo:shortDescription"] dd,
 body.item-set .main-region > .metadata .property[data-property-term="bibo:shortDescription"] dd {
   margin-inline-start: 0;
-  max-width: 62ch;
+  max-width: none;
   padding-inline-start: var(--space-4);
   border-inline-start: var(--accent-line-md) solid color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
   font-family: "Noto Serif", serif;
@@ -5024,7 +5024,6 @@ body.item-set .main-region > .metadata .property[data-property-term="bibo:shortD
   body.resource.show .main-region > .metadata .property[data-property-term="bibo:shortDescription"] dd,
   body.item-set .main-region > .metadata .property[data-property-term="bibo:shortDescription"] dd {
     margin-inline-start: 0;
-    font-size: var(--text-lg);
     padding-inline-start: var(--space-5);
   }
 }
@@ -5097,41 +5096,30 @@ body.media.show .media-parent-item a:hover {
 .block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle)) {
   position: relative;
   background: var(--panel-bg);
-  border: var(--panel-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md), var(--glow-xs);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   padding: var(--space-lg);
   margin-block-end: var(--space-lg);
-}
-.block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle))::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-lg);
-  box-shadow: inset 0 1px 0 0 color-mix(in srgb, white 8%, transparent);
-  pointer-events: none;
-}
-.block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle)) {
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 .block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle)):hover {
-  transform: translateY(var(--lift-xs));
-  box-shadow: var(--shadow-xl), var(--glow-sm);
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+  box-shadow: var(--shadow-md);
 }
 
 .block-blockGroup:has(.block-asset) {
   background: var(--panel-bg);
-  border: var(--panel-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md), var(--glow-xs);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   padding: var(--space-lg);
   margin-block-end: var(--space-lg);
-  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 .block-blockGroup:has(.block-asset):hover {
-  transform: translateY(var(--lift-xs));
-  box-shadow: var(--shadow-xl), var(--glow-sm);
-  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
 }
 .block-blockGroup:has(.block-asset) .block {
   margin-block-end: 0;
@@ -5203,16 +5191,16 @@ body.media.show .media-parent-item a:hover {
 .block-html:not(.block-blockGroup .block-html) {
   position: relative;
   background: var(--panel-bg);
-  border: var(--panel-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md), var(--glow-xs);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   padding: var(--space-lg);
   margin-block-end: var(--space-lg);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 .block-html:not(.block-blockGroup .block-html):hover {
-  transform: translateY(var(--lift-xs));
-  box-shadow: var(--shadow-xl), var(--glow-sm);
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+  box-shadow: var(--shadow-md);
 }
 
 .block-blockGroup .block-html > :first-child,
@@ -5345,17 +5333,16 @@ body.media.show .media-parent-item a:hover {
   display: block;
   background: var(--panel-bg);
   border: var(--panel-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md), var(--glow-xs);
-  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+  border-radius: var(--radius-md);
+  box-shadow: var(--panel-shadow);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
   overflow: hidden;
   height: 100%;
   text-decoration: none;
 }
 .block-carousel .slick-slide > div > *:hover {
-  transform: translateY(var(--lift-xs));
-  box-shadow: var(--shadow-xl), var(--glow-sm);
-  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
 }
 .block-carousel .slick-slide > div > * img {
   width: 100%;
@@ -5627,11 +5614,11 @@ body.media.show .media-parent-item a:hover {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 .item-showcase .resource.item:hover {
-  box-shadow: var(--shadow-lg), var(--glow-sm);
-  transform: translateY(var(--lift-xs));
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
 }
 .item-showcase .resource.item h3 {
   color: var(--ink);
@@ -5689,11 +5676,11 @@ body.media.show .media-parent-item a:hover {
   border-radius: var(--radius-md);
   padding: 0;
   overflow: hidden;
-  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 .media-embed.media-display-thumbnail .item.resource:hover {
-  box-shadow: var(--shadow-lg), var(--glow-sm);
-  transform: translateY(var(--lift-xs));
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
 }
 .media-embed.media-display-thumbnail .item.resource > a:first-child {
   display: block;
@@ -5757,11 +5744,11 @@ body.media.show .media-parent-item a:hover {
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--panel-shadow);
-  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 .media-embeds .media:hover {
-  box-shadow: var(--shadow-lg), var(--glow-sm);
-  transform: translateY(var(--lift-xs));
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
 }
 .media-embeds .media img,
 .media-embeds .media video,
@@ -7191,16 +7178,15 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
 .resource-grid .resource {
   background: var(--panel-bg);
   border: var(--panel-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   box-shadow: var(--panel-shadow);
   position: absolute;
   overflow: hidden;
-  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 .resource-grid .resource:hover {
-  transform: translateY(var(--lift-xs));
-  box-shadow: var(--shadow-lg), var(--glow-sm);
-  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
 }
 .resource-grid .resource::before {
   content: "";
@@ -7257,12 +7243,12 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   display: flex;
   background: var(--panel-bg);
   border: var(--panel-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   box-shadow: var(--panel-shadow);
   transform: none !important;
   width: 100% !important;
   overflow: hidden;
-  transition: box-shadow var(--transition-base), border-color var(--transition-base);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
   margin-bottom: var(--space-md);
   position: relative;
 }
@@ -7279,7 +7265,7 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
 }
 .resource-list .resource:hover {
   box-shadow: var(--shadow-md);
-  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+  border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
 }
 .resource-list .resource:hover::before {
   background: var(--primary);

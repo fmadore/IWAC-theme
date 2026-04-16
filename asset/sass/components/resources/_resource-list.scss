@@ -14,12 +14,12 @@
         display: flex;
         background: var(--panel-bg);
         border: var(--panel-border);
-        border-radius: var(--radius-lg);
+        border-radius: var(--radius-md);
         box-shadow: var(--panel-shadow);
         transform: none !important;
         width: 100% !important;
         overflow: hidden;
-        transition: box-shadow var(--transition-base), border-color var(--transition-base);
+        transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
         margin-bottom: var(--space-md);
         position: relative;
 
@@ -28,7 +28,7 @@
 
         &:hover {
             box-shadow: var(--shadow-md);
-            border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+            border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
 
             &::before {
                 background: var(--primary);

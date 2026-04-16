@@ -48,11 +48,11 @@
             overflow: hidden;
             transition:
                 box-shadow var(--transition-fast),
-                transform var(--transition-fast);
+                border-color var(--transition-fast);
 
             &:hover {
-                box-shadow: var(--shadow-lg), var(--glow-sm);
-                transform: translateY(var(--lift-xs));
+                box-shadow: var(--shadow-md);
+                border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
             }
             
             // Image link container
@@ -130,11 +130,11 @@
         box-shadow: var(--panel-shadow);
         transition:
             box-shadow var(--transition-fast),
-            transform var(--transition-fast);
-        
+            border-color var(--transition-fast);
+
         &:hover {
-            box-shadow: var(--shadow-lg), var(--glow-sm);
-            transform: translateY(var(--lift-xs));
+            box-shadow: var(--shadow-md);
+            border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
         }
         
         img,

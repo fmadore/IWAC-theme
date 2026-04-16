@@ -9,32 +9,23 @@
 // Excludes: page title blocks, blocks with assets (handled separately)
 // Includes: blocks with line breaks (spacing elements are fine)
 .block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle)) {
-    // Text content blocks get card styling with visual interest
+    // Text content blocks get clean card styling — visible border,
+    // subtle shadow, no orange glow or inner highlight.
     position: relative;
     background: var(--panel-bg);
-    border: var(--panel-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md), var(--glow-xs);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
     padding: var(--space-lg);
     margin-block-end: var(--space-lg);
 
-    // Subtle inner glow for depth
-    &::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: var(--radius-lg);
-        box-shadow: inset 0 1px 0 0 color-mix(in srgb, white 8%, transparent);
-        pointer-events: none;
-    }
-
-    // Hover effect for interactivity
-    transition: transform var(--transition-base),
-    box-shadow var(--transition-base);
+    transition:
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast);
 
     &:hover {
-        transform: translateY(var(--lift-xs));
-        box-shadow: var(--shadow-xl), var(--glow-sm);
+        border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+        box-shadow: var(--shadow-md);
     }
 }
 
@@ -45,20 +36,18 @@
     // When block group contains an asset and text (news item pattern)
     &:has(.block-asset) {
         background: var(--panel-bg);
-        border: var(--panel-border);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md), var(--glow-xs);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
         padding: var(--space-lg);
         margin-block-end: var(--space-lg);
         transition:
-            transform var(--transition-base),
-            box-shadow var(--transition-base),
-            border-color var(--transition-base);
+            box-shadow var(--transition-fast),
+            border-color var(--transition-fast);
 
         &:hover {
-            transform: translateY(var(--lift-xs));
-            box-shadow: var(--shadow-xl), var(--glow-sm);
-            border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+            box-shadow: var(--shadow-md);
+            border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
         }
 
         // Reset child block margins inside card
@@ -169,20 +158,19 @@
 .block-html:not(.block-blockGroup .block-html) {
     position: relative;
     background: var(--panel-bg);
-    border: var(--panel-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md), var(--glow-xs);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
     padding: var(--space-lg);
     margin-block-end: var(--space-lg);
 
-    // Hover effect
     transition:
-        transform var(--transition-base),
-        box-shadow var(--transition-base);
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast);
 
     &:hover {
-        transform: translateY(var(--lift-xs));
-        box-shadow: var(--shadow-xl), var(--glow-sm);
+        border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+        box-shadow: var(--shadow-md);
     }
 }
 
