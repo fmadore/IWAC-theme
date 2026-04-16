@@ -10,8 +10,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
+    width: var(--size-control-sm);
+    height: var(--size-control-sm);
     padding: 0;
     background: transparent;
     border: none;

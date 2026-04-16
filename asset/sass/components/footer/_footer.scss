@@ -394,8 +394,8 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 2.75rem;
-            height: 2.75rem;
+            width: var(--size-control-lg);
+            height: var(--size-control-lg);
             background: color-mix(in srgb, var(--footer-text) 18%, var(--footer-surface) 82%);
             border: 1px solid color-mix(in srgb, var(--footer-text) 24%, var(--footer-divider) 76%);
             border-radius: var(--radius-full);

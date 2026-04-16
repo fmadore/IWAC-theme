@@ -6,7 +6,7 @@
 // ==========================================================================
 
 .collecting-block-form {
-    max-width: 840px;
+    max-width: var(--measure-base);
     margin-inline: auto;
     margin-block-start: var(--space-6);
 

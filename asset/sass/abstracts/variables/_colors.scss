@@ -10,11 +10,13 @@
   color-scheme: light;
 
   // Primary color (IWAC orange) - HSL base
-  --primary-hue: 24;
-  --primary-sat: 90%;
-  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 50%);
-  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 45%);
-  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 40%);
+  // Slightly shifted hue (24→22) and reduced saturation for a more
+  // burnished, editorial cognac tone that harmonizes with warm neutrals.
+  --primary-hue: 22;
+  --primary-sat: 88%;
+  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 48%);
+  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 43%);
+  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 38%);
 
   // Semantic ink colors (text) - with HSL components for derived colors
   // Warm neutral base (shifted from cool 220 to warm 215 with reduced saturation)
@@ -22,8 +24,11 @@
   --ink-sat: 20%;
   --ink-lum: 12%;
   --ink: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum));
-  --ink-light: hsl(210, 14%, 34%);
-  --muted: hsl(200, 10%, 48%);
+  --ink-strong: hsl(var(--ink-hue) 24% 8%);       // display headings / pull quotes
+  --ink-light: hsl(210, 14%, 34%);                 // secondary body copy
+  --ink-subtle: hsl(205, 10%, 42%);                // tertiary (between light & muted)
+  --muted: hsl(200, 10%, 48%);                     // captions, labels
+  --ink-on-pastel: hsl(220, 28%, 18%);             // dark text on pastel-tinted chips
 
   // Pure colors for overlays
   --white: #fff;
@@ -33,12 +38,14 @@
   // Shifted from cool blue (210) to warm neutral (40-45) with low saturation
   --surface: hsl(40, 20%, 99%);
   --surface-raised: hsl(38, 18%, 97%);
+  --surface-sunken: hsl(38, 16%, 95%);              // recessed areas (input groups, code)
   --surface-overlay: color-mix(in srgb, hsl(40, 15%, 99%) 94%, transparent);
   --background: hsl(40, 15%, 95.5%);
 
   // Border colors - warm gray
   --border: hsl(35, 12%, 85%);
   --border-light: hsl(35, 10%, 91%);
+  --border-strong: hsl(35, 14%, 76%);               // emphatic separators
 
   // Semantic colors
   --focus-color: var(--primary);
@@ -86,25 +93,30 @@
   :root:not([data-theme="light"]) {
     color-scheme: dark;
 
-    --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 55%);
-    --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 60%);
-    --primary-active: hsl(var(--primary-hue), var(--primary-sat), 39%);
+    --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 8%), 58%);
+    --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 8%), 64%);
+    --primary-active: hsl(var(--primary-hue), var(--primary-sat), 44%);
 
     // Ink colors for dark theme - with HSL components
     --ink-hue: 210;
     --ink-sat: 25%;
     --ink-lum: 96%;
     --ink: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum));
+    --ink-strong: hsl(var(--ink-hue) 20% 99%);
     --ink-light: hsl(210, 15%, 75%);
-    --muted: hsl(215, 12%, 65%);
+    --ink-subtle: hsl(212, 12%, 68%);
+    --muted: hsl(215, 12%, 62%);
+    --ink-on-pastel: hsl(220, 28%, 15%);
 
     --surface: hsl(220, 18%, 12%);
     --surface-raised: hsl(220, 16%, 14%);
+    --surface-sunken: hsl(220, 20%, 10%);
     --surface-overlay: color-mix(in srgb, hsl(220, 18%, 12%) 95%, transparent);
     --background: hsl(220, 20%, 9%);
 
     --border: hsl(220, 12%, 22%);
     --border-light: hsl(220, 12%, 18%);
+    --border-strong: hsl(220, 14%, 30%);
 
     // Semantic aliases for text and backgrounds
     --text-primary: var(--ink);
@@ -146,21 +158,26 @@
 body[data-theme="dark"] {
   color-scheme: dark;
 
-  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 55%);
-  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 60%);
-  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 39%);
+  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 8%), 58%);
+  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 8%), 64%);
+  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 44%);
 
   --ink: hsl(210, 25%, 96%);
+  --ink-strong: hsl(210, 20%, 99%);
   --ink-light: hsl(210, 15%, 75%);
-  --muted: hsl(215, 12%, 65%);
+  --ink-subtle: hsl(212, 12%, 68%);
+  --muted: hsl(215, 12%, 62%);
+  --ink-on-pastel: hsl(220, 28%, 15%);
 
   --surface: hsl(220, 18%, 12%);
   --surface-raised: hsl(220, 16%, 14%);
+  --surface-sunken: hsl(220, 20%, 10%);
   --surface-overlay: color-mix(in srgb, hsl(220, 18%, 12%) 95%, transparent);
   --background: hsl(220, 20%, 9%);
 
   --border: hsl(220, 12%, 22%);
   --border-light: hsl(220, 12%, 18%);
+  --border-strong: hsl(220, 14%, 30%);
 
   // Semantic aliases for text and backgrounds
   --text-primary: var(--ink);
@@ -200,24 +217,29 @@ body[data-theme="dark"] {
 body[data-theme="light"] {
   color-scheme: light;
 
-  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 52%);
-  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 47%);
-  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 42%);
+  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 48%);
+  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 43%);
+  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 40%);
 
   // Warm neutral ink colors
   --ink: hsl(215, 20%, 14%);
+  --ink-strong: hsl(215, 24%, 8%);
   --ink-light: hsl(210, 14%, 36%);
+  --ink-subtle: hsl(205, 10%, 44%);
   --muted: hsl(200, 10%, 50%);
+  --ink-on-pastel: hsl(220, 28%, 18%);
 
   // Warm neutral surfaces
   --surface: hsl(40, 20%, 99%);
   --surface-raised: hsl(38, 18%, 97%);
+  --surface-sunken: hsl(38, 16%, 95%);
   --surface-overlay: color-mix(in srgb, hsl(40, 15%, 99%) 94%, transparent);
   --background: hsl(40, 15%, 95.5%);
 
   // Warm gray borders
   --border: hsl(35, 12%, 85%);
   --border-light: hsl(35, 10%, 91%);
+  --border-strong: hsl(35, 14%, 76%);
 
   // Semantic aliases for text and backgrounds
   --text-primary: var(--ink);

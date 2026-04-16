@@ -55,7 +55,7 @@
         align-items: center;
         border: 1px solid var(--border-color);
         border-radius: 50%;
-        height: 36px;
+        height: var(--size-control-sm);
         justify-content: center;
         pointer-events: none;
         position: absolute;
@@ -63,7 +63,7 @@
         top: 50%;
         transform: translateY(-50%) rotate(0);
         transition: transform var(--transition-base);
-        width: 36px;
+        width: var(--size-control-sm);
 
         .accordion__trigger.expanded & {
             transform: translateY(-50%) rotate(-180deg);

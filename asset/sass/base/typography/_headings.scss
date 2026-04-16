@@ -12,6 +12,7 @@ h4 {
     color: var(--text-heading);
     font-family: $font__headings;
     margin-block-start: 0;
+    text-wrap: balance;
 }
 
 h5,
@@ -19,18 +20,23 @@ h6 {
     color: var(--text-heading);
     font-family: $font__body;
     margin-block-start: 0;
+    text-wrap: balance;
 }
 
 :is(h1, h2, h3, h4, h5, h6):first-child {
     margin-block-start: 0;
 }
 
+// ==========================================================================
+// h1 — Editorial page title: serif, medium-bold, tight tracking
+// ==========================================================================
 h1 {
     clear: both;
+    color: var(--ink-strong);
     font-size: var(--text-3xl);
-    font-weight: 500;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: var(--tracking-tight);
     margin-block-end: var(--space-8);
 
     @media (min-width: $md) {
@@ -39,11 +45,15 @@ h1 {
     }
 }
 
+// ==========================================================================
+// h2 — Section heading: primary accent, slightly less saturated display size
+// ==========================================================================
 h2 {
     color: var(--primary);
     font-size: var(--text-2xl);
     font-weight: 600;
     line-height: $font__headings-line-height;
+    letter-spacing: var(--tracking-tight);
     margin-block-start: var(--space-8);
     margin-block-end: var(--space-6);
 
@@ -54,8 +64,9 @@ h2 {
 
 h3 {
     font-size: var(--text-xl);
-    font-weight: 500;
+    font-weight: 600;
     line-height: $font__headings-line-height;
+    letter-spacing: var(--tracking-tight);
     margin-block-start: var(--space-10);
     margin-block-end: var(--space-5);
 
@@ -66,7 +77,7 @@ h3 {
 
 h4 {
     font-size: var(--text-lg);
-    font-weight: 500;
+    font-weight: 600;
     line-height: $font__headings-line-height;
     margin-block-start: var(--space-8);
     margin-block-end: var(--space-4);

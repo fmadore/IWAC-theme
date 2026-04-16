@@ -1,6 +1,8 @@
+@use "../../abstracts/abstracts" as *;
+
 body.search {
     .results {
-        max-width: 1160px;
+        max-width: var(--measure-wide);
         margin-inline: auto;
         margin-block-end: var(--space-10);
 

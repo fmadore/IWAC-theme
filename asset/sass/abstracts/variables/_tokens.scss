@@ -66,6 +66,41 @@
   --accent-mix-strong: 60%; // active states, prominent accents
 
   // ========================================================================
+  // Control Sizes
+  // Fixed dimensions for small UI controls (icon buttons, inputs, chips)
+  // Use these instead of hardcoding 36px / 44px across components.
+  // ========================================================================
+  --size-control-xs: 1.75rem;  // 28px — dense chips, tiny icons
+  --size-control-sm: 2.25rem;  // 36px — add/remove buttons, header icon buttons
+  --size-control-md: 2.5rem;   // 40px — pagination nav, toolbar buttons
+  --size-control-lg: 2.75rem;  // 44px — WCAG touch target, primary controls, selects
+  --size-control-xl: 3rem;     // 48px — prominent CTAs, footer buttons
+
+  // ========================================================================
+  // Reading Measures
+  // Max-widths for readable line lengths across content types.
+  // ========================================================================
+  --measure-narrow: 44rem;     // ~704px — body prose, ledes, descriptions
+  --measure-base: 52.5rem;     // ~840px — forms, intro sections, metadata rows
+  --measure-wide: 72.5rem;     // ~1160px — search results, wide lists
+
+  // ========================================================================
+  // Focus Rings
+  // Consolidated focus treatment: use instead of inline box-shadow recipes.
+  // ========================================================================
+  --ring-focus: 0 0 0 3px var(--focus-ring);
+  --ring-focus-sm: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
+
+  // ========================================================================
+  // Letter Spacing
+  // Editorial tracking scale
+  // ========================================================================
+  --tracking-tight: -0.02em;   // display headings
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;     // small caps, uppercase UI labels
+  --tracking-wider: 0.08em;    // emphasis labels (metadata dt, eyebrow)
+
+  // ========================================================================
   // Gradients
   // ========================================================================
   --gradient-primary: linear-gradient(135deg,
@@ -127,10 +162,7 @@
   --z-modal: 300;
   --z-tooltip: 500;
 
-  // ========================================================================
-  // Layout
-  // ========================================================================
-  --content-max-width: 1200px;
+  // Layout max-width is defined in variables/_layout.scss (--content-max-width)
 
   // ========================================================================
   // Typography Utilities

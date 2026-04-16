@@ -34,8 +34,8 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        width: 2.5rem;
-        height: 2.5rem;
+        width: var(--size-control-md);
+        height: var(--size-control-md);
         padding: 0;
         background: transparent;
         border: none;
@@ -120,7 +120,7 @@
     // ---- Page number input ----
     input[type=text] {
         display: inline-block;
-        width: 2.5rem;
+        width: var(--size-control-md);
         padding: var(--space-1) var(--space-2) !important;
         margin: 0;
         text-align: center;
@@ -137,7 +137,7 @@
         &:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
+            box-shadow: var(--ring-focus-sm);
         }
     }
 }

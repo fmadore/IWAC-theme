@@ -21,17 +21,23 @@ body {
   padding-top: 0 !important;
   margin-top: 0 !important;
 
-  // Subtle warm atmospheric gradient for light theme
-  // Creates gentle depth without being distracting
+  // Subtle editorial atmospheric wash for light theme.
+  // Double layer: warm radial from top + barely-visible vertical fade for paper-like depth.
   &:not([data-theme="dark"])::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: radial-gradient(
-      ellipse 100% 50% at 50% -5%,
-      color-mix(in srgb, hsl(var(--primary-hue), 60%, 55%) 3%, transparent) 0%,
-      transparent 60%
-    );
+    background:
+      radial-gradient(
+        ellipse 90% 45% at 50% -8%,
+        color-mix(in srgb, hsl(var(--primary-hue), 55%, 52%) 3.5%, transparent) 0%,
+        transparent 55%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 0%,
+        color-mix(in srgb, hsl(38, 18%, 82%) 6%, transparent) 100%
+      );
     pointer-events: none;
     z-index: -1;
 

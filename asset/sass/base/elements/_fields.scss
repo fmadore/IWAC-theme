@@ -38,7 +38,7 @@ select {
     &:focus {
         outline: none;
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--focus-ring);
+        box-shadow: var(--ring-focus);
         transform: translateY(var(--lift-xxs));
     }
 
@@ -93,7 +93,7 @@ input[type="checkbox"] {
     }
 
     &:focus-visible {
-        box-shadow: 0 0 0 3px var(--focus-ring);
+        box-shadow: var(--ring-focus);
     }
 }
 
@@ -145,7 +145,7 @@ input[type="radio"] {
     }
 
     &:focus-visible {
-        box-shadow: 0 0 0 3px var(--focus-ring);
+        box-shadow: var(--ring-focus);
     }
 }
 
@@ -156,8 +156,8 @@ select {
     -webkit-appearance: none;
     /* Safari and Chrome */
     appearance: none;
-    height: 44px;
-    padding-inline-end: 45px;
+    height: var(--size-control-lg);
+    padding-inline-end: calc(var(--space-4) + var(--space-8));
 
     // Dropdown arrow - using secondary color for visibility on both themes
     background-image: url("../img/arrow-down.svg");

@@ -81,8 +81,8 @@
         z-index: 10;
         border: 1px solid var(--border);
         border-radius: var(--radius-full);
-        height: 2.5rem;
-        width: 2.5rem;
+        height: var(--size-control-md);
+        width: var(--size-control-md);
         background: var(--surface);
         color: var(--muted);
         display: flex;

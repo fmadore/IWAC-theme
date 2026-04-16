@@ -41,12 +41,12 @@ body {
 
     body.items.search & {
         @media (min-width: $lg) {
-            max-width: 1160px;
+            max-width: var(--measure-wide);
             padding: var(--space-12) var(--space-40) var(--space-16) var(--space-16);
         }
 
         @media (min-width: $xl) {
-            max-width: 1160px;
+            max-width: var(--measure-wide);
             padding: var(--space-12) var(--space-40) var(--space-16);
         }
     }

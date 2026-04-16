@@ -44,27 +44,31 @@
         }
     }
 
-    // Modern gradient overlay using ink color for consistency
+    // Editorial gradient overlay: vignette + bottom-weighted scrim for legibility
     &.has-text::before {
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(to bottom,
-                color-mix(in srgb, hsl(var(--ink-hue), var(--ink-sat), 5%) 20%, transparent) 0%,
-                color-mix(in srgb, hsl(var(--ink-hue), var(--ink-sat), 5%) 60%, transparent) 50%,
-                color-mix(in srgb, hsl(var(--ink-hue), var(--ink-sat), 5%) 85%, transparent) 100%);
+        background:
+            linear-gradient(
+                180deg,
+                color-mix(in srgb, black 10%, transparent) 0%,
+                color-mix(in srgb, black 35%, transparent) 55%,
+                color-mix(in srgb, black 72%, transparent) 100%
+            );
         z-index: 1;
     }
 
-    // Subtle color accent overlay for brand presence
+    // Subtle brand wash — bottom-start so text at top stays crisp
     &.has-text::after {
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg,
-                color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 60%, transparent) 0%,
-                transparent 70%);
-        mix-blend-mode: overlay;
+        background: radial-gradient(
+            ellipse at 15% 115%,
+            color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 45%) 38%, transparent) 0%,
+            transparent 55%
+        );
         z-index: 1;
         pointer-events: none;
     }
@@ -96,8 +100,8 @@
         position: relative;
         margin-inline: auto;
         width: 90%;
-        max-width: var(--content-max-width, 1200px);
-        color: var(--white, #fff);
+        max-width: var(--content-max-width);
+        color: var(--white);
         z-index: 2;
         padding: var(--space-12) var(--space-4);
 
@@ -142,14 +146,14 @@
 
     // Heading with decorative accent line
     &__heading {
-        color: var(--white, #fff);
+        color: var(--white);
         font-size: var(--text-2xl);
-        font-weight: var(--font-weight-medium, 500);
-        max-width: 900px;
+        font-weight: 600;
+        max-width: var(--measure-base);
         margin-block-end: var(--space-4);
         position: relative;
         text-shadow: 0 4px 12px color-mix(in srgb, black 50%, transparent);
-        letter-spacing: -0.01em;
+        letter-spacing: var(--tracking-tight);
 
         @media (min-width: $md) {
             font-size: var(--text-3xl);
@@ -181,11 +185,11 @@
     // Description with improved readability
     &__description {
         font-size: var(--text-base);
-        line-height: var(--line-height-relaxed, 1.7);
-        max-width: 700px;
+        line-height: var(--line-height-relaxed);
+        max-width: var(--measure-narrow);
         margin-block-end: 0;
         margin-block-start: var(--space-2);
-        color: hsl(0 0% 100% / 0.95);
+        color: color-mix(in srgb, var(--white) 95%, transparent);
         text-shadow: 0 2px 4px color-mix(in srgb, black 50%, transparent);
 
         @media (min-width: $md) {

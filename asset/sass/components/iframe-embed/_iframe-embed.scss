@@ -138,7 +138,7 @@ body[data-theme="dark"] .iframe-embed__wrapper {
 }
 
 // Responsive adjustments
-@media (max-width: 768px) {
+@media (max-width: #{$md - 0.02px}) {
     .iframe-embed {
         margin-bottom: var(--space-4);
     }

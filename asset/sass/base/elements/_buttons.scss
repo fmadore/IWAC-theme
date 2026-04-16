@@ -95,10 +95,10 @@ button.remove-value {
     justify-content: center;
 
     // Size and shape
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    min-height: 36px;
+    width: var(--size-control-sm);
+    height: var(--size-control-sm);
+    min-width: var(--size-control-sm);
+    min-height: var(--size-control-sm);
     padding: 0;
     margin: 0;
 

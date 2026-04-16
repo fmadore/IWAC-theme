@@ -170,7 +170,7 @@
                 &:focus {
                     outline: none;
                     border-color: var(--primary);
-                    box-shadow: 0 0 0 3px var(--focus-ring);
+                    box-shadow: var(--ring-focus);
                 }
 
                 &::placeholder {
@@ -668,10 +668,10 @@
 
                     img {
                         flex-shrink: 0;
-                        width: 2.5rem;
-                        height: 2.5rem;
-                        max-width: 2.5rem;
-                        max-height: 2.5rem;
+                        width: var(--size-control-md);
+                        height: var(--size-control-md);
+                        max-width: var(--size-control-md);
+                        max-height: var(--size-control-md);
                         object-fit: cover;
                         border-radius: var(--radius-sm);
                     }
@@ -748,8 +748,8 @@
                 display: inline-flex !important;
                 align-items: center;
                 justify-content: center;
-                width: 2.5rem;
-                height: 2.5rem;
+                width: var(--size-control-md);
+                height: var(--size-control-md);
                 padding: 0 !important;
                 margin: 0 !important;
                 font-size: 1rem !important;

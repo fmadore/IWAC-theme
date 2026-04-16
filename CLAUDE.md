@@ -123,9 +123,16 @@ Key rules:
 
 | Category | Pattern | Examples |
 |----------|---------|----------|
-| Colors | direct names | `--primary`, `--primary-hover`, `--ink`, `--muted`, `--surface`, `--surface-raised`, `--border`, `--border-light` |
+| Colors (ink scale) | direct names | `--ink-strong`, `--ink`, `--ink-light`, `--ink-subtle`, `--muted`, `--ink-on-pastel` |
+| Colors (surfaces) | direct names | `--surface`, `--surface-raised`, `--surface-sunken`, `--surface-overlay`, `--background` |
+| Colors (borders) | direct names | `--border-light`, `--border`, `--border-strong` |
+| Colors (brand) | direct names | `--primary`, `--primary-hover`, `--primary-active`, `--white`, `--black` |
 | Text sizes | `--text-{size}` | `--text-xs`, `--text-sm`, `--text-base`, `--text-lg`, `--text-2xl` |
 | Spacing | `--space-{n}` | `--space-1` through `--space-40` (also `--space-sm`, `--space-md`, etc.) |
+| Control sizes | `--size-control-{size}` | `--size-control-xs` (28px), `--size-control-sm` (36px), `--size-control-md` (40px), `--size-control-lg` (44px), `--size-control-xl` (48px) |
+| Reading measures | `--measure-{size}` | `--measure-narrow` (704px), `--measure-base` (840px), `--measure-wide` (1160px) |
+| Focus rings | `--ring-focus{-size}` | `--ring-focus` (3px ring), `--ring-focus-sm` (2px ring) — use as `box-shadow` value |
+| Letter spacing | `--tracking-{size}` | `--tracking-tight` (-0.02em), `--tracking-wide` (0.04em), `--tracking-wider` (0.08em) |
 | Effects | `--shadow-{size}`, `--radius-{size}` | `--shadow-sm`, `--shadow-md`, `--radius-md`, `--radius-lg` |
 | Accent lines | `--accent-line-{size}` | `--accent-line-sm` (2px), `--accent-line-md` (3px) |
 | Transitions | `--transition-{speed}` | `--transition-fast`, `--transition-base`, `--transition-slow` |
@@ -135,13 +142,13 @@ Key rules:
 **Common mistakes - these tokens DON'T exist:**
 | Wrong | Correct |
 |-------|---------|
-| `--surface-alt`, `--surface-hover` | `--surface-raised` |
-| `--ink-muted`, `--text-muted` | `--muted` |
+| `--surface-alt`, `--surface-hover` | `--surface-raised` (or `--surface-sunken` for recessed) |
+| `--ink-muted`, `--text-muted` | `--muted`, or `--ink-light`/`--ink-subtle` |
 | `--font-size-*` | `--text-*` |
 | `--leading-*` | `--line-height-*` |
-| `--border-dark`, `--border-strong`, `--border-hover` | `--border` |
+| `--border-dark`, `--border-hover` | `--border-strong` |
 | `--accent` | `--primary` (accent alias was removed) |
-| `--line-height-tight` | Use `1.25` directly or `$font__headings-line-height` |
+| `--line-height-tight` | Use `1.1` (h1) or `$font__headings-line-height` (1.25) |
 | `--font-weight-*` | Use numeric values directly (400, 500, 600, 700) |
 
 For color variations, use `color-mix()` with accent-mix tokens for consistency:

@@ -238,8 +238,8 @@
             top: calc(var(--space-xs) + var(--space-md) + 0.8em);
             transform: translateY(-50%);
             inset-inline-end: var(--space-md);
-            width: 2.25rem;
-            height: 2.25rem;
+            width: var(--size-control-sm);
+            height: var(--size-control-sm);
             background: transparent;
             border: 1px solid var(--border);
             border-radius: var(--radius-md);

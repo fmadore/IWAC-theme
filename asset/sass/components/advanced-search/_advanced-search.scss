@@ -1,7 +1,7 @@
 @use "../../abstracts/abstracts" as *;
 
 #advanced-search {
-    max-width: 840px;
+    max-width: var(--measure-base);
     margin-inline: auto;
     margin-block-start: var(--space-6);
 
@@ -25,7 +25,7 @@
         border-radius: var(--radius-md);
         color: var(--ink);
         font-size: var(--text-base);
-        height: 44px;
+        height: var(--size-control-lg);
         padding: var(--space-sm) var(--space-md);
         margin-block-end: var(--space-2);
         transition:
@@ -34,7 +34,7 @@
 
         &:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--focus-ring);
+            box-shadow: var(--ring-focus);
             outline: none;
         }
     }
@@ -223,7 +223,7 @@
                 border-radius: var(--radius-md);
                 color: var(--ink);
                 font-size: var(--text-base);
-                height: 44px;
+                height: var(--size-control-lg);
                 padding: var(--space-sm) var(--space-md);
             }
 
@@ -278,10 +278,10 @@
             flex-shrink: 0;
 
             // Size and shape
-            width: 36px;
-            height: 36px;
-            min-width: 36px;
-            min-height: 36px;
+            width: var(--size-control-sm);
+            height: var(--size-control-sm);
+            min-width: var(--size-control-sm);
+            min-height: var(--size-control-sm);
             padding: 0;
             margin: 0;
             margin-inline-start: var(--space-2);
@@ -480,7 +480,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 44px;
+    height: var(--size-control-lg);
     padding: var(--space-sm) var(--space-md);
     padding-inline-end: 2.5rem;
     background: var(--panel-bg);
@@ -516,7 +516,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 2.5rem;
+        width: var(--size-control-md);
         height: 100%;
         background: transparent;
 
@@ -543,7 +543,7 @@
 
 .chosen-container.chosen-container-active .chosen-single,
 .chosen-container-single.chosen-container-active .chosen-single {
-    box-shadow: 0 0 0 3px var(--focus-ring);
+    box-shadow: var(--ring-focus);
 }
 
 // Active/open state - override library's weird border-radius changes
@@ -640,7 +640,7 @@
 
     &:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 2px var(--focus-ring);
+        box-shadow: var(--ring-focus-sm);
     }
 
     &::placeholder {
@@ -770,7 +770,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
-    min-height: 44px;
+    min-height: var(--size-control-lg);
     padding: var(--space-2) var(--space-3);
     padding-inline-start: var(--space-3);
     background: var(--panel-bg);
@@ -900,7 +900,7 @@
 .chosen-container-multi.chosen-container-active .chosen-choices,
 .chosen-container.chosen-container-multi.chosen-container-active .chosen-choices {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--focus-ring);
+    box-shadow: var(--ring-focus);
 }
 
 // Field labels in advanced search
@@ -969,7 +969,7 @@ select.query-filter[multiple] {
 
     &:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--focus-ring);
+        box-shadow: var(--ring-focus);
         outline: none;
     }
 }
