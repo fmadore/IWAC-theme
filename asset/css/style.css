@@ -7857,7 +7857,7 @@ body[data-theme=dark] .iframe-embed__wrapper {
   align-self: flex-start;
   flex-direction: column;
   flex-wrap: wrap;
-  gap: var(--space-xl);
+  gap: var(--space-xs);
   justify-content: center;
   list-style: none;
   margin-bottom: 0;
@@ -7868,11 +7868,13 @@ body[data-theme=dark] .iframe-embed__wrapper {
 @media (min-width: 768px) {
   .main-footer__col2 .navigation {
     flex-direction: row;
+    gap: var(--space-md);
     text-align: start;
   }
 }
 @media (min-width: 1024px) {
   .main-footer__col2 .navigation {
+    gap: var(--space-xl);
     justify-content: flex-start;
   }
 }
@@ -7893,10 +7895,15 @@ body[data-theme=dark] .iframe-embed__wrapper {
   font-size: var(--text-base);
   color: var(--footer-text);
   display: block;
-  margin-bottom: var(--space-sm);
+  margin-bottom: 0;
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
   transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+@media (min-width: 1024px) {
+  .main-footer__col2 .navigation > li > a {
+    margin-bottom: var(--space-sm);
+  }
 }
 .main-footer__col2 .navigation > li > a:hover {
   background: var(--selection-bg);

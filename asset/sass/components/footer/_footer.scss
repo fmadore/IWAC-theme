@@ -205,7 +205,9 @@
             align-self: flex-start;
             flex-direction: column;
             flex-wrap: wrap;
-            gap: var(--space-xl);
+            // Below $lg submenus are hidden, so only top-level links show —
+            // keep the gap tight so single-line items don't look stranded.
+            gap: var(--space-xs);
             justify-content: center;
             list-style: none;
             margin-bottom: 0;
@@ -215,10 +217,14 @@
 
             @media (min-width: $md) {
                 flex-direction: row;
+                gap: var(--space-md);
                 text-align: start;
             }
 
             @media (min-width: $lg) {
+                // Submenus become visible — restore the larger column gap
+                // so each top-level column has breathing room.
+                gap: var(--space-xl);
                 justify-content: flex-start;
             }
 
@@ -242,10 +248,17 @@
                     font-size: var(--text-base);
                     color: var(--footer-text);
                     display: block;
-                    margin-bottom: var(--space-sm);
+                    // Only add space below the link when the submenu is
+                    // visible (≥ $lg); on mobile/tablet the submenu is
+                    // hidden and this margin just creates dead space.
+                    margin-bottom: 0;
                     padding: var(--space-xs) var(--space-sm);
                     border-radius: var(--radius-sm);
                     transition: background-color var(--transition-fast), color var(--transition-fast);
+
+                    @media (min-width: $lg) {
+                        margin-bottom: var(--space-sm);
+                    }
 
                     &:hover {
                         background: var(--selection-bg);
