@@ -1,6 +1,6 @@
 {
   "name": "iwac-theme",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive.",
   "main": "gulpfile.js",
   "scripts": {

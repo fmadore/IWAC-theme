@@ -133,11 +133,20 @@
 
   // ========================================================================
   // Panel/Card Elevation Helpers
+  //
+  // IMPORTANT: --panel-border must be re-declared in every theme
+  // override block (light / dark manual + @media dark) below. Custom
+  // properties inherit their COMPUTED value; if we only declared
+  // --panel-border here at :root, the initial substitution of
+  // var(--border) would be frozen at the root cascade and ignore any
+  // theme override. The re-declaration pattern uses var(--border)
+  // directly so the inner var() always resolves to the active
+  // border color of the cascade block it lives in.
   // ========================================================================
   --panel-bg: var(--surface);
   // Visible border to define card edges clearly in light mode
   --panel-border-color: var(--border);
-  --panel-border: 1px solid var(--panel-border-color);
+  --panel-border: 1px solid var(--border);
   --panel-radius: var(--radius-md);
   --panel-shadow: var(--shadow-sm);
 
@@ -193,6 +202,11 @@
     --shadow-xl: 0 20px 40px -12px color-mix(in srgb, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
     --panel-bg: var(--surface-raised);
     --panel-border-color: var(--border);
+    // Re-declare the composite so its inner var() picks up the
+    // override in this block. Custom properties inherit their COMPUTED
+    // value; without this re-declaration, --panel-border stays frozen
+    // at the root computed value and ignores the new --border.
+    --panel-border: 1px solid var(--border);
   }
 }
 
@@ -214,6 +228,9 @@ body[data-theme="dark"] {
   --shadow-xl: 0 20px 40px -12px color-mix(in srgb, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
   --panel-bg: var(--surface-raised);
   --panel-border-color: var(--border);
+  // See the comment in the :root @media block — re-declaring
+  // --panel-border here is required for it to pick up dark --border.
+  --panel-border: 1px solid var(--border);
 }
 
 body[data-theme="light"] {
@@ -231,6 +248,9 @@ body[data-theme="light"] {
   // Modern card with warm surface
   --panel-bg: var(--surface);
   --panel-border-color: var(--border);
+  // See the comment in the :root @media block — re-declaring
+  // --panel-border here is required for it to pick up warm --border.
+  --panel-border: 1px solid var(--border);
   --panel-shadow: var(--shadow-sm);
 }
 

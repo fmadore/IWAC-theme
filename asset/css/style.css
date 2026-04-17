@@ -77,7 +77,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
   --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, hsl(30, 15%, 20%) 5%, transparent);
   --panel-bg: var(--surface);
   --panel-border-color: var(--border);
-  --panel-border: 1px solid var(--panel-border-color);
+  --panel-border: 1px solid var(--border);
   --panel-radius: var(--radius-md);
   --panel-shadow: var(--shadow-sm);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
@@ -107,6 +107,7 @@ Based on: Freedom theme by Omeka Team (https://github.com/omeka-s-themes/freedom
     --shadow-xl: 0 20px 40px -12px color-mix(in srgb, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
     --panel-bg: var(--surface-raised);
     --panel-border-color: var(--border);
+    --panel-border: 1px solid var(--border);
   }
 }
 body[data-theme=dark] {
@@ -123,6 +124,7 @@ body[data-theme=dark] {
   --shadow-xl: 0 20px 40px -12px color-mix(in srgb, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
   --panel-bg: var(--surface-raised);
   --panel-border-color: var(--border);
+  --panel-border: 1px solid var(--border);
 }
 
 body[data-theme=light] {
@@ -136,6 +138,7 @@ body[data-theme=light] {
   --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, hsl(30, 15%, 20%) 5%, transparent);
   --panel-bg: var(--surface);
   --panel-border-color: var(--border);
+  --panel-border: 1px solid var(--border);
   --panel-shadow: var(--shadow-sm);
 }
 
