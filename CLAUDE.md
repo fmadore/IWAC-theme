@@ -8,7 +8,7 @@ IWAC-theme is a customized Omeka S theme (fork of Freedom theme) for the Islam W
 
 **Live site**: https://islam.zmo.de/s/westafrica/
 
-**Visual debugging**: When diagnosing visual/layout issues on the live site, use Playwright MCP (`browser_navigate`, `browser_snapshot`, `browser_take_screenshot`, `browser_evaluate`) to inspect the rendered DOM and computed styles before proposing fixes. Requires ZMO VPN connection for `islam.zmo.de`.
+**Visual debugging**: When diagnosing visual/layout issues on the live site, use Playwright MCP (`browser_navigate`, `browser_snapshot`, `browser_take_screenshot`, `browser_evaluate`) to inspect the rendered DOM and computed styles before proposing fixes. The site is publicly accessible at `https://islam.zmo.de/s/westafrica/` (English) or `https://islam.zmo.de/s/afrique_ouest/` (French).
 
 **Stack**: Omeka S 4.1.0+ (PHP), Sass with modern module system, Gulp build, vanilla JavaScript
 
