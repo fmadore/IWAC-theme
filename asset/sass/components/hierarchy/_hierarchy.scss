@@ -2,8 +2,356 @@
 
 // ==========================================================================
 // Hierarchy Module
-// Resource list display for hierarchical content
+//
+// Two surfaces:
+//   1. `.hierarchy-block` — custom block layout for page blocks (theme override
+//       of `view/hierarchy/common/block-layout/hierarchy-public.phtml`).
+//       Renders countries as grouped card grids with item-set cover images.
+//   2. `.hierarchy-module` — the module's own resource list page (unchanged
+//       defaults preserved for backwards compatibility).
 // ==========================================================================
+
+// --------------------------------------------------------------------------
+// Page block: card-based hierarchy overview
+// --------------------------------------------------------------------------
+
+.hierarchy-block {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-6);
+
+	&__header {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-3);
+		padding-bottom: var(--space-3);
+		border-bottom: 1px solid color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+		position: relative;
+
+		&::after {
+			content: "";
+			position: absolute;
+			bottom: -1px;
+			left: 0;
+			width: 3rem;
+			height: 2px;
+			background: var(--primary);
+			border-radius: var(--radius-full);
+		}
+	}
+
+	&__label {
+		margin: 0;
+		font-size: var(--text-2xl);
+		font-weight: 600;
+		line-height: 1.15;
+		letter-spacing: var(--tracking-tight);
+		color: var(--ink-strong);
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+	}
+}
+
+// --------------------------------------------------------------------------
+// Section (a top-level grouping inside the country block)
+// --------------------------------------------------------------------------
+
+.hierarchy-section {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+
+	&__header {
+		display: flex;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: var(--space-2) var(--space-3);
+	}
+
+	&__title {
+		margin: 0;
+		font-size: var(--text-lg);
+		font-weight: 600;
+		line-height: 1.25;
+		color: var(--ink);
+		letter-spacing: 0;
+
+		// Compact accent dot before the title to match the theme's editorial mark
+		&::before {
+			content: "";
+			display: inline-block;
+			width: 0.45em;
+			height: 0.45em;
+			margin-right: 0.55em;
+			vertical-align: 0.18em;
+			background: var(--primary);
+			border-radius: var(--radius-full);
+		}
+	}
+
+	&__count {
+		font-size: var(--text-xs);
+		font-weight: 500;
+		letter-spacing: var(--tracking-wide);
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+
+	&--leaf &__header {
+		display: none; // Leaf sections promote their single card as the headline.
+	}
+}
+
+// --------------------------------------------------------------------------
+// Card grid
+// --------------------------------------------------------------------------
+
+.hierarchy-cards {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--space-3);
+	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+
+	@media (max-width: #{$md - 1px}) {
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	}
+
+	&--single {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+// --------------------------------------------------------------------------
+// Individual card
+// --------------------------------------------------------------------------
+
+.hierarchy-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	background: var(--surface-raised);
+	border: 1px solid var(--border-light);
+	border-radius: var(--radius-md);
+	overflow: hidden;
+	transition:
+		transform var(--transition-fast),
+		box-shadow var(--transition-fast),
+		border-color var(--transition-fast);
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+
+	&:hover {
+		transform: translateY(var(--lift-xs));
+		box-shadow: var(--shadow-md);
+		border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+	}
+
+	&__link {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		color: inherit;
+		text-decoration: none;
+		transition: color var(--transition-fast);
+
+		&:hover,
+		&:focus-visible {
+			color: var(--primary);
+			text-decoration: none;
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--focus-color);
+			outline-offset: -2px;
+		}
+
+		&--disabled {
+			cursor: default;
+		}
+	}
+
+	&__media {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		aspect-ratio: 5 / 3;
+		background:
+			linear-gradient(
+				180deg,
+				color-mix(in srgb, var(--primary) 5%, var(--surface)) 0%,
+				var(--surface-sunken) 100%
+			);
+		border-bottom: 1px solid var(--border-light);
+		overflow: hidden;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+	}
+
+	&__icon {
+		// icon-mask sets `background-color: currentColor`, so we drive the
+		// icon's color via the `color` property (which both the base tint
+		// and the hover state can override).
+		display: inline-block;
+		width: 2.5rem;
+		height: 2.5rem;
+		color: color-mix(in srgb, var(--primary) var(--accent-mix-strong), var(--ink-subtle));
+		transition: transform var(--transition-fast), color var(--transition-fast);
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+
+		&--newspaper   { @include icon-mask("../img/newspaper.svg"); }
+		&--publication { @include icon-mask("../img/book.svg"); }
+		&--document    { @include icon-mask("../img/file-earmark-text.svg"); }
+		&--photo       { @include icon-mask("../img/camera.svg"); }
+		&--reference   { @include icon-mask("../img/bookmark.svg"); }
+	}
+
+	&__link:hover &__icon,
+	&__link:focus-visible &__icon {
+		color: var(--primary);
+		transform: scale(1.06);
+	}
+
+	&--no-thumb &__media {
+		// Slightly more pronounced backdrop when the fallback icon is showing
+		background:
+			radial-gradient(
+				circle at 50% 40%,
+				color-mix(in srgb, var(--primary) 10%, transparent) 0%,
+				transparent 65%
+			),
+			var(--surface-sunken);
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+		padding: var(--space-3) var(--space-4);
+		flex: 1 1 auto;
+	}
+
+	&__title {
+		font-size: var(--text-sm);
+		font-weight: 600;
+		line-height: 1.3;
+		color: var(--ink-strong);
+		// Keep card heights sane when titles are long
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	&__link:hover &__title,
+	&__link:focus-visible &__title {
+		color: var(--primary);
+	}
+
+	&__count {
+		font-size: var(--text-xs);
+		font-weight: 500;
+		letter-spacing: var(--tracking-wide);
+		color: var(--muted);
+
+		&--muted {
+			font-style: italic;
+		}
+	}
+
+	// Nested children chip list (only when a card has children of its own)
+	&__children {
+		list-style: none;
+		margin: 0;
+		padding: var(--space-2) var(--space-4) var(--space-3);
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-1);
+		border-top: 1px dashed var(--border-light);
+	}
+
+	&__child {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-1);
+		padding: 2px var(--space-2);
+		font-size: var(--text-xs);
+		line-height: 1.3;
+		color: var(--ink-light);
+		background: color-mix(in srgb, var(--primary) 6%, var(--surface));
+		border: 1px solid var(--border-light);
+		border-radius: var(--radius-full);
+		text-decoration: none;
+		transition:
+			background var(--transition-fast),
+			border-color var(--transition-fast),
+			color var(--transition-fast);
+
+		&:hover,
+		&:focus-visible {
+			color: var(--primary);
+			background: color-mix(in srgb, var(--primary) 12%, var(--surface));
+			border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+			text-decoration: none;
+		}
+
+		&--disabled {
+			opacity: 0.6;
+			cursor: default;
+		}
+	}
+
+	&__child-count {
+		color: var(--muted);
+		font-variant-numeric: tabular-nums;
+
+		&::before {
+			content: "·";
+			margin-right: 0.2em;
+		}
+	}
+
+	&--private {
+		opacity: 0.65;
+	}
+}
+
+// --------------------------------------------------------------------------
+// Block wrapper tweaks — when the block lives inside a blockGroup grid
+// (e.g. the sub-collections page uses grid-span-6), keep some breathing room.
+// --------------------------------------------------------------------------
+
+.block-Hierarchy {
+	// The original module CSS adds a `float` / borderless list style; we
+	// neutralize those by scoping our custom classes, but make sure the block
+	// itself doesn't collapse against siblings.
+	padding-block: var(--space-2);
+
+	+ .block-Hierarchy {
+		margin-top: var(--space-6);
+	}
+}
+
+// --------------------------------------------------------------------------
+// Legacy module page (unchanged): resource list view on
+// `/hierarchy/{id}` pages — used when users drill into a grouping.
+// --------------------------------------------------------------------------
 
 .hierarchy-module {
 	.resource-list {
@@ -15,7 +363,9 @@
 			overflow: hidden;
 			padding: var(--space-3);
 			border-radius: var(--radius-sm);
-			transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+			transition:
+				background-color var(--transition-fast),
+				box-shadow var(--transition-fast);
 
 			&:hover {
 				background-color: var(--surface-raised);

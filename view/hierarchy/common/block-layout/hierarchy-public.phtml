@@ -1,0 +1,261 @@
+<?php
+use Omeka\Api\Exception\NotFoundException;
+
+$translate   = $this->plugin('translate');
+$escape      = $this->plugin('escapeHtml');
+$escapeAttr  = $this->plugin('escapeHtmlAttr');
+
+$filterLocale = (bool) $this->siteSetting('filter_locale_values');
+$lang         = $this->lang();
+$valueLang    = $filterLocale ? [$lang, ''] : null;
+$linkItemSet  = (bool) $this->siteSetting('hierarchy_link_itemSet');
+$showLabel    = (bool) $this->siteSetting('hierarchy_show_label');
+
+$site     = $this->currentSite();
+$siteSlug = $site->slug();
+
+$siteItemSetArray = [];
+foreach ($site->siteItemSets() as $siteItemSet) {
+    $siteItemSetArray[] = $siteItemSet->itemSet()->id();
+}
+
+/**
+ * Resolve a grouping node into a normalized structure used by the card renderer.
+ *
+ * @return array{label:string,url:?string,itemSet:?object,count:?int,private:bool}
+ */
+$resolve = function (array $grouping) use (
+    $siteItemSetArray, $valueLang, $allGroupings, $siteSlug,
+    $linkItemSet, $translate
+) {
+    $data        = $grouping['data'];
+    $groupingID  = $data['groupingID'] ?? null;
+    $itemSetId   = $data['itemSet']    ?? null;
+    $customLabel = $data['label']      ?? '';
+
+    $itemSet = null;
+    $private = false;
+
+    if ($itemSetId) {
+        try {
+            $itemSet = $this->api()->read('item_sets', $itemSetId)->getContent();
+            if ($siteItemSetArray && !in_array($itemSet->id(), $siteItemSetArray)) {
+                $itemSet = null;
+                $private = true;
+            }
+        } catch (NotFoundException $e) {
+            $private = true;
+        }
+    }
+
+    $label = $customLabel;
+    if ($label === 'privateHGset') {
+        $label   = $translate('(Private)');
+        $private = true;
+    }
+    if ($label === '') {
+        $label = $itemSet
+            ? $itemSet->displayTitle(null, $valueLang)
+            : $translate('[Untitled]');
+    }
+
+    // Resolve item count via the module's view helper (returns a formatted
+    // string like " (131 items)" or null) and parse out the integer.
+    $count = null;
+    if ($groupingID) {
+        try {
+            $groupingObject = $this->api()->read('hierarchy_grouping', $groupingID)->getContent();
+            $formatted = $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings);
+            if ($formatted && preg_match('/(\d[\d\s,\.]*)/', $formatted, $m)) {
+                $count = (int) preg_replace('/\D+/', '', $m[1]);
+            }
+        } catch (\Exception $e) {
+            // ignore
+        }
+    }
+
+    $url = null;
+    if (!$private) {
+        if ($itemSet && $linkItemSet) {
+            $url = $this->url('site/resource-id', [
+                'site-slug'  => $siteSlug,
+                'controller' => 'item-set',
+                'id'         => $itemSet->id(),
+            ]);
+        } elseif (($itemSet || $customLabel !== '') && $groupingID) {
+            $url = $this->url('site/hierarchy', [
+                'site-slug'   => $siteSlug,
+                'grouping-id' => $groupingID,
+            ]);
+        }
+    }
+
+    return compact('label', 'url', 'itemSet', 'count', 'private');
+};
+
+/**
+ * Build an SVG thumbnail URL for an item set (falls back to null).
+ */
+$thumbUrl = function ($itemSet): ?string {
+    if (!$itemSet) {
+        return null;
+    }
+    // Prefer the small square thumbnail — it's already cropped and fast to load.
+    return $itemSet->thumbnailDisplayUrl('square')
+        ?: $itemSet->thumbnailDisplayUrl('medium');
+};
+
+/**
+ * Category inference from a label. Checks the node's own label first, then
+ * falls back to the parent section label. Returns one of the keys in $icons.
+ * Order matters: more specific keywords win over generic ones.
+ */
+$categoryFor = function (string $nodeLabel, ?string $parentLabel = null): string {
+    $haystack = mb_strtolower($nodeLabel . ' | ' . ($parentLabel ?? ''));
+    $rules = [
+        'photo'       => ['photograph', 'photo', 'fotograf', 'image'],
+        'reference'   => ['référence', 'reference', 'referências', 'referencias', 'notices', 'bibliograph', 'authority'],
+        'document'    => ['documents divers', 'document', 'documenti', 'archive', 'archivio'],
+        'publication' => ['publication islamique', 'publicaciones', 'revue', 'magazine', 'bulletin', 'journal religieux'],
+        'newspaper'   => ['journal', 'journaux', 'article de presse', 'articles de journaux', 'press', 'presse', 'news', 'prensa'],
+    ];
+    foreach ($rules as $key => $needles) {
+        foreach ($needles as $needle) {
+            if (str_contains($haystack, $needle)) {
+                return $key;
+            }
+        }
+    }
+    return 'newspaper';
+};
+
+/**
+ * Render a single card for a grouping node (with optional children list).
+ */
+$renderCard = function (array $grouping, ?string $parentLabel = null) use (
+    &$renderCard, $resolve, $thumbUrl, $categoryFor,
+    $escape, $escapeAttr, $translate
+) {
+    $node  = $resolve($grouping);
+    $thumb = $thumbUrl($node['itemSet']);
+    $hasChildren = !empty($grouping['children']);
+    $category = $categoryFor($node['label'], $parentLabel);
+
+    $classes = ['hierarchy-card', 'hierarchy-card--' . $category];
+    if ($node['private'])   $classes[] = 'hierarchy-card--private';
+    if (!$thumb)            $classes[] = 'hierarchy-card--no-thumb';
+    if (!$node['url'])      $classes[] = 'hierarchy-card--nolink';
+
+    echo '<li class="' . $escapeAttr(implode(' ', $classes)) . '">';
+
+    $open  = $node['url']
+        ? '<a class="hierarchy-card__link" href="' . $escapeAttr($node['url']) . '">'
+        : '<span class="hierarchy-card__link hierarchy-card__link--disabled">';
+    $close = $node['url'] ? '</a>' : '</span>';
+
+    echo $open;
+
+    // Media area — show the item set cover image when available, otherwise
+    // a category-aware icon (see `.hierarchy-card__icon--{category}` styles).
+    echo '<span class="hierarchy-card__media" aria-hidden="true">';
+    if ($thumb) {
+        echo '<img src="' . $escapeAttr($thumb) . '" alt="" loading="lazy">';
+    } else {
+        echo '<span class="hierarchy-card__icon hierarchy-card__icon--'
+           . $escapeAttr($category) . '" aria-hidden="true"></span>';
+    }
+    echo '</span>';
+
+    // Body
+    echo '<span class="hierarchy-card__body">';
+    echo '<span class="hierarchy-card__title">' . $escape($node['label']) . '</span>';
+    if ($node['count'] !== null) {
+        $label = sprintf(
+            $translate($node['count'] === 1 ? '%s item' : '%s items'),
+            number_format($node['count'])
+        );
+        echo '<span class="hierarchy-card__count">' . $escape($label) . '</span>';
+    } elseif ($node['private']) {
+        echo '<span class="hierarchy-card__count hierarchy-card__count--muted">'
+           . $escape($translate('Private')) . '</span>';
+    }
+    echo '</span>';
+
+    echo $close;
+
+    // Nested children render as a subtle chip list inside the card.
+    if ($hasChildren) {
+        echo '<ul class="hierarchy-card__children">';
+        foreach ($grouping['children'] as $child) {
+            $childNode = $resolve($child);
+            $chipOpen  = $childNode['url']
+                ? '<a class="hierarchy-card__child" href="' . $escapeAttr($childNode['url']) . '">'
+                : '<span class="hierarchy-card__child hierarchy-card__child--disabled">';
+            $chipClose = $childNode['url'] ? '</a>' : '</span>';
+            echo '<li>' . $chipOpen
+                . '<span class="hierarchy-card__child-label">' . $escape($childNode['label']) . '</span>';
+            if ($childNode['count'] !== null) {
+                echo '<span class="hierarchy-card__child-count">' . $escape(number_format($childNode['count'])) . '</span>';
+            }
+            echo $chipClose . '</li>';
+        }
+        echo '</ul>';
+    }
+
+    echo '</li>';
+};
+
+/**
+ * Render a section for a top-level grouping.
+ * - If the grouping has children, render them as a grid of cards beneath the heading.
+ * - If it has no children, render the grouping itself as a single card.
+ */
+$renderSection = function (array $grouping) use ($resolve, $renderCard, $escape, $translate) {
+    $node = $resolve($grouping);
+    $hasChildren = !empty($grouping['children']);
+
+    if (!$hasChildren) {
+        // Leaf at the top level — render as a single card in a one-up grid
+        // so visual rhythm matches sibling sections.
+        echo '<section class="hierarchy-section hierarchy-section--leaf">';
+        echo '<ul class="hierarchy-cards hierarchy-cards--single">';
+        $renderCard($grouping);
+        echo '</ul>';
+        echo '</section>';
+        return;
+    }
+
+    echo '<section class="hierarchy-section">';
+    echo '<header class="hierarchy-section__header">';
+    echo '<h3 class="hierarchy-section__title">' . $escape($node['label']) . '</h3>';
+    if ($node['count'] !== null) {
+        $label = sprintf(
+            $translate($node['count'] === 1 ? '%s item' : '%s items'),
+            number_format($node['count'])
+        );
+        echo '<span class="hierarchy-section__count">' . $escape($label) . '</span>';
+    }
+    echo '</header>';
+
+    echo '<ul class="hierarchy-cards">';
+    foreach ($grouping['children'] as $child) {
+        $renderCard($child, $node['label']);
+    }
+    echo '</ul>';
+    echo '</section>';
+};
+
+?>
+<section class="hierarchy-block">
+    <?php if ($showLabel && $hierarchy->getLabel()): ?>
+        <header class="hierarchy-block__header">
+            <h2 class="hierarchy-block__label"><?= $escape($hierarchy->getLabel()) ?></h2>
+        </header>
+    <?php endif; ?>
+
+    <div class="hierarchy-block__body">
+        <?php foreach ($hierarchyData as $topLevel): ?>
+            <?php $renderSection($topLevel); ?>
+        <?php endforeach; ?>
+    </div>
+</section>
