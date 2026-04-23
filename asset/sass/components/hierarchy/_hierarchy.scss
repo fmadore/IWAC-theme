@@ -123,7 +123,14 @@
 	}
 
 	&--single {
-		grid-template-columns: minmax(0, 1fr);
+		// Leaf sections render a single card; without a cap the grid stretches
+		// it to full width and the 5:3 media area balloons. Hold it to a size
+		// in line with the regular grid tracks, left-aligned to the row.
+		grid-template-columns: minmax(0, 260px);
+
+		@media (max-width: #{$md - 1px}) {
+			grid-template-columns: minmax(0, 220px);
+		}
 	}
 }
 

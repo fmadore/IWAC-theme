@@ -7110,7 +7110,12 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   }
 }
 .hierarchy-cards--single {
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 260px);
+}
+@media (max-width: 767px) {
+  .hierarchy-cards--single {
+    grid-template-columns: minmax(0, 220px);
+  }
 }
 
 .hierarchy-card {
