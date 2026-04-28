@@ -1,8 +1,8 @@
 # IWAC Theme: An Omeka S Theme for the Islam West Africa Collection
 
-> **Fork Notice**: This theme is a fork of the [Freedom theme](https://github.com/omeka-s-themes/freedom) by the [Omeka Team](https://omeka.org) at the Corporation for Digital Scholarship. We gratefully acknowledge their work as the foundation for this theme.
+> **Origin**: IWAC Theme started as a fork of the [Freedom theme](https://github.com/omeka-s-themes/freedom) by the [Omeka Team](https://omeka.org) at the Corporation for Digital Scholarship. It has since diverged substantially and is maintained as a standalone theme, but we gratefully acknowledge Freedom as the foundation it grew out of.
 
-This is a customized Omeka S theme for the [Islam West Africa Collection](https://islam.zmo.de/s/westafrica/page/home) digital archive at ZMO Berlin. It extends the Freedom theme with modern enhancements including light/dark mode toggle and multilingual support.
+This is a customized Omeka S theme for the [Islam West Africa Collection](https://islam.zmo.de/s/westafrica/page/home) digital archive at ZMO Berlin, with modern enhancements including a light/dark mode toggle and multilingual support.
 
 ![IWAC Theme](https://github.com/fmadore/IWAC-theme/blob/master/theme.jpg?raw=true)
 
@@ -250,13 +250,13 @@ injected at runtime from the admin settings in `view/layout/layout.phtml`.
 
 ## Credits & Acknowledgments
 
-This theme is a **fork** of the [Freedom theme](https://github.com/omeka-s-themes/freedom) (v1.1.0) developed by the Omeka Team at the [Corporation for Digital Scholarship](https://digitalscholar.org). The original theme provided the foundation, architecture, and many of the features present in this customized version.
+IWAC Theme began as a fork of the [Freedom theme](https://github.com/omeka-s-themes/freedom) (v1.1.0) developed by the Omeka Team at the [Corporation for Digital Scholarship](https://digitalscholar.org). Freedom provided the initial foundation and architecture; the theme has since evolved its own design system, build pipeline, and component library, and is now maintained as a standalone project (no longer linked to the upstream fork network on GitHub).
 
 **Original Freedom Theme Authors:**
 - Omeka Team / Corporation for Digital Scholarship
 - Nelson Amaya (Out of the Bugs)
 
-We extend our sincere thanks for their excellent work on creating such a well-structured and customizable theme.
+We extend our sincere thanks for their excellent work, which made it possible to bootstrap this theme on a solid, well-structured base.
 
 ## Copyright
 
