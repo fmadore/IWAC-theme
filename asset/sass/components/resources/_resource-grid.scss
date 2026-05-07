@@ -28,7 +28,7 @@
 
         &:hover {
             box-shadow: var(--shadow-sm);
-            border-color: color-mix(in oklab, var(--primary) var(--accent-mix-subtle), var(--border));
+            border-color: var(--border-strong);
         }
 
         &__thumbnail {

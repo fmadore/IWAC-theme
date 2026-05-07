@@ -24,7 +24,7 @@
         border-color var(--transition-fast);
 
     &:hover {
-        border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+        border-color: var(--border-strong);
         box-shadow: var(--shadow-md);
     }
 }
@@ -47,7 +47,7 @@
 
         &:hover {
             box-shadow: var(--shadow-md);
-            border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+            border-color: var(--border-strong);
         }
 
         // Reset child block margins inside card
@@ -169,7 +169,7 @@
         border-color var(--transition-fast);
 
     &:hover {
-        border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+        border-color: var(--border-strong);
         box-shadow: var(--shadow-md);
     }
 }

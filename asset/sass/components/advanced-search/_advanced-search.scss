@@ -390,7 +390,7 @@
         width: 100vw;
 
         @supports ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
-            background-color: color-mix(in srgb, var(--bg-elevated) 85%, transparent);
+            background-color: color-mix(in oklab, var(--bg-elevated) 85%, transparent);
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
@@ -741,13 +741,13 @@
 
         // Selected item
         &.result-selected {
-            background: color-mix(in srgb, var(--primary) 12%, transparent 88%);
+            background: color-mix(in oklab, var(--primary) 12%, transparent 88%);
             color: var(--primary);
             font-weight: 500;
 
             &:hover,
             &.highlighted {
-                background: color-mix(in srgb, var(--primary) 18%, transparent 82%);
+                background: color-mix(in oklab, var(--primary) 18%, transparent 82%);
             }
         }
     }
@@ -803,9 +803,9 @@
         gap: var(--space-2);
         padding: var(--space-1) var(--space-2);
         padding-inline-end: var(--space-1);
-        background: color-mix(in srgb, var(--primary) 12%, transparent 88%);
+        background: color-mix(in oklab, var(--primary) 12%, transparent 88%);
         background-image: none;
-        border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent 70%);
+        border: 1px solid color-mix(in oklab, var(--primary) 30%, transparent 70%);
         border-radius: var(--radius-sm);
         color: var(--primary);
         font-size: var(--text-sm);
@@ -842,7 +842,7 @@
             transition: background var(--transition-fast);
 
             &:hover {
-                background: color-mix(in srgb, var(--primary) 20%, transparent 80%);
+                background: color-mix(in oklab, var(--primary) 20%, transparent 80%);
             }
 
             &::before {
@@ -1003,10 +1003,8 @@ select.query-filter option {
 select.chosen-select option:checked,
 select.query-property option:checked,
 select.query-filter option:checked {
-    // Primary color tint for selected items
-    background: linear-gradient(0deg,
-        color-mix(in srgb, var(--primary) 15%, var(--surface) 85%) 0%,
-        color-mix(in srgb, var(--primary) 15%, var(--surface) 85%) 100%);
+    // Primary color tint for selected items (current-state marker)
+    background: color-mix(in oklab, var(--primary) 15%, var(--surface));
     color: var(--ink);
     font-weight: 500;
 }

@@ -31,7 +31,7 @@
             box-shadow var(--transition-fast);
 
         &:hover {
-            background: color-mix(in srgb, var(--info) 10%, var(--surface));
+            background: color-mix(in oklab, var(--info) 10%, var(--surface));
             border-color: var(--info);
             color: var(--info);
         }
@@ -171,7 +171,7 @@
         color var(--transition-fast);
 
     &:hover {
-        background: color-mix(in srgb, var(--info) 10%, var(--surface));
+        background: color-mix(in oklab, var(--info) 10%, var(--surface));
         border-color: var(--info);
     }
 }

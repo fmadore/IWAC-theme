@@ -32,10 +32,10 @@
         }
     }
 
-    // Separator - accent-tinted for warmth
+    // Separator — quiet divider, no brand tint
     span:not(:last-child)::after {
-        content: "›";
-        color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--muted));
+        content: "/";
+        color: var(--ink-subtle);
         margin-inline-start: var(--space-2);
         font-weight: 400;
     }

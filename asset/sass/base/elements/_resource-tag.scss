@@ -52,7 +52,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: color-mix(in srgb, black 15%, transparent);
+            background: color-mix(in oklab, black 15%, transparent);
             border-radius: inherit;
             pointer-events: none;
         }

@@ -25,7 +25,7 @@
 		align-items: baseline;
 		gap: var(--space-3);
 		padding-bottom: var(--space-3);
-		border-bottom: 1px solid color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
+		border-bottom: 1px solid color-mix(in oklab, var(--primary) var(--accent-mix-subtle), var(--border));
 		position: relative;
 
 		&::after {
@@ -158,7 +158,7 @@
 	&:hover {
 		transform: translateY(var(--lift-xs));
 		box-shadow: var(--shadow-md);
-		border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+		border-color: color-mix(in oklab, var(--primary) var(--accent-mix-medium), var(--border));
 	}
 
 	&__link {
@@ -193,7 +193,7 @@
 		background:
 			linear-gradient(
 				180deg,
-				color-mix(in srgb, var(--primary) 5%, var(--surface)) 0%,
+				color-mix(in oklab, var(--primary) 5%, var(--surface)) 0%,
 				var(--surface-sunken) 100%
 			);
 		border-bottom: 1px solid var(--border-light);
@@ -214,7 +214,7 @@
 		display: inline-block;
 		width: 2.5rem;
 		height: 2.5rem;
-		color: color-mix(in srgb, var(--primary) var(--accent-mix-strong), var(--ink-subtle));
+		color: color-mix(in oklab, var(--primary) var(--accent-mix-strong), var(--ink-subtle));
 		transition: transform var(--transition-fast), color var(--transition-fast);
 
 		@media (prefers-reduced-motion: reduce) {
@@ -239,7 +239,7 @@
 		background:
 			radial-gradient(
 				circle at 50% 40%,
-				color-mix(in srgb, var(--primary) 10%, transparent) 0%,
+				color-mix(in oklab, var(--primary) 10%, transparent) 0%,
 				transparent 65%
 			),
 			var(--surface-sunken);
@@ -301,7 +301,7 @@
 		font-size: var(--text-xs);
 		line-height: 1.3;
 		color: var(--ink-light);
-		background: color-mix(in srgb, var(--primary) 6%, var(--surface));
+		background: color-mix(in oklab, var(--primary) 6%, var(--surface));
 		border: 1px solid var(--border-light);
 		border-radius: var(--radius-full);
 		text-decoration: none;
@@ -313,8 +313,8 @@
 		&:hover,
 		&:focus-visible {
 			color: var(--primary);
-			background: color-mix(in srgb, var(--primary) 12%, var(--surface));
-			border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+			background: color-mix(in oklab, var(--primary) 12%, var(--surface));
+			border-color: color-mix(in oklab, var(--primary) var(--accent-mix-medium), var(--border));
 			text-decoration: none;
 		}
 

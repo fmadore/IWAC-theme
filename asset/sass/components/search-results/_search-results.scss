@@ -11,29 +11,27 @@ body.search {
             align-items: center;
         }
 
-        // Result item styling
+        // Hairline-separated result rows. Density over comfort: list of
+        // facts, not a wall of cards. Decorative side-stripe removed in
+        // v2.1.0 (research-instrument register).
         .result {
-            padding: var(--space-4);
-            border-radius: var(--radius-md);
-            border: 1px solid transparent;
-            border-left: var(--accent-line-md) solid transparent;
-            transition:
-                background-color var(--transition-fast),
-                border-color var(--transition-fast),
-                box-shadow var(--transition-fast);
+            padding: var(--space-4) 0;
+            border-block-end: 1px solid var(--border-light);
+            transition: background-color var(--transition-fast);
+
+            &:first-child {
+                border-block-start: 1px solid var(--border-light);
+            }
 
             &:hover {
-                background-color: var(--surface-raised);
-                border-color: var(--border-light);
-                border-left-color: color-mix(in srgb, var(--primary) var(--accent-mix-strong), var(--border));
-                box-shadow: var(--shadow-sm);
+                background-color: color-mix(in oklab, var(--surface-raised) 60%, var(--surface));
             }
         }
 
-        // Highlight matching terms
+        // Highlight matching terms — quiet primary tint, ink color stays
         mark,
         .highlight {
-            background-color: color-mix(in srgb, var(--primary) 20%, transparent);
+            background-color: color-mix(in oklab, var(--primary) 16%, transparent);
             color: inherit;
             padding-inline: 3px;
             border-radius: var(--radius-sm);

@@ -195,8 +195,8 @@
 
     &:hover {
         color: var(--primary);
-        background-color: color-mix(in srgb, var(--primary) 6%, var(--surface));
-        border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
+        background-color: color-mix(in oklab, var(--primary) 6%, var(--surface));
+        border-color: color-mix(in oklab, var(--primary) var(--accent-mix-medium), var(--border));
     }
 
     &.is-active {
@@ -227,7 +227,7 @@
 
     .linked-resources__facet.is-active & {
         color: white;
-        background-color: color-mix(in srgb, white 25%, transparent);
+        background-color: color-mix(in oklab, white 25%, transparent);
     }
 }
 
@@ -327,7 +327,7 @@
         }
 
         &:hover {
-            background-color: color-mix(in srgb, var(--primary) 4%, var(--surface));
+            background-color: var(--surface-raised);
         }
 
         &[aria-hidden="true"] {

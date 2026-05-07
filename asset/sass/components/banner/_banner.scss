@@ -54,9 +54,9 @@
         background:
             linear-gradient(
                 180deg,
-                color-mix(in srgb, black 8%, transparent) 0%,
-                color-mix(in srgb, black 38%, transparent) 60%,
-                color-mix(in srgb, black 70%, transparent) 100%
+                color-mix(in oklab, black 8%, transparent) 0%,
+                color-mix(in oklab, black 38%, transparent) 60%,
+                color-mix(in oklab, black 70%, transparent) 100%
             );
         z-index: 1;
     }
@@ -133,7 +133,7 @@
         font-weight: 600;
         letter-spacing: var(--tracking-wider);
         text-transform: uppercase;
-        color: color-mix(in srgb, var(--primary) 75%, white 25%);
+        color: color-mix(in oklab, var(--primary) 75%, white 25%);
         margin-block-end: var(--space-3);
     }
 
@@ -165,7 +165,7 @@
         max-width: var(--measure-narrow);
         margin-block-end: 0;
         margin-block-start: var(--space-2);
-        color: color-mix(in srgb, var(--white) 95%, transparent);
+        color: color-mix(in oklab, var(--white) 95%, transparent);
 
         @media (min-width: $md) {
             font-size: var(--text-lg);
