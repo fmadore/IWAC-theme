@@ -1,32 +1,42 @@
+@use "../../abstracts/abstracts" as *;
+
 // ==========================================================================
 // Links
-// Enhanced with subtle underline and better interaction states
+//
+// Per the v2.0.0 "restraint with primary" rule: links use ink color, with
+// a primary-tinted underline as the affordance. Hover promotes color to
+// primary AND thickens the underline. This keeps brand orange visible
+// where the user is interacting (hover, focus) without flooding metadata-
+// heavy pages with primary text.
 // ==========================================================================
 
 a {
-    color: var(--primary);
+    color: var(--ink);
     text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, var(--primary) 30%, transparent);
+    text-decoration-color: color-mix(in oklab, var(--primary) 35%, transparent);
     text-decoration-thickness: 0.0625rem;
-    text-underline-offset: 0.15rem;
+    text-underline-offset: 0.18rem;
     text-decoration-skip-ink: auto;
-    transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+    transition:
+        color var(--transition-fast),
+        text-decoration-color var(--transition-fast),
+        text-decoration-thickness var(--transition-fast);
     word-wrap: break-word;
 
     &:visited {
-        color: var(--muted);
-        text-decoration-color: color-mix(in srgb, var(--muted) 30%, transparent);
+        color: var(--ink-light);
+        text-decoration-color: color-mix(in oklab, var(--muted) 30%, transparent);
     }
 
     &:hover {
-        color: var(--primary-hover);
-        text-decoration-color: var(--primary-hover);
+        color: var(--primary);
+        text-decoration-color: var(--primary);
         text-decoration-thickness: 0.125rem;
     }
 
     &:visited:hover {
-        color: var(--ink-light);
-        text-decoration-color: var(--ink-light);
+        color: var(--primary-hover);
+        text-decoration-color: var(--primary-hover);
     }
 
     &:focus-visible {
@@ -35,21 +45,22 @@ a {
         border-radius: var(--radius-sm);
     }
 
-    &:active {
-        outline: 0;
-    }
+    &:active { outline: 0; }
 }
 
 // ==========================================================================
-// Cleaner links in headings - no underline needed
+// Cleaner links in headings — no underline at rest, hover reveals it
 // ==========================================================================
 :where(h1, h2, h3, h4, h5, h6) a {
+    color: inherit;
     text-decoration: none;
     font-weight: inherit;
 }
 
 :where(h1, h2, h3, h4, h5, h6) a:hover {
+    color: var(--primary);
     text-decoration: underline;
+    text-decoration-color: var(--primary);
     text-decoration-thickness: 0.125rem;
     text-underline-offset: 0.2rem;
 }

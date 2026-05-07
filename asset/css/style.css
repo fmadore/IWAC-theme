@@ -1319,26 +1319,13 @@ table.striped tbody tr:nth-child(even):hover {
 
 .title {
   display: block;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-light);
   padding-block-end: var(--space-4);
   position: relative;
   width: 100%;
 }
-.title::after {
-  display: block;
-  content: "";
-  background-color: var(--primary);
-  bottom: -1px;
-  height: 3px;
-  inset-inline-start: 0;
-  position: absolute;
-  width: 64px;
-}
 .slide-text .title {
   border-bottom: none;
-}
-.slide-text .title::after {
-  content: none;
 }
 
 .caption {
@@ -1414,28 +1401,28 @@ table.striped tbody tr:nth-child(even):hover {
 /* Links
 --------------------------------------------- */
 a {
-  color: var(--primary);
+  color: var(--ink);
   text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--primary) 30%, transparent);
+  text-decoration-color: color-mix(in oklab, var(--primary) 35%, transparent);
   text-decoration-thickness: 0.0625rem;
-  text-underline-offset: 0.15rem;
+  text-underline-offset: 0.18rem;
   -webkit-text-decoration-skip: ink;
           text-decoration-skip-ink: auto;
-  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast), text-decoration-thickness var(--transition-fast);
   word-wrap: break-word;
 }
 a:visited {
-  color: var(--muted);
-  text-decoration-color: color-mix(in srgb, var(--muted) 30%, transparent);
+  color: var(--ink-light);
+  text-decoration-color: color-mix(in oklab, var(--muted) 30%, transparent);
 }
 a:hover {
-  color: var(--primary-hover);
-  text-decoration-color: var(--primary-hover);
+  color: var(--primary);
+  text-decoration-color: var(--primary);
   text-decoration-thickness: 0.125rem;
 }
 a:visited:hover {
-  color: var(--ink-light);
-  text-decoration-color: var(--ink-light);
+  color: var(--primary-hover);
+  text-decoration-color: var(--primary-hover);
 }
 a:focus-visible {
   outline: 2px solid var(--focus-color);
@@ -1447,12 +1434,15 @@ a:active {
 }
 
 :where(h1, h2, h3, h4, h5, h6) a {
+  color: inherit;
   text-decoration: none;
   font-weight: inherit;
 }
 
 :where(h1, h2, h3, h4, h5, h6) a:hover {
+  color: var(--primary);
   text-decoration: underline;
+  text-decoration-color: var(--primary);
   text-decoration-thickness: 0.125rem;
   text-underline-offset: 0.2rem;
 }

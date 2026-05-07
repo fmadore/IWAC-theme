@@ -1,31 +1,21 @@
 // ==========================================================================
 // Titles
-// Section title styling with accent underline
+// Section title for h1 content (Omeka's pageTitle helper wraps display
+// titles in <span class="title">). Editorial weight comes from the h1
+// typography itself; the decorative orange 64x3 bar that sat under every
+// title was a CMS-template tell — removed in v2.0.0 alongside the banner
+// gradient underline. A single hairline border-bottom remains as a quiet
+// section break.
 // ==========================================================================
 
 .title {
     display: block;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-light);
     padding-block-end: var(--space-4);
     position: relative;
     width: 100%;
 
-    &::after {
-        display: block;
-        content: "";
-        background-color: var(--primary);
-        bottom: -1px;
-        height: 3px;
-        inset-inline-start: 0;
-        position: absolute;
-        width: 64px;
-    }
-
     .slide-text & {
         border-bottom: none;
-
-        &::after {
-            content: none;
-        }
     }
 }
