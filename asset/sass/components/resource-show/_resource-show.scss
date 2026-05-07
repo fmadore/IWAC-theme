@@ -93,12 +93,85 @@ body.item-set {
             }
         }
 
-        // bibo:shortDescription (DescriptionAI) and bibo:content both use
-        // the default flat-row metadata styling defined above — no special
-        // typography, no accent rule, no section break. They read as
-        // normal metadata fields alongside everything else.
+        // bibo:content body section — paragraph spacing
         .property[data-property-term="bibo:content"] dd p + p {
             margin-block-start: var(--space-4);
+        }
+
+        // ------------------------------------------------------------------
+        // AI-generated property treatment ("computational honesty" principle)
+        //
+        // Marked up as `.property--ai` in resource-values.phtml whenever the
+        // term is in $aiGeneratedTerms (currently bibo:shortDescription, the
+        // DescriptionAI summary). Rendered as a distinct block with a small
+        // sparkle mark and a badge so readers can tell at a glance that the
+        // value is a model artefact, not human-authored archival metadata.
+        // ------------------------------------------------------------------
+        dl > .property--ai {
+            margin-block: var(--space-5);
+            padding: var(--space-5) var(--space-5) var(--space-4);
+            background: color-mix(in oklab, var(--info-bg) 55%, var(--surface-raised));
+            border: 1px solid color-mix(in oklab, var(--info) 22%, var(--border) 78%);
+            border-radius: var(--radius-md);
+
+            // Reset the flat-row separator inherited from the parent rule
+            border-block-end: 1px solid color-mix(in oklab, var(--info) 22%, var(--border) 78%);
+
+            dt {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: var(--space-2);
+                color: var(--ink-light);
+                font-size: var(--text-xs);
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: var(--tracking-wider);
+
+                @media (min-width: $md) {
+                    float: none;
+                    width: auto;
+                    margin-block-end: var(--space-3);
+                }
+            }
+
+            dd {
+                @media (min-width: $md) {
+                    margin-inline-start: 0;
+                }
+
+                font-family: $font__headings;
+                font-size: var(--text-lg);
+                line-height: var(--line-height-relaxed);
+                color: var(--ink);
+                max-width: var(--measure-narrow);
+            }
+
+            .field-term { display: none; }
+        }
+
+        .property--ai .property__ai-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1rem;
+            height: 1rem;
+            color: var(--info);
+            font-size: 0.875rem;
+        }
+
+        .property--ai .property__ai-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px var(--space-2);
+            background: color-mix(in oklab, var(--info) 18%, transparent);
+            border: 1px solid color-mix(in oklab, var(--info) 35%, transparent);
+            border-radius: var(--radius-sm);
+            color: color-mix(in oklab, var(--info) 65%, var(--ink) 35%);
+            font-size: 0.6875rem; // 11px — smaller than the dt label
+            font-weight: 600;
+            letter-spacing: var(--tracking-wide);
+            cursor: help;
         }
     }
 }

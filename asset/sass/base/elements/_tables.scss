@@ -18,6 +18,8 @@ table {
         word-break: break-word;
         overflow-wrap: anywhere;
         white-space: normal;
+        // Tabular lining numerals so columns of dates / counts align.
+        font-variant-numeric: lining-nums tabular-nums;
     }
 
     th {

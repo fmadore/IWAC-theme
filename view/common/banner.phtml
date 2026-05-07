@@ -8,6 +8,7 @@ $bannerHeight = $this->themeSetting('banner_height') ?? '';
 $bannerVerticalPosition = ($this->themeSetting('banner_v_position')) ?? 'center';
 $bannerHorizontalPosition = ($this->themeSetting('banner_h_position')) ?? 'center';
 
+$bannerEyebrow = $this->themeSetting('banner_eyebrow');
 $bannerHeading = $this->themeSetting('banner_heading');
 $bannerDescription = $this->themeSetting('banner_description');
 $bannerContentPosition = $this->themeSetting('banner_content_position') ?? 'left';
@@ -16,7 +17,7 @@ $bannerContentPosition = $this->themeSetting('banner_content_position') ?? 'left
 $defaultBannerUrl = $this->assetUrl('img/banner.webp');
 $hasCustomBanner = (bool) $banner;
 
-$bannerHeightProperty = $bannerHeading || $bannerDescription ? 'min-height' : 'height';
+$bannerHeightProperty = ($bannerEyebrow || $bannerHeading || $bannerDescription) ? 'min-height' : 'height';
 
 $bannerInlineStyles = '';
 $imageInlineStyles = '';
@@ -31,7 +32,7 @@ $imageInlineStyles .= "object-position: {$bannerHorizontalPosition} {$bannerVert
 
 $class = ['banner'];
 $class[] = $bannerWidth;
-if ($bannerHeading || $bannerDescription) {
+if ($bannerEyebrow || $bannerHeading || $bannerDescription) {
     $class[] = 'has-text';
 }
 ?>
@@ -52,10 +53,13 @@ if ($bannerHeading || $bannerDescription) {
     <?php endif; ?>
 
     <div class="banner__content banner__content--<?php echo $bannerContentPosition; ?>">
-        <?php if($bannerHeading) : ?>
+        <?php if ($bannerEyebrow): ?>
+            <span class="banner__eyebrow"><?php echo $escHtml($bannerEyebrow); ?></span>
+        <?php endif; ?>
+        <?php if ($bannerHeading): ?>
             <h2 class="banner__heading"><?php echo $escHtml($bannerHeading); ?></h2>
         <?php endif; ?>
-        <?php if($bannerDescription) : ?>
+        <?php if ($bannerDescription): ?>
             <p class="banner__description"><?php echo nl2br($escHtml($bannerDescription)); ?></p>
         <?php endif; ?>
     </div>

@@ -2,7 +2,10 @@
 
 // ==========================================================================
 // Body Element
-// Base body styles with theme-aware properties
+// Flat, neutral surfaces — no atmospheric gradients, no parchment wash.
+// The previous warm radial-from-top read as "manuscript / cultural-heritage
+// brochure," wrong register for a research instrument. Surfaces are now
+// solid; depth comes from intentional shadows on raised elements only.
 // ==========================================================================
 
 body {
@@ -12,7 +15,12 @@ body {
   font-family: $font__body;
   font-size: var(--text-base);
   line-height: $font__base-line-height;
-  font-feature-settings: "kern" 1, "liga" 1;
+  // OpenType features: kerning + standard ligatures + contextual alternates
+  // for cleaner Latin Extended (FR diacritics, AR transliteration). Body
+  // copy uses old-style proportional figures so years and page numbers
+  // blend with lowercase letterforms rather than shouting.
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "onum" 1, "pnum" 1;
+  font-variant-numeric: oldstyle-nums proportional-nums;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -20,40 +28,4 @@ body {
   // Reset problematic padding from upstream theme
   padding-top: 0 !important;
   margin-top: 0 !important;
-
-  // Subtle editorial atmospheric wash for light theme.
-  // Double layer: warm radial from top + barely-visible vertical fade for paper-like depth.
-  &:not([data-theme="dark"])::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(
-        ellipse 90% 45% at 50% -8%,
-        color-mix(in srgb, hsl(var(--primary-hue), 55%, 52%) 3.5%, transparent) 0%,
-        transparent 55%
-      ),
-      linear-gradient(
-        180deg,
-        transparent 0%,
-        color-mix(in srgb, hsl(38, 18%, 82%) 6%, transparent) 100%
-      );
-    pointer-events: none;
-    z-index: -1;
-
-    @media (prefers-reduced-motion: reduce) {
-      display: none;
-    }
-  }
-}
-
-// Override atmospheric effect for dark theme
-@media (prefers-color-scheme: dark) {
-  body:not([data-theme="light"])::before {
-    display: none;
-  }
-}
-
-body[data-theme="dark"]::before {
-  display: none;
 }

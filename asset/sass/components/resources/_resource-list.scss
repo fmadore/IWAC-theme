@@ -2,71 +2,105 @@
 
 // ==========================================================================
 // Resource List
-// Horizontal card layout with hover effects and modern styling
+//
+// Research-density rows: hairline-separated rows, no card treatment, no
+// per-row borders, no decorative accent line, no hover lift, no shadows.
+// The list view is meant for power-user scanning — fit as many items per
+// screen as legibility allows. Cards remain available via the grid view.
+//
+// Layout: thumbnail (small, fixed) → title + meta block → optional badges.
+// On mobile, thumbnail tucks above title.
 // ==========================================================================
 
 .resource-list {
     height: auto !important;
     list-style: none;
     padding-inline-start: 0;
+    margin: 0;
+
+    // Single shared top rule across the list — the bottom rule on each
+    // row gives the rest, so the entire list reads as one tabular surface.
+    border-block-start: 1px solid var(--border-light);
 
     .resource {
         display: flex;
-        background: var(--panel-bg);
-        border: var(--panel-border);
-        border-radius: var(--radius-md);
-        box-shadow: var(--panel-shadow);
+        align-items: flex-start;
+        gap: var(--space-4);
+        background: transparent;
+        border: none;
+        border-block-end: 1px solid var(--border-light);
+        border-radius: 0;
+        box-shadow: none;
         transform: none !important;
         width: 100% !important;
-        overflow: hidden;
-        transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
-        margin-bottom: var(--space-md);
+        margin: 0;
+        padding: var(--space-4) var(--space-2);
         position: relative;
-
-        // Subtle accent line on left side
-        @include accent-line-left;
+        transition: background-color var(--transition-fast);
 
         &:hover {
-            box-shadow: var(--shadow-md);
-            border-color: color-mix(in srgb, var(--primary) var(--accent-mix-subtle), var(--border));
-
-            &::before {
-                background: var(--primary);
-            }
+            background: color-mix(in oklab, var(--primary) 4%, transparent);
         }
 
+        // Thumbnail: small square, fixed-size, no decoration
         &__thumbnail {
             flex-shrink: 0;
             line-height: 1;
-            margin: var(--space-md);
-            margin-inline-start: auto;
-            order: 1;
+            order: 0;
             overflow: hidden;
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
 
             img {
-                height: 100px;
+                height: 64px;
+                width: 64px;
                 object-fit: cover;
-                width: 100px;
-                transition: transform var(--transition-slow);
+                display: block;
+
+                @media (min-width: $md) {
+                    height: 80px;
+                    width: 80px;
+                }
             }
         }
 
-        &:hover &__thumbnail img {
-            transform: scale(1.05);
-        }
-
+        // Content block fills remaining width
         &__content {
-            padding: var(--space-md);
             flex: 1;
+            padding: 0;
+            min-width: 0; // allow text truncation in flex children
         }
 
+        // Compact meta row (resource type, date, etc.)
         &__meta {
-            padding: var(--space-xs) var(--space-sm);
+            padding: 0;
+            margin-block-start: var(--space-1);
+            font-size: var(--text-xs);
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
         }
 
-        .title a {
-            @include title-link;
+        .title {
+            margin: 0;
+
+            a {
+                @include title-link;
+                font-size: var(--text-base);
+                line-height: 1.4;
+                display: block;
+            }
+        }
+
+        // Description / snippet beneath title — clamp to two lines for density
+        .description,
+        .resource-description {
+            margin-block-start: var(--space-1);
+            font-size: var(--text-sm);
+            line-height: 1.5;
+            color: var(--ink-light);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     }
 }

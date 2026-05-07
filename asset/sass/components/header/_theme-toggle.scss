@@ -30,7 +30,6 @@
     @include focus-ring;
 
     &__icon {
-        display: flex; // Ensure SVG centers
         align-items: center;
         justify-content: center;
         width: var(--text-lg);
@@ -45,7 +44,19 @@
         }
     }
 
+    // Icon visibility driven by the synchronously-applied data-theme on
+    // <body>. The head-script in layout.phtml runs before first paint, so
+    // users with prefers-color-scheme: dark see the moon directly — no
+    // sun-flash. Defaults assume light if data-theme is missing entirely.
+    &__icon--light { display: flex; }
+    &__icon--dark  { display: none; }
+
     &:hover &__icon {
         transform: scale(1.1);
     }
+}
+
+body[data-theme="dark"] {
+    .theme-toggle__icon--light { display: none; }
+    .theme-toggle__icon--dark  { display: flex; }
 }

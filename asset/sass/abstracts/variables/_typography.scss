@@ -7,24 +7,32 @@
 // CSS Custom Properties for Typography
 // ==========================================================================
 :root {
-  // Fluid type scale - automatically scales between viewport sizes
-  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);     // ~12-13px
-  --text-sm: clamp(0.875rem, 0.84rem + 0.18vw, 0.9375rem);    // ~14-15px
-  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);      // ~16-17px
-  --text-lg: clamp(1.125rem, 1.06rem + 0.35vw, 1.25rem);      // ~18-20px
-  --text-xl: clamp(1.375rem, 1.25rem + 0.6vw, 1.625rem);      // ~22-26px
-  --text-2xl: clamp(1.75rem, 1.5rem + 1.2vw, 2.25rem);        // ~28-36px
-  --text-3xl: clamp(2.25rem, 1.9rem + 1.8vw, 3rem);           // ~36-48px
-  --text-4xl: clamp(2.75rem, 2.3rem + 2.2vw, 3.75rem);        // ~44-60px
+  // Fixed type scale for product UI (browse, search, metadata, controls).
+  // Fluid sizing is reserved for display-tier headings (--text-3xl, --text-4xl)
+  // where the visual gain at large viewports is real and the drift on
+  // mid-sizes isn't distracting. Body & UI sizes hold steady so a 14px
+  // facet label doesn't quietly become 14.6px between breakpoints.
+  --text-xs:    0.8125rem;   // 13px — eyebrow labels, metadata dt
+  --text-sm:    0.9375rem;   // 15px — secondary UI, captions
+  --text-base:  1.0625rem;   // 17px — body copy
+  --text-lg:    1.1875rem;   // 19px — lede, large list items
+  --text-xl:    1.5rem;      // 24px — h4, card titles
+  --text-2xl:   1.875rem;    // 30px — h3, section headings
+  --text-3xl: clamp(2.25rem, 1.9rem + 1.8vw, 3rem);           // 36-48px — h2, page titles
+  --text-4xl: clamp(2.75rem, 2.3rem + 2.2vw, 3.75rem);        // 44-60px — h1, banner display
 }
 
 // ==========================================================================
 // Font Families
+// Source Serif 4: optical-size axis (8..60) — same family handles the
+// 14px metadata label and the 60px banner heading at the right grade.
+// Public Sans: USWDS workhorse sans, full Latin Extended for FR + AR
+// transliteration. Avoids the Inter/DM Sans monoculture.
 // ==========================================================================
-$font__headings: "Noto Serif", serif;
-$font__body: "Inter", "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-$font__code: monaco, consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
-$font__pre: "Courier 10 Pitch", courier, monospace;
+$font__headings: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+$font__body: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+$font__code: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", monaco, consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+$font__pre: $font__code;
 
 // ==========================================================================
 // Sass Variables (used in base typography and headings)

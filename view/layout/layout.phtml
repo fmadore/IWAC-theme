@@ -13,48 +13,18 @@ $userBar = $this->userBar();
 $header_layout = ($this->themeSetting('header_layout')) ?? 'inline';
 $body_class = 'main-header--' . $header_layout;
 $bannerHeightMobile = $this->themeSetting('banner_height_mobile');
+$bannerEyebrow = $this->themeSetting('banner_eyebrow');
 $bannerHeading = $this->themeSetting('banner_heading');
 $bannerDescription = $this->themeSetting('banner_description');
-$bannerHeightProperty = $bannerHeading || $bannerDescription ? 'min-height' : 'height';
+$bannerHeightProperty = ($bannerEyebrow || $bannerHeading || $bannerDescription) ? 'min-height' : 'height';
+
+// Brand color: SCSS derives every primary variant (--primary,
+// --primary-hover, --primary-active, --focus-ring, glows, etc.) from
+// --primary-base via color-mix(in oklab, ...). PHP only needs to inject
+// the raw hex if the admin overrode the default. This replaces the
+// previous HSL-conversion path which produced inconsistencies between
+// the SCSS-tuned palette and the runtime values.
 $primaryColor = $this->themeSetting('primary_color') ?? '#e77f11';
-$secondaryColor = $this->themeSetting('secondary_color') ?? '#394f68';
-$accentColor = $this->themeSetting('accent_color') ?? '#394f68';
-
-// Convert hex to HSL for CSS custom properties
-if (!function_exists('hexToHsl')) {
-    function hexToHsl($hex) {
-        $hex = ltrim($hex, '#');
-        $r = hexdec(substr($hex, 0, 2)) / 255;
-        $g = hexdec(substr($hex, 2, 2)) / 255;
-        $b = hexdec(substr($hex, 4, 2)) / 255;
-        
-        $max = max($r, $g, $b);
-        $min = min($r, $g, $b);
-        $l = ($max + $min) / 2;
-        
-        if ($max == $min) {
-            $h = $s = 0;
-        } else {
-            $d = $max - $min;
-            $s = $l > 0.5 ? $d / (2 - $max - $min) : $d / ($max + $min);
-            switch ($max) {
-                case $r: $h = (($g - $b) / $d + ($g < $b ? 6 : 0)) / 6; break;
-                case $g: $h = (($b - $r) / $d + 2) / 6; break;
-                case $b: $h = (($r - $g) / $d + 4) / 6; break;
-            }
-        }
-        
-        return [
-            'h' => round($h * 360),
-            's' => round($s * 100),
-            'l' => round($l * 100)
-        ];
-    }
-}
-
-$primaryHsl = hexToHsl($primaryColor);
-$secondaryHsl = hexToHsl($secondaryColor);
-$accentHsl = hexToHsl($accentColor);
 
 // For LCP: preload default banner image when no custom banner is set
 $customBannerAsset = $this->themeSettingAsset('banner');
@@ -67,8 +37,16 @@ $this->headTitle($siteTitle)->setSeparator(' · ');
 $this->headTitle()->append($this->setting('installation_title', 'Omeka S'));
 $this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
 $this->headLink()->prependStylesheet($this->assetUrl('css/iconfonts.css', 'Omeka'));
-$this->headLink()->prependStylesheet('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-$this->headLink()->prependStylesheet('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600;1,700&display=swap');
+// Single combined Google Fonts request: Public Sans (body/UI) +
+// Source Serif 4 with optical-size axis (display + body). Subsetted to
+// the weights actually used across the theme.
+// Bunny Fonts — privacy-first, GDPR-compliant drop-in mirror of Google
+// Fonts. Relevant since IWAC is hosted at ZMO Berlin (German research
+// institute), where Google Fonts has been ruled non-compliant under
+// GDPR in some EU jurisdictions due to IP logging. Bunny does not log.
+// Bunny's /css endpoint accepts the CSS2-family syntax (lowercased,
+// hyphenated names, variable-axis ranges supported).
+$this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=public-sans:ital,wght@0,400..700;1,400&family=source-serif-4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap');
 $this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'));
 $this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'));
 $this->jsTranslate();
@@ -82,8 +60,7 @@ if ($userBar) {
 <?php echo $this->doctype(); ?>
 <?php echo $this->htmlElement('html'); ?>
 	<head>
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
 		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 		<?php if (!$customBannerAsset): ?>
 		<link rel="preload" as="image" fetchpriority="high" href="<?php echo $this->escapeHtmlAttr($defaultBannerUrl); ?>">
@@ -96,26 +73,9 @@ if ($userBar) {
 
 		<style type="text/css" media="screen">
 			:root {
-				/* Primary color from admin settings - HSL for theme system */
-				--primary-hue: <?php echo $primaryHsl['h']; ?>;
-				--primary-sat: <?php echo $primaryHsl['s']; ?>%;
-				--primary: hsl(var(--primary-hue), var(--primary-sat), <?php echo $primaryHsl['l']; ?>%);
-				--primary-hover: hsl(var(--primary-hue), var(--primary-sat), <?php echo max(0, $primaryHsl['l'] - 5); ?>%);
-				--primary-active: hsl(var(--primary-hue), var(--primary-sat), <?php echo max(0, $primaryHsl['l'] - 10); ?>%);
-				--primary-contrast: <?php echo $this->ContrastColor($primaryColor, ['#fff', '#333']); ?>;
-				
-				/* Secondary color from admin settings */
-				--secondary-hue: <?php echo $secondaryHsl['h']; ?>;
-				--secondary-sat: <?php echo $secondaryHsl['s']; ?>%;
-				--secondary: hsl(var(--secondary-hue), var(--secondary-sat), <?php echo $secondaryHsl['l']; ?>%);
-				--secondary-dark: <?php echo $this->ShadeColor($secondaryColor, -10); ?>;
-				--secondary-contrast: <?php echo $this->ContrastColor($secondaryColor, ['#fff', '#333']); ?>;
-				
-				/* Accent color from admin settings */
-				--accent-hue: <?php echo $accentHsl['h']; ?>;
-				--accent-sat: <?php echo $accentHsl['s']; ?>%;
-				--accent: hsl(var(--accent-hue), var(--accent-sat), <?php echo $accentHsl['l']; ?>%);
-				--accent-dark: <?php echo $this->ShadeColor($accentColor, -10); ?>;
+				/* Single brand seed; SCSS derives every primary variant via color-mix(in oklab, ...) */
+				--primary-base: <?php echo $this->escapeHtml($primaryColor); ?>;
+				--primary-contrast: <?php echo $this->ContrastColor($primaryColor, ['#fff', '#1a1a1a']); ?>;
 			}
 		</style>
 		

@@ -44,7 +44,9 @@
         }
     }
 
-    // Editorial gradient overlay: vignette + bottom-weighted scrim for legibility
+    // Single editorial scrim for text legibility. We dropped the parallel
+    // radial brand-wash overlay (it stacked decoration without improving
+    // contrast and competed with the heading).
     &.has-text::before {
         content: "";
         position: absolute;
@@ -52,28 +54,13 @@
         background:
             linear-gradient(
                 180deg,
-                color-mix(in srgb, black 10%, transparent) 0%,
-                color-mix(in srgb, black 35%, transparent) 55%,
-                color-mix(in srgb, black 72%, transparent) 100%
+                color-mix(in srgb, black 8%, transparent) 0%,
+                color-mix(in srgb, black 38%, transparent) 60%,
+                color-mix(in srgb, black 70%, transparent) 100%
             );
         z-index: 1;
     }
 
-    // Subtle brand wash — bottom-start so text at top stays crisp
-    &.has-text::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(
-            ellipse at 15% 115%,
-            color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 45%) 38%, transparent) 0%,
-            transparent 55%
-        );
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    // Banner image with subtle zoom on load
     img {
         position: absolute;
         object-fit: cover;
@@ -82,14 +69,15 @@
         top: 0;
         inset-inline-start: 0;
         z-index: 0;
-        transform: scale(1.02);
-        transition: transform var(--transition-slow) ease-out;
-        transition-duration: 8s; // Extended duration for Ken Burns effect
     }
 
-    // Subtle Ken Burns effect when banner is in view
-    &:hover img {
-        transform: scale(1);
+    // One-time Ken Burns on load (not hover-triggered, which on touch =
+    // never and on desktop fires at random as the cursor crosses the
+    // banner). Gated on prefers-reduced-motion.
+    @media (prefers-reduced-motion: no-preference) {
+        img {
+            animation: bannerKenBurns 16s ease-out both;
+        }
     }
 
     // Content container
@@ -123,36 +111,42 @@
             align-items: center;
 
             .banner__heading,
-            .banner__description {
+            .banner__description,
+            .banner__eyebrow {
                 max-width: none !important;
-            }
-
-            .banner__heading::after {
-                inset-inline: 0;
-                margin-inline: auto;
             }
         }
 
         &--right {
             text-align: end;
             align-items: flex-end;
-
-            .banner__heading::after {
-                inset-inline-start: auto;
-                inset-inline-end: 0;
-            }
         }
     }
 
-    // Heading with decorative accent line
+    // Eyebrow: small uppercase label above the heading. The brand
+    // expression that the gradient underline used to provide, now done
+    // through a typographic mark instead of a decorative bar.
+    &__eyebrow {
+        display: inline-block;
+        font-family: $font__body;
+        font-size: var(--text-xs);
+        font-weight: 600;
+        letter-spacing: var(--tracking-wider);
+        text-transform: uppercase;
+        color: color-mix(in srgb, var(--primary) 75%, white 25%);
+        margin-block-end: var(--space-3);
+    }
+
+    // Heading: structural typography carries the weight, no decorative
+    // underline bar. Text-shadow removed — the scrim provides contrast.
     &__heading {
         color: var(--white);
+        font-family: $font__headings;
         font-size: var(--text-2xl);
-        font-weight: 600;
+        font-weight: 500;
+        line-height: 1.05;
         max-width: var(--measure-base);
         margin-block-end: var(--space-4);
-        position: relative;
-        text-shadow: 0 4px 12px color-mix(in srgb, black 50%, transparent);
         letter-spacing: var(--tracking-tight);
 
         @media (min-width: $md) {
@@ -163,26 +157,8 @@
         @media (min-width: $lg) {
             font-size: var(--text-4xl);
         }
-
-        // Decorative accent line under heading
-        &::after {
-            content: "";
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: var(--gradient-primary);
-            margin-block-start: var(--space-4);
-            border-radius: var(--radius-sm);
-            box-shadow: var(--glow-sm);
-
-            @media (min-width: $md) {
-                width: 100px;
-                margin-block-start: var(--space-6);
-            }
-        }
     }
 
-    // Description with improved readability
     &__description {
         font-size: var(--text-base);
         line-height: var(--line-height-relaxed);
@@ -190,7 +166,6 @@
         margin-block-end: 0;
         margin-block-start: var(--space-2);
         color: color-mix(in srgb, var(--white) 95%, transparent);
-        text-shadow: 0 2px 4px color-mix(in srgb, black 50%, transparent);
 
         @media (min-width: $md) {
             font-size: var(--text-lg);
@@ -203,24 +178,32 @@
     }
 }
 
-// Animation for banner content entrance
+// One-time Ken Burns zoom on load. The image starts slightly larger and
+// settles to its natural frame; combined with the entrance fade, this
+// gives a calm sense of arrival without the random hover-trigger.
+@keyframes bannerKenBurns {
+    from { transform: scale(1.04); }
+    to   { transform: scale(1); }
+}
+
 @keyframes bannerFadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(12px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-.banner__heading,
-.banner__description {
-    animation: bannerFadeIn var(--transition-slow) ease-out both;
-}
+@media (prefers-reduced-motion: no-preference) {
+    .banner__eyebrow,
+    .banner__heading,
+    .banner__description {
+        animation: bannerFadeIn 600ms var(--ease-out-quart) both;
+    }
 
-.banner__description {
-    animation-delay: 0.15s;
+    .banner__heading        { animation-delay: 80ms; }
+    .banner__description    { animation-delay: 180ms; }
 }

@@ -1,164 +1,139 @@
 // ==========================================================================
 // Design Tokens
-// Core CSS custom properties for spacing, shadows, radii, z-index, transitions
+// Spacing, radii, shadows, focus rings, transitions, z-index.
+// All shadow / glow tokens derive from --primary or neutral inks via
+// color-mix(in oklab, ...) so admin color overrides cascade automatically.
 // ==========================================================================
 
 :root {
   // ========================================================================
-  // Spacing Scale (Numeric)
-  // Preferred scale for consistent spacing throughout
+  // Spacing Scale (Numeric, 4pt grid)
   // ========================================================================
-  --space-1: 0.25rem; // 4px
-  --space-2: 0.5rem; // 8px
-  --space-3: 0.75rem; // 12px
-  --space-4: 1rem; // 16px
-  --space-5: 1.25rem; // 20px
-  --space-6: 1.5rem; // 24px
-  --space-8: 2rem; // 32px
-  --space-10: 2.5rem; // 40px
-  --space-12: 3rem; // 48px
-  --space-16: 4rem; // 64px
-  --space-20: 5rem; // 80px
-  --space-24: 6rem; // 96px
-  --space-40: 10rem; // 160px
+  --space-1: 0.25rem;  // 4px
+  --space-2: 0.5rem;   // 8px
+  --space-3: 0.75rem;  // 12px
+  --space-4: 1rem;     // 16px
+  --space-5: 1.25rem;  // 20px
+  --space-6: 1.5rem;   // 24px
+  --space-8: 2rem;     // 32px
+  --space-10: 2.5rem;  // 40px
+  --space-12: 3rem;    // 48px
+  --space-16: 4rem;    // 64px
+  --space-20: 5rem;    // 80px
+  --space-24: 6rem;    // 96px
+  --space-40: 10rem;   // 160px
 
-  // ========================================================================
-  // Spacing Scale (Semantic aliases)
-  // Maps to numeric scale: xs=1, sm=2, md=4, lg=6, xl=8, 2xl=12, 3xl=16
-  // ========================================================================
-  --space-xs: 0.25rem; // 4px
-  --space-sm: 0.5rem; // 8px
-  --space-md: 1rem; // 16px
-  --space-lg: 1.5rem; // 24px
-  --space-xl: 2rem; // 32px
-  --space-2xl: 3rem; // 48px
-  --space-3xl: 4rem; // 64px
+  // Semantic aliases
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
 
   // ========================================================================
   // Border Radius Scale
   // ========================================================================
   --radius-sm: 0.375rem; // 6px
-  --radius-md: 0.75rem; // 12px
-  --radius-lg: 1rem; // 16px
-  --radius-xl: 1.5rem; // 24px
+  --radius-md: 0.5rem;   // 8px — tightened from 12px to feel more
+                         // institutional/instrument-like, less consumer
+  --radius-lg: 0.75rem;  // 12px
+  --radius-xl: 1rem;     // 16px
   --radius-full: 9999px;
 
   // ========================================================================
-  // Accent Line Widths
-  // For decorative borders, underlines, and visual accents
+  // Accent Lines & Lift
   // ========================================================================
   --accent-line-sm: 2px;
   --accent-line-md: 3px;
 
-  // ========================================================================
-  // Lift (negative translate) for hover effects
-  // ========================================================================
-  --lift-xxs: -0.0625rem; // -1px
-  --lift-xs: -0.125rem; // -2px
-  --lift-sm: -0.25rem; // -4px
+  --lift-xxs: -0.0625rem;
+  --lift-xs:  -0.125rem;
+  --lift-sm:  -0.25rem;
 
   // ========================================================================
-  // Accent Color Mix Strength
-  // Standardized ratios for color-mix() with primary across components
+  // Accent Mix Strengths (for color-mix with --primary)
   // ========================================================================
-  --accent-mix-subtle: 25%; // borders, separators
-  --accent-mix-medium: 40%; // hover borders, accent lines
-  --accent-mix-strong: 60%; // active states, prominent accents
+  --accent-mix-subtle: 25%;
+  --accent-mix-medium: 40%;
+  --accent-mix-strong: 60%;
 
   // ========================================================================
   // Control Sizes
-  // Fixed dimensions for small UI controls (icon buttons, inputs, chips)
-  // Use these instead of hardcoding 36px / 44px across components.
   // ========================================================================
-  --size-control-xs: 1.75rem;  // 28px — dense chips, tiny icons
-  --size-control-sm: 2.25rem;  // 36px — add/remove buttons, header icon buttons
-  --size-control-md: 2.5rem;   // 40px — pagination nav, toolbar buttons
-  --size-control-lg: 2.75rem;  // 44px — WCAG touch target, primary controls, selects
-  --size-control-xl: 3rem;     // 48px — prominent CTAs, footer buttons
+  --size-control-xs: 1.75rem;  // 28px
+  --size-control-sm: 2.25rem;  // 36px
+  --size-control-md: 2.5rem;   // 40px
+  --size-control-lg: 2.75rem;  // 44px (WCAG touch target)
+  --size-control-xl: 3rem;     // 48px
 
   // ========================================================================
   // Reading Measures
-  // Max-widths for readable line lengths across content types.
   // ========================================================================
-  --measure-narrow: 44rem;     // ~704px — body prose, ledes, descriptions
-  --measure-base: 52.5rem;     // ~840px — forms, intro sections, metadata rows
-  --measure-wide: 72.5rem;     // ~1160px — search results, wide lists
+  --measure-narrow: 44rem;     // ~704px — body prose
+  --measure-base:   52.5rem;   // ~840px — forms, metadata rows
+  --measure-wide:   72.5rem;   // ~1160px — search results, wide lists
 
   // ========================================================================
   // Focus Rings
-  // Consolidated focus treatment: use instead of inline box-shadow recipes.
   // ========================================================================
-  --ring-focus: 0 0 0 3px var(--focus-ring);
-  --ring-focus-sm: 0 0 0 2px color-mix(in srgb, var(--primary) 20%, transparent);
+  --ring-focus:    0 0 0 3px var(--focus-ring);
+  --ring-focus-sm: 0 0 0 2px color-mix(in oklab, var(--primary) 22%, transparent);
 
   // ========================================================================
   // Letter Spacing
-  // Editorial tracking scale
   // ========================================================================
-  --tracking-tight: -0.02em;   // display headings
+  --tracking-tight:  -0.02em;
   --tracking-normal: 0;
-  --tracking-wide: 0.04em;     // small caps, uppercase UI labels
-  --tracking-wider: 0.08em;    // emphasis labels (metadata dt, eyebrow)
+  --tracking-wide:   0.04em;
+  --tracking-wider:  0.08em;
 
   // ========================================================================
-  // Gradients
+  // Glow Effects (primary-tinted shadows for buttons/accents)
+  // Derived from --primary so admin color overrides cascade through.
   // ========================================================================
-  --gradient-primary: linear-gradient(135deg,
-      hsl(var(--primary-hue), var(--primary-sat), 52%) 0%,
-      hsl(var(--primary-hue), calc(var(--primary-sat) - 10%), 42%) 100%);
+  --glow-xs: 0 1px 3px 0  color-mix(in oklab, var(--primary) 20%, transparent);
+  --glow-sm: 0 2px 6px -1px color-mix(in oklab, var(--primary) 25%, transparent);
+  --glow-md: 0 4px 12px -2px color-mix(in oklab, var(--primary) 30%, transparent);
 
   // ========================================================================
-  // Glow Effects (primary-colored shadows for buttons/accents)
+  // Shadow Color Tokens — neutral cool, no warm tint.
+  // (Old recipe used hsl(30, 20%, 15%) which carried a warm cast that
+  // reinforced the "cream / parchment" register we're now dropping.)
   // ========================================================================
-  --glow-xs: 0 1px 3px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 20%, transparent);
-  --glow-sm: 0 2px 6px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 25%, transparent);
-  --glow-md: 0 4px 12px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 50%) 30%, transparent);
+  --shadow-color:        color-mix(in oklab, oklch(15% 0.01 264) 12%, transparent);
+  --shadow-color-strong: color-mix(in oklab, oklch(15% 0.01 264) 18%, transparent);
+  --shadow-color-subtle: color-mix(in oklab, oklch(20% 0.01 264) 6%,  transparent);
 
   // ========================================================================
-  // Shadow Color Tokens (semantic, theme-aware)
-  // Warm-tinted shadows for light theme cohesion
+  // Shadows — subtle, layered, neutral
   // ========================================================================
-  --shadow-color: color-mix(in srgb, hsl(30, 20%, 15%) 12%, transparent);
-  --shadow-color-strong: color-mix(in srgb, hsl(30, 20%, 15%) 18%, transparent);
-  --shadow-color-subtle: color-mix(in srgb, hsl(30, 15%, 20%) 6%, transparent);
-
-  // ========================================================================
-  // Shadows - Light Theme (layered for depth, warm undertone)
-  // ========================================================================
-  --shadow-xs: 0 1px 2px 0 var(--shadow-color-subtle);
-  --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px color-mix(in srgb, hsl(30, 15%, 20%) 8%, transparent);
-  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px color-mix(in srgb, hsl(30, 15%, 20%) 8%, transparent);
+  --shadow-xs: 0 1px 2px 0  var(--shadow-color-subtle);
+  --shadow-sm: 0 1px 3px 0  var(--shadow-color), 0 1px 2px -1px var(--shadow-color-subtle);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
   --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
-  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, hsl(30, 15%, 20%) 5%, transparent);
+  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color-subtle);
 
   // ========================================================================
   // Panel/Card Elevation Helpers
   //
-  // IMPORTANT: --panel-border must be re-declared in every theme
-  // override block (light / dark manual + @media dark) below. Custom
-  // properties inherit their COMPUTED value; if we only declared
-  // --panel-border here at :root, the initial substitution of
-  // var(--border) would be frozen at the root cascade and ignore any
-  // theme override. The re-declaration pattern uses var(--border)
-  // directly so the inner var() always resolves to the active
-  // border color of the cascade block it lives in.
+  // IMPORTANT: --panel-border must be re-declared in every theme override
+  // block (light / dark manual + @media dark). Custom properties inherit
+  // their COMPUTED value; the inner var(--border) substitution is frozen
+  // at the cascade block where --panel-border is declared. Re-declaring
+  // it lets the inner var() pick up the active --border in each block.
   // ========================================================================
   --panel-bg: var(--surface);
-  // Visible border to define card edges clearly in light mode
   --panel-border-color: var(--border);
   --panel-border: 1px solid var(--border);
   --panel-radius: var(--radius-md);
   --panel-shadow: var(--shadow-sm);
 
   // ========================================================================
-  // Easing Curves
-  // Custom cubic-bezier for refined, modern motion
+  // Easing & Transitions
   // ========================================================================
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-
-  // ========================================================================
-  // Transitions
-  // ========================================================================
   --transition-fast: 150ms var(--ease-out-quart);
   --transition-base: 200ms var(--ease-out-quart);
   --transition-slow: 300ms var(--ease-out-quart);
@@ -167,95 +142,64 @@
   // Z-Index Scale
   // ========================================================================
   --z-dropdown: 100;
-  --z-sticky: 200;
-  --z-modal: 300;
-  --z-tooltip: 500;
-
-  // Layout max-width is defined in variables/_layout.scss (--content-max-width)
+  --z-sticky:   200;
+  --z-modal:    300;
+  --z-tooltip:  500;
 
   // ========================================================================
   // Typography Utilities
   // ========================================================================
-  --line-height-normal: 1.5;
+  --line-height-normal:  1.5;
   --line-height-relaxed: 1.7;
 }
 
 // ==========================================================================
-// Dark Theme Shadow Overrides (layered for depth)
+// Dark Theme — shadow tuning + panel re-declaration
+// (Glow tokens already derive from --primary so they auto-update.)
 // ==========================================================================
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    // Shadow colors for dark theme (stronger for visibility)
-    --shadow-color: color-mix(in srgb, black 18%, transparent);
-    --shadow-color-strong: color-mix(in srgb, black 25%, transparent);
-    --shadow-color-subtle: color-mix(in srgb, black 12%, transparent);
+@mixin iwac-dark-tokens {
+  --shadow-color:        color-mix(in oklab, black 18%, transparent);
+  --shadow-color-strong: color-mix(in oklab, black 25%, transparent);
+  --shadow-color-subtle: color-mix(in oklab, black 12%, transparent);
 
-    // Stronger glows for dark backgrounds
-    --glow-xs: 0 1px 4px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 25%, transparent);
-    --glow-sm: 0 2px 8px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 30%, transparent);
-    --glow-md: 0 4px 16px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 35%, transparent);
-
-    --shadow-xs: 0 1px 3px 0 var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in srgb, black 10%, transparent);
-    --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
-    --shadow-md: 0 6px 16px -4px var(--shadow-color-strong), 0 4px 8px -4px var(--shadow-color-strong);
-    --shadow-lg: 0 12px 28px -8px color-mix(in srgb, black 35%, transparent), 0 8px 16px -8px color-mix(in srgb, black 20%, transparent);
-    --shadow-xl: 0 20px 40px -12px color-mix(in srgb, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
-    --panel-bg: var(--surface-raised);
-    --panel-border-color: var(--border);
-    // Re-declare the composite so its inner var() picks up the
-    // override in this block. Custom properties inherit their COMPUTED
-    // value; without this re-declaration, --panel-border stays frozen
-    // at the root computed value and ignores the new --border.
-    --panel-border: 1px solid var(--border);
-  }
-}
-
-body[data-theme="dark"] {
-  // Shadow colors for dark theme (stronger for visibility)
-  --shadow-color: color-mix(in srgb, black 18%, transparent);
-  --shadow-color-strong: color-mix(in srgb, black 25%, transparent);
-  --shadow-color-subtle: color-mix(in srgb, black 12%, transparent);
-
-  // Stronger glows for dark backgrounds
-  --glow-xs: 0 1px 4px 0 color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 25%, transparent);
-  --glow-sm: 0 2px 8px -1px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 30%, transparent);
-  --glow-md: 0 4px 16px -2px color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 35%, transparent);
-
-  --shadow-xs: 0 1px 3px 0 var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in srgb, black 10%, transparent);
+  --shadow-xs: 0 1px 3px 0  var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in oklab, black 10%, transparent);
   --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
   --shadow-md: 0 6px 16px -4px var(--shadow-color-strong), 0 4px 8px -4px var(--shadow-color-strong);
-  --shadow-lg: 0 12px 28px -8px color-mix(in srgb, black 35%, transparent), 0 8px 16px -8px color-mix(in srgb, black 20%, transparent);
-  --shadow-xl: 0 20px 40px -12px color-mix(in srgb, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
+  --shadow-lg: 0 12px 28px -8px color-mix(in oklab, black 35%, transparent), 0 8px 16px -8px color-mix(in oklab, black 20%, transparent);
+  --shadow-xl: 0 20px 40px -12px color-mix(in oklab, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
+
   --panel-bg: var(--surface-raised);
   --panel-border-color: var(--border);
-  // See the comment in the :root @media block — re-declaring
-  // --panel-border here is required for it to pick up dark --border.
+  // See comment in :root block — re-declare for dark cascade.
   --panel-border: 1px solid var(--border);
 }
 
-body[data-theme="light"] {
-  // Shadow colors for light theme - warm tinted for cohesion
-  --shadow-color: color-mix(in srgb, hsl(30, 20%, 15%) 12%, transparent);
-  --shadow-color-strong: color-mix(in srgb, hsl(30, 20%, 15%) 18%, transparent);
-  --shadow-color-subtle: color-mix(in srgb, hsl(30, 15%, 20%) 6%, transparent);
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { @include iwac-dark-tokens; }
+}
 
-  // Enhanced shadows with warm undertone for light backgrounds
-  --shadow-xs: 0 1px 2px 0 var(--shadow-color-subtle);
-  --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px color-mix(in srgb, hsl(30, 15%, 20%) 8%, transparent);
-  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px color-mix(in srgb, hsl(30, 15%, 20%) 8%, transparent);
+body[data-theme="dark"] { @include iwac-dark-tokens; }
+
+// Manual light wins back the light-theme panel/shadow values.
+body[data-theme="light"] {
+  --shadow-color:        color-mix(in oklab, oklch(15% 0.01 264) 12%, transparent);
+  --shadow-color-strong: color-mix(in oklab, oklch(15% 0.01 264) 18%, transparent);
+  --shadow-color-subtle: color-mix(in oklab, oklch(20% 0.01 264) 6%,  transparent);
+
+  --shadow-xs: 0 1px 2px 0  var(--shadow-color-subtle);
+  --shadow-sm: 0 1px 3px 0  var(--shadow-color), 0 1px 2px -1px var(--shadow-color-subtle);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
   --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
-  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px color-mix(in srgb, hsl(30, 15%, 20%) 5%, transparent);
-  // Modern card with warm surface
+  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color-subtle);
+
   --panel-bg: var(--surface);
   --panel-border-color: var(--border);
-  // See the comment in the :root @media block — re-declaring
-  // --panel-border here is required for it to pick up warm --border.
   --panel-border: 1px solid var(--border);
-  --panel-shadow: var(--shadow-sm);
 }
 
 // ==========================================================================
-// Sass Variable Aliases (for use in Sass files)
+// Sass Variable Aliases (for use in Sass files where var() can't be used,
+// e.g. in @media or selector composition)
 // ==========================================================================
 $space-xs: var(--space-xs);
 $space-sm: var(--space-sm);

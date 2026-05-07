@@ -2,7 +2,12 @@
 
 // ==========================================================================
 // Main Footer
-// Dark footer with gradient backgrounds, glow effects, and modern styling
+//
+// Stripped to a single quiet decorative element — a hairline rule between
+// __top and __bottom. No radial brand glow, no gradient backgrounds, no
+// per-column dividers, no inset shadows on the bottom band, no glow
+// shadows on social icons. Footers should be navigation, not the most-
+// styled component on the page.
 // ==========================================================================
 
 .main-footer {
@@ -10,60 +15,38 @@
     color: var(--footer-text);
     font-size: var(--text-sm);
     margin-block-start: var(--space-3xl);
-    position: relative;
 
-    // Footer headings
-    h1,
-    h2,
-    h3,
-    h4 {
+    h1, h2, h3, h4 {
         color: var(--footer-text);
         margin-bottom: var(--space-sm);
         font-weight: 600;
     }
 
-    // General footer links
     a {
         color: var(--footer-text);
         text-decoration: none;
         transition: color var(--transition-fast);
 
-        &:hover {
-            color: var(--primary);
-        }
+        &:hover { color: var(--primary); }
 
         &:visited {
-            color: color-mix(in srgb, var(--footer-text) 80%, var(--footer-divider) 20%);
+            color: color-mix(in oklab, var(--footer-text) 80%, var(--footer-divider) 20%);
         }
 
-        &:visited:hover {
-            color: var(--primary);
-        }
+        &:visited:hover { color: var(--primary); }
     }
 
     hr {
         margin-bottom: 0;
         border: none;
         height: 1px;
-        background: linear-gradient(90deg, transparent 0%, var(--footer-divider) 20%, var(--footer-divider) 80%, transparent 100%);
-        opacity: 0.6;
+        background: var(--footer-divider);
     }
 
     &__top {
-        background-color: var(--footer-surface);
-        background: linear-gradient(180deg, var(--footer-surface) 0%, var(--footer-surface-alt) 100%);
+        background: var(--footer-surface);
         border-top: 1px solid var(--footer-divider);
         padding: var(--space-2xl) 0 var(--space-lg);
-        position: relative;
-
-        // Subtle glow effect
-        &::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 30% 20%, var(--footer-glow) 0%, transparent 65%);
-            pointer-events: none;
-        }
 
         @media (min-width: $lg) {
             padding: var(--space-3xl) 0 var(--space-xl);
@@ -77,42 +60,14 @@
 
         @media (min-width: $lg) {
             flex-direction: row;
-            gap: var(--space-xl);
+            gap: var(--space-2xl);
         }
 
-        >div {
+        > div {
             flex-grow: 1;
             margin-bottom: var(--space-md);
-            position: relative;
 
-            &:first-child {
-                padding-inline-start: 0;
-            }
-
-            // Divider lines between columns
-            &:nth-child(2),
-            &:nth-child(3) {
-                &::before {
-                    content: "";
-                    width: 100%;
-                    height: 1px;
-                    background: linear-gradient(90deg, transparent 0%, var(--footer-divider) 20%, var(--footer-divider) 80%, transparent 100%);
-                    margin: auto;
-                    position: absolute;
-                    top: calc(-1 * var(--space-xl));
-                    inset-inline-start: 0;
-                    opacity: 0.6;
-
-                    @media (min-width: $lg) {
-                        inset-inline-start: calc(-1 * var(--space-lg));
-                        top: 0;
-                        margin: 0;
-                        width: 1px;
-                        height: 100%;
-                        background: linear-gradient(180deg, transparent 0%, var(--footer-divider) 20%, var(--footer-divider) 80%, transparent 100%);
-                    }
-                }
-            }
+            &:first-child { padding-inline-start: 0; }
         }
 
         &.no-menu {
@@ -138,15 +93,11 @@
         }
 
         .all-columns & {
-            @media (min-width: $lg) {
-                max-width: 26%;
-            }
+            @media (min-width: $lg) { max-width: 26%; }
         }
 
         .all-columns.menu-depth-2 & {
-            @media (min-width: $lg) {
-                max-width: 20%;
-            }
+            @media (min-width: $lg) { max-width: 20%; }
         }
     }
 
@@ -155,7 +106,6 @@
             max-width: 120px;
             height: auto;
             border-radius: var(--radius-sm);
-            box-shadow: var(--shadow-sm);
 
             &.main-footer__logo--with-info {
                 margin-block-end: var(--space-8);
@@ -177,12 +127,9 @@
 
         a {
             display: block;
-            transition: transform var(--transition-fast), opacity var(--transition-fast);
+            transition: opacity var(--transition-fast);
 
-            &:hover {
-                transform: translateY(var(--lift-xs));
-                opacity: 0.9;
-            }
+            &:hover { opacity: 0.8; }
         }
 
         .main-footer__logo {
@@ -205,8 +152,6 @@
             align-self: flex-start;
             flex-direction: column;
             flex-wrap: wrap;
-            // Below $lg submenus are hidden, so only top-level links show —
-            // keep the gap tight so single-line items don't look stranded.
             gap: var(--space-xs);
             justify-content: center;
             list-style: none;
@@ -222,78 +167,60 @@
             }
 
             @media (min-width: $lg) {
-                // Submenus become visible — restore the larger column gap
-                // so each top-level column has breathing room.
                 gap: var(--space-xl);
                 justify-content: flex-start;
             }
 
             li {
-                &::before {
-                    content: none !important;
-                }
+                &::before { content: none !important; }
             }
 
-            >li {
+            > li {
                 flex: 1;
                 min-width: 160px;
 
-                @media (min-width: $md) {
-                    max-width: 20%;
-                }
+                @media (min-width: $md) { max-width: 20%; }
 
-                >a {
-                    // First level links
+                > a {
                     font-weight: 600;
                     font-size: var(--text-base);
                     color: var(--footer-text);
                     display: block;
-                    // Only add space below the link when the submenu is
-                    // visible (≥ $lg); on mobile/tablet the submenu is
-                    // hidden and this margin just creates dead space.
                     margin-bottom: 0;
-                    padding: var(--space-xs) var(--space-sm);
-                    border-radius: var(--radius-sm);
-                    transition: background-color var(--transition-fast), color var(--transition-fast);
+                    padding: var(--space-xs) 0;
+                    transition: color var(--transition-fast);
 
                     @media (min-width: $lg) {
                         margin-bottom: var(--space-sm);
                     }
 
                     &:hover {
-                        background: var(--selection-bg);
                         color: var(--primary);
                         text-decoration: none;
                     }
                 }
 
-                &.active>a,
-                &.current>a,
-                &.current-menu-item>a {
-                    color: var(--primary);
-                }
+                &.active > a,
+                &.current > a,
+                &.current-menu-item > a { color: var(--primary); }
 
-                >ul {
-                    // Second level columns
+                > ul {
                     margin-inline-start: 0;
                     margin-top: var(--space-sm);
                     list-style: none;
                     padding-inline-start: 0;
 
                     li {
-                        // Second level links
                         margin-bottom: var(--space-xs);
 
                         a {
                             font-size: var(--text-sm);
-                            color: color-mix(in srgb, var(--footer-text) 88%, var(--footer-surface) 12%);
-                            padding: var(--space-xs) var(--space-sm);
-                            border-radius: var(--radius-sm);
+                            color: var(--footer-text-muted);
+                            padding: var(--space-xs) 0;
                             display: block;
-                            transition: background-color var(--transition-fast), color var(--transition-fast);
+                            transition: color var(--transition-fast);
 
                             &:hover {
-                                background: var(--selection-bg);
                                 color: var(--primary);
                                 text-decoration: none;
                             }
@@ -305,12 +232,10 @@
 
                             a {
                                 font-size: var(--text-xs);
-                                color: color-mix(in srgb, var(--footer-text) 75%, var(--footer-surface) 25%);
-                                padding: calc(var(--space-xs) / 2) var(--space-sm);
+                                color: var(--footer-text-muted);
+                                padding: calc(var(--space-xs) / 2) 0;
 
-                                &:hover {
-                                    color: var(--footer-text);
-                                }
+                                &:hover { color: var(--primary); }
                             }
                         }
                     }
@@ -321,36 +246,23 @@
                 color: var(--footer-text);
                 text-transform: none;
 
-                &:visited {
-                    color: var(--footer-text);
-                }
+                &:visited { color: var(--footer-text); }
 
-                &:hover,
-                &:focus,
-                &:active {
-                    color: var(--primary);
-                }
+                &:hover, &:focus, &:active { color: var(--primary); }
             }
 
             ul {
                 display: none;
-
-                @media (min-width: $lg) {
-                    display: block;
-                }
+                @media (min-width: $lg) { display: block; }
             }
-
         }
     }
 
+    // Hairline rule between top and bottom — the one decorative element
     &__bottom {
-        background-color: var(--footer-surface);
-        background: linear-gradient(180deg,
-                color-mix(in srgb, var(--footer-surface) 92%, black 8%) 0%,
-                color-mix(in srgb, var(--footer-surface-alt) 88%, black 12%) 100%);
+        background: var(--footer-surface);
         border-top: 1px solid var(--footer-divider);
-        box-shadow: 0 -12px 24px -18px color-mix(in srgb, black 42%, transparent);
-        padding: var(--space-xl) 0;
+        padding: var(--space-lg) 0;
         color: var(--footer-text);
     }
 
@@ -375,7 +287,8 @@
     &__copyright,
     &__bottom p {
         font-size: var(--text-xs);
-        color: color-mix(in srgb, var(--footer-text) 85%, var(--footer-text-muted) 15%);
+        color: var(--footer-text-muted);
+        margin: 0;
     }
 
     &__social-network {
@@ -383,55 +296,46 @@
         align-items: center;
         flex-wrap: wrap;
         flex-shrink: 0;
-        gap: var(--space-md);
+        gap: var(--space-sm);
         justify-content: center;
 
-        @media (min-width: $lg) {
-            order: 1;
-        }
+        @media (min-width: $lg) { order: 1; }
 
         a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: var(--size-control-lg);
-            height: var(--size-control-lg);
-            background: color-mix(in srgb, var(--footer-text) 18%, var(--footer-surface) 82%);
-            border: 1px solid color-mix(in srgb, var(--footer-text) 24%, var(--footer-divider) 76%);
-            border-radius: var(--radius-full);
+            width: var(--size-control-md);
+            height: var(--size-control-md);
+            background: transparent;
+            border: 1px solid var(--footer-divider);
+            border-radius: var(--radius-sm);
             color: var(--footer-text);
             transition:
-                background-color var(--transition-fast),
                 border-color var(--transition-fast),
                 color var(--transition-fast),
-                transform var(--transition-fast);
-            box-shadow: 0 12px 24px -18px color-mix(in srgb, black 55%, transparent);
+                background-color var(--transition-fast);
 
             &:hover {
-                background: color-mix(in srgb, var(--primary) 32%, var(--footer-surface) 68%);
-                border-color: color-mix(in srgb, var(--primary) 60%, var(--footer-text) 40%);
+                background: color-mix(in oklab, var(--footer-text) 8%, transparent);
+                border-color: var(--primary);
                 color: var(--primary);
-                transform: translateY(var(--lift-xs));
-                box-shadow: 0 14px 28px -16px color-mix(in srgb, var(--primary) 45%, black 55%);
             }
 
             &:focus-visible {
-                outline: 2px solid color-mix(in srgb, var(--primary) 65%, var(--footer-text) 35%);
-                outline-offset: 3px;
+                outline: 2px solid var(--primary);
+                outline-offset: 2px;
             }
 
-            &:visited {
-                color: var(--footer-text);
-            }
+            &:visited { color: var(--footer-text); }
 
             img {
-                width: 1.25rem;
-                height: 1.25rem;
+                width: 1rem;
+                height: 1rem;
                 object-fit: contain;
             }
 
-            svg,
-            i {
+            svg, i {
                 color: inherit;
                 fill: currentColor;
             }

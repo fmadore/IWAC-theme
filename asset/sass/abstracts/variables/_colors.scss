@@ -1,60 +1,68 @@
 // ==========================================================================
-// Color System
-// HSL-based with CSS custom properties for light/dark theme support
+// Color System (OKLCH)
+//
+// Design philosophy: research instrument, not editorial product.
+// - Cool-leaning near-white surfaces with imperceptible warm hint at very
+//   low chroma (NOT cream / parchment).
+// - Inks are deep neutrals with a faint cool cast for legibility.
+// - Primary (IWAC orange) is desaturated from its raw hex toward an
+//   institutional, "burnished" register — used sparingly for focus,
+//   current-state, and intentional accents only.
+// - All derived colors come from --primary via color-mix(in oklab, ...)
+//   so that admin overrides via theme settings cascade automatically.
+//
+// Why OKLCH: equal lightness steps look equal. HSL was perceptually
+// uneven, which forced hand-tuned magic numbers in dark-mode primary.
 // ==========================================================================
 
 // ==========================================================================
-// Light Theme (Default)
+// Light Theme — defined as a mixin so it can be applied to both :root
+// (default) and body[data-theme="light"] (manual override that needs to
+// win against system dark preference applied to :root).
 // ==========================================================================
-:root {
+@mixin iwac-light-theme {
   color-scheme: light;
 
-  // Primary color (IWAC orange) - HSL base
-  // Slightly shifted hue (24→22) and reduced saturation for a more
-  // burnished, editorial cognac tone that harmonizes with warm neutrals.
-  --primary-hue: 22;
-  --primary-sat: 88%;
-  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 48%);
-  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 43%);
-  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 38%);
+  // Working primary, slightly darkened from the raw hex for AA contrast
+  // on white surfaces and for an institutional, less-vibrant register.
+  --primary:        color-mix(in oklab, var(--primary-base), black 8%);
+  --primary-hover:  color-mix(in oklab, var(--primary-base), black 18%);
+  --primary-active: color-mix(in oklab, var(--primary-base), black 28%);
 
-  // Semantic ink colors (text) - with HSL components for derived colors
-  // Warm neutral base (shifted from cool 220 to warm 215 with reduced saturation)
-  --ink-hue: 215;
-  --ink-sat: 20%;
-  --ink-lum: 12%;
-  --ink: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum));
-  --ink-strong: hsl(var(--ink-hue) 24% 8%);       // display headings / pull quotes
-  --ink-light: hsl(210, 14%, 34%);                 // secondary body copy
-  --ink-subtle: hsl(205, 10%, 42%);                // tertiary (between light & muted)
-  --muted: hsl(200, 10%, 48%);                     // captions, labels
-  --ink-on-pastel: hsl(220, 28%, 18%);             // dark text on pastel-tinted chips
+  // Inks — deep cool neutrals (NOT warm gray). The faint cool cast
+  // reads as "objective / scholarly" rather than "warm / inviting."
+  --ink-strong:   oklch(13% 0.012 264);   // display headings, page titles
+  --ink:          oklch(20% 0.012 264);   // body copy
+  --ink-light:    oklch(38% 0.012 260);   // secondary body, eyebrow
+  --ink-subtle:   oklch(48% 0.010 258);   // tertiary
+  --muted:        oklch(54% 0.008 256);   // captions, labels
+  --ink-on-pastel: oklch(18% 0.020 264);  // dark text over tinted chips
 
-  // Pure colors for overlays
   --white: #fff;
   --black: #000;
 
-  // Surface colors (backgrounds) - warm neutral undertone
-  // Shifted from cool blue (210) to warm neutral (40-45) with low saturation
-  --surface: hsl(40, 20%, 99%);
-  --surface-raised: hsl(38, 18%, 97%);
-  --surface-sunken: hsl(38, 16%, 95%);              // recessed areas (input groups, code)
-  --surface-overlay: color-mix(in srgb, hsl(40, 15%, 99%) 94%, transparent);
-  --background: hsl(40, 15%, 95.5%);
+  // Surfaces — near-white with imperceptible warm hint (chroma 0.002).
+  // Drops the previous cream undertone (chroma 0.020 at hue 38) which
+  // read as "manuscript / archival" against the brief.
+  --surface:         oklch(99.2% 0.002 60);
+  --surface-raised:  oklch(98.0% 0.003 60);
+  --surface-sunken:  oklch(96.0% 0.004 60);
+  --surface-overlay: color-mix(in oklab, var(--surface) 94%, transparent);
+  --background:      oklch(97.0% 0.003 60);
 
-  // Border colors - warm gray
-  --border: hsl(35, 12%, 85%);
-  --border-light: hsl(35, 10%, 91%);
-  --border-strong: hsl(35, 14%, 76%);               // emphatic separators
+  // Borders — neutral grays at low chroma. Cool-leaning to match inks.
+  --border-light:  oklch(92% 0.005 258);
+  --border:        oklch(86% 0.007 258);
+  --border-strong: oklch(76% 0.009 258);
 
-  // Semantic colors
+  // Semantic / state
   --focus-color: var(--primary);
-  --focus-ring: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 49%) 25%, transparent);
-  --selection-bg: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 49%) 15%, transparent);
+  --focus-ring:  color-mix(in oklab, var(--primary) 30%, transparent);
+  --selection-bg: color-mix(in oklab, var(--primary) 14%, transparent);
 
-  // Semantic aliases for text and backgrounds
+  // Aliases (kept for backwards compatibility with components)
   --text-primary: var(--ink);
-  --text-heading: var(--ink);
+  --text-heading: var(--ink-strong);
   --text-secondary: var(--muted);
   --bg-surface: var(--surface);
   --bg-muted: var(--surface-raised);
@@ -62,126 +70,70 @@
   --border-color: var(--border);
   --primary-contrast: white;
 
-  // Status colors (for alerts, validation, etc.)
-  --success: hsl(152, 45%, 52%);
-  --success-bg: hsl(152, 45%, 95%);
-  --warning: hsl(22, 100%, 50%);
-  --warning-bg: hsl(22, 100%, 95%);
-  --error: hsl(355, 90%, 47%);
-  --error-bg: hsl(355, 90%, 96%);
-  --info: hsl(210, 75%, 52%);
-  --info-bg: hsl(210, 75%, 95%);
+  // Status colors — OKLCH, calibrated for AA on light surfaces
+  --success:    oklch(58% 0.13 152);
+  --success-bg: oklch(96% 0.04 152);
+  --warning:    oklch(66% 0.18 60);
+  --warning-bg: oklch(96% 0.05 60);
+  --error:      oklch(54% 0.20 25);
+  --error-bg:   oklch(96% 0.04 25);
+  --info:       oklch(56% 0.14 245);
+  --info-bg:    oklch(96% 0.03 245);
 
-  // Blockquote theming
-  --blockquote-bg: color-mix(in srgb, var(--surface-raised) 88%, var(--primary) 12%);
-  --blockquote-border: color-mix(in srgb, var(--primary) 60%, var(--border) 40%);
-  --blockquote-quote: color-mix(in srgb, var(--primary) 80%, var(--ink) 20%);
+  // Blockquote
+  --blockquote-bg:     color-mix(in oklab, var(--surface-raised) 88%, var(--primary) 12%);
+  --blockquote-border: color-mix(in oklab, var(--primary) 60%, var(--border) 40%);
+  --blockquote-quote:  color-mix(in oklab, var(--primary) 80%, var(--ink) 20%);
 
-  // Footer theme - warm dark tones to complement light theme
-  --footer-surface: hsl(25, 18%, 18%);
-  --footer-surface-alt: hsl(25, 20%, 14%);
-  --footer-divider: hsl(25, 14%, 30%);
-  --footer-text: hsl(40, 15%, 96%);
-  --footer-text-muted: hsl(35, 12%, 78%);
-  --footer-glow: color-mix(in srgb, hsl(var(--primary-hue), 70%, 60%) 22%, transparent);
+  // Footer — deep neutral ink for institutional contrast (was warm dark)
+  --footer-surface:     oklch(18% 0.012 264);
+  --footer-surface-alt: oklch(14% 0.012 264);
+  --footer-divider:     oklch(30% 0.012 264);
+  --footer-text:        oklch(94% 0.005 258);
+  --footer-text-muted:  oklch(72% 0.008 258);
+}
+
+// Apply light theme by default at the document root. Brand seed lives
+// here too so PHP's :root override (in layout.phtml) cascades cleanly.
+:root {
+  --primary-base: #e77f11;
+  @include iwac-light-theme;
 }
 
 // ==========================================================================
-// Dark Theme - System Preference
+// Dark Theme
+// Single mixin-style block consumed by both manual and system preference.
 // ==========================================================================
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-
-    --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 8%), 58%);
-    --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 8%), 64%);
-    --primary-active: hsl(var(--primary-hue), var(--primary-sat), 44%);
-
-    // Ink colors for dark theme - with HSL components
-    --ink-hue: 210;
-    --ink-sat: 25%;
-    --ink-lum: 96%;
-    --ink: hsl(var(--ink-hue) var(--ink-sat) var(--ink-lum));
-    --ink-strong: hsl(var(--ink-hue) 20% 99%);
-    --ink-light: hsl(210, 15%, 75%);
-    --ink-subtle: hsl(212, 12%, 68%);
-    --muted: hsl(215, 12%, 62%);
-    --ink-on-pastel: hsl(220, 28%, 15%);
-
-    --surface: hsl(220, 18%, 12%);
-    --surface-raised: hsl(220, 16%, 14%);
-    --surface-sunken: hsl(220, 20%, 10%);
-    --surface-overlay: color-mix(in srgb, hsl(220, 18%, 12%) 95%, transparent);
-    --background: hsl(220, 20%, 9%);
-
-    --border: hsl(220, 12%, 22%);
-    --border-light: hsl(220, 12%, 18%);
-    --border-strong: hsl(220, 14%, 30%);
-
-    // Semantic aliases for text and backgrounds
-    --text-primary: var(--ink);
-    --text-heading: var(--ink);
-    --text-secondary: var(--muted);
-    --bg-body: var(--background);
-    --bg-surface: var(--surface);
-    --bg-muted: var(--surface-raised);
-    --bg-elevated: var(--surface-raised);
-    --border-color: var(--border);
-    --primary-contrast: white;
-
-    // Status colors (adjusted for dark backgrounds)
-    --success: hsl(152, 50%, 55%);
-    --success-bg: color-mix(in srgb, hsl(152, 45%, 40%) 20%, transparent);
-    --warning: hsl(22, 100%, 58%);
-    --warning-bg: color-mix(in srgb, hsl(22, 90%, 45%) 20%, transparent);
-    --error: hsl(355, 85%, 58%);
-    --error-bg: color-mix(in srgb, hsl(355, 80%, 45%) 20%, transparent);
-    --info: hsl(210, 80%, 60%);
-    --info-bg: color-mix(in srgb, hsl(210, 70%, 45%) 20%, transparent);
-
-    --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
-    --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
-    --blockquote-quote: color-mix(in srgb, var(--primary) 75%, white 25%);
-
-    --footer-surface: color-mix(in srgb, var(--surface) 80%, black 20%);
-    --footer-surface-alt: color-mix(in srgb, var(--surface) 70%, black 30%);
-    --footer-divider: color-mix(in srgb, var(--border) 85%, var(--ink) 15%);
-    --footer-text: var(--ink);
-    --footer-text-muted: var(--ink-light);
-    --footer-glow: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 28%, transparent);
-  }
-}
-
-// ==========================================================================
-// Dark Theme - Manual Toggle
-// ==========================================================================
-body[data-theme="dark"] {
+@mixin iwac-dark-theme {
   color-scheme: dark;
 
-  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 8%), 58%);
-  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 8%), 64%);
-  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 44%);
+  --primary:        color-mix(in oklab, var(--primary-base), white 12%);
+  --primary-hover:  color-mix(in oklab, var(--primary-base), white 22%);
+  --primary-active: color-mix(in oklab, var(--primary-base), black 4%);
 
-  --ink: hsl(210, 25%, 96%);
-  --ink-strong: hsl(210, 20%, 99%);
-  --ink-light: hsl(210, 15%, 75%);
-  --ink-subtle: hsl(212, 12%, 68%);
-  --muted: hsl(215, 12%, 62%);
-  --ink-on-pastel: hsl(220, 28%, 15%);
+  --ink-strong:    oklch(98% 0.005 258);
+  --ink:           oklch(94% 0.008 258);
+  --ink-light:     oklch(76% 0.010 258);
+  --ink-subtle:    oklch(68% 0.010 258);
+  --muted:         oklch(60% 0.010 258);
+  --ink-on-pastel: oklch(15% 0.015 264);
 
-  --surface: hsl(220, 18%, 12%);
-  --surface-raised: hsl(220, 16%, 14%);
-  --surface-sunken: hsl(220, 20%, 10%);
-  --surface-overlay: color-mix(in srgb, hsl(220, 18%, 12%) 95%, transparent);
-  --background: hsl(220, 20%, 9%);
+  --surface:         oklch(17% 0.010 264);
+  --surface-raised:  oklch(20% 0.010 264);
+  --surface-sunken:  oklch(13% 0.010 264);
+  --surface-overlay: color-mix(in oklab, var(--surface) 95%, transparent);
+  --background:      oklch(12% 0.010 264);
 
-  --border: hsl(220, 12%, 22%);
-  --border-light: hsl(220, 12%, 18%);
-  --border-strong: hsl(220, 14%, 30%);
+  --border-light:  oklch(24% 0.012 264);
+  --border:        oklch(30% 0.012 264);
+  --border-strong: oklch(40% 0.012 264);
 
-  // Semantic aliases for text and backgrounds
+  --focus-color: var(--primary);
+  --focus-ring:  color-mix(in oklab, var(--primary) 35%, transparent);
+  --selection-bg: color-mix(in oklab, var(--primary) 22%, transparent);
+
   --text-primary: var(--ink);
-  --text-heading: var(--ink);
+  --text-heading: var(--ink-strong);
   --text-secondary: var(--muted);
   --bg-surface: var(--surface);
   --bg-muted: var(--surface-raised);
@@ -189,74 +141,36 @@ body[data-theme="dark"] {
   --border-color: var(--border);
   --primary-contrast: white;
 
-  // Status colors (adjusted for dark backgrounds)
-  --success: hsl(152, 50%, 55%);
-  --success-bg: color-mix(in srgb, hsl(152, 45%, 40%) 20%, transparent);
-  --warning: hsl(22, 100%, 58%);
-  --warning-bg: color-mix(in srgb, hsl(22, 90%, 45%) 20%, transparent);
-  --error: hsl(355, 85%, 58%);
-  --error-bg: color-mix(in srgb, hsl(355, 80%, 45%) 20%, transparent);
-  --info: hsl(210, 80%, 60%);
-  --info-bg: color-mix(in srgb, hsl(210, 70%, 45%) 20%, transparent);
+  --success:    oklch(72% 0.14 152);
+  --success-bg: color-mix(in oklab, oklch(50% 0.13 152) 22%, transparent);
+  --warning:    oklch(76% 0.16 60);
+  --warning-bg: color-mix(in oklab, oklch(55% 0.16 60) 22%, transparent);
+  --error:      oklch(70% 0.19 25);
+  --error-bg:   color-mix(in oklab, oklch(50% 0.18 25) 22%, transparent);
+  --info:       oklch(72% 0.14 245);
+  --info-bg:    color-mix(in oklab, oklch(50% 0.14 245) 22%, transparent);
 
-  --blockquote-bg: color-mix(in srgb, var(--surface-raised) 76%, var(--primary) 24%);
-  --blockquote-border: color-mix(in srgb, var(--primary) 68%, var(--ink) 32%);
-  --blockquote-quote: color-mix(in srgb, var(--primary) 75%, white 25%);
+  --blockquote-bg:     color-mix(in oklab, var(--surface-raised) 76%, var(--primary) 24%);
+  --blockquote-border: color-mix(in oklab, var(--primary) 68%, var(--ink) 32%);
+  --blockquote-quote:  color-mix(in oklab, var(--primary) 75%, white 25%);
 
-  --footer-surface: color-mix(in srgb, var(--surface) 80%, black 20%);
-  --footer-surface-alt: color-mix(in srgb, var(--surface) 70%, black 30%);
-  --footer-divider: color-mix(in srgb, var(--border) 85%, var(--ink) 15%);
-  --footer-text: var(--ink);
-  --footer-text-muted: var(--ink-light);
-  --footer-glow: color-mix(in srgb, hsl(var(--primary-hue), var(--primary-sat), 55%) 28%, transparent);
+  // Footer in dark theme uses the surface scale (not a permanent dark band)
+  --footer-surface:     color-mix(in oklab, var(--surface) 80%, black 20%);
+  --footer-surface-alt: color-mix(in oklab, var(--surface) 70%, black 30%);
+  --footer-divider:     color-mix(in oklab, var(--border) 85%, var(--ink) 15%);
+  --footer-text:        var(--ink);
+  --footer-text-muted:  var(--ink-light);
 }
 
-// ==========================================================================
-// Light Theme - Manual Toggle (override system dark preference)
-// ==========================================================================
-body[data-theme="light"] {
-  color-scheme: light;
-
-  --primary: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 48%);
-  --primary-hover: hsl(var(--primary-hue), calc(var(--primary-sat) - 12%), 43%);
-  --primary-active: hsl(var(--primary-hue), var(--primary-sat), 40%);
-
-  // Warm neutral ink colors
-  --ink: hsl(215, 20%, 14%);
-  --ink-strong: hsl(215, 24%, 8%);
-  --ink-light: hsl(210, 14%, 36%);
-  --ink-subtle: hsl(205, 10%, 44%);
-  --muted: hsl(200, 10%, 50%);
-  --ink-on-pastel: hsl(220, 28%, 18%);
-
-  // Warm neutral surfaces
-  --surface: hsl(40, 20%, 99%);
-  --surface-raised: hsl(38, 18%, 97%);
-  --surface-sunken: hsl(38, 16%, 95%);
-  --surface-overlay: color-mix(in srgb, hsl(40, 15%, 99%) 94%, transparent);
-  --background: hsl(40, 15%, 95.5%);
-
-  // Warm gray borders
-  --border: hsl(35, 12%, 85%);
-  --border-light: hsl(35, 10%, 91%);
-  --border-strong: hsl(35, 14%, 76%);
-
-  // Semantic aliases for text and backgrounds
-  --text-primary: var(--ink);
-  --text-heading: var(--ink);
-  --bg-surface: var(--surface);
-  --bg-muted: var(--surface-raised);
-  --border-color: var(--border);
-
-  --blockquote-bg: color-mix(in srgb, var(--surface-raised) 88%, var(--primary) 12%);
-  --blockquote-border: color-mix(in srgb, var(--primary) 60%, var(--border) 40%);
-  --blockquote-quote: color-mix(in srgb, var(--primary) 80%, var(--ink) 20%);
-
-  // Footer remains dark for contrast
-  --footer-surface: hsl(25, 18%, 18%);
-  --footer-surface-alt: hsl(25, 20%, 14%);
-  --footer-divider: hsl(25, 14%, 30%);
-  --footer-text: hsl(40, 15%, 96%);
-  --footer-text-muted: hsl(35, 12%, 78%);
-  --footer-glow: color-mix(in srgb, hsl(var(--primary-hue), 70%, 60%) 22%, transparent);
+// System preference: dark unless user has explicitly chosen light
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { @include iwac-dark-theme; }
 }
+
+// Manual toggle: dark
+body[data-theme="dark"] { @include iwac-dark-theme; }
+
+// Manual toggle: light (must re-declare because system @media may have
+// already overridden :root with dark values; we need to win against that
+// at the body level).
+body[data-theme="light"] { @include iwac-light-theme; }

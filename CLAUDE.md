@@ -14,44 +14,79 @@ IWAC-theme is a customized Omeka S theme (fork of Freedom theme) for the Islam W
 
 ## Design Philosophy
 
-**Modern, professional, academic—warm and inviting without being flashy.**
+**Stance: research instrument, not editorial product.**
 
-This is primarily a **newspaper collection** (not manuscripts), so the aesthetic should feel clean, editorial, and journalistic rather than archival or antiquarian.
+The site is a scholarly database used by historians and political scientists doing comparative work across francophone West African press archives, with a computational pipeline (3 LLM sentiment models, LDA, embeddings, IIIF, geocoding). Users come with specific questions and want **precision and density**, not delight or warmth.
+
+Visual neighborhood we want to share: MIT Press, Stripe Press, eLife, Linear docs, Are.na, serious institutional repositories. **Not** a small museum's website, not a tasteful cultural-heritage brochure, not a warm editorial magazine.
 
 ### Core Principles
-- **Warm Professionalism** - Inviting warmth through color while maintaining scholarly credibility
-- **Editorial Clarity** - Clean typography suited for reading newspaper content
-- **Cultural Sensitivity** - Respectful presentation of Islamic heritage materials
-- **Functional Beauty** - Design serves usability and readability
+
+1. **Density over comfort.** Researchers want to see more, not fewer, items per screen. Whitespace is a tool for hierarchy, not a default for comfort.
+2. **Typography as architecture.** Hierarchy is built from type alone — size, weight, optical size, figure styles, small caps. Not from cards, gradients, or decorative rules.
+3. **Neutral is correct.** Surfaces are cool-leaning near-white with imperceptible warm hint at very low chroma (~0.002). No cream, no parchment, no atmospheric washes.
+4. **Restraint with color.** Primary appears in three places: focus state, current/active state, intentional accents. Never on heading text by default, never as decorative wash, never as gradient bar.
+5. **Computational honesty.** AI-generated metadata gets explicit visual treatment that signals provenance — not cosmetically blended into human-authored fields.
+6. **Multilingual rigor.** FR / EN / AR transliteration get equivalent typographic treatment. Tabular figures everywhere alignment matters.
 
 ### Color Philosophy
-The light theme uses **warm neutral tones** (hue ~35-40) rather than cold blue-grays:
-- Surfaces have a subtle cream undertone (not stark white)
-- Borders and shadows carry warm gray tones
-- The primary orange (IWAC brand) harmonizes with the warm base
-- A subtle atmospheric gradient adds depth without distraction
 
-This warmth creates visual comfort for extended reading sessions while differentiating the site from generic "default Bootstrap" aesthetics.
+The system is **OKLCH-based** because equal lightness steps look equal (HSL is perceptually uneven). All primary variants derive from a single `--primary-base` hex (admin-overridable) via `color-mix(in oklab, …)` so customizations cascade through every focus ring, glow, blockquote, and hover state without manual tuning.
+
+- **Surfaces**: `oklch(99% 0.002 60)` — near-white with imperceptible warm tint. No cream, no parchment.
+- **Inks**: cool-neutrals (`oklch(13–54% 0.008–0.012 264)`) — reads as "objective / scholarly" rather than "warm / inviting."
+- **Borders**: cool-neutral grays (`oklch(76–92% 0.005–0.009 258)`).
+- **Primary**: IWAC orange, slightly darkened from raw hex toward an institutional register (`color-mix(--primary-base, black 8%)` in light theme).
+- **Shadows**: neutral cool, not warm-tinted.
 
 ### Visual Guidelines
-- Use the primary orange (IWAC brand) as accent, not dominant
-- Warm neutral backgrounds with high contrast for readability
-- Generous whitespace and breathing room between sections
-- Warm-tinted shadows for elevation; avoid harsh black shadows
-- Fast, purposeful transitions (150-200ms); no bouncing/elastic effects
-- Clear hover feedback and visible focus states
-- Subtle atmospheric depth in light theme (warm glow from top)
+
+- Primary orange used **rarely**: focus rings, current-state markers, link hover, eyebrow labels, pill tags. Never as page-wide section accent.
+- **Solid surfaces.** No body-level atmospheric gradients. Depth from intentional shadows on raised elements only.
+- **Quiet chrome.** Footer is a navigation block, not the most-styled component. `backdrop-filter` is reserved for the sticky header (functional chrome over content), nowhere else.
+- **Tight transitions** (150–200ms). No bouncing, no elastic, no hover-triggered hero animations.
+- **Visible focus states** on every interactive element.
+- **Reduced motion respected** for every non-essential animation.
 
 ### Component Styling Approach
-Key UI components use subtle accent integration for visual cohesion:
-- **Resource show metadata** (item, media, item-set) is editorial: flat rows of facts with one lede and an optional body section — see `components/resource-show/_resource-show.scss`
-- **Breadcrumbs** show current page with accent dot marker
-- **Resource cards** (browse grid/list) keep their card treatment for visual density; they use the shared pill tag style so the language stays consistent
-- **Pagination** has subtle accent-tinted top border
-- **Facet legends** use accent-tinted backgrounds and borders
-- **Search results** show accent border on hover
 
-This creates consistent visual language without overwhelming the content.
+- **Resource show metadata** (item, media, item-set): flat rows of facts with hairline separators, uppercase small-caps labels, no card treatment. Optional lede (`bibo:shortDescription`, labelled "DescriptionAI") deserves explicit AI-provenance treatment (planned).
+- **Resource browse**: cards are acceptable for default grid view but should be tight and dense, not airy. Future: a list/table density mode for power users.
+- **Facets**: accent-tinted legends; quiet borders; high information density.
+- **Breadcrumbs**: current page marked with primary-tinted dot.
+- **Pagination**: hairline top border, no primary tint as default.
+
+### Global Editorial Type & Tag Tokens
+
+1. **All h1 headings** (`base/typography/_headings.scss`) use `line-height: 1.1` and `letter-spacing: -0.02em` for editorial weight on every page title.
+2. **All `.resource-tag` pills** (`base/elements/_resource-tag.scss`) use `border-radius: var(--radius-full)`, `text-transform: uppercase`, and `letter-spacing: 0.06em`.
+3. **h2 default color is `--ink-strong`**, not `--primary`. Brand color is reserved for accents, eyebrow labels, and state.
+
+### Editorial Hierarchy on Resource Show Pages
+
+The `components/resource-show/_resource-show.scss` file scopes its rules to `body.resource.show, body.item-set` — covering item show, media show, and item-set show pages.
+
+Show pages follow a journalism-inspired flow rather than a uniform property grid:
+
+1. **Resource tag pills** — breathing room from the banner, pill shape, uppercase
+2. **Display title** — inherits global h1 editorial treatment (tight leading, negative tracking)
+3. **Metadata rows** — flat rows of facts with hairline separators, uppercase small-caps labels in `--muted`, 144px label column on desktop
+4. **Lede** (`bibo:shortDescription`, labelled "DescriptionAI") — AI-provenance treatment (planned: explicit "AI-generated summary" badge with tooltip)
+5. **Full body** (`bibo:content`) — readable measure (~68ch)
+
+The editorial treatment only applies inside `.main-region > .metadata` — sidebar regions (including the AI Sentiment Analysis block) are untouched.
+
+### What to Avoid
+
+- **Warm cream / parchment surfaces.** They read as "manuscript museum brochure," wrong register for a digital research database.
+- **Atmospheric body gradients.** They communicate "we want you to feel welcomed." A research instrument equips, it doesn't welcome.
+- **Decorative gradient bars under hero headings.** The 80px×4px brand-gradient underline is a recognized AI/CMS template tell.
+- **Coloring h2s in primary.** Floods long article-style pages and contradicts the "primary as accent" principle.
+- **Glossy / glassmorphic effects** anywhere except the sticky header.
+- **Bouncing or elastic easing.** Real objects decelerate smoothly.
+- **Hover-triggered hero animations** (Ken Burns, etc.) — on touch devices that's never; on desktop it fires at random.
+- **Multiple decorative effects on one component.** Pick one. The footer used to layer seven; now it has a single hairline rule.
+- **Inventing CSS custom property names** that don't exist in the token files — they fail silently at runtime.
 
 ### Global Editorial Type & Tag Tokens
 Two base-level rules enforce consistency across every page type:
@@ -147,16 +182,21 @@ Key rules:
 | `--font-size-*` | `--text-*` |
 | `--leading-*` | `--line-height-*` |
 | `--border-dark`, `--border-hover` | `--border-strong` |
-| `--accent` | `--primary` (accent alias was removed) |
+| `--accent`, `--accent-dark`, `--accent-hue`, `--accent-sat` | `--primary` (entire accent family was removed) |
+| `--secondary`, `--secondary-dark`, `--secondary-contrast` | derive from `--primary` via `color-mix(in oklab, ...)` (secondary family was removed) |
+| `--primary-hue`, `--primary-sat` | derive from `--primary` via `color-mix(in oklab, ...)` (HSL components removed; system is OKLCH-based) |
+| `--gradient-primary` | removed (decorative gradient bars were a CMS-template tell) |
 | `--line-height-tight` | Use `1.1` (h1) or `$font__headings-line-height` (1.25) |
 | `--font-weight-*` | Use numeric values directly (400, 500, 600, 700) |
 
-For color variations, use `color-mix()` with accent-mix tokens for consistency:
+For color variations, use `color-mix(in oklab, ...)` with primary as the seed:
 ```scss
-// Use standardized accent-mix tokens for consistent accent tinting
-border-color: color-mix(in srgb, var(--primary) var(--accent-mix-medium), var(--border));
-background: color-mix(in srgb, var(--primary) 20%, transparent);
+// Always use oklab as the mixing space — it gives perceptually uniform results
+border-color: color-mix(in oklab, var(--primary) var(--accent-mix-medium), var(--border));
+background:   color-mix(in oklab, var(--primary) 20%, transparent);
 ```
+
+**Why `in oklab`, not `in srgb`:** sRGB mixing produces muddy mid-tones (e.g. blue + yellow → gray). Oklab mixing stays vibrant and perceptually accurate, matching how OKLCH is used for the base palette.
 
 ### Shared Mixins (`_mixins.scss`)
 

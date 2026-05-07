@@ -2,7 +2,12 @@
 
 // ==========================================================================
 // Resource Grid
-// Card-based grid layout with hover effects and modern styling
+//
+// Tight, dense card grid for default browse. Per the research-instrument
+// philosophy: no airy padding, no decorative accent line at the top of
+// the card (that was a CMS-template tell), no hover lift. Hover gives a
+// subtle shadow change and a primary-tinted border — that's it. Goal is
+// to fit more items per screen so researchers can scan quickly.
 // ==========================================================================
 
 .resource-grid {
@@ -17,41 +22,48 @@
         box-shadow: var(--panel-shadow);
         position: absolute;
         overflow: hidden;
-        @include card-hover;
+        transition:
+            box-shadow var(--transition-fast),
+            border-color var(--transition-fast);
 
-        // Subtle accent line at top of card
-        @include accent-line-top(0);
-
-        &:hover::before {
-            opacity: 1;
+        &:hover {
+            box-shadow: var(--shadow-sm);
+            border-color: color-mix(in oklab, var(--primary) var(--accent-mix-subtle), var(--border));
         }
 
         &__thumbnail {
             line-height: 1;
             overflow: hidden;
+            // Tightened from 324px — research browse wants more rows visible.
+            // 240px keeps thumbnails legible without dominating the grid.
+            max-height: 240px;
 
             img {
-                max-height: 324px;
+                max-height: 240px;
                 object-fit: cover;
                 width: 100%;
-                transition: transform var(--transition-slow);
             }
         }
 
-        &:hover &__thumbnail img {
-            transform: scale(1.05);
-        }
-
         &__content {
-            padding: var(--space-md);
+            // Tightened from var(--space-md) (16px) to 12/16px responsive.
+            padding: var(--space-3) var(--space-4);
         }
 
         &__meta {
-            padding: var(--space-xs) var(--space-sm);
+            padding: 0 var(--space-4) var(--space-3);
+            font-size: var(--text-xs);
+            color: var(--muted);
         }
 
         .title a {
             @include title-link;
+            font-size: var(--text-base);
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     }
 }
