@@ -60,16 +60,6 @@
   --focus-ring:  color-mix(in oklab, var(--primary) 30%, transparent);
   --selection-bg: color-mix(in oklab, var(--primary) 14%, transparent);
 
-  // Aliases (kept for backwards compatibility with components)
-  --text-primary: var(--ink);
-  --text-heading: var(--ink-strong);
-  --text-secondary: var(--muted);
-  --bg-surface: var(--surface);
-  --bg-muted: var(--surface-raised);
-  --bg-elevated: var(--surface);
-  --border-color: var(--border);
-  --primary-contrast: white;
-
   // Status colors — OKLCH, calibrated for AA on light surfaces
   --success:    oklch(58% 0.13 152);
   --success-bg: oklch(96% 0.04 152);
@@ -131,15 +121,6 @@
   --focus-color: var(--primary);
   --focus-ring:  color-mix(in oklab, var(--primary) 35%, transparent);
   --selection-bg: color-mix(in oklab, var(--primary) 22%, transparent);
-
-  --text-primary: var(--ink);
-  --text-heading: var(--ink-strong);
-  --text-secondary: var(--muted);
-  --bg-surface: var(--surface);
-  --bg-muted: var(--surface-raised);
-  --bg-elevated: var(--surface-raised);
-  --border-color: var(--border);
-  --primary-contrast: white;
 
   --success:    oklch(72% 0.14 152);
   --success-bg: color-mix(in oklab, oklch(50% 0.13 152) 22%, transparent);

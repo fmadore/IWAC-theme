@@ -91,7 +91,7 @@
                 margin: var(--space-4);
                 margin-block-start: 0;
                 font-size: var(--text-sm);
-                color: var(--text-secondary);
+                color: var(--muted);
                 line-height: 1.5;
                 
                 p {
@@ -147,7 +147,7 @@
         
         img {
             object-fit: contain;
-            background: var(--bg-muted);
+            background: var(--surface-raised);
         }
     }
     

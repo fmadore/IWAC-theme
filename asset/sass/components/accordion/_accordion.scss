@@ -7,8 +7,8 @@
 
 .accordion {
     &__container {
-        background-color: var(--bg-surface);
-        border: 1px solid var(--border-color);
+        background-color: var(--surface);
+        border: 1px solid var(--border);
         border-radius: var(--radius-md);
         margin-block-end: var(--space-4);
         overflow: hidden;
@@ -20,8 +20,8 @@
 
     &__trigger {
         background: none;
-        border-block-end: 1px solid var(--border-color);
-        color: var(--text-primary);
+        border-block-end: 1px solid var(--border);
+        color: var(--ink);
         font-size: var(--text-lg);
         outline: none;
         padding: var(--space-4) var(--space-16) var(--space-4) var(--space-4);
@@ -43,8 +43,8 @@
 
         &:hover,
         &:active {
-            background-color: var(--bg-muted);
-            color: var(--text-primary);
+            background-color: var(--surface-raised);
+            color: var(--ink);
         }
 
         @include focus-ring;
@@ -53,7 +53,7 @@
     &__icon {
         display: flex;
         align-items: center;
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--border);
         border-radius: 50%;
         height: var(--size-control-sm);
         justify-content: center;

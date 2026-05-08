@@ -14,7 +14,7 @@ input[type="submit"] {
     padding: var(--space-sm) var(--space-lg);
     font-size: var(--text-sm);
     font-weight: 500;
-    color: var(--primary-contrast);
+    color: var(--white);
     background: var(--primary);
     border: none;
     border-radius: var(--radius-md);
@@ -134,7 +134,7 @@ button.remove-value {
     &:focus {
         background-color: var(--primary);
         border-color: var(--primary);
-        color: var(--primary-contrast);
+        color: var(--white);
         transform: none;
         box-shadow: var(--glow-sm);
     }

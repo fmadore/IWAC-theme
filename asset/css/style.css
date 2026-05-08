@@ -157,14 +157,6 @@ body[data-theme=light] {
   --focus-color: var(--primary);
   --focus-ring: color-mix(in oklab, var(--primary) 30%, transparent);
   --selection-bg: color-mix(in oklab, var(--primary) 14%, transparent);
-  --text-primary: var(--ink);
-  --text-heading: var(--ink-strong);
-  --text-secondary: var(--muted);
-  --bg-surface: var(--surface);
-  --bg-muted: var(--surface-raised);
-  --bg-elevated: var(--surface);
-  --border-color: var(--border);
-  --primary-contrast: white;
   --success: oklch(58% 0.13 152);
   --success-bg: oklch(96% 0.04 152);
   --warning: oklch(66% 0.18 60);
@@ -206,14 +198,6 @@ body[data-theme=light] {
     --focus-color: var(--primary);
     --focus-ring: color-mix(in oklab, var(--primary) 35%, transparent);
     --selection-bg: color-mix(in oklab, var(--primary) 22%, transparent);
-    --text-primary: var(--ink);
-    --text-heading: var(--ink-strong);
-    --text-secondary: var(--muted);
-    --bg-surface: var(--surface);
-    --bg-muted: var(--surface-raised);
-    --bg-elevated: var(--surface-raised);
-    --border-color: var(--border);
-    --primary-contrast: white;
     --success: oklch(72% 0.14 152);
     --success-bg: color-mix(in oklab, oklch(50% 0.13 152) 22%, transparent);
     --warning: oklch(76% 0.16 60);
@@ -254,14 +238,6 @@ body[data-theme=dark] {
   --focus-color: var(--primary);
   --focus-ring: color-mix(in oklab, var(--primary) 35%, transparent);
   --selection-bg: color-mix(in oklab, var(--primary) 22%, transparent);
-  --text-primary: var(--ink);
-  --text-heading: var(--ink-strong);
-  --text-secondary: var(--muted);
-  --bg-surface: var(--surface);
-  --bg-muted: var(--surface-raised);
-  --bg-elevated: var(--surface-raised);
-  --border-color: var(--border);
-  --primary-contrast: white;
   --success: oklch(72% 0.14 152);
   --success-bg: color-mix(in oklab, oklch(50% 0.13 152) 22%, transparent);
   --warning: oklch(76% 0.16 60);
@@ -304,14 +280,6 @@ body[data-theme=light] {
   --focus-color: var(--primary);
   --focus-ring: color-mix(in oklab, var(--primary) 30%, transparent);
   --selection-bg: color-mix(in oklab, var(--primary) 14%, transparent);
-  --text-primary: var(--ink);
-  --text-heading: var(--ink-strong);
-  --text-secondary: var(--muted);
-  --bg-surface: var(--surface);
-  --bg-muted: var(--surface-raised);
-  --bg-elevated: var(--surface);
-  --border-color: var(--border);
-  --primary-contrast: white;
   --success: oklch(58% 0.13 152);
   --success-bg: oklch(96% 0.04 152);
   --warning: oklch(66% 0.18 60);
@@ -785,7 +753,7 @@ h1,
 h2,
 h3,
 h4 {
-  color: var(--text-heading);
+  color: var(--ink-strong);
   font-family: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
   margin-block-start: 0;
   text-wrap: balance;
@@ -795,7 +763,7 @@ h4 {
 
 h5,
 h6 {
-  color: var(--text-heading);
+  color: var(--ink-strong);
   font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   margin-block-start: 0;
   text-wrap: balance;
@@ -1072,7 +1040,7 @@ hr {
   display: inline-block;
   background-color: var(--primary);
   border-radius: var(--radius-sm);
-  color: var(--primary-contrast);
+  color: var(--white);
   font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   font-size: var(--text-xs);
   font-weight: 600;
@@ -1122,7 +1090,7 @@ li > ol {
 }
 
 dt {
-  color: var(--text-heading);
+  color: var(--ink-strong);
   font-size: var(--text-lg);
   font-weight: 600;
 }
@@ -1460,7 +1428,7 @@ input[type=submit] {
   padding: var(--space-sm) var(--space-lg);
   font-size: var(--text-sm);
   font-weight: 500;
-  color: var(--primary-contrast);
+  color: var(--white);
   background: var(--primary);
   border: none;
   border-radius: var(--radius-md);
@@ -1604,7 +1572,7 @@ button.remove-value:hover,
 button.remove-value:focus {
   background-color: var(--primary);
   border-color: var(--primary);
-  color: var(--primary-contrast);
+  color: var(--white);
   transform: none;
   box-shadow: var(--glow-sm);
 }
@@ -2885,8 +2853,8 @@ body.menu-drawer-toggled {
 /* Accordion
 --------------------------------------------- */
 .accordion__container {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-color);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   margin-block-end: var(--space-4);
   overflow: hidden;
@@ -2896,8 +2864,8 @@ body.menu-drawer-toggled {
 }
 .accordion__trigger {
   background: none;
-  border-block-end: 1px solid var(--border-color);
-  color: var(--text-primary);
+  border-block-end: 1px solid var(--border);
+  color: var(--ink);
   font-size: var(--text-lg);
   outline: none;
   padding: var(--space-4) var(--space-16) var(--space-4) var(--space-4);
@@ -2917,8 +2885,8 @@ body.menu-drawer-toggled {
   width: var(--accent-line-md);
 }
 .accordion__trigger:hover, .accordion__trigger:active {
-  background-color: var(--bg-muted);
-  color: var(--text-primary);
+  background-color: var(--surface-raised);
+  color: var(--ink);
 }
 .accordion__trigger:focus-visible {
   outline: 2px solid var(--focus-color);
@@ -2927,7 +2895,7 @@ body.menu-drawer-toggled {
 .accordion__icon {
   display: flex;
   align-items: center;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 50%;
   height: var(--size-control-sm);
   justify-content: center;
@@ -3207,7 +3175,7 @@ body.menu-drawer-toggled {
 #advanced-search .field label.numeric-toggle-time.button:hover {
   background-color: var(--primary);
   border-color: var(--primary);
-  color: var(--primary-contrast);
+  color: var(--white);
   box-shadow: var(--glow-sm);
 }
 #advanced-search .field .numeric-toggle-time input[type=checkbox],
@@ -3254,7 +3222,7 @@ body.menu-drawer-toggled {
 }
 #advanced-search #page-actions {
   display: flex;
-  background-color: var(--bg-elevated);
+  background-color: var(--surface-raised);
   border-block-start: 1px solid var(--border);
   bottom: 0;
   gap: var(--space-5);
@@ -3266,7 +3234,7 @@ body.menu-drawer-toggled {
 }
 @supports ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
   #advanced-search #page-actions {
-    background-color: color-mix(in oklab, var(--bg-elevated) 85%, transparent);
+    background-color: color-mix(in oklab, var(--surface-raised) 85%, transparent);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
   }
@@ -3302,16 +3270,16 @@ body.menu-drawer-toggled {
   margin-block-end: var(--space-8);
 }
 .search-filters .filter {
-  background-color: var(--bg-muted);
+  background-color: var(--surface-raised);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  color: var(--text-primary);
+  color: var(--ink);
   font-size: var(--text-sm);
   padding: var(--space-1) var(--space-3);
   transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 .search-filters .filter:hover {
-  background-color: var(--bg-elevated);
+  background-color: var(--surface-raised);
   border-color: var(--primary);
 }
 .search-filters .filter-label {
@@ -3737,7 +3705,7 @@ body.menu-drawer-toggled {
 }
 #advanced-search .field-meta label {
   display: block;
-  color: var(--text-heading);
+  color: var(--ink-strong);
   font-size: var(--text-sm);
   font-weight: 500;
 }
@@ -4293,7 +4261,7 @@ select.query-filter optgroup {
 
 .error-page__button--primary {
   background-color: var(--primary);
-  color: var(--primary-contrast);
+  color: var(--white);
   box-shadow: var(--shadow-sm);
 }
 .error-page__button--primary:hover {
@@ -5715,7 +5683,7 @@ body.media.show .media-parent-item a:hover {
   margin: var(--space-4);
   margin-block-start: 0;
   font-size: var(--text-sm);
-  color: var(--text-secondary);
+  color: var(--muted);
   line-height: 1.5;
 }
 .media-embed.media-display-thumbnail .item.resource .caption p {
@@ -5763,7 +5731,7 @@ body.media.show .media-parent-item a:hover {
 .media-embeds .media img {
   -o-object-fit: contain;
      object-fit: contain;
-  background: var(--bg-muted);
+  background: var(--surface-raised);
 }
 .media-embeds .media-render img {
   max-width: 100%;
@@ -6145,7 +6113,7 @@ body.media.show .media-parent-item a:hover {
   width: 100% !important;
   height: 100vh !important;
   height: 100dvh !important;
-  background: var(--bg-surface) !important;
+  background: var(--surface) !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
@@ -6232,7 +6200,7 @@ body.media.show .media-parent-item a:hover {
 .faceted-browse-page .facet,
 .block-facetedBrowsePreview .category,
 .block-facetedBrowsePreview .facet {
-  background: var(--bg-surface);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   margin-block-end: var(--space-3);
@@ -6280,12 +6248,12 @@ body.media.show .media-parent-item a:hover {
   margin: var(--space-3) var(--space-4);
   margin-block-end: 0;
   padding: var(--space-3);
-  background: var(--bg-surface);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   font-family: inherit;
   font-size: var(--text-sm);
-  color: var(--text-primary);
+  color: var(--ink);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .faceted-browse-page .category[data-facet-type=full_text] input.full-text:focus,
@@ -6441,7 +6409,7 @@ body.media.show .media-parent-item a:hover {
 .block-facetedBrowsePreview .facet label:hover,
 .block-facetedBrowsePreview .category label:hover,
 .block-facetedBrowsePreview .select-list-item label:hover {
-  background: var(--bg-muted);
+  background: var(--surface-raised);
 }
 .faceted-browse-page .facet label input[type=radio],
 .faceted-browse-page .facet label input[type=checkbox],
@@ -6463,7 +6431,7 @@ body.media.show .media-parent-item a:hover {
   width: 1.125rem;
   height: 1.125rem;
   margin: 0.125rem 0 0 0;
-  background: var(--bg-surface);
+  background: var(--surface);
   border: 2px solid var(--border);
   cursor: pointer;
   transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
@@ -6565,7 +6533,7 @@ body.media.show .media-parent-item a:hover {
   height: 0.375rem;
   margin-top: -0.1875rem;
   margin-inline-start: -0.1875rem;
-  background: var(--primary-contrast);
+  background: var(--white);
   border-radius: 50%;
 }
 .faceted-browse-page .facet label input[type=checkbox],
@@ -6586,7 +6554,7 @@ body.media.show .media-parent-item a:hover {
   inset-inline-start: 0.3125rem;
   width: 0.3125rem;
   height: 0.625rem;
-  border: solid var(--primary-contrast);
+  border: solid var(--white);
   border-width: 0 2px 2px 0;
   transform: rotate(45deg) scale(0.5);
 }
@@ -6616,7 +6584,7 @@ body.media.show .media-parent-item a:hover {
   text-overflow: ellipsis;
   font-size: var(--text-sm);
   line-height: 1.5;
-  color: var(--text-primary);
+  color: var(--ink);
 }
 .faceted-browse-page .select-list-item.active label,
 .faceted-browse-page .facet label:has(input:checked),
@@ -6653,14 +6621,14 @@ body.media.show .media-parent-item a:hover {
   gap: var(--space-3);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
-  color: var(--text-primary);
+  color: var(--ink);
   font-size: var(--text-sm);
   text-decoration: none;
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 .faceted-browse-page #categories li a:hover,
 .block-facetedBrowsePreview #categories li a:hover {
-  background: var(--bg-muted);
+  background: var(--surface-raised);
   color: var(--primary);
 }
 .faceted-browse-page #categories li a:focus-visible,
@@ -6691,7 +6659,7 @@ body.media.show .media-parent-item a:hover {
   gap: var(--space-2);
   margin-block-end: var(--space-3);
   padding: var(--space-2) var(--space-3);
-  background: var(--bg-muted);
+  background: var(--surface-raised);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--primary);
@@ -6702,7 +6670,7 @@ body.media.show .media-parent-item a:hover {
 }
 .faceted-browse-page #categories-return:hover,
 .block-facetedBrowsePreview #categories-return:hover {
-  background: color-mix(in oklab, var(--primary) 10%, var(--bg-muted));
+  background: color-mix(in oklab, var(--primary) 10%, var(--surface-raised));
   border-color: var(--primary);
   color: var(--primary-hover);
 }
@@ -6955,7 +6923,7 @@ body.media.show .media-parent-item a:hover {
   background: var(--surface) !important;
   border: 1px solid var(--border) !important;
   border-radius: var(--radius-sm) !important;
-  color: var(--text-primary) !important;
+  color: var(--ink) !important;
   text-indent: -9999px !important;
   text-decoration: none !important;
   overflow: hidden !important;
@@ -6976,14 +6944,14 @@ body.media.show .media-parent-item a:hover {
 .faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn.left::before,
 .block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn.left::before,
 .block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn.left::before {
-  border-right: 6px solid var(--text-primary) !important;
+  border-right: 6px solid var(--ink) !important;
   margin-left: -1px;
 }
 .faceted-browse-page .tablesaw-advance .tablesaw-nav-btn.right::before,
 .faceted-browse-page .tablesaw-advance a.tablesaw-nav-btn.btn.right::before,
 .block-facetedBrowsePreview .tablesaw-advance .tablesaw-nav-btn.right::before,
 .block-facetedBrowsePreview .tablesaw-advance a.tablesaw-nav-btn.btn.right::before {
-  border-left: 6px solid var(--text-primary) !important;
+  border-left: 6px solid var(--ink) !important;
   margin-left: 1px;
 }
 .faceted-browse-page .tablesaw-advance .tablesaw-nav-btn:hover:not(.disabled),
@@ -7064,18 +7032,7 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   align-items: baseline;
   gap: var(--space-3);
   padding-bottom: var(--space-3);
-  border-bottom: 1px solid color-mix(in oklab, var(--primary) var(--accent-mix-subtle), var(--border));
-  position: relative;
-}
-.hierarchy-block__header::after {
-  content: "";
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 3rem;
-  height: 2px;
-  background: var(--primary);
-  border-radius: var(--radius-full);
+  border-bottom: 1px solid var(--border-light);
 }
 .hierarchy-block__label {
   margin: 0;
@@ -7171,7 +7128,7 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
 .hierarchy-card:hover {
   transform: translateY(var(--lift-xs));
   box-shadow: var(--shadow-md);
-  border-color: color-mix(in oklab, var(--primary) var(--accent-mix-medium), var(--border));
+  border-color: var(--border-strong);
 }
 .hierarchy-card__link {
   display: flex;
@@ -7197,7 +7154,7 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   align-items: center;
   justify-content: center;
   aspect-ratio: 5/3;
-  background: linear-gradient(180deg, color-mix(in oklab, var(--primary) 5%, var(--surface)) 0%, var(--surface-sunken) 100%);
+  background: var(--surface-sunken);
   border-bottom: 1px solid var(--border-light);
   overflow: hidden;
 }
@@ -7255,7 +7212,7 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   transform: scale(1.06);
 }
 .hierarchy-card--no-thumb .hierarchy-card__media {
-  background: radial-gradient(circle at 50% 40%, color-mix(in oklab, var(--primary) 10%, transparent) 0%, transparent 65%), var(--surface-sunken);
+  background: var(--surface-sunken);
 }
 .hierarchy-card__body {
   display: flex;

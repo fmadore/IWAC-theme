@@ -313,7 +313,7 @@
             &:hover {
                 background-color: var(--primary);
                 border-color: var(--primary);
-                color: var(--primary-contrast);
+                color: var(--white);
                 box-shadow: var(--glow-sm);
             }
 
@@ -378,7 +378,7 @@
 
     #page-actions {
         display: flex;
-        background-color: var(--bg-elevated);
+        background-color: var(--surface-raised);
         border-block-start: 1px solid var(--border);
         bottom: 0;
         gap: var(--space-5);
@@ -390,7 +390,7 @@
         width: 100vw;
 
         @supports ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
-            background-color: color-mix(in oklab, var(--bg-elevated) 85%, transparent);
+            background-color: color-mix(in oklab, var(--surface-raised) 85%, transparent);
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
@@ -427,10 +427,10 @@
     margin-block-end: var(--space-8);
 
     .filter {
-        background-color: var(--bg-muted);
+        background-color: var(--surface-raised);
         border: 1px solid var(--border);
         border-radius: var(--radius-full);
-        color: var(--text-primary);
+        color: var(--ink);
         font-size: var(--text-sm);
         padding: var(--space-1) var(--space-3);
         transition:
@@ -438,7 +438,7 @@
             border-color var(--transition-fast);
 
         &:hover {
-            background-color: var(--bg-elevated);
+            background-color: var(--surface-raised);
             border-color: var(--primary);
         }
     }
@@ -909,7 +909,7 @@
 
     label {
         display: block;
-        color: var(--text-heading);
+        color: var(--ink-strong);
         font-size: var(--text-sm);
         font-weight: 500;
     }
