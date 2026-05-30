@@ -5,7 +5,7 @@ Theme URI: https://github.com/fmadore/IWAC-theme
 Author: Frédérick Madore
 Author URI: https://www.frederickmadore.com/
 Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
-Version: 2.3.0
+Version: 2.4.1
 Omeka Version Constraint: ^4.1.0
 Requires PHP: 7.4
 License: GNU General Public License v3 or later
@@ -2119,9 +2119,19 @@ body.main-header--center {
   gap: var(--space-4);
   padding-block: var(--space-xs);
 }
+@media (min-width: 1460px) {
+  .main-header__main-bar {
+    justify-content: center;
+  }
+}
 .main-header__site-title {
   flex: 0 1 auto;
   min-width: 0;
+}
+@media (min-width: 1460px) {
+  .main-header__site-title {
+    display: none;
+  }
 }
 .main-header__site-title a {
   display: -webkit-box;
