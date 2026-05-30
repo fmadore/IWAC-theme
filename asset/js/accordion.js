@@ -25,30 +25,6 @@ const accordionScript = () => {
         }
     }
 
-    const expandCollapseBtns = document.querySelectorAll('.resources-linked__expand-collapse-btn');
-
-    expandCollapseBtns.forEach((expandCollapseBtn) => {
-        expandCollapseBtn.addEventListener('click', function() {
-            if (this.classList.contains('expanded')) {
-                const expandedTriggers = this.parentElement.nextElementSibling.querySelectorAll('.accordion__trigger.expanded');
-                expandedTriggers.forEach((expandedTrigger) => {
-                    expandedTrigger.click();
-                });
-
-                this.innerText = expandAllText;
-                this.classList.remove('expanded');
-            } else {
-                const collapsedTriggers = this.parentElement.nextElementSibling.querySelectorAll('.accordion__trigger:not(.expanded)');
-                collapsedTriggers.forEach((collapsedTrigger) => {
-                    collapsedTrigger.click();
-                });
-
-                this.innerText = collapseAllText;
-                this.classList.add('expanded');
-            }
-        });
-    });
-
     // Resize Events
 
     refreshPanelsHeight();

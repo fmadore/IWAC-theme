@@ -36,24 +36,24 @@
     }
 
     /**
-     * Update the toggle button's aria-label and icon visibility
+     * Update the toggle button's aria-label and pressed state.
+     *
+     * Icon visibility is owned entirely by CSS via body[data-theme]
+     * (see _theme-toggle.scss). We deliberately do NOT write inline
+     * display styles here — doing so clobbered the pre-paint CSS state
+     * and forced `display: inline`, which broke the icon's flex centering.
      */
     function updateToggleButton(theme) {
         const toggle = document.querySelector('[data-theme-toggle]');
         if (!toggle) return;
 
         const isDark = theme === 'dark';
-        toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+        // Labels are injected (and translated) by the template; fall back
+        // to English if the data attributes are absent.
+        const toLight = toggle.dataset.labelToLight || 'Switch to light mode';
+        const toDark = toggle.dataset.labelToDark || 'Switch to dark mode';
+        toggle.setAttribute('aria-label', isDark ? toLight : toDark);
         toggle.setAttribute('aria-pressed', isDark.toString());
-
-        // Update icon visibility
-        const lightIcon = toggle.querySelector('.theme-toggle__icon--light');
-        const darkIcon = toggle.querySelector('.theme-toggle__icon--dark');
-        
-        if (lightIcon && darkIcon) {
-            lightIcon.style.display = isDark ? 'none' : 'inline';
-            darkIcon.style.display = isDark ? 'inline' : 'none';
-        }
     }
 
     /**

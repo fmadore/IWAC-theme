@@ -389,11 +389,9 @@
         position: sticky;
         width: 100vw;
 
-        @supports ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
-            background-color: color-mix(in oklab, var(--surface-raised) 85%, transparent);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-        }
+        // Solid surface — no backdrop-filter blur. Glassmorphism is reserved
+        // for the sticky site header; this sticky action bar uses an opaque
+        // raised surface + the hairline top border above.
 
         @media (min-width: $lg) {
             align-items: flex-end;

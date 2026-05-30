@@ -5,7 +5,7 @@ Theme URI: https://github.com/fmadore/IWAC-theme
 Author: Frédérick Madore
 Author URI: https://www.frederickmadore.com/
 Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
-Version: 1.0.0
+Version: 2.2.0
 Omeka Version Constraint: ^4.1.0
 Requires PHP: 7.4
 License: GNU General Public License v3 or later
@@ -169,7 +169,6 @@ body[data-theme=light] {
   --blockquote-border: color-mix(in oklab, var(--primary) 60%, var(--border) 40%);
   --blockquote-quote: color-mix(in oklab, var(--primary) 80%, var(--ink) 20%);
   --footer-surface: oklch(18% 0.012 264);
-  --footer-surface-alt: oklch(14% 0.012 264);
   --footer-divider: oklch(30% 0.012 264);
   --footer-text: oklch(94% 0.005 258);
   --footer-text-muted: oklch(72% 0.008 258);
@@ -210,7 +209,6 @@ body[data-theme=light] {
     --blockquote-border: color-mix(in oklab, var(--primary) 68%, var(--ink) 32%);
     --blockquote-quote: color-mix(in oklab, var(--primary) 75%, white 25%);
     --footer-surface: color-mix(in oklab, var(--surface) 80%, black 20%);
-    --footer-surface-alt: color-mix(in oklab, var(--surface) 70%, black 30%);
     --footer-divider: color-mix(in oklab, var(--border) 85%, var(--ink) 15%);
     --footer-text: var(--ink);
     --footer-text-muted: var(--ink-light);
@@ -250,7 +248,6 @@ body[data-theme=dark] {
   --blockquote-border: color-mix(in oklab, var(--primary) 68%, var(--ink) 32%);
   --blockquote-quote: color-mix(in oklab, var(--primary) 75%, white 25%);
   --footer-surface: color-mix(in oklab, var(--surface) 80%, black 20%);
-  --footer-surface-alt: color-mix(in oklab, var(--surface) 70%, black 30%);
   --footer-divider: color-mix(in oklab, var(--border) 85%, var(--ink) 15%);
   --footer-text: var(--ink);
   --footer-text-muted: var(--ink-light);
@@ -292,7 +289,6 @@ body[data-theme=light] {
   --blockquote-border: color-mix(in oklab, var(--primary) 60%, var(--border) 40%);
   --blockquote-quote: color-mix(in oklab, var(--primary) 80%, var(--ink) 20%);
   --footer-surface: oklch(18% 0.012 264);
-  --footer-surface-alt: oklch(14% 0.012 264);
   --footer-divider: oklch(30% 0.012 264);
   --footer-text: oklch(94% 0.005 258);
   --footer-text-muted: oklch(72% 0.008 258);
@@ -315,6 +311,9 @@ body[data-theme=light] {
   --text-2xl: 1.875rem;
   --text-3xl: clamp(2.25rem, 1.9rem + 1.8vw, 3rem);
   --text-4xl: clamp(2.75rem, 2.3rem + 2.2vw, 3.75rem);
+  --font-headings: Source Serif 4, Source Serif Pro, Georgia, Times New Roman, serif;
+  --font-body: Public Sans, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+  --font-mono: ui-monospace, SF Mono, Cascadia Mono, Roboto Mono, monaco, consolas, Andale Mono, DejaVu Sans Mono, monospace;
 }
 
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
@@ -872,7 +871,6 @@ blockquote {
   display: flex;
   background-color: var(--blockquote-bg);
   border-inline-start: 3px solid var(--blockquote-border);
-  box-shadow: var(--shadow-sm);
   font-style: italic;
   padding: var(--space-5) var(--space-6) var(--space-5) var(--space-16);
   position: relative;
@@ -1174,12 +1172,12 @@ figcaption {
 }
 .resource .description.fadeout::after {
   content: "";
-  background: linear-gradient(to right, transparent, var(--background) 60%);
-  height: 1.7rem;
-  inset-inline-start: 50%;
-  inset-inline-end: 0;
   position: absolute;
-  top: 4.5rem;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2.5rem;
+  background: linear-gradient(to bottom, transparent, var(--background));
+  pointer-events: none;
 }
 .resource .description.ellipsis {
   display: -webkit-box;
@@ -1210,7 +1208,7 @@ figcaption {
 }
 .resource-tags .resource-tag[style*=background-color] {
   color: var(--ink-on-pastel);
-  border-color: transparent;
+  border-color: color-mix(in oklab, var(--ink-on-pastel) 18%, transparent);
 }
 .resource-tags .resource-tag:hover {
   background-color: var(--surface);
@@ -1454,6 +1452,14 @@ input[type=submit]:active {
   transform: translateY(0);
   box-shadow: var(--glow-xs);
 }
+button:focus-visible,
+.button:focus-visible,
+input[type=button]:focus-visible,
+input[type=reset]:focus-visible,
+input[type=submit]:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+}
 button.btn--secondary,
 .button.btn--secondary,
 input[type=button].btn--secondary,
@@ -1542,6 +1548,7 @@ button.remove-value {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   width: var(--size-control-sm);
   height: var(--size-control-sm);
   min-width: var(--size-control-sm);
@@ -1566,6 +1573,12 @@ button.add-value::before,
 button.remove-value::before {
   text-indent: 0;
   font-size: 0.875rem;
+}
+button.add-value::after,
+button.remove-value::after {
+  content: "";
+  position: absolute;
+  inset: calc((var(--size-control-lg) - var(--size-control-sm)) / -2);
 }
 button.add-value:hover, button.add-value:focus,
 button.remove-value:hover,
@@ -1628,29 +1641,28 @@ select {
   margin-bottom: var(--space-sm);
   line-height: 1.4;
   text-overflow: ellipsis;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
-input[type=text]:focus,
-input[type=email]:focus,
-input[type=url]:focus,
-input[type=password]:focus,
-input[type=search]:focus,
-input[type=number]:focus,
-input[type=tel]:focus,
-input[type=range]:focus,
-input[type=date]:focus,
-input[type=month]:focus,
-input[type=week]:focus,
-input[type=time]:focus,
-input[type=datetime]:focus,
-input[type=datetime-local]:focus,
-input[type=color]:focus,
-textarea:focus,
-select:focus {
+input[type=text]:focus-visible,
+input[type=email]:focus-visible,
+input[type=url]:focus-visible,
+input[type=password]:focus-visible,
+input[type=search]:focus-visible,
+input[type=number]:focus-visible,
+input[type=tel]:focus-visible,
+input[type=range]:focus-visible,
+input[type=date]:focus-visible,
+input[type=month]:focus-visible,
+input[type=week]:focus-visible,
+input[type=time]:focus-visible,
+input[type=datetime]:focus-visible,
+input[type=datetime-local]:focus-visible,
+input[type=color]:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
   outline: none;
   border-color: var(--primary);
   box-shadow: var(--ring-focus);
-  transform: translateY(var(--lift-xxs));
 }
 input[type=text]::-moz-placeholder, input[type=email]::-moz-placeholder, input[type=url]::-moz-placeholder, input[type=password]::-moz-placeholder, input[type=search]::-moz-placeholder, input[type=number]::-moz-placeholder, input[type=tel]::-moz-placeholder, input[type=range]::-moz-placeholder, input[type=date]::-moz-placeholder, input[type=month]::-moz-placeholder, input[type=week]::-moz-placeholder, input[type=time]::-moz-placeholder, input[type=datetime]::-moz-placeholder, input[type=datetime-local]::-moz-placeholder, input[type=color]::-moz-placeholder, textarea::-moz-placeholder, select::-moz-placeholder {
   color: var(--muted);
@@ -1804,7 +1816,6 @@ fieldset {
   background: var(--panel-bg);
   border: var(--panel-border);
   border-radius: var(--panel-radius);
-  box-shadow: var(--panel-shadow);
   padding: var(--space-lg);
   margin-bottom: var(--space-lg);
 }
@@ -2875,15 +2886,6 @@ body.menu-drawer-toggled {
   transition: background-color var(--transition-fast);
   width: 100%;
 }
-.accordion__trigger::before {
-  content: "";
-  background-color: var(--primary);
-  height: 100%;
-  inset-inline-start: 0;
-  position: absolute;
-  top: 0;
-  width: var(--accent-line-md);
-}
 .accordion__trigger:hover, .accordion__trigger:active {
   background-color: var(--surface-raised);
   color: var(--ink);
@@ -2914,7 +2916,7 @@ body.menu-drawer-toggled {
   max-height: 0;
   overflow: hidden;
   padding: 0 var(--space-6);
-  transition: max-height var(--transition-slow);
+  transition: max-height var(--transition-base);
 }
 
 /* Advanced Search
@@ -3231,13 +3233,6 @@ body.menu-drawer-toggled {
   padding: var(--space-6);
   position: sticky;
   width: 100vw;
-}
-@supports ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
-  #advanced-search #page-actions {
-    background-color: color-mix(in oklab, var(--surface-raised) 85%, transparent);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-  }
 }
 @media (min-width: 1024px) {
   #advanced-search #page-actions {
@@ -3997,7 +3992,7 @@ select.query-filter optgroup {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, color-mix(in oklab, black 8%, transparent) 0%, color-mix(in oklab, black 38%, transparent) 60%, color-mix(in oklab, black 70%, transparent) 100%);
+  background: linear-gradient(180deg, color-mix(in oklab, black 20%, transparent) 0%, color-mix(in oklab, black 46%, transparent) 60%, color-mix(in oklab, black 72%, transparent) 100%);
   z-index: 1;
 }
 .banner img {
@@ -4377,10 +4372,6 @@ select.query-filter optgroup {
   font-size: var(--text-sm);
   color: var(--ink);
   background-color: var(--surface);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right var(--space-3) center;
-  background-size: 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   cursor: pointer;
@@ -4596,6 +4587,7 @@ select.query-filter optgroup {
 #linked-resources .linked-resources-table .linked-resources-table__title-link {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   max-width: 64ch;
@@ -5106,10 +5098,6 @@ body.media.show .media-parent-item a:hover {
   width: 100%;
   height: auto;
   display: block;
-  transition: transform var(--transition-slow);
-}
-.block-blockGroup:has(.block-asset):hover .asset img {
-  transform: scale(1.03);
 }
 .block-blockGroup:has(.block-asset) .block-html h3 {
   margin-block-start: 0;
@@ -5263,7 +5251,7 @@ body.media.show .media-parent-item a:hover {
 }
 .preview-block .browse-all:active:not(.disabled) {
   background: var(--primary);
-  color: white;
+  color: var(--white);
   transform: translateY(0);
 }
 .preview-block .browse-all:focus-visible {
@@ -5488,19 +5476,8 @@ body.media.show .media-parent-item a:hover {
 }
 .item-with-metadata__header {
   border: 1px solid var(--border);
-  border-inline-start: none;
   padding: var(--space-4);
-  position: relative;
   width: 100%;
-}
-.item-with-metadata__header::before {
-  content: "";
-  background-color: var(--primary);
-  height: 100%;
-  inset-inline-start: 0;
-  position: absolute;
-  top: 0;
-  width: 3px;
 }
 .item-with-metadata__header .language {
   margin-inline-start: var(--space-3);
@@ -6053,7 +6030,7 @@ body.media.show .media-parent-item a:hover {
 }
 .site-page-pagination a:active:not(.disabled) {
   background: var(--primary);
-  color: white;
+  color: var(--white);
   transform: translateY(0);
 }
 .site-page-pagination a:focus-visible {
@@ -6809,6 +6786,7 @@ body.media.show .media-parent-item a:hover {
 .block-facetedBrowsePreview table.faceted-results tbody td .td-content:not(:has(.resource-link)) {
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -6827,13 +6805,13 @@ body.media.show .media-parent-item a:hover {
   gap: var(--space-2);
   max-width: 100%;
   text-decoration: none;
-  color: var(--primary);
+  color: var(--ink);
   font-weight: 500;
   transition: color var(--transition-fast);
 }
 .faceted-browse-page table.faceted-results tbody td .resource-link:hover,
 .block-facetedBrowsePreview table.faceted-results tbody td .resource-link:hover {
-  color: var(--primary-hover);
+  color: var(--primary);
 }
 .faceted-browse-page table.faceted-results tbody td .resource-link:focus-visible,
 .block-facetedBrowsePreview table.faceted-results tbody td .resource-link:focus-visible {
@@ -7126,7 +7104,6 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   }
 }
 .hierarchy-card:hover {
-  transform: translateY(var(--lift-xs));
   box-shadow: var(--shadow-md);
   border-color: var(--border-strong);
 }
@@ -7395,7 +7372,7 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
 }
 .browse-controls .permalink:active:not(.disabled) {
   background: var(--primary);
-  color: white;
+  color: var(--white);
   transform: translateY(0);
 }
 .browse-controls .permalink:focus-visible {
@@ -7468,6 +7445,7 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -7555,6 +7533,7 @@ body:has(.block-facetedBrowsePreview #section-sidebar.open) {
   color: var(--ink-light);
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -7800,7 +7779,7 @@ body.item.show .property[data-property-term="iwac:mistralSubjectiviteJustificati
 }
 .iframe-embed__wrapper:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--border-light);
+  border-color: var(--border-strong);
 }
 .iframe-embed__wrapper:focus-within {
   outline: 2px solid var(--primary);

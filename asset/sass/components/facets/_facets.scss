@@ -626,6 +626,7 @@
                 .td-content:not(:has(.resource-link)) {
                     display: -webkit-box;
                     -webkit-line-clamp: 4;
+                    line-clamp: 4;
                     -webkit-box-orient: vertical;
                     overflow: hidden;
                 }
@@ -646,12 +647,16 @@
                     gap: var(--space-2);
                     max-width: 100%;
                     text-decoration: none;
-                    color: var(--primary);
+                    // Ink at rest, primary on hover — matches the title-link
+                    // convention in the grid/list views and the item-page value
+                    // links. Reserves brand colour for the interactive state
+                    // rather than colouring every title in a dense results table.
+                    color: var(--ink);
                     font-weight: 500;
                     transition: color var(--transition-fast);
 
                     &:hover {
-                        color: var(--primary-hover);
+                        color: var(--primary);
                     }
 
                     &:focus-visible {

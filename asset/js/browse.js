@@ -1,4 +1,4 @@
- const browseScripts = () => {
+const browseScripts = () => {
     const resources = document.querySelectorAll('.resources');
 
     resources.forEach((resourcesSet, index) => {
@@ -9,7 +9,7 @@
             if (resourcesSet.classList.contains('resource-grid') && !resourcesSet.dataset.masonryReady) {
                 // Masonry
                 resourcesSet.dataset.masonryReady = true;
-                var masonry = new MiniMasonry({
+                const masonry = new MiniMasonry({
                     container: resourcesSet,
                     gutter: 27,
                     ultimateGutter: 27,

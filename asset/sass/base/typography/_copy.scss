@@ -22,7 +22,8 @@ blockquote {
     display: flex;
     background-color: var(--blockquote-bg);
     border-inline-start: 3px solid var(--blockquote-border);
-    box-shadow: var(--shadow-sm);
+    // No box-shadow: the tint + start-rule + quote glyph already form one
+    // coherent quote treatment; elevation made it read as a floating card.
     font-style: italic;
     padding: var(--space-5) var(--space-6) var(--space-5) var(--space-16);
     position: relative;

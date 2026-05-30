@@ -9,18 +9,18 @@
         max-height: 6.2rem;
         overflow: hidden;
         
+        // Full-width fade band anchored to the bottom of the clamped box,
+        // fading text → background (top→bottom). The previous version used a
+        // `to right` gradient pinned to the right half of one line, so it
+        // faded nothing useful and didn't mirror in RTL.
         &::after {
             content: "";
-            background: linear-gradient(
-                to right,
-                transparent,
-                var(--background) 60%
-            );
-            height: 1.7rem;
-            inset-inline-start: 50%;
-            inset-inline-end: 0;
             position: absolute;
-            top: 4.5rem;
+            inset-inline: 0;
+            bottom: 0;
+            height: 2.5rem;
+            background: linear-gradient(to bottom, transparent, var(--background));
+            pointer-events: none;
         }
     }
 

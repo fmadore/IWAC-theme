@@ -117,10 +117,9 @@
         font-size: var(--text-sm);
         color: var(--ink);
         background-color: var(--surface);
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right var(--space-3) center;
-        background-size: 16px;
+        // Arrow inherited from the base `select` rule (shared theme-neutral
+        // SVG asset) rather than a bespoke data-URI with a frozen #666 stroke
+        // that lost contrast on dark surfaces.
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
         cursor: pointer;
@@ -371,6 +370,7 @@
         @include title-link;
         display: -webkit-box;
         -webkit-line-clamp: 3;
+        line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
         max-width: 64ch;

@@ -2,7 +2,7 @@
 
 // ==========================================================================
 // Accordion
-// Expandable content panels with accent line and smooth transitions
+// Expandable content panels with smooth transitions
 // ==========================================================================
 
 .accordion {
@@ -31,15 +31,9 @@
         transition: background-color var(--transition-fast);
         width: 100%;
 
-        &::before {
-            content: "";
-            background-color: var(--primary);
-            height: 100%;
-            inset-inline-start: 0;
-            position: absolute;
-            top: 0;
-            width: var(--accent-line-md);
-        }
+        // No primary inline-start stripe — same banned "accent stripe" tell
+        // removed from item-with-metadata. The bottom hairline + chevron icon
+        // carry the affordance; brand color stays reserved for focus/state.
 
         &:hover,
         &:active {
@@ -74,6 +68,6 @@
         max-height: 0;
         overflow: hidden;
         padding: 0 var(--space-6);
-        transition: max-height var(--transition-slow);
+        transition: max-height var(--transition-base);
     }
 }

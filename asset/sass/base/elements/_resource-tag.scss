@@ -25,7 +25,11 @@
         // Force dark text when inline background-color is set via style attribute
         &[style*="background-color"] {
             color: var(--ink-on-pastel);
-            border-color: transparent;
+            // Keep a faint edge (derived from the dark text colour) so very
+            // pale pastel backgrounds (e.g. the ~88%-light type colours) don't
+            // dissolve into the near-white surface — the pill always reads as
+            // a discrete chip rather than floating text.
+            border-color: color-mix(in oklab, var(--ink-on-pastel) 18%, transparent);
         }
 
         &:hover {

@@ -2,7 +2,7 @@
 
 // ==========================================================================
 // Item With Metadata Block
-// Detailed item display with header accent bar and responsive thumbnail
+// Detailed item display with header and responsive thumbnail
 // ==========================================================================
 
 .item-with-metadata {
@@ -19,21 +19,12 @@
     }
 
     &__header {
+        // Full hairline border — no orange edge stripe. A primary-colored
+        // 3px inline-start bar is the textbook "accent stripe" AI tell the
+        // brief bans; the border + heading typography carry the header.
         border: 1px solid var(--border);
-        border-inline-start: none;
         padding: var(--space-4);
-        position: relative;
         width: 100%;
-
-        &::before {
-            content: "";
-            background-color: var(--primary);
-            height: 100%;
-            inset-inline-start: 0;
-            position: absolute;
-            top: 0;
-            width: 3px;
-        }
 
         .language {
             margin-inline-start: var(--space-3);

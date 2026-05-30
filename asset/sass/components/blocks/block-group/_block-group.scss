@@ -67,14 +67,8 @@
                     width: 100%;
                     height: auto;
                     display: block;
-                    transition: transform var(--transition-slow);
                 }
             }
-        }
-
-        // Image zoom on card hover
-        &:hover .asset img {
-            transform: scale(1.03);
         }
 
         // Text content styling

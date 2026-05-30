@@ -14,6 +14,12 @@ const freedomScripts = () => {
     let scrollDirection = 'up';
 
     function onScroll(scrollPos) {
+        // Header chrome can be absent on minimal pages; bail safely so the
+        // rest of freedomScripts (annotations, language switcher) still binds.
+        if (!mainHeader || !mainHeaderTopBar || !mainHeaderMainBar || !menuDrawer) {
+            return;
+        }
+
         // Skip header auto-hide when an input is focused to prevent scroll jitter
         const activeElement = document.activeElement;
         const isInputFocused = activeElement && (
@@ -65,6 +71,9 @@ const freedomScripts = () => {
     onResize();
 
     function onResize() {
+        if (!mainHeader || !mainHeaderMainBar) {
+            return;
+        }
         getUserBarHeight();
         refreshBodyPaddingTop();
         onScroll(lastKnownScrollPosition);
@@ -125,8 +134,9 @@ const freedomScripts = () => {
             });
         }
 
-        // Position tooltip on hover
-        annotationBtn.addEventListener('mouseover', setAnnotationTooltipPos);
+        // Position tooltip on hover (mouseenter: fires once, doesn't bubble
+        // from children, so no repeated layout reads / thrash on hover).
+        annotationBtn.addEventListener('mouseenter', setAnnotationTooltipPos);
 
         function setAnnotationTooltipPos() {
             const annotationBtnOffset = annotationBtn.getBoundingClientRect();

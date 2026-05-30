@@ -3,6 +3,8 @@
 // Modern button styles with elevation and micro-interactions
 // ==========================================================================
 
+@use "../../abstracts/abstracts" as *;
+
 button,
 .button,
 input[type="button"],
@@ -36,6 +38,12 @@ input[type="submit"] {
         transform: translateY(0);
         box-shadow: var(--glow-xs);
     }
+
+    // Visible keyboard focus for every button variant. The nested
+    // icon-btn / link-style / secondary buttons (and the add/remove
+    // controls below, which are still <button>s) all inherit this; it
+    // was previously missing, leaving those controls with no focus ring.
+    @include focus-ring;
 
     &.btn--secondary {
         background: transparent;
@@ -93,6 +101,7 @@ button.remove-value {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 
     // Size and shape
     width: var(--size-control-sm);
@@ -128,6 +137,14 @@ button.remove-value {
     &::before {
         text-indent: 0;
         font-size: 0.875rem;
+    }
+
+    // Expand the interactive hit area to the 44px WCAG 2.5.5 target
+    // without enlarging the visible 36px control.
+    &::after {
+        content: "";
+        position: absolute;
+        inset: calc((var(--size-control-lg) - var(--size-control-sm)) / -2);
     }
 
     &:hover,

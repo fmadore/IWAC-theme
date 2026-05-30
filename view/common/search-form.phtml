@@ -1,0 +1,21 @@
+<?php
+/**
+ * Theme override of Omeka core's common/search-form partial.
+ *
+ * Why this exists: core's partial sets the placeholder via
+ * $translate('Enter a search term'), a msgid that the active French catalog
+ * on /s/afrique_ouest/ doesn't supply — so it rendered in English on the
+ * otherwise-French chrome. This override uses 'Search' (reliably translated
+ * to "Rechercher" by Omeka core, same catalog that already gives us
+ * "Recherche avancée"). Markup mirrors core so existing #search-form CSS,
+ * the /index/search action, and the fulltext_search param all keep working.
+ */
+$translate   = $this->plugin('translate');
+$escapeAttr  = $this->plugin('escapeHtmlAttr');
+$site        = $this->currentSite();
+$query       = $this->params()->fromQuery('fulltext_search');
+?>
+<form action="<?php echo $escapeAttr($site->url() . '/index/search'); ?>" id="search-form" aria-label="<?php echo $escapeAttr($translate('Search')); ?>" role="search">
+    <input type="text" id="fulltext-search" name="fulltext_search" value="<?php echo $escapeAttr($query); ?>" placeholder="<?php echo $escapeAttr($translate('Search')); ?>" aria-label="<?php echo $escapeAttr($translate('Query')); ?>" aria-labelledby="search-form fulltext-search">
+    <button id="search-submit" type="submit" aria-label="<?php echo $escapeAttr($translate('Submit')); ?>" title="<?php echo $escapeAttr($translate('Submit')); ?>"><span class="o-icon-search" aria-hidden="true"></span></button>
+</form>

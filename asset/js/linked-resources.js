@@ -22,6 +22,12 @@ const prefetchCache = new Map();
 
 function prefetch(url) {
     if (!url || prefetchCache.has(url)) return;
+    // Bound the cache. Pagination only warms a handful of URLs, but cap it so
+    // a long browsing session can't retain unbounded response bodies (Map
+    // keeps insertion order, so the first key is the oldest).
+    if (prefetchCache.size >= 8) {
+        prefetchCache.delete(prefetchCache.keys().next().value);
+    }
     const promise = fetch(url, {
         credentials: 'same-origin',
         headers: { 'X-Requested-With': 'fetch' },

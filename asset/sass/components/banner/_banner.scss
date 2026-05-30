@@ -54,9 +54,9 @@
         background:
             linear-gradient(
                 180deg,
-                color-mix(in oklab, black 8%, transparent) 0%,
-                color-mix(in oklab, black 38%, transparent) 60%,
-                color-mix(in oklab, black 70%, transparent) 100%
+                color-mix(in oklab, black 20%, transparent) 0%,
+                color-mix(in oklab, black 46%, transparent) 60%,
+                color-mix(in oklab, black 72%, transparent) 100%
             );
         z-index: 1;
     }

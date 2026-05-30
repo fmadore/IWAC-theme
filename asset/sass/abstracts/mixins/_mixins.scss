@@ -62,12 +62,12 @@
     @include button;
     background: var(--primary);
     border: none;
-    color: white;
+    color: var(--white);
     box-shadow: var(--glow-sm);
 
     &:hover:not(.disabled) {
         background: var(--primary-hover);
-        color: white;
+        color: var(--white);
         transform: translateY(var(--lift-xxs));
         box-shadow: var(--glow-md);
     }
@@ -79,7 +79,7 @@
     }
 
     &:focus-visible {
-        color: white;
+        color: var(--white);
         outline: 2px solid var(--primary);
         outline-offset: 2px;
     }
@@ -94,7 +94,7 @@
     }
 
     &:visited {
-        color: white;
+        color: var(--white);
     }
 }
 
@@ -174,7 +174,7 @@
 
     &:active:not(.disabled) {
         background: var(--primary);
-        color: white;
+        color: var(--white);
         transform: translateY(0);
     }
 

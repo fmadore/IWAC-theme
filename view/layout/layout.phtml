@@ -44,9 +44,13 @@ $this->headLink()->prependStylesheet($this->assetUrl('css/iconfonts.css', 'Omeka
 // Fonts. Relevant since IWAC is hosted at ZMO Berlin (German research
 // institute), where Google Fonts has been ruled non-compliant under
 // GDPR in some EU jurisdictions due to IP logging. Bunny does not log.
-// Bunny's /css endpoint accepts the CSS2-family syntax (lowercased,
-// hyphenated names, variable-axis ranges supported).
-$this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=public-sans:ital,wght@0,400..700;1,400&family=source-serif-4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap');
+// IMPORTANT: Bunny's /css endpoint only honors the FIRST family in a
+// CSS2-style multi-"&family=" request and silently drops the rest (verified
+// live: "&family=" returned Public Sans only, 0 Source Serif faces). Use the
+// v1 PIPE "|" separator BETWEEN families — that returns all faces including
+// the source-serif-4 opsz axis. Do NOT revert to "&family=" or the display
+// serif disappears and every heading falls back to Georgia.
+$this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=public-sans:ital,wght@0,400..700;1,400|source-serif-4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap');
 $this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'));
 $this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'));
 $this->jsTranslate();
@@ -75,8 +79,7 @@ if ($userBar) {
 			:root {
 				/* Single brand seed; SCSS derives every primary variant via color-mix(in oklab, ...) */
 				--primary-base: <?php echo $this->escapeHtml($primaryColor); ?>;
-				--primary-contrast: <?php echo $this->ContrastColor($primaryColor, ['#fff', '#1a1a1a']); ?>;
-			}
+				}
 		</style>
 		
 		<?php if ($bannerHeightMobile && preg_match('/^-?[0-9]*\.?[0-9]+(px|em|rem|%|vh|vw|svh|dvh|lvh)$/', trim($bannerHeightMobile))): ?>

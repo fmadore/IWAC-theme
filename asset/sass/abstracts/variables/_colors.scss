@@ -77,7 +77,6 @@
 
   // Footer — deep neutral ink for institutional contrast (was warm dark)
   --footer-surface:     oklch(18% 0.012 264);
-  --footer-surface-alt: oklch(14% 0.012 264);
   --footer-divider:     oklch(30% 0.012 264);
   --footer-text:        oklch(94% 0.005 258);
   --footer-text-muted:  oklch(72% 0.008 258);
@@ -137,7 +136,6 @@
 
   // Footer in dark theme uses the surface scale (not a permanent dark band)
   --footer-surface:     color-mix(in oklab, var(--surface) 80%, black 20%);
-  --footer-surface-alt: color-mix(in oklab, var(--surface) 70%, black 30%);
   --footer-divider:     color-mix(in oklab, var(--border) 85%, var(--ink) 15%);
   --footer-text:        var(--ink);
   --footer-text-muted:  var(--ink-light);
