@@ -8,8 +8,9 @@ $navDepth = (int) $this->themeSetting('nav_depth') ? (int) $this->themeSetting('
 	<?php echo $userBar; ?>
 
 	<div class="main-header__top-bar container">
-		<a class="main-header__advanced-search"
-			href="<?php echo $site->url() . '/item/search'; ?>"><?php echo $translate('Advanced search'); ?></a>
+		<?php // Advanced-search link removed in theme 2.4.0 — the IwacSearch
+		      // module's Typesense search (via the header box below) supersedes
+		      // Omeka's /item/search property builder. ?>
 		<div class="main-header__search-form">
 			<?php echo $this->partial('common/search-form'); ?>
 		</div>

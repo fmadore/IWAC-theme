@@ -2012,33 +2012,10 @@ body.main-header--center {
     gap: var(--space-3);
   }
 }
-.main-header__advanced-search {
-  display: none;
-  align-items: center;
-  height: var(--size-control-sm);
-  padding-inline: var(--space-3);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wide);
-  color: var(--ink-light);
-  text-decoration: none;
-  border-radius: var(--radius-full);
-  white-space: nowrap;
-  transition: color var(--transition-fast), background-color var(--transition-fast);
-}
-@media (min-width: 768px) {
-  .main-header__advanced-search {
-    display: inline-flex;
-  }
-}
-.main-header__advanced-search:hover {
-  color: var(--primary);
-  background-color: var(--selection-bg);
-}
 .main-header__search-form {
   flex: 1;
   max-width: 100%;
+  position: relative;
 }
 @media (min-width: 768px) {
   .main-header__search-form {
