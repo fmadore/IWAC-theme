@@ -5,7 +5,7 @@ Theme URI: https://github.com/fmadore/IWAC-theme
 Author: Frédérick Madore
 Author URI: https://www.frederickmadore.com/
 Description: Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive
-Version: 2.4.1
+Version: 2.4.2
 Omeka Version Constraint: ^4.1.0
 Requires PHP: 7.4
 License: GNU General Public License v3 or later
@@ -2069,7 +2069,7 @@ body.main-header--center {
 .main-header__search-form input::placeholder {
   color: var(--muted);
 }
-.main-header__search-form button {
+.main-header__search-form button[type=submit] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2089,7 +2089,7 @@ body.main-header--center {
   box-shadow: none;
   transition: color var(--transition-fast), background-color var(--transition-fast);
 }
-.main-header__search-form button::before {
+.main-header__search-form button[type=submit]::before {
   mask: url("../img/search.svg") no-repeat center/contain;
   -webkit-mask: url("../img/search.svg") no-repeat center/contain;
   background-color: currentColor;
@@ -2098,13 +2098,13 @@ body.main-header--center {
   width: var(--text-base);
   height: var(--text-base);
 }
-.main-header__search-form button:hover, .main-header__search-form button:focus {
+.main-header__search-form button[type=submit]:hover, .main-header__search-form button[type=submit]:focus {
   background: var(--selection-bg);
   color: var(--primary);
   transform: none;
   box-shadow: none;
 }
-.main-header__search-form button:focus-visible {
+.main-header__search-form button[type=submit]:focus-visible {
   outline: 2px solid var(--focus-color);
   outline-offset: -2px;
 }

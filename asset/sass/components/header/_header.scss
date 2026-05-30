@@ -103,7 +103,14 @@
             }
         }
 
-        button {
+        // Scope to the submit button ONLY. The IwacSearch header typeahead
+        // appends its <button> rows (role=option, type=button) inside
+        // .main-header__search-form, so a bare `button` selector here also
+        // sized those rows as 36px round icon buttons (font-size:0 + a
+        // ::before magnifying glass), which is what produced the "two search
+        // icons" and the crammed entity suggestions. type="submit" matches
+        // only this form's own submit button; the dropdown rows are type=button.
+        button[type="submit"] {
             display: inline-flex;
             align-items: center;
             justify-content: center;
