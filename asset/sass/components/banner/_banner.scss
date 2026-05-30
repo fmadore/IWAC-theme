@@ -30,6 +30,21 @@
         border-radius: var(--radius-xl);
     }
 
+    // Compact variant — a short image-only strip on inner (non-home) pages.
+    // The header site-title carries branding there, so there's no overlay text
+    // and the height is owned here, not by the inline style / per-page
+    // banner-height settings (those drive only the full homepage hero).
+    &--compact {
+        height: clamp(96px, 12vh, 140px);
+        min-height: 0;
+        margin-block-end: var(--space-6);
+
+        @media (min-width: $md) {
+            height: clamp(120px, 13vh, 170px);
+            margin-block-end: var(--space-8);
+        }
+    }
+
     &.container {
         padding: 0;
         // Add margin to show rounded corners against background

@@ -84,7 +84,7 @@ if ($userBar) {
 		
 		<?php if ($bannerHeightMobile && preg_match('/^-?[0-9]*\.?[0-9]+(px|em|rem|%|vh|vw|svh|dvh|lvh)$/', trim($bannerHeightMobile))): ?>
 		<style type="text/css" media="screen and (max-width:768px)">
-			.banner {
+			.banner:not(.banner--compact) {
 				<?php echo $this->escapeHtml($bannerHeightProperty) . ': ' . $this->escapeHtml(trim($bannerHeightMobile)) . ' !important;'; ?>
 			}
 		</style>
@@ -109,7 +109,12 @@ if ($userBar) {
 
 		<?php echo $this->partial('common/header', ['userBar' => $userBar, 'site' => $site]); ?>
 
-		<?php echo $this->partial('common/banner'); ?>
+		<?php
+		// Full hero only on the site homepage; a short image strip elsewhere.
+		$bannerHomepage = method_exists($site, 'homepage') ? $site->homepage() : null;
+		$bannerCompact = !($bannerHomepage && $this->params()->fromRoute('page-slug') === $bannerHomepage->slug());
+		echo $this->partial('common/banner', ['compact' => $bannerCompact]);
+		?>
 
 		<div id="content" class="container" role="main" tabindex="-1">
 			<?php echo $this->content; ?>

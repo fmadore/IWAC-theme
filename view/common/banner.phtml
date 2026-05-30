@@ -19,20 +19,28 @@ $hasCustomBanner = (bool) $banner;
 
 $bannerHeightProperty = ($bannerEyebrow || $bannerHeading || $bannerDescription) ? 'min-height' : 'height';
 
+// Inner (non-home) pages get a short image strip; only the homepage shows the
+// full hero with the configurable height and overlay text.
+$compact = !empty($compact);
+
 $bannerInlineStyles = '';
 $imageInlineStyles = '';
 
-if ($bannerHeight) {
-    $bannerInlineStyles .= "{$bannerHeightProperty}: {$bannerHeight};";
-} else {
-    $bannerInlineStyles .= "{$bannerHeightProperty}: 20vh;";
+if (!$compact) {
+    if ($bannerHeight) {
+        $bannerInlineStyles .= "{$bannerHeightProperty}: {$bannerHeight};";
+    } else {
+        $bannerInlineStyles .= "{$bannerHeightProperty}: 20vh;";
+    }
 }
 
 $imageInlineStyles .= "object-position: {$bannerHorizontalPosition} {$bannerVerticalPosition};";
 
 $class = ['banner'];
 $class[] = $bannerWidth;
-if ($bannerEyebrow || $bannerHeading || $bannerDescription) {
+if ($compact) {
+    $class[] = 'banner--compact';
+} elseif ($bannerEyebrow || $bannerHeading || $bannerDescription) {
     $class[] = 'has-text';
 }
 ?>
@@ -52,6 +60,7 @@ if ($bannerEyebrow || $bannerHeading || $bannerDescription) {
              fetchpriority="high">
     <?php endif; ?>
 
+    <?php if (!$compact): ?>
     <div class="banner__content banner__content--<?php echo $bannerContentPosition; ?>">
         <?php if ($bannerEyebrow): ?>
             <span class="banner__eyebrow"><?php echo $escHtml($bannerEyebrow); ?></span>
@@ -63,4 +72,5 @@ if ($bannerEyebrow || $bannerHeading || $bannerDescription) {
             <p class="banner__description"><?php echo nl2br($escHtml($bannerDescription)); ?></p>
         <?php endif; ?>
     </div>
+    <?php endif; ?>
 </div>
