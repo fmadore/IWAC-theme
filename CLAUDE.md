@@ -134,6 +134,7 @@ Key rules:
 | Colors (borders) | direct names | `--border-light`, `--border`, `--border-strong` |
 | Colors (brand) | direct names | `--primary`, `--primary-hover`, `--primary-active`, `--white`, `--black` |
 | Text sizes | `--text-{size}` | `--text-xs`, `--text-sm`, `--text-base`, `--text-lg`, `--text-2xl` |
+| Font families | direct names | `--font-headings` (Source Serif 4), `--font-body` (Public Sans), `--font-mono` — exposed in `:root` so runtime consumers (IwacVisualizations, IwacSearch) inherit the theme's stacks instead of hardcoding their own |
 | Spacing | `--space-{n}` | `--space-1` through `--space-40` (also `--space-sm`, `--space-md`, etc.) |
 | Control sizes | `--size-control-{size}` | `--size-control-xs` (28px), `--size-control-sm` (36px), `--size-control-md` (40px), `--size-control-lg` (44px), `--size-control-xl` (48px) |
 | Reading measures | `--measure-{size}` | `--measure-narrow` (704px), `--measure-base` (840px), `--measure-wide` (1160px) |
@@ -337,7 +338,7 @@ The module bundles Tablesaw for responsive tables. Key points:
 | `.tablesaw-advance { float: right }` | Breaks flex layout | `float: none !important` |
 | `.tablesaw-advance a.tablesaw-nav-btn { width: 1.8em; height: 1.8em; text-indent: -9999px }` | Tiny buttons, arrow positioning based on small size | Override dimensions and re-center `::before` arrows |
 | `.tablesaw-btn` / `.btn-micro` | Generic button styles conflict | Use high-specificity selectors with `!important` |
-| `#section-sidebar.open { background-color: #fff }` | Hardcoded white background | Override with `var(--bg-surface)` for dark mode |
+| `#section-sidebar.open { background-color: #fff }` | Hardcoded white background | Override with `var(--surface)` for dark mode |
 
 #### Breakpoints
 

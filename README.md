@@ -23,8 +23,9 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 
 ### Modern Design System
 - **CSS Custom Properties** - Comprehensive design token system for colors, spacing, typography
-- **HSL Color System** - Dynamic color generation from admin settings
-- **Fluid Typography** - Responsive text sizing with `clamp()`
+- **OKLCH Color System** - Perceptually-uniform palette derived from a single admin-set brand seed (`--primary-base`) via `color-mix(in oklab, …)`
+- **Display-tier fluid type** - `clamp()` on the largest headings; a fixed `rem` scale for body/UI so labels don't drift between breakpoints
+- **Source Serif 4 + Public Sans** - font stacks exposed as `--font-*` tokens for sibling modules to consume
 - **Logical Properties** - RTL-ready with `margin-inline`, `padding-block`, etc.
 
 ### Additional Features
@@ -205,9 +206,11 @@ The language switcher displays:
 ### Other Supported Modules
 
 The theme includes styling for:
+- **[IwacSearch](https://github.com/fmadore/IwacSearch)** - Typesense-backed public search. The header search box (`view/common/search-form.phtml`) feeds the module's typeahead via a `data-iwac-header-search` hook, and the theme exposes its design tokens (`--font-*`, colours, spacing) for the module's Svelte client to consume.
+- **[IwacVisualizations](https://github.com/fmadore/IwacVisualizations)** - ECharts/MapLibre dashboards on the homepage and item pages; consumes the same theme tokens.
 - **Mapping** - Interactive maps on resource pages
 - **Collecting** - User submission forms
-- **Faceted Browse** - Advanced search with facets
+- **Faceted Browse** - Country / sub-collection browse with facets
 - **Numeric Data Types** - Date/time and number fields
 - **URI Dereferencer** - External linked data display
 
@@ -231,9 +234,10 @@ listed below are stable — do **not** invent new token names, and see
 --space-1 through --space-40
 --space-sm, --space-md, --space-lg, --space-xl
 
-/* Typography (fluid clamp-based) */
---text-xs, --text-sm, --text-base, --text-lg
---text-xl, --text-2xl, --text-3xl, --text-4xl
+/* Typography */
+--text-xs, --text-sm, --text-base, --text-lg   /* fixed rem scale (body/UI) */
+--text-xl, --text-2xl, --text-3xl, --text-4xl  /* 3xl/4xl use fluid clamp() */
+--font-headings, --font-body, --font-mono       /* font stacks (consumed by modules) */
 --line-height-normal, --line-height-relaxed
 
 /* Effects */
@@ -245,8 +249,11 @@ listed below are stable — do **not** invent new token names, and see
 --accent-mix-subtle, --accent-mix-medium, --accent-mix-strong
 ```
 
-The primary-color HSL components (`--primary-hue`, `--primary-sat`) are
-injected at runtime from the admin settings in `view/layout/layout.phtml`.
+Only the raw brand seed `--primary-base` is injected at runtime from the
+admin's Primary Color setting in `view/layout/layout.phtml`; every primary
+variant (hover/active, focus ring, glows, blockquote…) is derived from it in
+Sass via `color-mix(in oklab, …)`. The old HSL components `--primary-hue` /
+`--primary-sat` were removed in the OKLCH migration.
 
 ## Credits & Acknowledgments
 
