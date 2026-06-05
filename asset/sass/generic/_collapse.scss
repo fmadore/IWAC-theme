@@ -33,7 +33,9 @@
 
 .collapse+.collapsible {
 	display: block;
-	border-inline-start: 3px solid var(--primary);
+	// Quiet neutral indent guide for the expanded region. Primary is reserved
+	// for the caret marker (interactive state) above — not a decorative stripe.
+	border-inline-start: var(--accent-line-sm) solid var(--border-strong);
 	padding: 0;
 	padding-inline-start: var(--space-4);
 	margin-block: var(--space-2) var(--space-4);

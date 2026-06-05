@@ -56,9 +56,8 @@ npm install
 ## Theme Settings
 
 ### General Settings
-- **Primary Color** - The theme's primary brand color (default: `#E64A19`, IWAC Burnt Orange). Automatically adapts for dark mode.
-- **Secondary Color** - Footer and secondary UI elements (default: `#394f68`, slate blue)
-- **Accent Color** - Alternative accent color for special highlights (default: `#394f68`)
+- **Primary Color** - The theme's primary brand color (default: `#E64A19`, IWAC Burnt Orange). Every primary variant (hover, active, focus ring, glows, blockquote) and the data-visualization sequential ramps derive from it via `color-mix(in oklab, …)`. Automatically adapts for dark mode.
+- **Secondary Color** - A second, **non-brand** color used only for data visualizations — chart series 2 and corpus comparison in the IwacVisualizations module (default: `#394f68`, slate blue). Not used for buttons, links, or focus. See [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md).
 
 ### Header Layout
 - Inline logo and menu
@@ -203,11 +202,20 @@ The language switcher displays:
 - Dropdown with available translations for the current page
 - Links styled consistently with the theme
 
+### Sibling Modules (Shared Design System)
+
+Two companion modules are part of the **same design system** and *consume* the
+theme's design tokens rather than defining their own. The full contract — which
+tokens they may use, the canonical fallback values, dark-mode rules, and the
+one sanctioned exception (module-owned chart/data colours) — is documented in
+[**`docs/DESIGN-SYSTEM.md`**](docs/DESIGN-SYSTEM.md).
+
+- **[IwacSearch](https://github.com/fmadore/IwacSearch)** - Typesense-backed public search (Svelte 5). The header search box (`view/common/search-form.phtml`) feeds the module's typeahead via a `data-iwac-header-search` hook; the public/admin apps mount on `[data-iwac-search-root]` / `[data-iwac-admin-root]`. All colours, type, and spacing resolve from the theme's `--*` tokens.
+- **[IwacVisualizations](https://github.com/fmadore/IwacVisualizations)** - ECharts/MapLibre dashboards on the homepage and resource pages. Reads theme tokens at runtime (so charts track light/dark and admin colour overrides) and uses the admin **Secondary Color** as chart series 2 / corpus B.
+
 ### Other Supported Modules
 
-The theme includes styling for:
-- **[IwacSearch](https://github.com/fmadore/IwacSearch)** - Typesense-backed public search. The header search box (`view/common/search-form.phtml`) feeds the module's typeahead via a `data-iwac-header-search` hook, and the theme exposes its design tokens (`--font-*`, colours, spacing) for the module's Svelte client to consume.
-- **[IwacVisualizations](https://github.com/fmadore/IwacVisualizations)** - ECharts/MapLibre dashboards on the homepage and item pages; consumes the same theme tokens.
+The theme also includes styling for:
 - **Mapping** - Interactive maps on resource pages
 - **Collecting** - User submission forms
 - **Faceted Browse** - Country / sub-collection browse with facets
@@ -223,6 +231,7 @@ listed below are stable — do **not** invent new token names, and see
 ```css
 /* Colors (semantic, auto-adapted for light/dark theme) */
 --primary, --primary-hover, --primary-active
+--secondary    /* 2nd categorical/data-series colour (charts) — not UI chrome */
 --ink          /* primary text */
 --muted        /* secondary/muted text */
 --surface      /* page background */
@@ -249,11 +258,16 @@ listed below are stable — do **not** invent new token names, and see
 --accent-mix-subtle, --accent-mix-medium, --accent-mix-strong
 ```
 
-Only the raw brand seed `--primary-base` is injected at runtime from the
-admin's Primary Color setting in `view/layout/layout.phtml`; every primary
-variant (hover/active, focus ring, glows, blockquote…) is derived from it in
-Sass via `color-mix(in oklab, …)`. The old HSL components `--primary-hue` /
+The raw brand seeds `--primary-base` and `--secondary-base` are injected at
+runtime from the admin's Primary/Secondary Color settings in
+`view/layout/layout.phtml`; every variant (hover/active, focus ring, glows,
+blockquote, chart ramps…) is derived from them in Sass via
+`color-mix(in oklab, …)`. The old HSL components `--primary-hue` /
 `--primary-sat` were removed in the OKLCH migration.
+
+For how the **IwacSearch** and **IwacVisualizations** modules consume these
+tokens — including the canonical fallback values and the module-owned
+data-colour exception — see [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md).
 
 ## Credits & Acknowledgments
 

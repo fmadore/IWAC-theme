@@ -24,7 +24,11 @@ $bannerHeightProperty = ($bannerEyebrow || $bannerHeading || $bannerDescription)
 // the raw hex if the admin overrode the default. This replaces the
 // previous HSL-conversion path which produced inconsistencies between
 // the SCSS-tuned palette and the runtime values.
-$primaryColor = $this->themeSetting('primary_color') ?? '#e77f11';
+$primaryColor = $this->themeSetting('primary_color') ?? '#e64a19';
+// Secondary seed: the shared 2nd categorical / data-series colour consumed by
+// the IwacVisualizations module (chart series 2, compare-corpus B). SCSS
+// derives --secondary (and its dark-mode lightening) from this base.
+$secondaryColor = $this->themeSetting('secondary_color') ?? '#394f68';
 
 // For LCP: preload default banner image when no custom banner is set
 $customBannerAsset = $this->themeSettingAsset('banner');
@@ -77,8 +81,9 @@ if ($userBar) {
 
 		<style type="text/css" media="screen">
 			:root {
-				/* Single brand seed; SCSS derives every primary variant via color-mix(in oklab, ...) */
+				/* Brand seeds; SCSS derives every primary/secondary variant via color-mix(in oklab, ...) */
 				--primary-base: <?php echo $this->escapeHtml($primaryColor); ?>;
+					--secondary-base: <?php echo $this->escapeHtml($secondaryColor); ?>;
 				}
 		</style>
 		

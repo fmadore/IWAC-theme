@@ -31,7 +31,7 @@ Visual neighborhood we want to share: MIT Press, Stripe Press, eLife, Linear doc
 
 ### Color Philosophy
 
-The system is **OKLCH-based** because equal lightness steps look equal (HSL is perceptually uneven). All primary variants derive from a single `--primary-base` hex (admin-overridable) via `color-mix(in oklab, …)` so customizations cascade through every focus ring, glow, blockquote, and hover state without manual tuning.
+The system is **OKLCH-based** because equal lightness steps look equal (HSL is perceptually uneven). All primary variants derive from a single `--primary-base` hex (admin-overridable) via `color-mix(in oklab, …)` so customizations cascade through every focus ring, glow, blockquote, and hover state without manual tuning. A second admin-overridable seed `--secondary-base` (slate) feeds `--secondary` — a **data-only** colour consumed by the IwacVisualizations charts (series 2 / corpus comparison), never UI chrome. See [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md).
 
 - **Surfaces**: `oklch(99% 0.002 60)` — near-white with imperceptible warm tint. No cream, no parchment.
 - **Inks**: cool-neutrals (`oklch(13–54% 0.008–0.012 264)`) — reads as "objective / scholarly" rather than "warm / inviting."
@@ -132,7 +132,7 @@ Key rules:
 | Colors (ink scale) | direct names | `--ink-strong`, `--ink`, `--ink-light`, `--ink-subtle`, `--muted`, `--ink-on-pastel` |
 | Colors (surfaces) | direct names | `--surface`, `--surface-raised`, `--surface-sunken`, `--surface-overlay`, `--background` |
 | Colors (borders) | direct names | `--border-light`, `--border`, `--border-strong` |
-| Colors (brand) | direct names | `--primary`, `--primary-hover`, `--primary-active`, `--white`, `--black` |
+| Colors (brand) | direct names | `--primary`, `--primary-hover`, `--primary-active`, `--secondary`, `--white`, `--black` |
 | Text sizes | `--text-{size}` | `--text-xs`, `--text-sm`, `--text-base`, `--text-lg`, `--text-2xl` |
 | Font families | direct names | `--font-headings` (Source Serif 4), `--font-body` (Public Sans), `--font-mono` — exposed in `:root` so runtime consumers (IwacVisualizations, IwacSearch) inherit the theme's stacks instead of hardcoding their own |
 | Spacing | `--space-{n}` | `--space-1` through `--space-40` (also `--space-sm`, `--space-md`, etc.) |
@@ -161,7 +161,7 @@ Key rules:
 | `--border-dark`, `--border-hover` | `--border-strong` |
 | `--primary-contrast` | `--white` — alias removed; use `--white` directly for foreground over `--primary` |
 | `--accent`, `--accent-dark`, `--accent-hue`, `--accent-sat` | `--primary` (entire accent family was removed) |
-| `--secondary`, `--secondary-dark`, `--secondary-contrast` | derive from `--primary` via `color-mix(in oklab, ...)` (secondary family was removed) |
+| `--secondary-dark`, `--secondary-contrast` | `--secondary` itself now **exists** — a 2nd categorical/data-series colour (charts only, NOT chrome; see [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md)). For variants derive via `color-mix(in oklab, ...)` |
 | `--primary-hue`, `--primary-sat` | derive from `--primary` via `color-mix(in oklab, ...)` (HSL components removed; system is OKLCH-based) |
 | `--gradient-primary` | removed (decorative gradient bars were a CMS-template tell) |
 | `--line-height-tight` | Use `1.1` (h1) or `$font__headings-line-height` (1.25) |
@@ -240,6 +240,8 @@ Theme colors defined in `_colors.scss`, persistence via `localStorage` key `iwac
 ## Module Integrations
 
 The theme integrates with: Internationalisation (language switching), Mapping, Collecting, Faceted Browse, URI Dereferencer, Universal Viewer. Always check module availability before using their helpers.
+
+**Shared design system (IwacSearch + IwacVisualizations).** Two sibling modules — [IwacSearch](https://github.com/fmadore/IwacSearch) (Svelte search) and [IwacVisualizations](https://github.com/fmadore/IwacVisualizations) (ECharts/MapLibre dashboards) — *consume* this theme's design tokens instead of defining their own. The authoritative shared-token contract — consumable tokens, the **canonical fallback table**, dark-mode rules, and the one sanctioned exception (module-owned chart/data colours) — lives in **[docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md)**. Rules of thumb: when you change a token here, update each module's `var(--token, <fallback>)` fallback to match (or it silently drifts); data-encoding colours (chart series, sentiment scales, badges) are the *only* colours a module may own, and they live in the module prefixed `--iwac-vis-*`; everything else must resolve from a theme token.
 
 ### Faceted Browse Module (Critical Integration)
 

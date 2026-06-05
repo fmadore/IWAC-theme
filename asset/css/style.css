@@ -133,11 +133,13 @@ body[data-theme=light] {
 }
 
 :root {
-  --primary-base: #e77f11;
+  --primary-base: #e64a19;
+  --secondary-base: #394f68;
   color-scheme: light;
   --primary: color-mix(in oklab, var(--primary-base), black 8%);
   --primary-hover: color-mix(in oklab, var(--primary-base), black 18%);
   --primary-active: color-mix(in oklab, var(--primary-base), black 28%);
+  --secondary: var(--secondary-base);
   --ink-strong: oklch(13% 0.012 264);
   --ink: oklch(20% 0.012 264);
   --ink-light: oklch(38% 0.012 260);
@@ -180,6 +182,7 @@ body[data-theme=light] {
     --primary: color-mix(in oklab, var(--primary-base), white 12%);
     --primary-hover: color-mix(in oklab, var(--primary-base), white 22%);
     --primary-active: color-mix(in oklab, var(--primary-base), black 4%);
+    --secondary: color-mix(in oklab, var(--secondary-base), white 30%);
     --ink-strong: oklch(98% 0.005 258);
     --ink: oklch(94% 0.008 258);
     --ink-light: oklch(76% 0.010 258);
@@ -219,6 +222,7 @@ body[data-theme=dark] {
   --primary: color-mix(in oklab, var(--primary-base), white 12%);
   --primary-hover: color-mix(in oklab, var(--primary-base), white 22%);
   --primary-active: color-mix(in oklab, var(--primary-base), black 4%);
+  --secondary: color-mix(in oklab, var(--secondary-base), white 30%);
   --ink-strong: oklch(98% 0.005 258);
   --ink: oklch(94% 0.008 258);
   --ink-light: oklch(76% 0.010 258);
@@ -258,6 +262,7 @@ body[data-theme=light] {
   --primary: color-mix(in oklab, var(--primary-base), black 8%);
   --primary-hover: color-mix(in oklab, var(--primary-base), black 18%);
   --primary-active: color-mix(in oklab, var(--primary-base), black 28%);
+  --secondary: var(--secondary-base);
   --ink-strong: oklch(13% 0.012 264);
   --ink: oklch(20% 0.012 264);
   --ink-light: oklch(38% 0.012 260);
@@ -675,7 +680,7 @@ html {
 
 .collapse + .collapsible {
   display: block;
-  border-inline-start: 3px solid var(--primary);
+  border-inline-start: var(--accent-line-sm) solid var(--border-strong);
   padding: 0;
   padding-inline-start: var(--space-4);
   margin-block: var(--space-2) var(--space-4);

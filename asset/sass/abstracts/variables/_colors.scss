@@ -29,6 +29,12 @@
   --primary-hover:  color-mix(in oklab, var(--primary-base), black 18%);
   --primary-active: color-mix(in oklab, var(--primary-base), black 28%);
 
+  // Secondary — a stable SECOND categorical / data-series colour (chart
+  // series 2, compare-corpus B). NOT a second brand accent for chrome:
+  // never used for focus, buttons, or links. Slate reads as the calm
+  // complement to orange. Consumed by the IwacVisualizations module.
+  --secondary: var(--secondary-base);
+
   // Inks — deep cool neutrals (NOT warm gray). The faint cool cast
   // reads as "objective / scholarly" rather than "warm / inviting."
   --ink-strong:   oklch(13% 0.012 264);   // display headings, page titles
@@ -85,7 +91,12 @@
 // Apply light theme by default at the document root. Brand seed lives
 // here too so PHP's :root override (in layout.phtml) cascades cleanly.
 :root {
-  --primary-base: #e77f11;
+  // Brand seeds (raw hex; admin can override both in layout.phtml). Every
+  // primary/secondary variant is derived from these via color-mix(in oklab),
+  // so a settings change cascades through every focus ring, glow, chart
+  // series, and blockquote without hand-tuning.
+  --primary-base:   #e64a19;   // IWAC burnt orange — focus, state, accents
+  --secondary-base: #394f68;   // slate — shared 2nd categorical / data colour
   @include iwac-light-theme;
 }
 
@@ -99,6 +110,9 @@
   --primary:        color-mix(in oklab, var(--primary-base), white 12%);
   --primary-hover:  color-mix(in oklab, var(--primary-base), white 22%);
   --primary-active: color-mix(in oklab, var(--primary-base), black 4%);
+
+  // Lighten the slate so it stays legible as a data colour on dark surfaces.
+  --secondary: color-mix(in oklab, var(--secondary-base), white 30%);
 
   --ink-strong:    oklch(98% 0.005 258);
   --ink:           oklch(94% 0.008 258);
