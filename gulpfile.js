@@ -6,6 +6,7 @@ gulp.task('css', function () {
     var sass = require('gulp-sass')(require('sass'));
     var postcss = require('gulp-postcss');
     var autoprefixer = require('autoprefixer');
+    var cssnano = require('cssnano');
 
     return gulp.src('./asset/sass/*.scss')
         .pipe(sass({
@@ -13,7 +14,12 @@ gulp.task('css', function () {
             includePaths: ['node_modules/sass']
         }).on('error', sass.logError))
         .pipe(postcss([
-            autoprefixer()
+            autoprefixer(),
+            // Structural minification on top of Sass' whitespace compression:
+            // merges/dedupes rules and shortens values that `compressed` leaves.
+            // The default preset is rendering-safe and passes modern color syntax
+            // (oklch / color-mix / CSS masks) through untouched.
+            cssnano({ preset: 'default' })
         ]))
         .pipe(gulp.dest('./asset/css'));
 });
