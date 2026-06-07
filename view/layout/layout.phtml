@@ -71,22 +71,30 @@ $this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 
 $this->jsTranslate();
 $this->trigger('view.layout');
 
-// The theme's language switcher renders an inline SVG + text codes (no country
-// flags), so the Internationalisation module's render-blocking flag-icon sprite
-// is dead weight on every page. Remove it from the <head>.
+// The theme fully owns the language switcher: a custom template (inline SVG +
+// text codes, no country flags) styled entirely from this theme's style.css.
+// So the Internationalisation module's render-blocking flag-icon sprite AND its
+// language-switcher.css (which styles the module's default markup we replaced)
+// are dead weight on every page. Drop both from the <head>.
 try {
     $headLinkContainer = $this->headLink()->getContainer();
-    $flagIconKeys = [];
+    $deadCssKeys = [];
     foreach ($headLinkContainer as $key => $item) {
-        if (isset($item->href) && strpos((string) $item->href, 'flag-icon') !== false) {
-            $flagIconKeys[] = $key;
+        if (!isset($item->href)) {
+            continue;
+        }
+        $href = (string) $item->href;
+        if (strpos($href, 'flag-icon') !== false
+            || strpos($href, 'Internationalisation/asset/css/language-switcher') !== false
+        ) {
+            $deadCssKeys[] = $key;
         }
     }
-    foreach ($flagIconKeys as $key) {
+    foreach ($deadCssKeys as $key) {
         unset($headLinkContainer[$key]);
     }
 } catch (\Throwable $e) {
-    // Non-fatal: if the placeholder shape changes upstream, keep the stylesheet.
+    // Non-fatal: if the placeholder shape changes upstream, keep the stylesheets.
 }
 
 if ($userBar) {
@@ -97,15 +105,21 @@ if ($userBar) {
 <?php echo $this->doctype(); ?>
 <?php echo $this->htmlElement('html'); ?>
 	<head>
+		<?php
+		// Charset + viewport MUST come first. The banner preload below selects a
+		// srcset candidate via imagesizes="100vw"; the preload scanner evaluates
+		// that against the 980px *default* viewport unless <meta viewport> has
+		// already been parsed — which would force the largest (1400w) image and
+		// waste the high-priority fetch. Emitting headMeta first fixes the pick.
+		echo $this->headMeta();
+		?>
 		<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
-		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 		<?php if (!$customBannerAsset): ?>
 		<link rel="preload" as="image" fetchpriority="high"
 		      href="<?php echo $this->escapeHtmlAttr($defaultBannerUrl); ?>"
 		      imagesrcset="<?php echo $this->escapeHtmlAttr($defaultBannerSrcset); ?>"
 		      imagesizes="100vw">
 		<?php endif; ?>
-		<?php echo $this->headMeta(); ?>
 		<?php echo $this->headTitle(); ?>
 		<?php echo $this->headLink(); ?>
 		<?php echo $this->headStyle(); ?>
