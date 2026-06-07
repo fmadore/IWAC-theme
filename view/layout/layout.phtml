@@ -33,6 +33,14 @@ $secondaryColor = $this->themeSetting('secondary_color') ?? '#394f68';
 // For LCP: preload default banner image when no custom banner is set
 $customBannerAsset = $this->themeSettingAsset('banner');
 $defaultBannerUrl = $this->assetUrl('img/banner.webp');
+// Responsive variants (regenerate with `npm run build:images`) so phones fetch a
+// right-sized hero instead of the full 1400w master. Width-descriptor srcset;
+// the <img> and the preload below both declare sizes=100vw (full-bleed banner).
+$defaultBannerSrcset = $this->assetUrl('img/banner-480.webp') . ' 480w, '
+    . $this->assetUrl('img/banner-768.webp') . ' 768w, '
+    . $this->assetUrl('img/banner-1024.webp') . ' 1024w, '
+    . $this->assetUrl('img/banner-1280.webp') . ' 1280w, '
+    . $defaultBannerUrl . ' 1400w';
 
 $this->htmlElement('html')->setAttribute('lang', $this->lang());
 $this->headMeta()->setCharset('utf-8');
@@ -40,7 +48,10 @@ $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1')
 $this->headTitle($siteTitle)->setSeparator(' · ');
 $this->headTitle()->append($this->setting('installation_title', 'Omeka S'));
 $this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
-$this->headLink()->prependStylesheet($this->assetUrl('css/iconfonts.css', 'Omeka'));
+// Omeka's Font Awesome (iconfonts.css) is loaded async (see <head> below) rather
+// than render-blocking: the theme's own UI now draws from Bootstrap-Icon SVG
+// masks, so the icon font is only needed by a few non-critical module glyphs.
+$iconfontsUrl = $this->assetUrl('css/iconfonts.css', 'Omeka');
 // Single combined Google Fonts request: Public Sans (body/UI) +
 // Source Serif 4 with optical-size axis (display + body). Subsetted to
 // the weights actually used across the theme.
@@ -60,6 +71,24 @@ $this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 
 $this->jsTranslate();
 $this->trigger('view.layout');
 
+// The theme's language switcher renders an inline SVG + text codes (no country
+// flags), so the Internationalisation module's render-blocking flag-icon sprite
+// is dead weight on every page. Remove it from the <head>.
+try {
+    $headLinkContainer = $this->headLink()->getContainer();
+    $flagIconKeys = [];
+    foreach ($headLinkContainer as $key => $item) {
+        if (isset($item->href) && strpos((string) $item->href, 'flag-icon') !== false) {
+            $flagIconKeys[] = $key;
+        }
+    }
+    foreach ($flagIconKeys as $key) {
+        unset($headLinkContainer[$key]);
+    }
+} catch (\Throwable $e) {
+    // Non-fatal: if the placeholder shape changes upstream, keep the stylesheet.
+}
+
 if ($userBar) {
 	$this->htmlElement('body')->appendAttribute('class', 'user-bar');
 }
@@ -71,13 +100,20 @@ if ($userBar) {
 		<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
 		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 		<?php if (!$customBannerAsset): ?>
-		<link rel="preload" as="image" fetchpriority="high" href="<?php echo $this->escapeHtmlAttr($defaultBannerUrl); ?>">
+		<link rel="preload" as="image" fetchpriority="high"
+		      href="<?php echo $this->escapeHtmlAttr($defaultBannerUrl); ?>"
+		      imagesrcset="<?php echo $this->escapeHtmlAttr($defaultBannerSrcset); ?>"
+		      imagesizes="100vw">
 		<?php endif; ?>
 		<?php echo $this->headMeta(); ?>
 		<?php echo $this->headTitle(); ?>
 		<?php echo $this->headLink(); ?>
 		<?php echo $this->headStyle(); ?>
 		<?php echo $this->headScript(); ?>
+
+		<?php // Font Awesome (Omeka iconfonts.css) loaded async so the icon font never blocks first paint. ?>
+		<link rel="preload" as="style" href="<?php echo $this->escapeHtmlAttr($iconfontsUrl); ?>" onload="this.onload=null;this.rel='stylesheet'">
+		<noscript><link rel="stylesheet" href="<?php echo $this->escapeHtmlAttr($iconfontsUrl); ?>"></noscript>
 
 		<style type="text/css" media="screen">
 			:root {
@@ -118,7 +154,7 @@ if ($userBar) {
 		// Full hero only on the site homepage; a short image strip elsewhere.
 		$bannerHomepage = method_exists($site, 'homepage') ? $site->homepage() : null;
 		$bannerCompact = !($bannerHomepage && $this->params()->fromRoute('page-slug') === $bannerHomepage->slug());
-		echo $this->partial('common/banner', ['compact' => $bannerCompact]);
+		echo $this->partial('common/banner', ['compact' => $bannerCompact, 'srcset' => $defaultBannerSrcset]);
 		?>
 
 		<div id="content" class="container" role="main" tabindex="-1">

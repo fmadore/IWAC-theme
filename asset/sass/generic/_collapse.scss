@@ -1,3 +1,5 @@
+@use "../abstracts/abstracts" as *;
+
 // ==========================================================================
 // Collapse
 // Expand/collapse functionality for hierarchical content
@@ -10,21 +12,23 @@
 	user-select: none;
 
 	&::after {
-		font-family: "Font Awesome 5 Free";
-		font-weight: 900;
+		content: "";
 		margin-inline-start: var(--space-2);
-		font-size: var(--text-xs);
-		color: var(--primary);
+		width: 0.7em;
+		height: 0.7em;
+		color: var(--primary); // icon-mask paints currentColor
 		transition: transform var(--transition-fast);
 	}
 }
 
+// Chevron mask (Bootstrap Icons) — replaces the Font Awesome caret glyphs so the
+// whole theme draws from one icon set and no longer needs the icon font.
 .expand::after {
-	content: "\f0da";
+	@include icon-mask("../img/chevron-right.svg");
 }
 
 .collapse::after {
-	content: "\f0d7";
+	@include icon-mask("../img/chevron-down.svg");
 }
 
 .collapsible {

@@ -30,11 +30,6 @@
     }
 }
 
-@mixin font-awesome {
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-}
-
 @mixin icon-mask($url) {
     mask: url($url) no-repeat center / contain;
     -webkit-mask: url($url) no-repeat center / contain;

@@ -36,13 +36,14 @@ blockquote {
     }
 
     &::before {
-        @include font-awesome;
+        @include icon-mask("../img/quote.svg");
+        content: "";
+        width: var(--text-2xl);
+        height: var(--text-2xl);
         color: var(--blockquote-quote);
-        content: "\f10d";
-        font-size: var(--text-2xl);
         inset-inline-start: var(--space-3);
         position: absolute;
-        top: 0;
+        top: var(--space-2);
         opacity: 0.7;
     }
 

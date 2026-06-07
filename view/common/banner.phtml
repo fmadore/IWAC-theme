@@ -15,6 +15,9 @@ $bannerContentPosition = $this->themeSetting('banner_content_position') ?? 'left
 
 // Default banner image path (included with theme)
 $defaultBannerUrl = $this->assetUrl('img/banner.webp');
+// Width-descriptor srcset for the default hero, computed in layout.phtml so the
+// LCP preload and this <img> stay in sync. Empty when a custom banner is used.
+$bannerSrcset = isset($srcset) ? $srcset : '';
 $hasCustomBanner = (bool) $banner;
 
 $bannerHeightProperty = ($bannerEyebrow || $bannerHeading || $bannerDescription) ? 'min-height' : 'height';
@@ -51,7 +54,9 @@ if ($compact) {
         <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true', 'fetchpriority' => 'high']); ?>
     <?php else: ?>
         <img src="<?php echo $escAttr($defaultBannerUrl); ?>"
-             width="1400"
+             <?php if ($bannerSrcset): ?>srcset="<?php echo $escAttr($bannerSrcset); ?>"
+             sizes="100vw"
+             <?php endif; ?>width="1400"
              height="787"
              style="<?php echo $escAttr($imageInlineStyles); ?>"
              role="presentation"
