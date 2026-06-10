@@ -12,7 +12,14 @@ $navDepth = (int) $this->themeSetting('nav_depth') ? (int) $this->themeSetting('
 	      // the focus-trap container for the menu drawer. ?>
 	<div class="main-header__main-bar container">
 		<div class="main-header__site-title">
-			<a href="<?php echo $this->escapeHtmlAttr($site->url()); ?>"><?php echo $this->escapeHtml($site->title()); ?></a>
+			<?php
+			// On narrow screens the wordmark swaps to the admin-set acronym
+			// (IWAC / CIAO) instead of truncating mid-word. The full title
+			// stays in the DOM (visually hidden) as the link's accessible
+			// name; the acronym is presentation only.
+			$siteAcronym = trim((string) $this->themeSetting('site_title_acronym'));
+			?>
+			<a href="<?php echo $this->escapeHtmlAttr($site->url()); ?>"><?php if ($siteAcronym): ?><span class="main-header__site-title-full"><?php echo $this->escapeHtml($site->title()); ?></span><span class="main-header__site-title-acronym" aria-hidden="true"><?php echo $this->escapeHtml($siteAcronym); ?></span><?php else: echo $this->escapeHtml($site->title()); endif; ?></a>
 		</div>
 		<div class="main-header__tools">
 			<div class="main-header__search-form">

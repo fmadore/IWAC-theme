@@ -67,11 +67,21 @@
     }
 
     // One-time Ken Burns on load (not hover-triggered). Gated on
-    // prefers-reduced-motion.
+    // prefers-reduced-motion, and reserved for the homepage hero — a settle
+    // animation on every inner page would be noise.
     @media (prefers-reduced-motion: no-preference) {
-        img {
+        &:not(.banner--compact) img {
             animation: bannerKenBurns 16s ease-out both;
         }
+    }
+
+    // Compact band — inner pages: a slim strip of the same duotone plate
+    // bridging the section strip and the page title, so research pages
+    // don't open on bare whitespace. No text, no scrim, no animation —
+    // just the archival texture (see layout.phtml).
+    &--compact {
+        height: clamp(4.5rem, 9vh, 7rem);
+        margin-block-end: var(--space-8);
     }
 
     // Content container

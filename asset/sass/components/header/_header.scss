@@ -57,6 +57,31 @@
             min-width: 5ch;
         }
 
+        // Acronym wordmark on narrow screens (admin setting
+        // site_title_acronym; the two spans only render together): the full
+        // title collapses to a clipped box so it keeps naming the link for
+        // assistive tech; the acronym is the visible mark. Above $sm the
+        // acronym disappears entirely.
+        .main-header__site-title-acronym {
+            display: none;
+        }
+
+        @media (max-width: #{$sm - 0.02px}) {
+            .main-header__site-title-full {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                overflow: hidden;
+                clip-path: inset(50%);
+                white-space: nowrap;
+            }
+
+            .main-header__site-title-acronym {
+                display: inline;
+                letter-spacing: 0.02em; // acronyms read better slightly open, not display-tight
+            }
+        }
+
         a {
             display: block;
             overflow: hidden;

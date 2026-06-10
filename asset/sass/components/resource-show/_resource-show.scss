@@ -144,6 +144,15 @@ body.item-set {
                 border-radius: var(--radius-sm);
             }
 
+            // The generic .metadata makes resource links inline-FLEX, whose
+            // baseline comes from its first item — the IMAGE's bottom edge —
+            // so a value with a thumbnail dragged its image-less siblings
+            // down. Inline flow keeps every value on the text baseline; the
+            // thumb centres against it via vertical-align above.
+            > dd .resource-link {
+                display: inline;
+            }
+
             // The RightsStatements module inline-styles its badge to
             // height:4em — !important is the only way past an inline style.
             > dd img.rights-statements-img {

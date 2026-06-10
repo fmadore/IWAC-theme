@@ -52,8 +52,13 @@ if ($compact) {
 
 <div class="<?php echo implode(' ', $class); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>">
 
+    <?php
+    // The homepage hero is the LCP candidate; the compact inner-page band is
+    // decorative and must not compete with content fetches.
+    $imageFetchPriority = $compact ? 'low' : 'high';
+    ?>
     <?php if ($hasCustomBanner): ?>
-        <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true', 'fetchpriority' => 'high']); ?>
+        <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true', 'fetchpriority' => $imageFetchPriority]); ?>
     <?php else: ?>
         <img src="<?php echo $escAttr($defaultBannerUrl); ?>"
              <?php if ($bannerSrcset): ?>srcset="<?php echo $escAttr($bannerSrcset); ?>"
@@ -64,7 +69,7 @@ if ($compact) {
              role="presentation"
              aria-hidden="true"
              alt=""
-             fetchpriority="high">
+             fetchpriority="<?php echo $escAttr($imageFetchPriority); ?>">
     <?php endif; ?>
 
     <?php if (!$compact): ?>

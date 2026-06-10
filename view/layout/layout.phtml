@@ -173,13 +173,12 @@ if ($userBar) {
 		<?php echo $this->partial('common/header', ['userBar' => $userBar, 'site' => $site]); ?>
 
 		<?php
-		// The hero renders on the site homepage only. Inner pages start
-		// straight at content — the decorative collage strip they used to
-		// carry cost 120–200px of viewport on every research page and diluted
-		// the hero's impact where it matters.
-		if ($layoutIsHomepage) {
-			echo $this->partial('common/banner', ['compact' => false, 'srcset' => $defaultBannerSrcset]);
-		}
+		// The full hero renders on the site homepage only; inner pages carry
+		// a slim compact band of the same duotone plate so the page doesn't
+		// open on bare whitespace between the section strip and the title.
+		// Only the homepage hero is LCP-preloaded (see <head>); the compact
+		// band asks for the image at low priority.
+		echo $this->partial('common/banner', ['compact' => !$layoutIsHomepage, 'srcset' => $defaultBannerSrcset]);
 		?>
 
 		<div id="content" class="container" role="main" tabindex="-1">

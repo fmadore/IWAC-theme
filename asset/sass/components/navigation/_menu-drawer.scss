@@ -218,19 +218,24 @@
             padding-inline-end: var(--space-16); // Make room for the toggle
         }
 
-        // Slim ink chevron pinned to the first link line, aligned even when
-        // the submenu expands below.
+        // Same caret language as the desktop section strip (_navigation.scss):
+        // a small muted chevron-down that rotates 180° open and answers in
+        // primary — pinned to the first link line, aligned even when the
+        // submenu expands below.
         .mobile-dropdown-toggle {
             position: absolute;
             // Link first-line centre: block padding (--space-4) + half the
             // ~1.3em line box of the --text-sm link.
             top: calc(var(--space-4) + 0.65em);
             transform: translateY(-50%);
-            inset-inline-end: var(--space-5);
+            // 36px hit box whose caret sits optically on the row's --space-6
+            // content inset.
+            inset-inline-end: var(--space-3);
             width: var(--size-control-sm);
             height: var(--size-control-sm);
             background: transparent;
             border: none;
+            box-shadow: none; // the generic button base adds a primary-tinted glow
             border-radius: var(--radius-sm);
             cursor: pointer;
             z-index: 2;
@@ -240,32 +245,24 @@
             padding: 0;
 
             &::after {
+                @include icon-mask("../img/chevron-down.svg");
                 content: "";
-                width: 1rem;
-                height: 1rem;
-                background-color: var(--ink-light);
-                -webkit-mask-image: url(../img/chevron-right.svg);
-                mask-image: url(../img/chevron-right.svg);
-                -webkit-mask-position: center;
-                mask-position: center;
-                -webkit-mask-repeat: no-repeat;
-                mask-repeat: no-repeat;
-                -webkit-mask-size: contain;
-                mask-size: contain;
-                display: block;
+                width: var(--text-xs);
+                height: var(--text-xs);
+                color: var(--muted);
                 transition: transform var(--transition-fast), background-color var(--transition-fast);
             }
 
             &:hover::after {
-                background-color: var(--ink);
+                color: var(--primary);
             }
 
             @include focus-ring;
         }
 
         &.expanded>.mobile-dropdown-toggle::after {
-            transform: rotate(90deg);
-            background-color: var(--primary);
+            transform: rotate(180deg);
+            color: var(--primary);
         }
     }
 
