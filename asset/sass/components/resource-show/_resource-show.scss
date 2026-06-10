@@ -84,7 +84,7 @@ body.item-set {
         }
 
         // Flatten the card → ledger rows of facts
-        dl > .property {
+        > dl > .property {
             margin-block-end: 0;
             padding: var(--space-3) 0;
             background: transparent;
@@ -104,7 +104,11 @@ body.item-set {
                 border-left: none;
             }
 
-            dt {
+            // Direct children only (`> dt`, `> dd`): a value can host nested
+            // dl/dt/dd markup of its own (the value-annotation tooltip), and
+            // descendant selectors here leaked the ledger column — including
+            // the floated negative-margin label — into that inner list.
+            > dt {
                 margin-block-end: var(--space-2);
                 color: var(--muted);
                 font-size: var(--text-xs);
@@ -114,7 +118,8 @@ body.item-set {
                 padding-inline-end: var(--space-4);
             }
 
-            dd {
+            > dd {
+                display: block;
                 color: var(--ink);
                 font-size: var(--text-base);
                 line-height: var(--line-height-normal);
@@ -123,11 +128,26 @@ body.item-set {
                 margin-inline-start: 0;
             }
 
-            // Linked-resource values sometimes carry a thumbnail (publisher
-            // logos, source-institution marks). In a ledger row the clipped
-            // 40px logo is noise — the link text carries the information.
-            dd img {
-                display: none;
+            // Images inside value links: linked-resource thumbnails (place
+            // photos, publisher and institution logos) and image-only values
+            // such as the RightsStatements badge. They stay visible — hiding
+            // them left image-only rows (dcterms:rights) empty and stripped
+            // the item-set logos — but constrained to a quiet mark sitting
+            // on the text line, not the old 60px card thumb.
+            > dd a img {
+                display: inline-block;
+                height: 2.25rem;
+                width: auto;
+                max-width: 10rem;
+                margin-inline-end: var(--space-2);
+                vertical-align: middle;
+                border-radius: var(--radius-sm);
+            }
+
+            // The RightsStatements module inline-styles its badge to
+            // height:4em — !important is the only way past an inline style.
+            > dd img.rights-statements-img {
+                height: 2.25rem !important;
             }
         }
 
@@ -138,7 +158,9 @@ body.item-set {
         // as content wrapped: continuation lines slid under the label.
         // The AI lede keeps its own full-width panel layout.
         @media (min-width: $md) {
-            dl > .property:not(.property--ai) {
+            // (bibo:content opts out — the document body gets the
+            // full-width treatment below instead of the label column.)
+            > dl > .property:not(.property--ai):not([data-property-term="bibo:content"]) {
                 padding-inline-start: 10.5rem; // 168px — fits two-word FR labels
 
                 // Contain a label taller than its values.
@@ -148,7 +170,7 @@ body.item-set {
                     clear: both;
                 }
 
-                dt {
+                > dt {
                     float: inline-start;
                     width: 10.5rem;
                     margin-inline-start: -10.5rem;
@@ -162,13 +184,13 @@ body.item-set {
         // inline with interpunct separators instead of one value per line —
         // a row of seven subjects costs one line, not seven. Long-form
         // properties (full text, descriptions, the AI lede) keep block flow.
-        dl > .property:not([data-property-term="bibo:content"]):not([data-property-term="dcterms:description"]):not([data-property-term="dcterms:abstract"]):not(.property--ai) {
+        > dl > .property:not([data-property-term="bibo:content"]):not([data-property-term="dcterms:description"]):not([data-property-term="dcterms:abstract"]):not(.property--ai) {
             // inline-BLOCK, not inline: each value is an atomic token that
             // sits beside its siblings and wraps as a unit. Plain inline dds
             // fragmented onto separate lines in Chromium (stray inter-tag
             // whitespace + the floated label), which stacked one value per
             // line.
-            dd {
+            > dd {
                 display: inline-block;
                 vertical-align: baseline;
                 max-width: 100%;
@@ -181,7 +203,7 @@ body.item-set {
 
             // The interpunct lives INSIDE the following value's box, so a
             // wrap never strands a dot at a line end.
-            dd + dd::before {
+            > dd + dd::before {
                 content: "·";
                 color: var(--primary);
                 font-weight: 700;
@@ -189,17 +211,52 @@ body.item-set {
             }
         }
 
-        // bibo:content body section — the article itself reads in the text
-        // serif at a comfortable measure.
-        .property[data-property-term="bibo:content"] dd {
-            font-family: $font__serif-text;
-            font-size: var(--text-lg);
-            line-height: var(--line-height-relaxed);
+        // ------------------------------------------------------------------
+        // Long-form rows. Excluded from the inline-token flow above, they
+        // used to fall through to the generic .metadata layout (flex value
+        // boxes indented a further 144px, language tag stranded on its own
+        // flex line — the "big gap"). Own their layout explicitly instead.
+        // ------------------------------------------------------------------
+
+        // Descriptions and abstracts stay in the label column but flow as
+        // prose: language tag inline at the head of the text, paragraphs
+        // stacked, reading measure.
+        > dl > .property[data-property-term="dcterms:description"] > dd,
+        > dl > .property[data-property-term="dcterms:abstract"] > dd {
+            display: block;
+            margin-inline: 0;
             max-width: var(--measure-narrow);
+
+            + dd {
+                margin-block-start: var(--space-3);
+            }
         }
 
-        .property[data-property-term="bibo:content"] dd p + p {
-            margin-block-start: var(--space-4);
+        // bibo:content — the digitised document itself, not a ledger fact.
+        // Full-width section: label line above, article serif below at the
+        // reading measure from the row's left edge (hanging a 700px reading
+        // column 300px into the page read as a layout accident).
+        > dl > .property[data-property-term="bibo:content"] {
+            padding-block-start: var(--space-5);
+
+            > dt {
+                float: none;
+                width: auto;
+                margin-block-end: var(--space-3);
+            }
+
+            > dd {
+                display: block;
+                margin-inline: 0;
+                font-family: $font__serif-text;
+                font-size: var(--text-lg);
+                line-height: var(--line-height-relaxed);
+                max-width: var(--measure-narrow);
+            }
+
+            > dd p + p {
+                margin-block-start: var(--space-4);
+            }
         }
 
         // ------------------------------------------------------------------
@@ -215,7 +272,7 @@ body.item-set {
         // class of specificity so these overrides always beat the base
         // `.property dt/dd` column rules — with equal specificity the float
         // cascade was a source-order coin-flip.
-        dl > .property.property--ai {
+        > dl > .property.property--ai {
             margin-block: var(--space-5);
             padding: var(--space-5) var(--space-5) var(--space-4);
             background: color-mix(in oklab, var(--info-bg) 55%, var(--surface-raised));
@@ -225,7 +282,7 @@ body.item-set {
             // Reset the flat-row separator inherited from the parent rule
             border-block-end: 1px solid color-mix(in oklab, var(--info) 22%, var(--border) 78%);
 
-            dt {
+            > dt {
                 display: flex;
                 align-items: center;
                 flex-wrap: wrap;
@@ -243,7 +300,7 @@ body.item-set {
                 }
             }
 
-            dd {
+            > dd {
                 @media (min-width: $md) {
                     margin-inline-start: 0;
                 }

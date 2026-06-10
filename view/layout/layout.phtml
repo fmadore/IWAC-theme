@@ -188,6 +188,8 @@ if ($userBar) {
 
 		<?php echo $this->partial('common/footer'); ?>
 
+		<button type="button" id="back-to-top" class="back-to-top" aria-label="<?php echo $this->escapeHtmlAttr($this->translate('Back to top')); ?>"></button>
+
 		<?php
 		echo $this->inlineScript()
 			->prependFile($this->assetUrl('js/mirador-theme-sync.js'))

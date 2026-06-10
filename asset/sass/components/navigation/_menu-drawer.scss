@@ -2,7 +2,11 @@
 
 // ==========================================================================
 // Menu Drawer
-// Mobile navigation drawer with glassmorphism and improved interactions
+// The below-$lg navigation panel, speaking the same press register as the
+// desktop section strip: solid surface, uppercase section entries on
+// hairline rules, indented sub-entries, slim ink chevrons. No glass
+// (backdrop-filter stays reserved for the sticky header), no pill buttons,
+// no filled-orange states.
 // ==========================================================================
 
 .menu-drawer {
@@ -16,9 +20,7 @@
     z-index: var(--z-modal);
     top: var(--menu-drawer-top, #{$header-min-height});
     inset-inline-start: 0;
-    background: var(--panel-bg);
-    border-inline-end: 1px solid var(--border);
-    box-shadow: var(--shadow-xl);
+    background: var(--surface);
     overflow-x: hidden;
     overflow-y: auto; // Enable vertical scrolling within drawer
     -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
@@ -26,24 +28,21 @@
     transition: transform var(--transition-slow), visibility var(--transition-slow);
     visibility: hidden;
 
-    // Glassmorphism effect
-    @supports ((-webkit-backdrop-filter: blur(0.5rem)) or (backdrop-filter: blur(0.5rem))) {
-        background: var(--surface-overlay);
-        -webkit-backdrop-filter: blur(12px) saturate(1.2);
-        backdrop-filter: blur(12px) saturate(1.2);
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
     }
 
-    @media screen and (min-width: $xxl) {
+    // The section strip takes over from $lg (see _navigation.scss); the
+    // hamburger is gone there, so the drawer can never show.
+    @media screen and (min-width: $lg) {
         transform: translateX(-100%) !important;
+        visibility: hidden !important;
     }
 
-    // Show menu drawer between lg and xxl breakpoints when toggled
-    @media (min-width: $lg) and (max-width: #{$xxl - 0.02px}) {
-
-        body.menu-drawer-toggled &,
-        &.toggled {
-            transform: translateX(0) !important;
-        }
+    &.toggled,
+    body.menu-drawer-toggled & {
+        transform: translateX(0);
+        visibility: visible;
     }
 
     >.wrap {
@@ -51,12 +50,6 @@
         max-width: $wrap-max-width;
         display: block;
         padding: 0;
-        text-align: end;
-    }
-
-    &.toggled {
-        transform: translateX(0);
-        visibility: visible;
     }
 
     .navigation-controls {
@@ -64,41 +57,30 @@
         top: 0;
         z-index: 10;
         border-bottom: 1px solid var(--border);
-        background: var(--background);
-        font-size: var(--text-base);
+        background: var(--surface);
         text-align: start;
-        padding: var(--space-md) var(--space-lg);
-        margin-bottom: var(--space-md);
+        padding: var(--space-4) var(--space-6);
 
         a {
             display: inline-flex;
             align-items: center;
-            gap: var(--space-sm);
-            padding: var(--space-sm) var(--space-lg);
-            color: var(--ink-light);
-            background: var(--panel-bg);
-            border: var(--panel-border);
-            border-radius: var(--panel-radius);
+            gap: var(--space-2);
+            color: var(--muted);
             text-decoration: none;
-            font-size: var(--text-sm);
-            font-weight: 500;
-            transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-wider);
+            transition: color var(--transition-fast);
 
             &::before {
                 content: '←';
-                font-size: var(--text-base);
-                color: var(--ink-light);
+                font-size: var(--text-sm);
                 transition: color var(--transition-fast);
             }
 
             &:hover {
-                background: var(--selection-bg);
                 color: var(--primary);
-                border-color: var(--primary);
-
-                &::before {
-                    color: var(--primary);
-                }
             }
         }
     }
@@ -113,7 +95,6 @@
             list-style: none;
             margin-inline-start: 0;
             padding-inline-start: 0;
-            padding-bottom: var(--space-sm);
         }
 
         li {
@@ -121,14 +102,8 @@
             padding: 0;
             margin-bottom: 0;
 
-            &.active {
-                background-color: transparent;
-
-                >a {
-                    background: var(--selection-bg);
-                    color: var(--primary);
-                    border-color: var(--border-light);
-                }
+            &.active > a {
+                color: var(--primary);
             }
 
             &::before {
@@ -136,68 +111,83 @@
             }
         }
 
+        // Top-level entries: the drawer's ledger rows — uppercase like the
+        // desktop strip, separated by hairlines, no boxes.
+        .navigation > li {
+            border-block-end: 1px solid var(--border-light);
+
+            &:last-child {
+                border-block-end: none;
+            }
+
+            > a {
+                font-size: var(--text-sm);
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: var(--tracking-wide);
+                color: var(--ink);
+                padding: var(--space-4) var(--space-6);
+            }
+        }
+
         a {
             display: block;
             color: var(--ink);
-            padding: var(--space-md) var(--space-lg);
-            margin: var(--space-xs) var(--space-md);
+            padding: var(--space-2) var(--space-6);
+            margin: 0;
             text-align: start;
             text-decoration: none;
-            font-size: var(--text-base);
+            font-size: var(--text-sm);
             font-weight: 500;
-            border-radius: var(--radius-md);
-            border: 1px solid transparent;
-            transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+            border-radius: 0;
+            border: none;
+            transition: color var(--transition-fast);
 
             &:hover {
-                background: var(--selection-bg);
                 color: var(--primary);
-                border-color: var(--border-light);
+                background: transparent;
             }
         }
 
         .navigation {
-            margin-bottom: var(--space-md);
-            padding: var(--space-lg) 0;
+            padding: var(--space-2) 0 var(--space-8);
             display: block;
 
+            // Sub-entries: quieter, sentence case, indented under their
+            // section.
             >li>ul {
                 background: transparent;
                 border-radius: 0;
                 margin: 0;
-                padding: 0;
-                border: 0;
+                padding: 0 0 var(--space-3);
 
                 >li>a {
-                    padding: var(--space-sm) var(--space-md);
-                    font-size: var(--text-base);
-                    color: var(--ink);
-                    border-radius: var(--radius-sm);
+                    color: var(--ink-light);
                 }
             }
 
             ul {
                 display: none;
-                position: static !important; // Force static - no floating cards in mobile
+                position: static !important; // Force static — no floating panels in the drawer
                 width: 100%;
                 box-shadow: none;
                 border: 0;
                 inset: auto !important; // Reset any positioning
 
+                a {
+                    padding-inline-start: var(--space-8);
+                }
+
                 ul {
                     background: transparent;
                     border: 0;
                     border-radius: 0;
-                    margin-inline-start: var(--space-md);
-                    margin-block: 0;
+                    margin: 0;
                     padding: 0;
 
                     a {
-                        padding: var(--space-xs) var(--space-md);
-                        font-size: var(--text-sm);
-                        color: var(--ink-light);
-                        border-radius: var(--radius-sm);
-                        margin: var(--space-xs) 0;
+                        padding-inline-start: var(--space-10);
+                        color: var(--ink-subtle);
                     }
                 }
 
@@ -210,7 +200,7 @@
                 }
             }
 
-            // Expanded submenus - inline, not floating
+            // Expanded submenus — inline, not floating
             .expanded>ul {
                 display: block;
                 position: static !important;
@@ -225,37 +215,35 @@
         // Create a wrapper context for the link + button
         >a {
             position: relative;
-            padding-inline-end: var(--space-2xl); // Make room for the button
+            padding-inline-end: var(--space-16); // Make room for the toggle
         }
 
-        // Position the toggle button at a fixed distance from top of li
-        // This keeps it aligned with the first link even when submenu expands
+        // Slim ink chevron pinned to the first link line, aligned even when
+        // the submenu expands below.
         .mobile-dropdown-toggle {
             position: absolute;
-            // Fixed position from top: link margin (--space-xs) + link padding (--space-md) + half line height
-            // Link total height ≈ padding-top + line-height + padding-bottom = 1rem + 1.6em + 1rem ≈ 52px
-            // Center point ≈ 26px from top of link, plus the margin = var(--space-xs) ≈ 4px = ~30px
-            top: calc(var(--space-xs) + var(--space-md) + 0.8em);
+            // Link first-line centre: block padding (--space-4) + half the
+            // ~1.3em line box of the --text-sm link.
+            top: calc(var(--space-4) + 0.65em);
             transform: translateY(-50%);
-            inset-inline-end: var(--space-md);
+            inset-inline-end: var(--space-5);
             width: var(--size-control-sm);
             height: var(--size-control-sm);
             background: transparent;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
+            border: none;
+            border-radius: var(--radius-sm);
             cursor: pointer;
             z-index: 2;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color var(--transition-fast), border-color var(--transition-fast);
             padding: 0;
 
             &::after {
                 content: "";
                 width: 1rem;
                 height: 1rem;
-                background-color: var(--ink);
+                background-color: var(--ink-light);
                 -webkit-mask-image: url(../img/chevron-right.svg);
                 mask-image: url(../img/chevron-right.svg);
                 -webkit-mask-position: center;
@@ -268,28 +256,16 @@
                 transition: transform var(--transition-fast), background-color var(--transition-fast);
             }
 
-            &:hover {
-                background: var(--surface-raised);
-                border-color: var(--primary);
-
-                &::after {
-                    background-color: var(--primary);
-                }
+            &:hover::after {
+                background-color: var(--ink);
             }
+
+            @include focus-ring;
         }
 
-        &.expanded>.mobile-dropdown-toggle {
-            background: var(--primary);
-            border-color: var(--primary);
-
-            &::after {
-                transform: rotate(90deg);
-                background-color: var(--white);
-            }
-        }
-
-        li:not(.menu-header) {
-            padding-inline-start: var(--space-lg);
+        &.expanded>.mobile-dropdown-toggle::after {
+            transform: rotate(90deg);
+            background-color: var(--primary);
         }
     }
 

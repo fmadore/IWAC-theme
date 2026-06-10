@@ -59,7 +59,11 @@
                 margin-block-end: var(--space-2);
                 padding-inline-end: var(--space-4);
 
-                &:not(.sidebar-region &) {
+                // :where() keeps this default column at zero extra
+                // specificity so context-specific layouts (the show-page /
+                // item-set ledger in _resource-show.scss) override it without
+                // a specificity arms race.
+                &:where(:not(.sidebar-region *)) {
                     @media (min-width: $md) {
                         margin-block-end: 0;
                         float: left;
@@ -80,7 +84,7 @@
                 white-space: normal;
                 align-items: flex-start;
 
-                &:not(.sidebar-region &) {
+                &:where(:not(.sidebar-region *)) {
                     @media (min-width: $md) {
                         margin-inline-start: 144px;
                     }

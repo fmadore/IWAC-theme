@@ -43,11 +43,19 @@
         gap: var(--space-4);
         padding-block: var(--space-3);
         min-height: 3.5rem;
+
+        @media (max-width: #{$sm - 0.02px}) {
+            gap: var(--space-2);
+        }
     }
 
     &__site-title {
         flex: 0 1 auto;
-        min-width: 0;
+        min-width: 7ch; // keep a readable stub of the wordmark before the tools start giving up width
+
+        @media (max-width: #{$sm - 0.02px}) {
+            min-width: 5ch;
+        }
 
         a {
             display: block;
@@ -86,8 +94,21 @@
         display: flex;
         align-items: center;
         gap: var(--space-2);
-        flex-shrink: 0;
-        min-width: 0;
+        // The cluster must be able to give up width on narrow phones — a
+        // rigid tools row pushed the hamburger off-canvas at ~420px. Only
+        // the search box flexes (see __search-form); the icon controls
+        // keep their full hit areas. min-width stays `auto` so the cluster
+        // can never be squeezed below what its controls need — the wordmark
+        // gives instead.
+        flex: 0 1 auto;
+
+        > * {
+            flex-shrink: 0;
+        }
+
+        @media (max-width: #{$sm - 0.02px}) {
+            gap: var(--space-1);
+        }
 
         @media (min-width: $md) {
             gap: var(--space-3);
@@ -100,12 +121,29 @@
         // to the box's bottom-right. The module also sets this inline as a
         // belt-and-suspenders fallback if this stylesheet lags a deploy.
         position: relative;
-        min-width: 0;
+        // The one flexible member of the tools row: shrinks from its basis
+        // down to the floor on narrow phones so the hamburger never leaves
+        // the canvas. The input inside already compresses (flex: 1 +
+        // min-width: 0).
+        flex: 0 1 9.5rem;
+        min-width: 5.5rem;
+
+        @media (max-width: #{$sm - 0.02px}) {
+            min-width: 4.5rem;
+        }
+
+        @media (min-width: $md) {
+            flex-basis: 200px;
+        }
+
+        @media (min-width: $xl) {
+            flex-basis: 260px;
+        }
 
         form {
             display: flex;
             align-items: center;
-            width: 9.5rem;
+            width: 100%;
             background: var(--surface-raised);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
@@ -113,14 +151,6 @@
                 border-color var(--transition-fast),
                 box-shadow var(--transition-fast),
                 background-color var(--transition-fast);
-
-            @media (min-width: $md) {
-                width: 200px;
-            }
-
-            @media (min-width: $xl) {
-                width: 260px;
-            }
 
             &:focus-within {
                 border-color: var(--primary);

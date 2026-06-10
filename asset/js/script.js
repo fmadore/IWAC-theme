@@ -55,12 +55,40 @@ const freedomScripts = () => {
         if (!ticking) {
             window.requestAnimationFrame(() => {
                 onScroll(lastKnownScrollPosition);
+                syncBackToTop(lastKnownScrollPosition);
                 ticking = false;
             });
 
             ticking = true;
         }
     });
+
+    // Back to top — appears once the page has scrolled past ~a viewport.
+    // Toggled outside onScroll, which early-returns while an input is
+    // focused or header chrome is absent.
+
+    const backToTop = document.getElementById('back-to-top');
+
+    function syncBackToTop(scrollPos) {
+        if (!backToTop) {
+            return;
+        }
+        backToTop.classList.toggle('is-visible', scrollPos > Math.max(600, window.innerHeight * 0.75));
+    }
+
+    if (backToTop) {
+        backToTop.addEventListener('click', () => {
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+            // Park focus on the page-top landmark so keyboard users don't
+            // tab onward from a control that just hid itself.
+            const content = document.getElementById('content');
+            if (content) {
+                content.focus({ preventScroll: true });
+            }
+        });
+        syncBackToTop(window.scrollY);
+    }
 
     // Resize Events
 

@@ -1,0 +1,62 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Back to top
+// Quiet floating control in the bottom end corner. script.js toggles
+// .is-visible once the page has scrolled past ~a viewport, and scrolls
+// smoothly home on click (instant under prefers-reduced-motion).
+// ==========================================================================
+
+.back-to-top {
+    position: fixed;
+    inset-block-end: var(--space-6);
+    inset-inline-end: var(--space-6);
+    z-index: var(--z-sticky);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-control-lg);
+    height: var(--size-control-lg);
+    padding: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    color: var(--ink);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(var(--space-2));
+    transition:
+        opacity var(--transition-base),
+        transform var(--transition-base),
+        visibility var(--transition-base),
+        border-color var(--transition-fast),
+        background-color var(--transition-fast);
+
+    &::before {
+        content: "";
+        @include icon-mask("../img/arrow-up.svg");
+        width: 1rem;
+        height: 1rem;
+    }
+
+    &:hover {
+        background: var(--surface-raised);
+        border-color: var(--ink-strong);
+        color: var(--primary);
+    }
+
+    @include focus-ring;
+
+    &.is-visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+        transform: none;
+    }
+}
