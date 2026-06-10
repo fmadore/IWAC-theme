@@ -233,7 +233,8 @@
                 padding: var(--space-2) 0;
                 min-width: 14rem;
                 width: max-content;
-                max-width: 20rem;
+                // Never wider than the viewport, whatever the entry text.
+                max-width: min(20rem, calc(100vw - var(--space-8)));
                 inset-inline-start: 0;
                 top: 100%;
                 z-index: var(--z-dropdown);
@@ -299,6 +300,14 @@
                         text-decoration: none;
                     }
                 }
+            }
+
+            // Sections near the inline end (À propos, Humanités numériques…)
+            // anchor their panel to the right edge of the item instead, so it
+            // can't overflow the viewport on half-width windows.
+            &:nth-last-child(-n+2)>ul {
+                inset-inline-start: auto;
+                inset-inline-end: 0;
             }
         }
 

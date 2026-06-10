@@ -3,6 +3,11 @@ $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
 $this->inlineScript()->appendFile($this->assetUrl('js/minimasonry.min.js'));
 $this->inlineScript()->appendFile($this->assetUrl('js/browse.js'));
+if (isset($itemSet)) {
+    // Item-set pages render their items as the same searchable ledger the
+    // item pages use for linked resources (client title filter + AJAX paging).
+    $this->inlineScript()->appendFile($this->assetUrl('js/linked-resources.js'));
+}
 $this->htmlElement('body')->appendAttribute('class', 'item resource browse');
 
 $filterLocale = (bool) $this->siteSetting('filter_locale_values');
@@ -103,7 +108,8 @@ if (is_array($decoration) && in_array('media', $decoration)) {
 <?php echo $this->searchFilters(); ?>
 
 <div class="browse-controls">
-    <?php if (strpos($layoutSetting, 'toggle') !== false): ?>
+    <?php // The grid/list toggle has no meaning for the item-set ledger table. ?>
+    <?php if (!$itemSetShow && strpos($layoutSetting, 'toggle') !== false): ?>
         <div class="layout-toggle">
             <button type="button" aria-label="<?php echo $translate('Grid'); ?>" title="<?php echo $translate('Grid'); ?>" class="grid icon-btn o-icon-grid" <?php echo $gridState; ?>></button>
             <button type="button" aria-label="<?php echo $translate('List'); ?>" title="<?php echo $translate('List'); ?>" class="list icon-btn o-icon-list" <?php echo $listState; ?>></button>
@@ -116,6 +122,128 @@ if (is_array($decoration) && in_array('media', $decoration)) {
 </div>
 
 <?php $this->trigger('view.browse.before'); ?>
+
+<?php if ($itemSetShow): ?>
+
+    <?php
+    // Ledger table mirroring the item pages' linked-resources section —
+    // same classes (the linked-resources CSS applies as-is) and the same
+    // #linked-resources root, so linked-resources.js provides the client
+    // title filter and AJAX pagination here too.
+    $noResultsText = $translate('No resources match your search.');
+    $resultsFoundText = $translate('{count} resources found');
+    ?>
+    <div id="linked-resources">
+
+        <div class="linked-resources__controls">
+            <div class="linked-resources__search">
+                <img src="<?php echo $this->assetUrl('img/search.svg'); ?>"
+                     class="linked-resources__search-icon"
+                     alt=""
+                     aria-hidden="true">
+                <input type="search"
+                       id="linked-resources-search"
+                       name="linked-resources-search"
+                       class="linked-resources__search-input"
+                       placeholder="<?php echo $this->escapeHtmlAttr($translate('Filter by title...')); ?>"
+                       aria-label="<?php echo $this->escapeHtmlAttr($translate('Filter items by title')); ?>">
+            </div>
+        </div>
+
+        <div class="linked-resources__status" role="status" aria-live="polite" aria-atomic="true"></div>
+
+        <div class="linked-resources__no-results" hidden>
+            <p><?php echo $escape($noResultsText); ?></p>
+        </div>
+
+        <div class="linked-resources-table-wrapper">
+            <table class="linked-resources-table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="linked-resources-table__col-thumb">
+                            <span class="sr-only"><?php echo $translate('Thumbnail'); ?></span>
+                        </th>
+                        <th scope="col" class="linked-resources-table__col-title">
+                            <?php echo $translate('Title'); ?>
+                        </th>
+                        <th scope="col" class="linked-resources-table__col-type">
+                            <?php echo $translate('Type'); ?>
+                        </th>
+                        <th scope="col" class="linked-resources-table__col-date">
+                            <?php echo $translate('Date'); ?>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($items as $item): ?>
+                        <?php
+                        $resourceTitle = $item->displayTitle(null, $valueLang);
+                        $resourceUrl = $item->url();
+
+                        // Prefer dcterms:date, fall back to record created date.
+                        $displayDate = '';
+                        $sortDate = '';
+                        $dctermsDate = $item->value('dcterms:date', ['default' => null]);
+                        if ($dctermsDate) {
+                            $displayDate = (string) $dctermsDate;
+                            $sortDate = $displayDate;
+                        } elseif ($item->created()) {
+                            $sortDate = $item->created()->format('c');
+                        }
+                        ?>
+                        <tr class="linked-resources-table__row"
+                            data-title="<?php echo $this->escapeHtmlAttr($resourceTitle); ?>"
+                            data-date="<?php echo $this->escapeHtmlAttr($sortDate); ?>">
+                            <td class="linked-resources-table__cell linked-resources-table__cell--thumb">
+                                <a href="<?php echo $this->escapeHtmlAttr($resourceUrl); ?>"
+                                   class="linked-resources-table__thumb-link"
+                                   tabindex="-1"
+                                   aria-hidden="true">
+                                    <?php echo $this->thumbnail($item, 'square', ['alt' => '']); ?>
+                                </a>
+                            </td>
+                            <td class="linked-resources-table__cell linked-resources-table__cell--title"
+                                data-label="<?php echo $this->escapeHtmlAttr($translate('Title')); ?>">
+                                <a href="<?php echo $this->escapeHtmlAttr($resourceUrl); ?>"
+                                   class="linked-resources-table__title-link">
+                                    <?php echo $escape($resourceTitle); ?>
+                                </a>
+                            </td>
+                            <td class="linked-resources-table__cell linked-resources-table__cell--type"
+                                data-label="<?php echo $this->escapeHtmlAttr($translate('Type')); ?>">
+                                <?php echo $this->ResourceTags($item); ?>
+                            </td>
+                            <td class="linked-resources-table__cell linked-resources-table__cell--date"
+                                data-label="<?php echo $this->escapeHtmlAttr($translate('Date')); ?>">
+                                <?php if ($displayDate): ?>
+                                    <span class="linked-resources-table__date">
+                                        <?php echo $escape($displayDate); ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="linked-resources-table__date linked-resources-table__date--empty" aria-hidden="true">—</span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="linked-footer">
+            <?php echo $this->pagination(); ?>
+        </div>
+
+    </div>
+
+    <script>
+    const linkedResourcesNoResults = <?php echo json_encode($noResultsText); ?>;
+    const linkedResourcesResultsFound = <?php echo json_encode($resultsFoundText); ?>;
+    </script>
+
+    </div><?php // close .item-set-items ?>
+    <?php $this->trigger('view.browse.after'); ?>
+
+<?php else: ?>
 
 <ul class="resources <?php echo ($isGrid) ? 'resource-grid' : 'resource-list'; ?>">
 
@@ -156,7 +284,8 @@ if (is_array($decoration) && in_array('media', $decoration)) {
 
 </ul>
 
-<?php echo ($itemSetShow) ? '</div>' : ''; ?>
 <?php $this->trigger('view.browse.after'); ?>
 
 <?php echo $this->pagination(); ?>
+
+<?php endif; ?>

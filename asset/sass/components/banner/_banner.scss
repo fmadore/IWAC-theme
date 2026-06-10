@@ -23,7 +23,7 @@
     border-radius: 0;
 
     // The duotone plate: light areas of the grayscale image become this.
-    background: color-mix(in oklab, var(--primary) 84%, black 16%);
+    background: color-mix(in oklab, var(--primary) 90%, black 10%);
 
     // Defeat the optional .container / alignment classes the template can
     // attach — the hero owns the full viewport width.
@@ -34,7 +34,8 @@
         max-width: none;
     }
 
-    // Single editorial scrim for text legibility over the duotone.
+    // Single editorial scrim for text legibility over the duotone — light
+    // enough that the press covers stay readable as texture.
     &.has-text::before {
         content: "";
         position: absolute;
@@ -42,9 +43,9 @@
         background:
             linear-gradient(
                 180deg,
-                color-mix(in oklab, black 12%, transparent) 0%,
-                color-mix(in oklab, black 34%, transparent) 62%,
-                color-mix(in oklab, black 58%, transparent) 100%
+                color-mix(in oklab, black 6%, transparent) 0%,
+                color-mix(in oklab, black 22%, transparent) 62%,
+                color-mix(in oklab, black 42%, transparent) 100%
             );
         z-index: 1;
     }
@@ -58,10 +59,11 @@
         inset-inline-start: 0;
         z-index: 0;
         // Grayscale plate multiplied over the primary ground = duotone.
-        // Brightness lifts the plate so highlights keep more of the orange.
-        filter: grayscale(1) contrast(1.05) brightness(1.08);
+        // Brightness lifts the plate so highlights keep more of the orange
+        // and the newspaper covers stay legible as archival texture.
+        filter: grayscale(1) contrast(1.04) brightness(1.22);
         mix-blend-mode: multiply;
-        opacity: 0.92;
+        opacity: 0.9;
     }
 
     // One-time Ken Burns on load (not hover-triggered). Gated on
@@ -166,11 +168,11 @@
 // Dark theme: the same plate, banked down — lamplight, not neon.
 @mixin iwac-banner-dark {
     .banner {
-        background: color-mix(in oklab, var(--primary-base) 52%, black 48%);
+        background: color-mix(in oklab, var(--primary-base) 58%, black 42%);
 
         img {
-            opacity: 0.85;
-            filter: grayscale(1) contrast(1.08) brightness(0.82);
+            opacity: 0.88;
+            filter: grayscale(1) contrast(1.06) brightness(0.95);
         }
     }
 }

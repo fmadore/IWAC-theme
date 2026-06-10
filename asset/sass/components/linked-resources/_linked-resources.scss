@@ -533,3 +533,24 @@
     opacity: 0.55;
     transition: opacity var(--transition-base);
 }
+
+// ==========================================================================
+// Item-set pages reuse the linked-resources ledger for their items section
+// (view/omeka/site/item/browse.phtml, $itemSetShow branch). Give the
+// section heading the newspaper section-head treatment and breathing room
+// from the metadata above.
+// ==========================================================================
+
+.item-set-items {
+    margin-block-start: var(--space-10);
+
+    > h3 {
+        font-size: var(--text-xl);
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        border-top: 2px solid var(--ink-strong);
+        padding-block-start: var(--space-3);
+        margin-block-start: 0;
+        margin-block-end: var(--space-5);
+    }
+}

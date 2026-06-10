@@ -1,13 +1,18 @@
 const freedomScripts = () => {
 
-    const body = document.body;
     const mainHeader = document.querySelector('.main-header');
-    const mainHeaderTopBar = document.querySelector('.main-header__top-bar');
     const mainHeaderMainBar = document.querySelector('.main-header__main-bar');
+    const navStrip = document.querySelector('.main-header .main-navigation');
     const menuDrawer = document.getElementById('menu-drawer');
     const userBar = document.getElementById('user-bar');
 
-    // Scrolling Events
+    // The section strip is only rendered from this breakpoint (see
+    // _navigation.scss $lg); below it the drawer + hamburger live in the
+    // masthead row, which must therefore never slide away.
+    const stripVisible = window.matchMedia('(min-width: 1024px)');
+
+    // Scrolling Events — masthead slides away on scroll-down so the section
+    // strip stays pinned alone; scrolling up brings the wordmark back.
 
     let lastKnownScrollPosition = 0;
     let ticking = false;
@@ -16,7 +21,7 @@ const freedomScripts = () => {
     function onScroll(scrollPos) {
         // Header chrome can be absent on minimal pages; bail safely so the
         // rest of freedomScripts (annotations, language switcher) still binds.
-        if (!mainHeader || !mainHeaderTopBar || !mainHeaderMainBar || !menuDrawer) {
+        if (!mainHeader || !mainHeaderMainBar || !menuDrawer) {
             return;
         }
 
@@ -33,21 +38,14 @@ const freedomScripts = () => {
             return;
         }
 
-        if(scrollPos > 60 && scrollDirection == 'down') {
-            mainHeader.style.top = - (userBarHeight + mainHeaderTopBar.offsetHeight) + 'px';
-            // Update menu drawer position to match visible header area
-            const menuTop = mainHeaderMainBar.offsetHeight;
-            menuDrawer.style.setProperty('--menu-drawer-top', menuTop + 'px');
-            menuDrawer.style.top = menuTop + 'px';
-            menuDrawer.style.height = 'calc(100vh - ' + menuTop + 'px)';
+        const canCollapse = stripVisible.matches && navStrip;
+
+        if (canCollapse && scrollPos > 60 && scrollDirection == 'down') {
+            mainHeader.style.top = - (userBarHeight + mainHeaderMainBar.offsetHeight) + 'px';
         } else {
             mainHeader.style.top = 0;
-            // Reset menu drawer to full header height
-            const menuTop = mainHeader.offsetHeight;
-            menuDrawer.style.setProperty('--menu-drawer-top', menuTop + 'px');
-            menuDrawer.style.top = menuTop + 'px';
-            menuDrawer.style.height = 'calc(100vh - ' + menuTop + 'px)';
         }
+        syncMenuDrawer();
     }
 
     document.addEventListener('scroll', (event) => {
@@ -75,15 +73,40 @@ const freedomScripts = () => {
             return;
         }
         getUserBarHeight();
-        refreshBodyPaddingTop();
+        refreshScrollPadding();
         onScroll(lastKnownScrollPosition);
     }
 
     window.addEventListener('resize', IWACUtils.debounce(onResize, 250));
 
-    function refreshBodyPaddingTop() {
-        body.style.paddingTop = mainHeader.offsetHeight + 'px';
-        document.documentElement.style.scrollPaddingTop = (mainHeaderMainBar.offsetHeight + 20) + 'px';
+    // Anchor jumps must land below the sticky chrome. NOTE: this same
+    // scroll-padding makes Chromium fight the caret when typing into an
+    // input that sits INSIDE the sticky header (every keystroke nudges the
+    // page up trying to clear the padding) — so it is zeroed while focus is
+    // within the header (see focusin/focusout below).
+    function refreshScrollPadding() {
+        document.documentElement.style.scrollPaddingTop = (mainHeader.offsetHeight + 16) + 'px';
+    }
+
+    if (mainHeader) {
+        mainHeader.addEventListener('focusin', () => {
+            document.documentElement.style.scrollPaddingTop = '0px';
+        });
+        mainHeader.addEventListener('focusout', () => {
+            refreshScrollPadding();
+        });
+    }
+
+    // Keep the drawer pinned under whatever part of the header is visible.
+    function syncMenuDrawer() {
+        if (!menuDrawer || !mainHeader) {
+            return;
+        }
+        const headerRect = mainHeader.getBoundingClientRect();
+        const menuTop = Math.max(0, headerRect.bottom);
+        menuDrawer.style.setProperty('--menu-drawer-top', menuTop + 'px');
+        menuDrawer.style.top = menuTop + 'px';
+        menuDrawer.style.height = 'calc(100vh - ' + menuTop + 'px)';
     }
 
     function getUserBarHeight() {

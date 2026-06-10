@@ -112,13 +112,6 @@ body.item-set {
                 text-transform: uppercase;
                 letter-spacing: var(--tracking-wider);
                 padding-inline-end: var(--space-4);
-
-                @media (min-width: $md) {
-                    float: left;
-                    width: 10.5rem; // 168px — fits two-word FR labels on one line
-                    margin-block-end: 0;
-                    padding-block-start: 2px; // optical baseline alignment
-                }
             }
 
             dd {
@@ -127,10 +120,7 @@ body.item-set {
                 line-height: var(--line-height-normal);
                 max-width: var(--measure-base);
                 margin-block: 0;
-
-                @media (min-width: $md) {
-                    margin-inline-start: 10.5rem;
-                }
+                margin-inline-start: 0;
             }
 
             // Linked-resource values sometimes carry a thumbnail (publisher
@@ -141,30 +131,62 @@ body.item-set {
             }
         }
 
+        // Two-column ledger row. The value column comes from PADDING on the
+        // row (so every value line — wrapped text, second and third dds —
+        // stays in the column), and the label floats back into that padding
+        // with a negative margin. Floating dd-beside-dt alone broke as soon
+        // as content wrapped: continuation lines slid under the label.
+        // The AI lede keeps its own full-width panel layout.
+        @media (min-width: $md) {
+            dl > .property:not(.property--ai) {
+                padding-inline-start: 10.5rem; // 168px — fits two-word FR labels
+
+                // Contain a label taller than its values.
+                &::after {
+                    content: "";
+                    display: block;
+                    clear: both;
+                }
+
+                dt {
+                    float: inline-start;
+                    width: 10.5rem;
+                    margin-inline-start: -10.5rem;
+                    margin-block-end: 0;
+                    padding-block-start: 2px; // optical baseline alignment
+                }
+            }
+        }
+
         // Multi-value rows (subjects, spatial coverage, languages…) flow
         // inline with interpunct separators instead of one value per line —
         // a row of seven subjects costs one line, not seven. Long-form
         // properties (full text, descriptions, the AI lede) keep block flow.
         dl > .property:not([data-property-term="bibo:content"]):not([data-property-term="dcterms:description"]):not([data-property-term="dcterms:abstract"]):not(.property--ai) {
+            // inline-BLOCK, not inline: each value is an atomic token that
+            // sits beside its siblings and wraps as a unit. Plain inline dds
+            // fragmented onto separate lines in Chromium (stray inter-tag
+            // whitespace + the floated label), which stacked one value per
+            // line.
             dd {
-                display: inline;
-                padding-inline-end: var(--space-1);
+                display: inline-block;
+                vertical-align: baseline;
+                max-width: 100%;
+                padding-inline-end: var(--space-2);
 
                 @media (min-width: $md) {
                     margin-inline-start: 0;
                 }
             }
 
+            // The interpunct lives INSIDE the following value's box, so a
+            // wrap never strands a dot at a line end.
             dd + dd::before {
                 content: "·";
                 color: var(--primary);
                 font-weight: 700;
                 padding-inline-end: var(--space-2);
-                margin-inline-start: var(--space-1);
             }
-
-            // Inline dds sit beside the floated dt; below $md the dt is its
-            // own line and the values wrap under it as running text.
         }
 
         // bibo:content body section — the article itself reads in the text
