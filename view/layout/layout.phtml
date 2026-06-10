@@ -30,6 +30,12 @@ $primaryColor = $this->themeSetting('primary_color') ?? '#e64a19';
 // derives --secondary (and its dark-mode lightening) from this base.
 $secondaryColor = $this->themeSetting('secondary_color') ?? '#394f68';
 
+// The hero banner only renders on the homepage (see below), so the LCP
+// preload must be gated the same way — otherwise every inner page fetches
+// a large unused image at high priority.
+$layoutHomepage = method_exists($site, 'homepage') ? $site->homepage() : null;
+$layoutIsHomepage = $layoutHomepage && $this->params()->fromRoute('page-slug') === $layoutHomepage->slug();
+
 // For LCP: preload default banner image when no custom banner is set
 $customBannerAsset = $this->themeSettingAsset('banner');
 $defaultBannerUrl = $this->assetUrl('img/banner.webp');
@@ -65,7 +71,9 @@ $iconfontsUrl = $this->assetUrl('css/iconfonts.css', 'Omeka');
 // v1 PIPE "|" separator BETWEEN families — that returns all faces including
 // the source-serif-4 opsz axis. Do NOT revert to "&family=" or the display
 // serif disappears and every heading falls back to Georgia.
-$this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=public-sans:ital,wght@0,400..700;1,400|source-serif-4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap');
+// Besley (Clarendon) carries the masthead + headlines; three static faces
+// keep the request small. Source Serif 4 stays for long-form reading.
+$this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=besley:500,600,800|public-sans:ital,wght@0,400..700;1,400|source-serif-4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap');
 $this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'));
 $this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'));
 $this->jsTranslate();
@@ -114,7 +122,7 @@ if ($userBar) {
 		echo $this->headMeta();
 		?>
 		<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
-		<?php if (!$customBannerAsset): ?>
+		<?php if (!$customBannerAsset && $layoutIsHomepage): ?>
 		<link rel="preload" as="image" fetchpriority="high"
 		      href="<?php echo $this->escapeHtmlAttr($defaultBannerUrl); ?>"
 		      imagesrcset="<?php echo $this->escapeHtmlAttr($defaultBannerSrcset); ?>"
@@ -165,10 +173,13 @@ if ($userBar) {
 		<?php echo $this->partial('common/header', ['userBar' => $userBar, 'site' => $site]); ?>
 
 		<?php
-		// Full hero only on the site homepage; a short image strip elsewhere.
-		$bannerHomepage = method_exists($site, 'homepage') ? $site->homepage() : null;
-		$bannerCompact = !($bannerHomepage && $this->params()->fromRoute('page-slug') === $bannerHomepage->slug());
-		echo $this->partial('common/banner', ['compact' => $bannerCompact, 'srcset' => $defaultBannerSrcset]);
+		// The hero renders on the site homepage only. Inner pages start
+		// straight at content — the decorative collage strip they used to
+		// carry cost 120–200px of viewport on every research page and diluted
+		// the hero's impact where it matters.
+		if ($layoutIsHomepage) {
+			echo $this->partial('common/banner', ['compact' => false, 'srcset' => $defaultBannerSrcset]);
+		}
 		?>
 
 		<div id="content" class="container" role="main" tabindex="-1">

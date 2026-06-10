@@ -3,4 +3,11 @@
 .sass-cache
 .DS_Store
 .claude/settings.local.json
+# Local live-site preview tooling (proxy, headless screenshot rig) — session aids, not theme code
+.claude/launch.json
+.claude/live-proxy.js
+.claude/preview-patch.js
+.claude/shot.ps1
+.claude/oklch2hex.js
+.claude/shots/
 nul

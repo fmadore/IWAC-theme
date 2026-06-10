@@ -28,7 +28,40 @@ $rightSidebarBlockContent = $this->resourcePageBlocks($item, 'right');
 $rightSidebarHasBlocks = $rightSidebarBlockContent->hasBlocks();
 ?>
 
-<?php echo $this->ResourceTags($item); ?>
+<?php
+// Dateline — the press convention: TYPE · PUBLISHER · DATE in tracked
+// uppercase above the headline (replaces the colored resource-tag pills).
+// Each segment is optional; resource-backed segments link to their record.
+$datelineParts = [];
+
+$classLabel = $item->displayResourceClassLabel();
+if ($classLabel) {
+    $datelineParts[] = $escape($translate($classLabel));
+}
+
+$publisherValue = $item->value('dcterms:publisher');
+if ($publisherValue) {
+    $publisherResource = $publisherValue->valueResource();
+    if ($publisherResource) {
+        $datelineParts[] = '<a href="' . $this->escapeHtmlAttr($publisherResource->siteUrl()) . '">'
+            . $escape($publisherResource->displayTitle(null, $valueLang)) . '</a>';
+    } else {
+        $publisherLiteral = (string) $publisherValue->value();
+        if ($publisherLiteral !== '') {
+            $datelineParts[] = $escape($publisherLiteral);
+        }
+    }
+}
+
+$dateValue = $item->value('dcterms:date');
+if ($dateValue && !$dateValue->valueResource()) {
+    // asHtml() lets NumericDataTypes render the localized date.
+    $datelineParts[] = $dateValue->asHtml();
+}
+?>
+<?php if ($datelineParts): ?>
+<p class="item-dateline"><?php echo implode(' <span class="item-dateline__sep" aria-hidden="true">·</span> ', $datelineParts); ?></p>
+<?php endif; ?>
 <?php echo $this->pageTitle($item->displayTitle(null, $valueLang), 1); ?>
 
 <?php $this->trigger('view.show.before'); ?>

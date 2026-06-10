@@ -7,55 +7,41 @@ $navDepth = (int) $this->themeSetting('nav_depth') ? (int) $this->themeSetting('
 
 	<?php echo $userBar; ?>
 
-	<div class="main-header__top-bar container">
-		<?php // Advanced-search link removed in theme 2.4.0 — the IwacSearch
-		      // module's Typesense search (via the header box below) supersedes
-		      // Omeka's /item/search property builder. ?>
-		<div class="main-header__search-form">
-			<?php echo $this->partial('common/search-form'); ?>
-		</div>
-		<div class="main-header__utilities">
-			<?php // Language Switcher - requires Internationalisation module ?>
-			<?php if ($this->getHelperPluginManager()->has('languageSwitcher')): ?>
-				<?php echo $this->languageSwitcher(); ?>
-			<?php else: ?>
-				<!-- DEBUG: languageSwitcher helper not available - Internationalisation module may not be installed/active -->
-			<?php endif; ?>
-			<?php // Both icons render; the active one is selected via CSS based on
-			      // body[data-theme]. The head-script in layout.phtml sets data-theme
-			      // before first paint, so the correct icon is shown synchronously
-			      // and there's no flash-of-wrong-icon for users with prefers-color-scheme: dark. ?>
-			<button class="theme-toggle" data-theme-toggle type="button"
-				data-label-to-light="<?php echo $this->escapeHtmlAttr($translate('Switch to light mode')); ?>"
-				data-label-to-dark="<?php echo $this->escapeHtmlAttr($translate('Switch to dark mode')); ?>"
-				aria-label="<?php echo $this->escapeHtmlAttr($translate('Switch to dark mode')); ?>" aria-pressed="false">
-				<span class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-brightness-high-fill" viewBox="0 0 16 16">
-						<path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
-					</svg>
-				</span>
-				<span class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-moon-fill" viewBox="0 0 16 16">
-						<path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
-					</svg>
-				</span>
-			</button>
-		</div>
-	</div>
-	<hr class="alignfull">
-
+	<?php // Masthead row: wordmark left, research tools right. The class
+	      // main-header__main-bar is load-bearing — navigation.js uses it as
+	      // the focus-trap container for the menu drawer. ?>
 	<div class="main-header__main-bar container">
 		<div class="main-header__site-title">
-				<a href="<?php echo $this->escapeHtmlAttr($site->url()); ?>"><?php echo $this->escapeHtml($site->title()); ?></a>
+			<a href="<?php echo $this->escapeHtmlAttr($site->url()); ?>"><?php echo $this->escapeHtml($site->title()); ?></a>
+		</div>
+		<div class="main-header__tools">
+			<div class="main-header__search-form">
+				<?php echo $this->partial('common/search-form'); ?>
 			</div>
-			<nav class="main-navigation">
-			<div class="main-navigation__container">
-				<?php
-				echo $site->publicNav()->menu()->renderMenu(null, [
-					'addClassToListItem' => true,
-					'maxDepth' => $navDepth
-				]);
-				?>
+			<div class="main-header__utilities">
+				<?php // Language Switcher - requires Internationalisation module ?>
+				<?php if ($this->getHelperPluginManager()->has('languageSwitcher')): ?>
+					<?php echo $this->languageSwitcher(); ?>
+				<?php endif; ?>
+				<?php // Both icons render; the active one is selected via CSS based on
+				      // body[data-theme]. The head-script in layout.phtml sets data-theme
+				      // before first paint, so the correct icon is shown synchronously
+				      // and there's no flash-of-wrong-icon for users with prefers-color-scheme: dark. ?>
+				<button class="theme-toggle" data-theme-toggle type="button"
+					data-label-to-light="<?php echo $this->escapeHtmlAttr($translate('Switch to light mode')); ?>"
+					data-label-to-dark="<?php echo $this->escapeHtmlAttr($translate('Switch to dark mode')); ?>"
+					aria-label="<?php echo $this->escapeHtmlAttr($translate('Switch to dark mode')); ?>" aria-pressed="false">
+					<span class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-brightness-high-fill" viewBox="0 0 16 16">
+							<path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/>
+						</svg>
+					</span>
+					<span class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-moon-fill" viewBox="0 0 16 16">
+							<path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
+						</svg>
+					</span>
+				</button>
 			</div>
 			<button class="main-navigation__toggle" aria-expanded="false" aria-controls="menu-drawer">
 				<span class="sr-only"><?php echo $translate('Open menu'); ?></span>
@@ -63,8 +49,21 @@ $navDepth = (int) $this->themeSetting('nav_depth') ? (int) $this->themeSetting('
 				<span aria-hidden="true"></span>
 				<span aria-hidden="true"></span>
 			</button>
-		</nav>
+		</div>
 	</div>
+
+	<?php // Section strip: the full research IA as a newspaper section bar.
+	      // Visible from $lg; below that the drawer (hamburger above) serves it. ?>
+	<nav class="main-navigation" aria-label="<?php echo $this->escapeHtmlAttr($translate('Main navigation')); ?>">
+		<div class="main-navigation__container container">
+			<?php
+			echo $site->publicNav()->menu()->renderMenu(null, [
+				'addClassToListItem' => true,
+				'maxDepth' => $navDepth
+			]);
+			?>
+		</div>
+	</nav>
 
 </header>
 

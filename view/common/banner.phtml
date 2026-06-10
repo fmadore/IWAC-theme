@@ -33,7 +33,9 @@ if (!$compact) {
     if ($bannerHeight) {
         $bannerInlineStyles .= "{$bannerHeightProperty}: {$bannerHeight};";
     } else {
-        $bannerInlineStyles .= "{$bannerHeightProperty}: 20vh;";
+        // Default hero stature: tall enough to carry the display heading,
+        // capped so the fold still shows content underneath.
+        $bannerInlineStyles .= "{$bannerHeightProperty}: clamp(20rem, 42vh, 32rem);";
     }
 }
 

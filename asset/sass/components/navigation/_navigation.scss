@@ -1,16 +1,20 @@
 @use "../../abstracts/abstracts" as *;
 
 // ==========================================================================
-// Main Navigation
-// Desktop navigation with mega menu and micro-interactions
+// Main Navigation — newspaper section strip
+// A thin uppercase section bar under the masthead, hairline above, closed
+// by the header's 2px ink rule. Children open as quiet dropdown panels.
+// Hidden below $lg (the menu drawer serves small screens), but kept in the
+// DOM there — navigation.js clones its <ul> into the drawer.
 // ==========================================================================
 
 .main-navigation {
+    border-top: 1px solid var(--border-light);
 
     &__container {
         display: none;
 
-        @media screen and (min-width: $xxl) {
+        @media screen and (min-width: $lg) {
             display: block;
         }
     }
@@ -24,14 +28,17 @@
         color: inherit;
         box-shadow: none;
 
-        width: 35px;
-        height: 28px;
+        // Slim ink hamburger (the old 4px orange bars shouted brand where
+        // identity now lives in the masthead + rules).
+        width: 22px;
+        height: 16px;
         position: relative;
-        margin-block: 20px;
-        margin-inline: auto;
+        flex-shrink: 0;
         transform: rotate(0deg);
         transition: transform 0.5s ease-in-out;
         cursor: pointer;
+
+        @include focus-ring;
 
         &:hover,
         &:active,
@@ -41,25 +48,17 @@
             transform: rotate(0deg);
         }
 
-        // Show toggle between lg and xxl breakpoints
+        // The drawer toggle only exists while the section strip is hidden.
         @media (min-width: $lg) {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            margin-inline-start: var(--space-lg);
-        }
-
-        @media (min-width: $xxl) {
             display: none;
         }
 
         span[aria-hidden] {
             display: block;
             position: absolute;
-            height: 4px;
+            height: 2px;
             width: 100%;
-            background: var(--primary);
+            background: var(--ink-strong);
             border-radius: var(--radius-full);
             opacity: 1;
             inset-inline-start: 0;
@@ -68,17 +67,17 @@
         }
 
         span:nth-child(2) {
-            top: 0px;
+            top: 0;
             transform-origin: left center;
         }
 
         span:nth-child(3) {
-            top: 11px;
+            top: 7px;
             transform-origin: left center;
         }
 
         span:nth-child(4) {
-            top: 22px;
+            top: 14px;
             transform-origin: left center;
         }
 
@@ -86,7 +85,7 @@
             span:nth-child(2) {
                 transform: rotate(45deg);
                 top: -1px;
-                inset-inline-start: 5px;
+                inset-inline-start: 3px;
             }
 
             span:nth-child(3) {
@@ -96,8 +95,8 @@
 
             span:nth-child(4) {
                 transform: rotate(-45deg);
-                top: 24px;
-                inset-inline-start: 5px;
+                top: 15px;
+                inset-inline-start: 3px;
             }
         }
     }
@@ -106,16 +105,12 @@
         //main ul
         list-style: none;
         display: flex;
-        gap: var(--space-xs);
+        gap: var(--space-1);
         flex-wrap: wrap;
-        align-items: center;
+        align-items: stretch;
         margin-bottom: 0;
         padding-inline-start: 0;
-        margin-inline-start: 0;
-
-        .main-header--inline & {
-            margin-inline-end: calc(-1 * var(--space-md));
-        }
+        margin-inline-start: calc(-1 * var(--space-3));
 
         li {
             &::before {
@@ -126,44 +121,38 @@
         >li {
             //main menu items
             display: flex;
+            position: relative;
             cursor: pointer;
             margin-bottom: 0;
 
             &:hover>a,
             &.focus>a {
-                background: var(--selection-bg);
-                color: var(--primary);
-                transform: translateY(var(--lift-xxs));
+                color: var(--ink-strong);
             }
 
             &.active {
                 >a {
                     //main menu items links (active)
-                    font-weight: 600;
-                    color: var(--primary);
+                    color: var(--ink-strong);
                     position: relative;
 
                     &::after {
-                        //active link underline
+                        // Active section marker: 2px primary tab sitting on
+                        // the header's closing ink rule.
                         content: "";
                         position: absolute;
-                        height: 3px;
-                        width: 100%;
+                        height: 2px;
+                        inset-inline-start: var(--space-3);
+                        inset-inline-end: var(--space-3);
                         background: var(--primary);
-                        bottom: -2px;
-                        inset-inline-start: 0;
-                        inset-inline-end: 0;
-                        margin: auto;
-                        border-radius: var(--radius-full);
+                        bottom: 0;
                     }
                 }
             }
 
             &.menu-item-has-children {
-                margin-inline-end: var(--space-sm);
-
                 a {
-                    margin-inline-end: var(--space-1);
+                    margin-inline-end: 0;
                 }
 
                 button {
@@ -172,6 +161,7 @@
                     border: none;
                     line-height: 1;
                     padding: var(--space-1);
+                    margin-inline-start: calc(-1 * var(--space-2));
                     box-shadow: none;
                     cursor: pointer;
                     transition: transform var(--transition-fast);
@@ -180,9 +170,9 @@
                         @include icon-mask("../img/chevron-down.svg");
                         content: "" !important;
                         display: inline-block;
-                        width: var(--text-xs); // text-xs approximation
+                        width: var(--text-xs);
                         height: var(--text-xs);
-                        color: var(--primary);
+                        color: var(--muted);
                         transition: background-color var(--transition-fast), transform var(--transition-fast);
                     }
 
@@ -192,7 +182,7 @@
                         box-shadow: none;
 
                         &::after {
-                            color: var(--primary-hover);
+                            color: var(--primary);
                         }
                     }
                 }
@@ -206,118 +196,114 @@
                     >ul {
                         display: flex;
                         height: auto;
-                        padding: var(--space-xl);
                     }
                 }
             }
 
             >a {
-                //main menu items links
+                //main menu items links — agate section labels
                 color: var(--ink-light);
                 display: block;
                 text-decoration: none;
                 text-transform: uppercase;
-                font-size: var(--text-sm);
-                font-weight: 500;
-                letter-spacing: 0.025em;
-                padding: var(--space-sm) var(--space-md);
+                font-size: var(--text-xs);
+                font-weight: 600;
+                letter-spacing: var(--tracking-wide);
+                padding: var(--space-2) var(--space-3);
                 position: relative;
-                border-radius: var(--radius-md);
                 white-space: nowrap;
-                transition: color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
+                transition: color var(--transition-fast);
             }
 
             >ul {
-                //mega menu hidden
+                // Dropdown panel: a quiet column anchored to its section,
+                // not a 100vw glass mega-menu.
                 display: none;
-                gap: var(--space-xl);
-                transition: opacity var(--transition-slow);
+                flex-direction: column;
                 opacity: 0;
                 height: 0;
-                overflow: visible; // Changed from hidden to allow pseudo-element bridge
-                justify-content: center;
-                flex-wrap: wrap;
+                overflow: visible;
                 background: var(--panel-bg);
-                border-top: 1px solid var(--border);
+                border: 1px solid var(--border);
+                border-top: 2px solid var(--ink-strong);
                 box-shadow: var(--shadow-lg);
                 position: absolute;
                 list-style: none;
                 margin: 0;
-                padding: 0;
-                width: 100vw;
+                padding: var(--space-2) 0;
+                min-width: 14rem;
+                width: max-content;
+                max-width: 20rem;
                 inset-inline-start: 0;
                 top: 100%;
+                z-index: var(--z-dropdown);
+                transition: opacity var(--transition-fast);
 
                 // Bridge the gap between menu item and submenu to prevent mouseout
                 &::before {
                     content: "";
                     position: absolute;
-                    top: -1.5rem; // Bridge the gap above the submenu
+                    top: -0.75rem;
                     inset-inline-start: 0;
                     inset-inline-end: 0;
-                    height: 1.5rem;
+                    height: 0.75rem;
                     background: transparent;
                 }
 
-                // Glassmorphism for mega menu
-                @supports ((-webkit-backdrop-filter: blur(0.5rem)) or (backdrop-filter: blur(0.5rem))) {
-                    background: var(--surface-overlay);
-                    -webkit-backdrop-filter: blur(12px) saturate(1.2);
-                    backdrop-filter: blur(12px) saturate(1.2);
-                }
-
                 >li {
-                    //mega menu columns
-                    max-width: 260px;
+                    //dropdown entries
+                    max-width: none;
+                    margin: 0;
 
                     >a {
-                        //Links 1st level mega menu
-                        font-weight: 600;
+                        font-weight: 500;
                     }
 
                     >ul {
-                        //2do level columns
-                        margin-block-start: var(--space-sm);
-                        margin-inline-start: 0;
-                        padding-inline-start: 0;
-                        list-style: none;
+                        // nested level — indent quietly, no panel chrome
+                        position: static;
+                        display: block;
+                        opacity: 1;
+                        height: auto;
+                        border: none;
+                        box-shadow: none;
+                        background: transparent;
+                        min-width: 0;
+                        width: auto;
+                        padding: 0;
+                        margin: 0;
 
-                        li {
-                            //2do level links
-                            margin-bottom: var(--space-xs);
-
-                            ul {
-                                margin-inline-start: 0;
-                                padding-inline-start: var(--space-lg);
-                            }
+                        a {
+                            padding-inline-start: var(--space-8);
+                            color: var(--ink-light);
                         }
                     }
                 }
 
                 a {
-                    //all mega menu links
+                    //all dropdown links
                     color: var(--ink);
                     text-transform: none;
+                    letter-spacing: 0;
                     text-decoration: none;
                     font-size: var(--text-sm);
-                    padding-block: var(--space-xs);
+                    font-weight: 400;
+                    padding: var(--space-2) var(--space-4);
                     display: block;
-                    transition: color var(--transition-fast);
+                    white-space: normal;
+                    transition: color var(--transition-fast), background-color var(--transition-fast);
 
                     &:hover {
                         color: var(--primary);
+                        background: var(--selection-bg);
                         text-decoration: none;
                     }
-
                 }
-
             }
         }
 
         a {
             display: block;
         }
-
     }
-
 }

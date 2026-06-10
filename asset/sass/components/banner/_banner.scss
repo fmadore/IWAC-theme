@@ -1,9 +1,14 @@
 @use "../../abstracts/abstracts" as *;
 
 // ==========================================================================
-// Banner Component
-// Hero banner with modern overlay effects and enhanced typography
-// Uses global CSS custom properties for consistency with design system
+// Banner — homepage hero, duotone press collage
+//
+// The collage of newspaper covers is the archive's most honest image, but at
+// full saturation it fought every register on the page. Printed as a brand
+// duotone (grayscale plate multiplied over the primary seed) it reads as
+// archival material — one confident color statement, automatically on-brand
+// for any admin-configured primary, calmer in dark mode.
+// Renders on the homepage only (see layout.phtml).
 // ==========================================================================
 
 .banner {
@@ -12,56 +17,24 @@
     position: relative;
     overflow: hidden;
 
-    // Top spacing for separation from header/navigation
-    margin-block-start: var(--space-4);
-    // Bottom spacing so page content (breadcrumbs, titles) has breathing room
-    margin-block-end: var(--space-8);
+    // Full-bleed sheet, flush under the masthead rule.
+    margin-block-start: 0;
+    margin-block-end: var(--space-10);
+    border-radius: 0;
 
-    @media (min-width: $md) {
-        margin-block-start: var(--space-6);
-        margin-block-end: var(--space-10);
-    }
+    // The duotone plate: light areas of the grayscale image become this.
+    background: color-mix(in oklab, var(--primary) 84%, black 16%);
 
-    // Rounded corners for modern card-like appearance
-    border-radius: var(--radius-lg);
-
-    // On larger screens, use larger radius for more prominent effect
-    @media (min-width: $md) {
-        border-radius: var(--radius-xl);
-    }
-
-    // Compact variant — a short image-only strip on inner (non-home) pages.
-    // The header site-title carries branding there, so there's no overlay text
-    // and the height is owned here, not by the inline style / per-page
-    // banner-height settings (those drive only the full homepage hero).
-    &--compact {
-        height: clamp(96px, 12vh, 140px);
-        min-height: 0;
-        margin-block-end: var(--space-6);
-
-        @media (min-width: $md) {
-            height: clamp(120px, 13vh, 170px);
-            margin-block-end: var(--space-8);
-        }
-    }
-
+    // Defeat the optional .container / alignment classes the template can
+    // attach — the hero owns the full viewport width.
     &.container {
         padding: 0;
-        // Add margin to show rounded corners against background
-        margin-inline: var(--space-4);
-        width: calc(100% - var(--space-8));
-        max-width: calc(var(--content-max-width) - var(--space-8));
-
-        @media (min-width: $lg) {
-            margin-inline: auto;
-            width: 100%;
-            max-width: var(--content-max-width);
-        }
+        margin-inline: 0;
+        width: 100%;
+        max-width: none;
     }
 
-    // Single editorial scrim for text legibility. We dropped the parallel
-    // radial brand-wash overlay (it stacked decoration without improving
-    // contrast and competed with the heading).
+    // Single editorial scrim for text legibility over the duotone.
     &.has-text::before {
         content: "";
         position: absolute;
@@ -69,9 +42,9 @@
         background:
             linear-gradient(
                 180deg,
-                color-mix(in oklab, black 20%, transparent) 0%,
-                color-mix(in oklab, black 46%, transparent) 60%,
-                color-mix(in oklab, black 72%, transparent) 100%
+                color-mix(in oklab, black 12%, transparent) 0%,
+                color-mix(in oklab, black 34%, transparent) 62%,
+                color-mix(in oklab, black 58%, transparent) 100%
             );
         z-index: 1;
     }
@@ -84,11 +57,15 @@
         top: 0;
         inset-inline-start: 0;
         z-index: 0;
+        // Grayscale plate multiplied over the primary ground = duotone.
+        // Brightness lifts the plate so highlights keep more of the orange.
+        filter: grayscale(1) contrast(1.05) brightness(1.08);
+        mix-blend-mode: multiply;
+        opacity: 0.92;
     }
 
-    // One-time Ken Burns on load (not hover-triggered, which on touch =
-    // never and on desktop fires at random as the cursor crosses the
-    // banner). Gated on prefers-reduced-motion.
+    // One-time Ken Burns on load (not hover-triggered). Gated on
+    // prefers-reduced-motion.
     @media (prefers-reduced-motion: no-preference) {
         img {
             animation: bannerKenBurns 16s ease-out both;
@@ -102,14 +79,13 @@
         justify-content: center;
         position: relative;
         margin-inline: auto;
-        width: 90%;
+        width: 100%;
         max-width: var(--content-max-width);
         color: var(--white);
         z-index: 2;
         padding: var(--space-12) var(--space-4);
 
         @media (min-width: $md) {
-            width: 85%;
             padding: var(--space-16) var(--space-8);
         }
 
@@ -138,9 +114,7 @@
         }
     }
 
-    // Eyebrow: small uppercase label above the heading. The brand
-    // expression that the gradient underline used to provide, now done
-    // through a typographic mark instead of a decorative bar.
+    // Eyebrow: the dateline voice — uppercase, tracked, paper-white.
     &__eyebrow {
         display: inline-block;
         font-family: $font__body;
@@ -148,29 +122,30 @@
         font-weight: 600;
         letter-spacing: var(--tracking-wider);
         text-transform: uppercase;
-        color: color-mix(in oklab, var(--primary) 75%, white 25%);
-        margin-block-end: var(--space-3);
+        color: color-mix(in oklab, var(--white) 86%, transparent);
+        margin-block-end: var(--space-4);
+        padding-block-start: var(--space-3);
+        border-top: 2px solid color-mix(in oklab, var(--white) 80%, transparent);
     }
 
-    // Heading: structural typography carries the weight, no decorative
-    // underline bar. Text-shadow removed — the scrim provides contrast.
+    // Heading: the masthead voice at display size.
     &__heading {
         color: var(--white);
         font-family: $font__headings;
-        font-size: var(--text-2xl);
-        font-weight: 500;
-        line-height: 1.05;
-        max-width: var(--measure-base);
+        font-size: var(--text-3xl);
+        font-weight: 800;
+        line-height: 1.02;
+        max-width: 14em;
         margin-block-end: var(--space-4);
         letter-spacing: var(--tracking-tight);
 
         @media (min-width: $md) {
-            font-size: var(--text-3xl);
+            font-size: var(--text-4xl);
             margin-block-end: var(--space-6);
         }
 
         @media (min-width: $lg) {
-            font-size: var(--text-4xl);
+            font-size: var(--text-5xl);
         }
     }
 
@@ -179,23 +154,38 @@
         line-height: var(--line-height-relaxed);
         max-width: var(--measure-narrow);
         margin-block-end: 0;
-        margin-block-start: var(--space-2);
-        color: color-mix(in oklab, var(--white) 95%, transparent);
+        margin-block-start: 0;
+        color: color-mix(in oklab, var(--white) 92%, transparent);
 
         @media (min-width: $md) {
             font-size: var(--text-lg);
-            margin-block-start: var(--space-4);
-        }
-
-        @media (min-width: $lg) {
-            font-size: var(--text-xl);
         }
     }
 }
 
-// One-time Ken Burns zoom on load. The image starts slightly larger and
-// settles to its natural frame; combined with the entrance fade, this
-// gives a calm sense of arrival without the random hover-trigger.
+// Dark theme: the same plate, banked down — lamplight, not neon.
+@mixin iwac-banner-dark {
+    .banner {
+        background: color-mix(in oklab, var(--primary-base) 52%, black 48%);
+
+        img {
+            opacity: 0.85;
+            filter: grayscale(1) contrast(1.08) brightness(0.82);
+        }
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        @include iwac-banner-dark;
+    }
+}
+
+body[data-theme="dark"] {
+    @include iwac-banner-dark;
+}
+
+// One-time Ken Burns zoom on load.
 @keyframes bannerKenBurns {
     from { transform: scale(1.04); }
     to   { transform: scale(1); }

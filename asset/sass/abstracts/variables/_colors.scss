@@ -81,11 +81,11 @@
   --blockquote-border: color-mix(in oklab, var(--primary) 60%, var(--border) 40%);
   --blockquote-quote:  color-mix(in oklab, var(--primary) 80%, var(--ink) 20%);
 
-  // Footer — deep neutral ink for institutional contrast (was warm dark)
-  --footer-surface:     oklch(18% 0.012 264);
-  --footer-divider:     oklch(30% 0.012 264);
-  --footer-text:        oklch(94% 0.005 258);
-  --footer-text-muted:  oklch(72% 0.008 258);
+  // Footer — deep warm ink band, same register as the dark theme surfaces
+  --footer-surface:     oklch(17% 0.013 70);
+  --footer-divider:     oklch(29% 0.014 70);
+  --footer-text:        oklch(94% 0.006 80);
+  --footer-text-muted:  oklch(72% 0.009 75);
 }
 
 // Apply light theme by default at the document root. Brand seed lives
@@ -104,6 +104,10 @@
 // Dark Theme
 // Single mixin-style block consumed by both manual and system preference.
 // ==========================================================================
+// Dark = "lamplit reading room": warm-tinted deep neutrals (hue ~70, chroma
+// ~0.012) instead of the previous blue-cool set, which read as a generic
+// dashboard dark. The warmth is faint but perceptible, pairs with the burnt
+// orange brand, and keeps surface steps clearly layered (12 → 16 → 20%).
 @mixin iwac-dark-theme {
   color-scheme: dark;
 
@@ -114,22 +118,22 @@
   // Lighten the slate so it stays legible as a data colour on dark surfaces.
   --secondary: color-mix(in oklab, var(--secondary-base), white 30%);
 
-  --ink-strong:    oklch(98% 0.005 258);
-  --ink:           oklch(94% 0.008 258);
-  --ink-light:     oklch(76% 0.010 258);
-  --ink-subtle:    oklch(68% 0.010 258);
-  --muted:         oklch(60% 0.010 258);
-  --ink-on-pastel: oklch(15% 0.015 264);
+  --ink-strong:    oklch(97% 0.006 80);
+  --ink:           oklch(92% 0.008 78);
+  --ink-light:     oklch(76% 0.010 75);
+  --ink-subtle:    oklch(67% 0.010 72);
+  --muted:         oklch(59% 0.010 70);
+  --ink-on-pastel: oklch(15% 0.015 70);
 
-  --surface:         oklch(17% 0.010 264);
-  --surface-raised:  oklch(20% 0.010 264);
-  --surface-sunken:  oklch(13% 0.010 264);
+  --surface:         oklch(16% 0.012 70);
+  --surface-raised:  oklch(20% 0.013 70);
+  --surface-sunken:  oklch(13.5% 0.012 72);
   --surface-overlay: color-mix(in oklab, var(--surface) 95%, transparent);
-  --background:      oklch(12% 0.010 264);
+  --background:      oklch(12% 0.012 75);
 
-  --border-light:  oklch(24% 0.012 264);
-  --border:        oklch(30% 0.012 264);
-  --border-strong: oklch(40% 0.012 264);
+  --border-light:  oklch(25% 0.014 70);
+  --border:        oklch(31% 0.015 70);
+  --border-strong: oklch(42% 0.016 70);
 
   --focus-color: var(--primary);
   --focus-ring:  color-mix(in oklab, var(--primary) 35%, transparent);

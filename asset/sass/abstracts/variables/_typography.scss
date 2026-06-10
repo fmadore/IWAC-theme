@@ -4,18 +4,24 @@
 // ==========================================================================
 
 // ==========================================================================
-// Font Families
-// Source Serif 4: optical-size axis (8..60) — same family handles the
-// 14px metadata label and the 60px banner heading at the right grade.
-// Public Sans: USWDS workhorse sans, full Latin Extended for FR + AR
-// transliteration. Avoids the Inter/DM Sans monoculture.
+// Font Families — the "press archive" trio
+//
+// Besley (Clarendon revival): masthead, headlines, display numerals. The
+// Clarendon is the letter of 19th–20th-century newspaper display — the
+// material this archive preserves. Verified to cover Latin Extended
+// Additional (ḥ ṣ ḍ ṭ ẓ …) for Arabic transliteration in headlines.
+// Source Serif 4 (optical-size axis 8..60): long-form reading — article
+// full text, ledes, blockquotes — where a Clarendon is too heavy.
+// Public Sans: USWDS workhorse sans for UI, labels, datelines. Full Latin
+// Extended for FR + AR transliteration.
 //
 // Defined as Sass vars (used directly in base typography) AND mirrored to
 // CSS custom properties in :root below, so downstream consumers — notably
 // the IwacVisualizations module — can read the theme's real font stacks at
 // runtime instead of hardcoding their own (Inter / Noto Serif).
 // ==========================================================================
-$font__headings: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+$font__headings: "Besley", "Source Serif 4", Georgia, "Times New Roman", serif;
+$font__serif-text: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
 $font__body: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
 $font__code: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", monaco, consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
 $font__pre: $font__code;
@@ -36,12 +42,14 @@ $font__pre: $font__code;
   --text-xl:    1.5rem;      // 24px — h4, card titles
   --text-2xl:   1.875rem;    // 30px — h3, section headings
   --text-3xl: clamp(2.25rem, 1.9rem + 1.8vw, 3rem);           // 36-48px — h2, page titles
-  --text-4xl: clamp(2.75rem, 2.3rem + 2.2vw, 3.75rem);        // 44-60px — h1, banner display
+  --text-4xl: clamp(2.75rem, 2.3rem + 2.2vw, 3.75rem);        // 44-60px — h1, item headlines
+  --text-5xl: clamp(3.25rem, 2.5rem + 3.2vw, 4.75rem);        // 52-76px — homepage hero display
 
   // Font stacks exposed for runtime consumers (see note above).
-  --font-headings: #{$font__headings};
-  --font-body:     #{$font__body};
-  --font-mono:     #{$font__code};
+  --font-headings:   #{$font__headings};
+  --font-serif-text: #{$font__serif-text};
+  --font-body:       #{$font__body};
+  --font-mono:       #{$font__code};
 }
 
 // ==========================================================================

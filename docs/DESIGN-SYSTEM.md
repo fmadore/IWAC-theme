@@ -76,7 +76,7 @@ value (see §3). Do **not** invent token names — undefined tokens fail silentl
 | **Borders** | `--border-light`, `--border`, `--border-strong` |
 | **Status** | `--success`, `--warning`, `--error`, `--info` (+ matching `*-bg`) |
 | **Focus** | `--focus-color`, `--focus-ring`, `--ring-focus`, `--ring-focus-sm` |
-| **Typography** | `--font-headings`, `--font-body`, `--font-mono`; `--text-xs … --text-4xl`; `--line-height-normal`, `--line-height-relaxed`; `--tracking-tight/normal/wide/wider` |
+| **Typography** | `--font-headings`, `--font-serif-text`, `--font-body`, `--font-mono`; `--text-xs … --text-5xl`; `--line-height-normal`, `--line-height-relaxed`; `--tracking-tight/normal/wide/wider` |
 | **Spacing** | `--space-1 … --space-40`; `--space-xs/sm/md/lg/xl/2xl/3xl` |
 | **Radius** | `--radius-sm/md/lg/xl/full` |
 | **Shadow / glow** | `--shadow-xs … --shadow-xl`; `--glow-xs/sm/md` |
@@ -114,22 +114,38 @@ even if it never paints a pixel — fix it.
 
 ### Canonical fallback values
 
-| Token | Light fallback | Dark fallback | Source token |
+> **Dark mode is the warm "lamplit reading room" set** (hue ~70–80, chroma
+> ~0.012) as of theme v2.6 — the older blue-cool dark hexes (`#1f232b`,
+> `#ebecf0`, …) are stale; replace them on sight.
+
+| Token | Light fallback | Dark fallback | Source token (light / dark) |
 |-------|---------------|---------------|--------------|
 | `--primary` | `#e64a19` | `#ec653f` | `mix(#e64a19, black 8%)` / `mix(#e64a19, white 12%)` |
 | `--secondary` | `#394f68` | `#708093` | seed / `mix(#394f68, white 30%)` |
-| `--ink-strong` | `#1c1f27` | — | `oklch(13% .012 264)` |
-| `--ink` | `#2c2f37` | `#ebecf0` | `oklch(20% .012 264)` |
-| `--ink-light` | `#535862` | `#b1b3ba` | `oklch(38% .012 260)` |
-| `--muted` | `#767880` | `#84878f` | `oklch(54% .008 256)` |
-| `--surface` | `#fdfdfd` | `#1f232b` | `oklch(99.2% .002 60)` |
-| `--surface-raised` | `#fafaf9` | `#262a32` | `oklch(98% .003 60)` |
-| `--surface-sunken` | `#f3f3f1` | — | `oklch(96% .004 60)` |
-| `--background` | `#f7f7f6` | `#15181f` | `oklch(97% .003 60)` |
-| `--border` | `#d4d6da` | `#3d4148` | `oklch(86% .007 258)` |
-| `--border-light` | `#e6e7eb` | `#2f343c` | `oklch(92% .005 258)` |
+| `--ink-strong` | `#1c1f27` | `#f7f5f1` | `oklch(13% .012 264)` / `oklch(97% .006 80)` |
+| `--ink` | `#2c2f37` | `#e7e4df` | `oklch(20% .012 264)` / `oklch(92% .008 78)` |
+| `--ink-light` | `#535862` | `#b5b0aa` | `oklch(38% .012 260)` / `oklch(76% .010 75)` |
+| `--muted` | `#767880` | `#817c77` | `oklch(54% .008 256)` / `oklch(59% .010 70)` |
+| `--surface` | `#fdfdfd` | `#110c08` | `oklch(99.2% .002 60)` / `oklch(16% .012 70)` |
+| `--surface-raised` | `#fafaf9` | `#1a1510` | `oklch(98% .003 60)` / `oklch(20% .013 70)` |
+| `--surface-sunken` | `#f3f3f1` | `#0b0704` | `oklch(96% .004 60)` / `oklch(13.5% .012 72)` |
+| `--background` | `#f7f7f6` | `#080503` | `oklch(97% .003 60)` / `oklch(12% .012 75)` |
+| `--border` | `#d4d6da` | `#352f28` | `oklch(86% .007 258)` / `oklch(31% .015 70)` |
+| `--border-light` | `#e6e7eb` | `#26211a` | `oklch(92% .005 258)` / `oklch(25% .014 70)` |
+| `--border-strong` | `#b3b6bc` | `#534c44` | `oklch(76% .009 258)` / `oklch(42% .016 70)` |
 | `--error` | `#c0392b` | — | `oklch(54% .20 25)` (red — not the orange brand!) |
 | `--white` | `#fff` | `#fff` | — |
+
+### Font tokens
+
+| Token | Stack | Role |
+|-------|-------|------|
+| `--font-headings` | `"Besley", "Source Serif 4", Georgia, "Times New Roman", serif` | Masthead, headlines, section heads, display numerals (KPI figures) |
+| `--font-serif-text` | `"Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif` | Long-form reading: article full text, ledes, blockquotes |
+| `--font-body` | `"Public Sans", system-ui, …` | UI, labels, datelines |
+
+Module fallbacks for `--font-headings` must name **Besley** (not the removed
+"Noto Serif").
 
 > The light cool-neutral set above is mirrored verbatim in
 > `IwacVisualizations/asset/js/iwac-theme.js` (`FALLBACK_LIGHT` / `FALLBACK_DARK`),

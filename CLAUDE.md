@@ -14,80 +14,66 @@ IWAC-theme is a customized Omeka S theme (fork of Freedom theme) for the Islam W
 
 ## Design Philosophy
 
-**Stance: research instrument, not editorial product.**
+**Stance: a research instrument with a press-archive face.** (v2.6 redesign, June 2026)
 
-The site is a scholarly database used by historians and political scientists doing comparative work across francophone West African press archives, with a computational pipeline (3 LLM sentiment models, LDA, embeddings, IIIF, geocoding). Users come with specific questions and want **precision and density**, not delight or warmth.
+The site is a scholarly database used by historians and political scientists doing comparative work across francophone West African press archives, with a computational pipeline (3 LLM sentiment models, LDA, embeddings, IIIF, geocoding). Users come with specific questions and want **precision and density** — and the instrument now carries the visual language of the material it preserves: the 20th-century newspaper. Masthead wordmark, uppercase section strip, thick 2px ink rules, datelines, ledger-style result rows, duotone press-collage hero.
 
-Visual neighborhood we want to share: MIT Press, Stripe Press, eLife, Linear docs, Are.na, serious institutional repositories. **Not** a small museum's website, not a tasteful cultural-heritage brochure, not a warm editorial magazine.
+Visual neighborhood: a modern broadsheet's digital archive run by a university press — newspaper typographic conventions executed with Linear/Stripe-press product polish. **Not** a small museum's website, not a warm editorial magazine, not a generic dashboard.
 
 ### Core Principles
 
-1. **Density over comfort.** Researchers want to see more, not fewer, items per screen. Whitespace is a tool for hierarchy, not a default for comfort.
-2. **Typography as architecture.** Hierarchy is built from type alone — size, weight, optical size, figure styles, small caps. Not from cards, gradients, or decorative rules.
-3. **Neutral is correct.** Surfaces are cool-leaning near-white with imperceptible warm hint at very low chroma (~0.002). No cream, no parchment, no atmospheric washes.
-4. **Restraint with color.** Primary appears in three places: focus state, current/active state, intentional accents. Never on heading text by default, never as decorative wash, never as gradient bar.
-5. **Computational honesty.** AI-generated metadata gets explicit visual treatment that signals provenance — not cosmetically blended into human-authored fields.
-6. **Multilingual rigor.** FR / EN / AR transliteration get equivalent typographic treatment. Tabular figures everywhere alignment matters.
+1. **Density over comfort.** Researchers want to see more, not fewer, items per screen. Result lists are flat ledger rows separated by hairlines (no boxed cards); multi-value metadata flows inline with interpunct separators.
+2. **Typography is the architecture; rules are the joinery.** Hierarchy comes from the three-font system plus the newspaper rule grammar: 2px ink rules open sections (`h1.title`, footer top, KPI figures) and close the header; hairlines divide rows. Boxes are a last resort, reserved for true panels (charts, the AI lede).
+3. **Three-font system.** **Besley** (Clarendon: masthead, headlines, section heads, display numerals — verified to cover Arabic-transliteration diacritics), **Source Serif 4** (`--font-serif-text`: article full text, ledes, long-form reading), **Public Sans** (UI, labels, datelines). Track Besley display sizes at `-0.01em`, NOT the full `--tracking-tight` (slab serifs clog).
+4. **Neutral is correct — twice.** Light surfaces stay near-white at chroma ~0.002 (no cream, no parchment). Dark mode is the **warm "lamplit reading room"** set (hue ~70–80, chroma ~0.012), deliberately not blue-cool dashboard dark.
+5. **Restraint with color.** Primary appears as: focus state, current/active state (nav tab, active filter chips), dateline interpuncts, categorical dots, the duotone hero plate, key counts. Never as per-row badge fills, never on heading text, never as decorative wash or gradient.
+6. **Computational honesty.** AI-generated metadata gets explicit visual treatment that signals provenance — not cosmetically blended into human-authored fields.
+7. **Multilingual rigor.** FR / EN / AR transliteration get equivalent typographic treatment in every face used (test `ḥ ṣ ḍ ṭ ẓ ʿ ā ī ū` before adopting any font). Tabular figures everywhere alignment matters.
 
 ### Color Philosophy
 
 The system is **OKLCH-based** because equal lightness steps look equal (HSL is perceptually uneven). All primary variants derive from a single `--primary-base` hex (admin-overridable) via `color-mix(in oklab, …)` so customizations cascade through every focus ring, glow, blockquote, and hover state without manual tuning. A second admin-overridable seed `--secondary-base` (slate) feeds `--secondary` — a **data-only** colour consumed by the IwacVisualizations charts (series 2 / corpus comparison), never UI chrome. See [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md).
 
-- **Surfaces**: `oklch(99% 0.002 60)` — near-white with imperceptible warm tint. No cream, no parchment.
-- **Inks**: cool-neutrals (`oklch(13–54% 0.008–0.012 264)`) — reads as "objective / scholarly" rather than "warm / inviting."
-- **Borders**: cool-neutral grays (`oklch(76–92% 0.005–0.009 258)`).
-- **Primary**: IWAC orange, slightly darkened from raw hex toward an institutional register (`color-mix(--primary-base, black 8%)` in light theme).
-- **Shadows**: neutral cool, not warm-tinted.
+- **Light surfaces**: `oklch(99% 0.002 60)` — near-white with imperceptible warm tint. No cream, no parchment.
+- **Light inks**: cool-neutrals (`oklch(13–54% 0.008–0.012 264)`) — reads as "objective / scholarly."
+- **Dark mode**: warm deep neutrals — surfaces `oklch(12–20% 0.012 ~70)`, inks `oklch(59–97% 0.006–0.010 ~75)`. The lamplit register pairs with the burnt orange and distinguishes IWAC from blue-dark dashboards.
+- **Primary**: IWAC orange, slightly darkened from raw hex in light theme (`color-mix(--primary-base, black 8%)`), lightened in dark.
+- **Duotone hero**: the homepage banner renders the collage as a grayscale plate multiplied over a primary ground (`_banner.scss`) — the one big color statement, automatically on-brand for any admin-configured primary.
+- **Shadows**: neutral, used sparingly (panels); rows and tags use rules instead.
 
 ### Visual Guidelines
 
-- Primary orange used **rarely**: focus rings, current-state markers, link hover, eyebrow labels, pill tags. Never as page-wide section accent.
-- **Solid surfaces.** No body-level atmospheric gradients. Depth from intentional shadows on raised elements only.
-- **Quiet chrome.** Footer is a navigation block, not the most-styled component. `backdrop-filter` is reserved for the sticky header (functional chrome over content), nowhere else.
+- **Masthead header** (`view/common/header.phtml` + `_header.scss` + `_navigation.scss`): wordmark row (Besley 800) + uppercase nav strip, closed by a 2px `--ink-strong` rule. Full nav is visible from `$lg` (1024px); the drawer + slim ink hamburger serve below. The active section gets a 2px primary tab on the closing rule.
+- **Datelines**: `TYPE · PUBLISHER · DATE` in tracked uppercase with primary interpuncts (`.item-dateline`, built in `view/omeka/site/item/show.phtml`) — the recurring identity device.
+- **Banner renders on the homepage only** (gated in `layout.phtml`, including its LCP preload). Inner pages start at content.
+- **Quiet chrome.** Footer opens with the mirroring 2px ink rule; partner logos sit grayscale until hover. `backdrop-filter` is reserved for the sticky header, nowhere else.
 - **Tight transitions** (150–200ms). No bouncing, no elastic, no hover-triggered hero animations.
-- **Visible focus states** on every interactive element.
-- **Reduced motion respected** for every non-essential animation.
+- **Visible focus states** on every interactive element. **Reduced motion respected** everywhere.
 
 ### Component Styling Approach
 
-- **Resource show metadata** (item, media, item-set): flat rows of facts with hairline separators, uppercase small-caps labels, no card treatment. The lede (`bibo:shortDescription`, labelled "DescriptionAI") gets the `.property--ai` treatment — info-tinted block, sparkle mark, "AI-generated" badge with explanatory tooltip — so readers can tell computational artefacts from human-authored archival metadata at a glance.
-- **Resource browse**: cards are acceptable for default grid view but should be tight and dense, not airy.
-- **Facets**: accent-tinted legends; quiet borders; high information density.
-- **Breadcrumbs**: current page marked with primary-tinted dot.
+- **Resource show metadata** (item, media, item-set): dateline, then Besley headline, then flat rows of facts with hairline separators, uppercase labels in `--muted`, 168px label column; multi-value rows (subjects, spatial, languages) flow inline with primary interpuncts; long-form terms (`bibo:content`, descriptions) keep block flow in `--font-serif-text` at `--measure-narrow`. The lede (`bibo:shortDescription`, "DescriptionAI") keeps the `.property--ai` info-tinted block treatment.
+- **Resource browse / search results** (IwacSearch module): ledger rows — hairline-ruled `<li>`s, dateline eyebrow, Besley title, 2-line snippet, quiet interpunct source line, outlined type chip with a categorical dot (active = primary border + wash, NOT filled orange).
+- **Categorical type colors** (shared with IwacVisualizations badges): article `--primary`, publication `--secondary`, audiovisual `--info`, document `--warning`, reference `--muted`; entity Personnes `--info`, Lieux `--success`, Organisations `--warning`. Always as dots on outlined chips, never pastel fills.
+- **Facets**: quiet borders, high density; active counts as primary tabular text (no filled pills); no accent rails.
+- **Breadcrumbs**: plain uppercase crumb line (no chip box), current page marked with primary dot.
 - **Pagination**: hairline top border, no primary tint as default.
-
-### Global Editorial Type & Tag Tokens
-
-1. **All h1 headings** (`base/typography/_headings.scss`) use `line-height: 1.1` and `letter-spacing: -0.02em` for editorial weight on every page title.
-2. **All `.resource-tag` pills** (`base/elements/_resource-tag.scss`) use `border-radius: var(--radius-full)`, `text-transform: uppercase`, and `letter-spacing: 0.06em`.
-3. **h2 default color is `--ink-strong`**, not `--primary`. Brand color is reserved for accents, eyebrow labels, and state.
-
-### Editorial Hierarchy on Resource Show Pages
-
-The `components/resource-show/_resource-show.scss` file scopes its rules to `body.resource.show, body.item-set` — covering item show, media show, and item-set show pages.
-
-Show pages follow a journalism-inspired flow rather than a uniform property grid:
-
-1. **Resource tag pills** — breathing room from the banner, pill shape, uppercase
-2. **Display title** — inherits global h1 editorial treatment (tight leading, negative tracking)
-3. **Metadata rows** — flat rows of facts with hairline separators, uppercase small-caps labels in `--muted`, 144px label column on desktop
-4. **Lede** (`bibo:shortDescription`, labelled "DescriptionAI") — `.property--ai` treatment: info-tinted block, sparkle mark, "AI-generated" badge with explanatory tooltip
-5. **Full body** (`bibo:content`) — readable measure (~68ch)
-
-The editorial treatment only applies inside `.main-region > .metadata` — sidebar regions (including the AI Sentiment Analysis block) are untouched.
+- **KPI / summary figures** (IwacVisualizations): "almanac" entries — 2px ink rule on top, eyebrow label, Besley numeral; the featured figure's rule turns primary. No card boxes, no gradients, no hover lifts.
 
 ### What to Avoid
 
 - **Warm cream / parchment surfaces.** They read as "manuscript museum brochure," wrong register for a digital research database.
-- **Atmospheric body gradients.** They communicate "we want you to feel welcomed." A research instrument equips, it doesn't welcome.
-- **Decorative gradient bars under hero headings.** The 80px×4px brand-gradient underline is a recognized AI/CMS template tell.
+- **Atmospheric body gradients** and gradient bars — recognized CMS/AI template tells.
+- **Colored side-stripes** (`border-left`/`border-inline-start` accents) on cards, callouts, or legend chips — use dots, full rules, or nothing.
+- **Filled-color badges on every row.** Category is a dot, not a shout.
 - **Coloring h2s in primary.** Floods long article-style pages and contradicts the "primary as accent" principle.
 - **Glossy / glassmorphic effects** anywhere except the sticky header.
 - **Bouncing or elastic easing.** Real objects decelerate smoothly.
-- **Hover-triggered hero animations** (Ken Burns, etc.) — on touch devices that's never; on desktop it fires at random.
-- **Multiple decorative effects on one component.** Pick one. The footer used to layer seven; now it has a single hairline rule.
-- **Cold, clinical blue-gray schemes** — generic-template register, equally wrong direction.
-- **Uniform card treatments** that flatten information hierarchy.
+- **Hover-triggered hero animations** (the one-time load Ken Burns settle is the sanctioned exception).
+- **Multiple decorative effects on one component.** Pick one.
+- **Cold, clinical blue-gray schemes** — including in dark mode (dark is warm here).
+- **Uniform card treatments** that flatten information hierarchy — and cards in general where a rule would do.
+- **Random per-class colors** (the old crc32-pastel resource tags) — category colors come from the fixed semantic map above.
 - **Inventing CSS custom property names** that don't exist in the token files — they fail silently at runtime.
 
 ## Build Commands
@@ -133,8 +119,8 @@ Key rules:
 | Colors (surfaces) | direct names | `--surface`, `--surface-raised`, `--surface-sunken`, `--surface-overlay`, `--background` |
 | Colors (borders) | direct names | `--border-light`, `--border`, `--border-strong` |
 | Colors (brand) | direct names | `--primary`, `--primary-hover`, `--primary-active`, `--secondary`, `--white`, `--black` |
-| Text sizes | `--text-{size}` | `--text-xs`, `--text-sm`, `--text-base`, `--text-lg`, `--text-2xl` |
-| Font families | direct names | `--font-headings` (Source Serif 4), `--font-body` (Public Sans), `--font-mono` — exposed in `:root` so runtime consumers (IwacVisualizations, IwacSearch) inherit the theme's stacks instead of hardcoding their own |
+| Text sizes | `--text-{size}` | `--text-xs`, `--text-sm`, `--text-base`, `--text-lg`, `--text-2xl`, … `--text-5xl` (homepage hero display) |
+| Font families | direct names | `--font-headings` (Besley — masthead/headlines/display numerals), `--font-serif-text` (Source Serif 4 — long-form reading), `--font-body` (Public Sans), `--font-mono` — exposed in `:root` so runtime consumers (IwacVisualizations, IwacSearch) inherit the theme's stacks instead of hardcoding their own |
 | Spacing | `--space-{n}` | `--space-1` through `--space-40` (also `--space-sm`, `--space-md`, etc.) |
 | Control sizes | `--size-control-{size}` | `--size-control-xs` (28px), `--size-control-sm` (36px), `--size-control-md` (40px), `--size-control-lg` (44px), `--size-control-xl` (48px) |
 | Reading measures | `--measure-{size}` | `--measure-narrow` (704px), `--measure-base` (840px), `--measure-wide` (1160px) |

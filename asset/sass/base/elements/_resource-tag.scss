@@ -1,3 +1,10 @@
+// ==========================================================================
+// Resource tags
+// Quiet outlined pills in the label voice. The old per-class crc32 pastel
+// backgrounds (random hue per resource class) were removed — category never
+// carried meaning through those hues, and they fought every palette.
+// ==========================================================================
+
 .resource-tags {
     display: flex;
     flex-shrink: 0;
@@ -6,71 +13,22 @@
 
     .resource-tag {
         display: inline-block;
-        background-color: var(--surface-raised);
-        border: 1px solid var(--border);
+        background-color: transparent;
+        border: 1px solid var(--border-strong);
         border-radius: var(--radius-full);
-        color: var(--ink);
+        color: var(--ink-light);
         font-size: var(--text-xs);
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: var(--tracking-wide);
-        padding: var(--space-1) var(--space-3);
+        padding: 2px var(--space-3);
         transition:
-            background-color var(--transition-fast),
-            border-color var(--transition-fast),
-            transform var(--transition-fast),
-            box-shadow var(--transition-fast);
-
-        // Inline styles set pastel colors (87.5% lightness) which need dark text
-        // Force dark text when inline background-color is set via style attribute
-        &[style*="background-color"] {
-            color: var(--ink-on-pastel);
-            // Keep a faint edge (derived from the dark text colour) so very
-            // pale pastel backgrounds (e.g. the ~88%-light type colours) don't
-            // dissolve into the near-white surface — the pill always reads as
-            // a discrete chip rather than floating text.
-            border-color: color-mix(in oklab, var(--ink-on-pastel) 18%, transparent);
-        }
+            color var(--transition-fast),
+            border-color var(--transition-fast);
 
         &:hover {
-            background-color: var(--surface);
-            border-color: var(--primary);
-            transform: translateY(var(--lift-xxs));
-            box-shadow: var(--shadow-sm);
+            color: var(--ink-strong);
+            border-color: var(--ink-strong);
         }
     }
-}
-
-// ==========================================================================
-// Dark Mode Adjustments
-// Darken pastel backgrounds for better contrast in dark mode
-// ==========================================================================
-
-// Mixin for dark mode resource tag styles (used by both media query and explicit theme)
-@mixin resource-tag-dark-mode-styles {
-    .resource-tag[style*="background-color"] {
-        position: relative;
-        color: var(--ink-on-pastel);
-
-        &::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: color-mix(in oklab, black 15%, transparent);
-            border-radius: inherit;
-            pointer-events: none;
-        }
-    }
-}
-
-// System preference dark mode (when no explicit theme set)
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        @include resource-tag-dark-mode-styles;
-    }
-}
-
-// Explicit dark theme override
-body[data-theme="dark"] {
-    @include resource-tag-dark-mode-styles;
 }

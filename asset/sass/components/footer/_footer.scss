@@ -15,6 +15,8 @@
     color: var(--footer-text);
     font-size: var(--text-sm);
     margin-block-start: var(--space-3xl);
+    // The closing rule of the page — mirrors the masthead's 2px ink rule.
+    border-top: 2px solid var(--ink-strong);
 
     h1, h2, h3, h4 {
         color: var(--footer-text);
@@ -45,7 +47,6 @@
 
     &__top {
         background: var(--footer-surface);
-        border-top: 1px solid var(--footer-divider);
         padding: var(--space-2xl) 0 var(--space-lg);
 
         @media (min-width: $lg) {
@@ -133,13 +134,25 @@
         }
 
         .main-footer__logo {
-            height: 60px;
+            height: 48px;
             width: auto;
-            max-width: 160px;
+            max-width: 150px;
             object-fit: contain;
             background: var(--white);
             padding: var(--space-2);
             border-radius: var(--radius-sm);
+            // Partner strip reads as one quiet row; full colour on hover.
+            filter: grayscale(1);
+            opacity: 0.82;
+            transition:
+                filter var(--transition-fast),
+                opacity var(--transition-fast);
+        }
+
+        a:hover .main-footer__logo,
+        a:focus-visible .main-footer__logo {
+            filter: none;
+            opacity: 1;
         }
     }
 

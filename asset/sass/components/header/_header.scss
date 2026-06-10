@@ -1,8 +1,16 @@
 @use "../../abstracts/abstracts" as *;
 
 // ==========================================================================
-// Main Header
-// Sticky header with glassmorphism backdrop-filter
+// Main Header — newspaper masthead
+//
+// Two stacked rows under one sticky shell:
+//   1. Masthead row (.main-header__main-bar): wordmark left, tools right.
+//      The class name is load-bearing for navigation.js (focus trap).
+//   2. Section strip (.main-navigation): the full research IA as an
+//      uppercase newspaper section bar, visible from $lg (the drawer serves
+//      smaller screens). See _navigation.scss.
+// The shell closes with a 2px ink rule — the print signature that separates
+// chrome from content in both themes.
 // ==========================================================================
 
 .main-header {
@@ -12,7 +20,7 @@
     top: 0;
     inset-inline-start: 0;
     z-index: var(--z-sticky);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--ink-strong);
     transition:
         box-shadow var(--transition-base),
         top var(--transition-base);
@@ -21,19 +29,65 @@
         transition: none;
     }
 
-    // Glassmorphism effect with backdrop-filter
+    // Functional glass over scrolling content — the one sanctioned use.
     @supports ((-webkit-backdrop-filter: blur(0.5rem)) or (backdrop-filter: blur(0.5rem))) {
         background: var(--surface-overlay);
         -webkit-backdrop-filter: blur(12px) saturate(1.2);
         backdrop-filter: blur(12px) saturate(1.2);
     }
 
-    &__top-bar {
+    &__main-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-4);
+        padding-block: var(--space-3);
+        min-height: 3.5rem;
+    }
+
+    &__site-title {
+        flex: 0 1 auto;
+        min-width: 0;
+
+        a {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: $font__headings;
+            font-size: var(--text-lg);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: var(--tracking-tight);
+            text-decoration: none;
+            color: var(--ink-strong);
+            transition: color var(--transition-fast);
+
+            @include focus-ring;
+
+            &:hover {
+                color: var(--primary);
+            }
+        }
+
+        @media (min-width: $md) {
+            a {
+                font-size: var(--text-xl);
+            }
+        }
+
+        img {
+            height: clamp(2rem, 1.6rem + 1.2vw, 2.75rem);
+            width: auto;
+        }
+    }
+
+    &__tools {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
         gap: var(--space-2);
-        padding-block: var(--space-2);
+        flex-shrink: 0;
+        min-width: 0;
 
         @media (min-width: $md) {
             gap: var(--space-3);
@@ -41,25 +95,20 @@
     }
 
     &__search-form {
-        flex: 1;
-        max-width: 100%;
         // Positioning anchor for the IwacSearch module's header autocomplete
         // dropdown (.iwac-header-suggest), which is appended here and pinned
         // to the box's bottom-right. The module also sets this inline as a
         // belt-and-suspenders fallback if this stylesheet lags a deploy.
         position: relative;
-
-        @media (min-width: $md) {
-            flex: 0 0 auto;
-        }
+        min-width: 0;
 
         form {
             display: flex;
             align-items: center;
-            width: 100%;
+            width: 9.5rem;
             background: var(--surface-raised);
             border: 1px solid var(--border);
-            border-radius: var(--radius-full);
+            border-radius: var(--radius-sm);
             transition:
                 border-color var(--transition-fast),
                 box-shadow var(--transition-fast),
@@ -69,8 +118,8 @@
                 width: 200px;
             }
 
-            @media (min-width: $lg) {
-                width: 240px;
+            @media (min-width: $xl) {
+                width: 260px;
             }
 
             &:focus-within {
@@ -82,12 +131,12 @@
 
         input {
             flex: 1;
-            padding: var(--space-2) var(--space-3);
+            padding: var(--space-1) var(--space-3);
             padding-inline-end: 0;
             margin-bottom: 0;
             background: transparent;
             border: none;
-            border-radius: var(--radius-full);
+            border-radius: var(--radius-sm);
             font-size: var(--text-sm);
             color: var(--ink);
             min-width: 0;
@@ -105,24 +154,22 @@
 
         // Scope to the submit button ONLY. The IwacSearch header typeahead
         // appends its <button> rows (role=option, type=button) inside
-        // .main-header__search-form, so a bare `button` selector here also
-        // sized those rows as 36px round icon buttons (font-size:0 + a
-        // ::before magnifying glass), which is what produced the "two search
-        // icons" and the crammed entity suggestions. type="submit" matches
-        // only this form's own submit button; the dropdown rows are type=button.
+        // .main-header__search-form; a bare `button` selector here would
+        // restyle those rows too. type="submit" matches only this form's own
+        // submit button.
         button[type="submit"] {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            width: var(--size-control-sm);
-            height: var(--size-control-sm);
+            width: var(--size-control-xs);
+            height: var(--size-control-xs);
             margin: 2px;
             margin-inline-start: 0;
             padding: 0;
             background: transparent;
             border: none;
-            border-radius: var(--radius-full);
+            border-radius: var(--radius-sm);
             color: var(--muted);
             font-size: 0;
             /* hide text */
@@ -153,73 +200,4 @@
             }
         }
     }
-
-    hr {
-        background-color: var(--border);
-        margin-bottom: 0;
-    }
-
-    &__main-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: var(--space-4);
-        padding-block: var(--space-xs);
-
-        // At xxl the full horizontal nav replaces the hamburger and the site
-        // title is hidden (see &__site-title), so recentre the menu as before.
-        @media (min-width: $xxl) {
-            justify-content: center;
-        }
-    }
-
-    &__site-title {
-        flex: 0 1 auto;
-        min-width: 0;
-
-        // Brand chrome only while the nav is collapsed to the hamburger
-        // (mobile/tablet), where this bar would otherwise be empty. At xxl the
-        // full menu appears; showing the title there too pushed the long nav
-        // onto a second row, so hide it and let the menu have the whole bar.
-        @media (min-width: $xxl) {
-            display: none;
-        }
-
-        a {
-            // Site name as quiet brand chrome on the left of the bar. Clamp to
-            // two lines so the long IWAC title never blows out the compact
-            // header (it was empty on mobile — just the hamburger — before).
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            font-family: $font__headings;
-            font-size: var(--text-lg);
-            font-weight: 600;
-            line-height: 1.15;
-            letter-spacing: var(--tracking-tight);
-            text-decoration: none;
-            color: var(--ink-strong);
-            transition: color var(--transition-fast);
-
-            @include focus-ring;
-
-            &:hover {
-                color: var(--primary);
-            }
-        }
-
-        @media (min-width: $lg) {
-            a {
-                font-size: var(--text-xl);
-            }
-        }
-
-        img {
-            height: clamp(2rem, 1.6rem + 1.2vw, 2.75rem);
-            width: auto;
-        }
-    }
-
 }

@@ -17,9 +17,10 @@ body.resource.show,
 body.item-set {
 
     // ----------------------------------------------------------------------
-    // Resource tags container — breathing room from the banner
+    // Resource tags container
     // The pill visual (shape, type treatment) is handled globally in
     // base/elements/_resource-tag.scss; here we only position the cluster.
+    // (Item show replaces the pills with the dateline below.)
     // ----------------------------------------------------------------------
     .resource-tags {
         margin-block-start: var(--space-6);
@@ -28,6 +29,45 @@ body.item-set {
         @media (min-width: $md) {
             margin-block-start: var(--space-8);
             margin-block-end: var(--space-6);
+        }
+    }
+
+    // ----------------------------------------------------------------------
+    // Dateline — the press convention carried through the whole design:
+    // TYPE · PUBLISHER · DATE in tracked uppercase above the headline.
+    // Emitted by view/omeka/site/item/show.phtml.
+    // ----------------------------------------------------------------------
+    .item-dateline {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        column-gap: var(--space-2);
+        row-gap: var(--space-1);
+        margin-block-start: var(--space-8);
+        margin-block-end: var(--space-4);
+        font-size: var(--text-xs);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wider);
+        color: var(--ink-light);
+
+        @media (min-width: $md) {
+            margin-block-start: var(--space-10);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color var(--transition-fast);
+
+            &:hover {
+                color: var(--primary);
+            }
+        }
+
+        .item-dateline__sep {
+            color: var(--primary);
+            font-weight: 700;
         }
     }
 
@@ -43,10 +83,10 @@ body.item-set {
             margin-block-end: 0;
         }
 
-        // Flatten the card → flowing list of rows
+        // Flatten the card → ledger rows of facts
         dl > .property {
             margin-block-end: 0;
-            padding: var(--space-4) 0;
+            padding: var(--space-3) 0;
             background: transparent;
             border: none;
             border-block-end: 1px solid var(--border-light);
@@ -75,7 +115,7 @@ body.item-set {
 
                 @media (min-width: $md) {
                     float: left;
-                    width: 9rem; // 144px — aligns with 8pt grid, wider than 140px
+                    width: 10.5rem; // 168px — fits two-word FR labels on one line
                     margin-block-end: 0;
                     padding-block-start: 2px; // optical baseline alignment
                 }
@@ -86,14 +126,56 @@ body.item-set {
                 font-size: var(--text-base);
                 line-height: var(--line-height-normal);
                 max-width: var(--measure-base);
+                margin-block: 0;
 
                 @media (min-width: $md) {
-                    margin-inline-start: 9rem;
+                    margin-inline-start: 10.5rem;
                 }
+            }
+
+            // Linked-resource values sometimes carry a thumbnail (publisher
+            // logos, source-institution marks). In a ledger row the clipped
+            // 40px logo is noise — the link text carries the information.
+            dd img {
+                display: none;
             }
         }
 
-        // bibo:content body section — paragraph spacing
+        // Multi-value rows (subjects, spatial coverage, languages…) flow
+        // inline with interpunct separators instead of one value per line —
+        // a row of seven subjects costs one line, not seven. Long-form
+        // properties (full text, descriptions, the AI lede) keep block flow.
+        dl > .property:not([data-property-term="bibo:content"]):not([data-property-term="dcterms:description"]):not([data-property-term="dcterms:abstract"]):not(.property--ai) {
+            dd {
+                display: inline;
+                padding-inline-end: var(--space-1);
+
+                @media (min-width: $md) {
+                    margin-inline-start: 0;
+                }
+            }
+
+            dd + dd::before {
+                content: "·";
+                color: var(--primary);
+                font-weight: 700;
+                padding-inline-end: var(--space-2);
+                margin-inline-start: var(--space-1);
+            }
+
+            // Inline dds sit beside the floated dt; below $md the dt is its
+            // own line and the values wrap under it as running text.
+        }
+
+        // bibo:content body section — the article itself reads in the text
+        // serif at a comfortable measure.
+        .property[data-property-term="bibo:content"] dd {
+            font-family: $font__serif-text;
+            font-size: var(--text-lg);
+            line-height: var(--line-height-relaxed);
+            max-width: var(--measure-narrow);
+        }
+
         .property[data-property-term="bibo:content"] dd p + p {
             margin-block-start: var(--space-4);
         }
@@ -107,7 +189,11 @@ body.item-set {
         // sparkle mark and a badge so readers can tell at a glance that the
         // value is a model artefact, not human-authored archival metadata.
         // ------------------------------------------------------------------
-        dl > .property--ai {
+        // `.property.property--ai` (not just `.property--ai`): one extra
+        // class of specificity so these overrides always beat the base
+        // `.property dt/dd` column rules — with equal specificity the float
+        // cascade was a source-order coin-flip.
+        dl > .property.property--ai {
             margin-block: var(--space-5);
             padding: var(--space-5) var(--space-5) var(--space-4);
             background: color-mix(in oklab, var(--info-bg) 55%, var(--surface-raised));
@@ -140,7 +226,8 @@ body.item-set {
                     margin-inline-start: 0;
                 }
 
-                font-family: $font__headings;
+                // Reading serif, not the Clarendon — the lede is prose.
+                font-family: $font__serif-text;
                 font-size: var(--text-lg);
                 line-height: var(--line-height-relaxed);
                 color: var(--ink);
