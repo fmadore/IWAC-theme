@@ -53,15 +53,27 @@
     // Show tooltip on hover (desktop) or when active (mobile via JS)
     &:hover .annotation-tooltip,
     &.is-active .annotation-tooltip {
+        display: block;
         opacity: 1;
-        visibility: visible;
         transform: translateY(0);
+
+        // Replay the fade when it switches back from display:none.
+        @starting-style {
+            opacity: 0;
+            transform: translateY(4px);
+        }
     }
 
-    // The tooltip container
+    // The tooltip container. Hidden with display:none — NOT visibility:hidden
+    // — so it leaves the layout entirely when closed. As a 300px-wide box
+    // anchored at the trigger's inline-start (and only repositioned by JS on
+    // open), a visibility:hidden tooltip stayed display:block and pushed past
+    // the right edge of narrow viewports, scrolling the whole page sideways
+    // before the reader ever touched it. `display` transitions discretely so
+    // the open/close fade survives the change.
     .annotation-tooltip {
+        display: none;
         opacity: 0;
-        visibility: hidden;
         transform: translateY(4px);
         position: absolute;
         inset-inline-start: 0;
@@ -69,7 +81,7 @@
         transition:
             opacity var(--transition-fast),
             transform var(--transition-fast),
-            visibility var(--transition-fast);
+            display var(--transition-fast) allow-discrete;
         z-index: var(--z-tooltip);
 
         // Tooltip panel — a true overlay panel, so it may keep its shadow.
@@ -85,6 +97,9 @@
             width: 300px;
             max-width: calc(100vw - var(--space-8));
             padding: var(--space-4);
+            // Isolate from a pre-line host (the AI table of contents dd sets
+            // white-space: pre-line, which would otherwise inherit here).
+            white-space: normal;
         }
 
         // Heading speaks in the metadata-label voice

@@ -281,16 +281,12 @@ body.item-set {
         // class of specificity so these overrides always beat the base
         // `.property dt/dd` column rules — with equal specificity the float
         // cascade was a source-order coin-flip.
+        // Shared provenance marking: the dt carries the field label plus the
+        // EU "AI GENERATED" mark; the value reads as prose. The short
+        // DescriptionAI lede additionally gets an info-tinted panel (below);
+        // longer AI fields such as the template-21 table of contents stay as
+        // plain prose so a multi-page summary isn't trapped in a giant box.
         > dl > .property.property--ai {
-            margin-block: var(--space-5);
-            padding: var(--space-5) var(--space-5) var(--space-4);
-            background: color-mix(in oklab, var(--info-bg) 55%, var(--surface-raised));
-            border: 1px solid color-mix(in oklab, var(--info) 22%, var(--border) 78%);
-            border-radius: var(--radius-md);
-
-            // Reset the flat-row separator inherited from the parent rule
-            border-block-end: 1px solid color-mix(in oklab, var(--info) 22%, var(--border) 78%);
-
             > dt {
                 display: flex;
                 align-items: center;
@@ -314,39 +310,47 @@ body.item-set {
                     margin-inline-start: 0;
                 }
 
-                // Reading serif, not the Clarendon — the lede is prose.
+                // Reading serif, not the Clarendon — AI prose, not a fact row.
                 font-family: $font__serif-text;
                 font-size: var(--text-lg);
                 line-height: var(--line-height-relaxed);
                 color: var(--ink);
                 max-width: var(--measure-narrow);
+                // Keep the per-entry line breaks of a table of contents
+                // ("p. 1 : …⏎⏎p. 2 : …") rather than collapsing them to a wall.
+                white-space: pre-line;
             }
 
             .field-term { display: none; }
         }
 
-        .property--ai .property__ai-mark {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 1rem;
-            height: 1rem;
-            color: var(--info);
-            font-size: 0.875rem;
+        // The DescriptionAI lede — short and featured — sits in an info-tinted
+        // panel. Scoped to the term so longer AI fields don't inherit the box.
+        > dl > .property.property--ai[data-property-term="bibo:shortDescription"] {
+            margin-block: var(--space-5);
+            padding: var(--space-5) var(--space-5) var(--space-4);
+            background: color-mix(in oklab, var(--info-bg) 55%, var(--surface-raised));
+            border: 1px solid color-mix(in oklab, var(--info) 22%, var(--border) 78%);
+            border-radius: var(--radius-md);
         }
 
-        .property--ai .property__ai-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 2px var(--space-2);
-            background: color-mix(in oklab, var(--info) 18%, transparent);
-            border: 1px solid color-mix(in oklab, var(--info) 35%, transparent);
-            border-radius: var(--radius-sm);
-            color: color-mix(in oklab, var(--info) 65%, var(--ink) 35%);
-            font-size: 0.6875rem; // 11px — smaller than the dt label
-            font-weight: 600;
-            letter-spacing: var(--tracking-wide);
-            cursor: help;
+        // The table of contents is a long run of per-page summaries: step the
+        // body down from the lede's display size for a comfortable read.
+        > dl > .property.property--ai[data-property-term="dcterms:tableOfContents"] > dd {
+            font-size: var(--text-base);
+        }
+
+        // EU "AI GENERATED" label — the official provenance mark, drawn as a
+        // theme-inked mask so it reads near-black on light surfaces and
+        // near-white in the lamplit dark set (the two EU colourways folded
+        // into one asset). The faint 50%-alpha plate behind the wordmark is
+        // baked into the SVG; the wordmark itself is solid --ink-light.
+        .property--ai .property__ai-eu {
+            @include icon-mask("../img/ai-generated-eu.svg");
+            flex: none;
+            height: 1.15rem;
+            aspect-ratio: 1401 / 283;
+            background-color: var(--ink-light);
         }
     }
 }
