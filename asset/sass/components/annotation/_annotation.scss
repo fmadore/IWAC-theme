@@ -97,8 +97,8 @@
             width: 300px;
             max-width: calc(100vw - var(--space-8));
             padding: var(--space-4);
-            // Isolate from a pre-line host (the AI table of contents dd sets
-            // white-space: pre-line, which would otherwise inherit here).
+            // Isolate from any pre-line host (e.g. a long-form description) so
+            // annotation rows always wrap normally.
             white-space: normal;
         }
 

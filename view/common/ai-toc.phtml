@@ -1,0 +1,71 @@
+<?php
+/**
+ * Render the AI-generated table of contents as a structured index.
+ *
+ * The summary pipeline (iwac-ai-pipelines/AI_summary_issue/03_update_omeka_toc.py)
+ * writes dcterms:tableOfContents as a deterministic string — one entry per
+ * article, "p. {pages} : {title} ({authors})\n{summary}", entries joined by a
+ * blank line. We parse that back into a page marker + bold title + byline +
+ * summary per entry, hairline-divided, instead of dumping the raw whitespace
+ * (which rendered as a wall of uneven gaps).
+ *
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var string $text  The raw dcterms:tableOfContents literal.
+ */
+$escape = $this->plugin('escapeHtml');
+
+$normalized = trim(str_replace("\r\n", "\n", (string) $text));
+
+// Entries are separated by one or more blank lines.
+$entries = [];
+foreach (preg_split('/\n[ \t]*\n+/', $normalized) as $block) {
+    $block = trim($block);
+    if ($block === '') {
+        continue;
+    }
+    // First line is the header ("p. … : …"); the remainder is the one-paragraph
+    // summary (any soft wraps collapse to spaces).
+    $parts = explode("\n", $block, 2);
+    $header = trim($parts[0]);
+    $summary = isset($parts[1]) ? trim((string) preg_replace('/\s*\n\s*/', ' ', $parts[1])) : '';
+
+    $pages = null;
+    $title = $header;
+    $author = null;
+
+    // "p. {pages} : {rest}" — pages never contain a colon, so split on the first.
+    if (preg_match('/^p\.\s*([^:]+?)\s*:\s*(.+)$/su', $header, $m)) {
+        $pages = trim($m[1]);
+        $title = trim($m[2]);
+    }
+    // Peel a trailing "(authors)" byline when it reads like a name — not a bare
+    // "(1)" continuation marker, and not an empty pair.
+    if (preg_match('/^(.*\S)\s*\(([^()]+)\)\s*$/u', $title, $m)
+        && preg_match('/\p{L}/u', $m[2])
+        && !preg_match('/^\s*\d+\s*$/', $m[2])
+    ) {
+        $title = trim($m[1]);
+        $author = trim($m[2]);
+    }
+
+    $entries[] = ['pages' => $pages, 'title' => $title, 'author' => $author, 'summary' => $summary];
+}
+
+if (!$entries) {
+    // Never swallow the value: fall back to the raw text if parsing finds nothing.
+    echo '<div class="ai-toc ai-toc--raw">' . nl2br($escape($normalized)) . '</div>';
+    return;
+}
+?>
+<ol class="ai-toc">
+    <?php foreach ($entries as $entry): ?>
+    <li class="ai-toc__entry">
+        <p class="ai-toc__head">
+            <?php if ($entry['pages'] !== null): ?><span class="ai-toc__pages">p.&nbsp;<?php echo $escape($entry['pages']); ?></span> <?php endif; ?><span class="ai-toc__title"><?php echo $escape($entry['title']); ?></span><?php if ($entry['author']): ?> <span class="ai-toc__author">(<?php echo $escape($entry['author']); ?>)</span><?php endif; ?>
+        </p>
+        <?php if ($entry['summary'] !== ''): ?>
+        <p class="ai-toc__summary"><?php echo $escape($entry['summary']); ?></p>
+        <?php endif; ?>
+    </li>
+    <?php endforeach; ?>
+</ol>

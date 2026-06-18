@@ -103,12 +103,19 @@ foreach ($values as $term => $propertyData):
             } elseif ('uri' == $valueType) {
                 $class[] = 'uri';
             }
+            // The AI table of contents is a deterministic per-article index; parse
+            // it into structured markup (common/ai-toc) instead of a raw text dump.
+            $isAiTocValue = $isAiGenerated && 'dcterms:tableOfContents' === $term && 'literal' === $valueType;
             ?>
             <dd class="<?php echo implode(' ', $class); ?>" lang="<?php echo $escape($valueLang); ?>">
-                <?php if ($showLocale && $valueLang) : ?>
+                <?php if ($showLocale && $valueLang && !$isAiTocValue) : ?>
                     <span class="language"><?php echo $escape($valueLang); ?></span>
                 <?php endif; ?>
-                <span class="value-content"><?php echo $filterLocale ? $value->asHtml($lang) : $value->asHtml(); ?></span>
+                <?php if ($isAiTocValue): ?>
+                    <?php echo $this->partial('common/ai-toc', ['text' => (string) $value->value()]); ?>
+                <?php else: ?>
+                    <span class="value-content"><?php echo $filterLocale ? $value->asHtml($lang) : $value->asHtml(); ?></span>
+                <?php endif; ?>
                 <?php if(!$value->isPublic()) : ?>
                     <span class="o-icon-private" role="img" title="<?php echo $this->escapeHtml($translate('Private')); ?>" aria-label="<?php echo $this->escapeHtml($translate('Private')); ?>"></span>
                 <?php endif; ?>

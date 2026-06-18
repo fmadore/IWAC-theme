@@ -1,0 +1,83 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// AI table of contents
+//
+// The per-article index parsed from a template-21 issue's
+// dcterms:tableOfContents (see view/common/ai-toc.phtml). A ledger of
+// entries — page marker + bold title + byline, summary prose below,
+// hairline-divided — replacing the raw newline dump that rendered as a wall
+// of uneven gaps.
+// ==========================================================================
+
+.ai-toc {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: var(--measure-narrow);
+    // Defensive: stay in normal white-space even if a host ever sets pre-line
+    // (the parsed markup carries no significant newlines of its own).
+    white-space: normal;
+
+    &__entry {
+        padding-block: var(--space-3);
+        border-block-start: 1px solid var(--border-light);
+
+        &:first-child {
+            border-block-start: none;
+            padding-block-start: 0;
+        }
+    }
+
+    // Page marker + title + byline, one wrapped line.
+    &__head {
+        margin: 0 0 var(--space-1);
+        font-family: $font__serif-text;
+        font-size: var(--text-base);
+        line-height: var(--line-height-normal);
+    }
+
+    // Quiet tabular page reference set ahead of the title (not the loud primary
+    // — restraint; it repeats once per entry).
+    &__pages {
+        display: inline-block;
+        margin-inline-end: var(--space-2);
+        font-family: var(--font-body);
+        font-size: var(--text-xs);
+        font-weight: 600;
+        letter-spacing: var(--tracking-wide);
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+        // Nudge the small uppercase marker onto the title's optical baseline.
+        position: relative;
+        inset-block-start: -0.05em;
+    }
+
+    &__title {
+        font-weight: 600;
+        color: var(--ink-strong);
+    }
+
+    // Byline — present, not shouted.
+    &__author {
+        font-weight: 400;
+        color: var(--muted);
+    }
+
+    &__summary {
+        margin: 0;
+        font-family: $font__serif-text;
+        font-size: var(--text-base);
+        line-height: var(--line-height-relaxed);
+        color: var(--ink-light);
+    }
+
+    // Parsing fall-through: keep the raw text readable rather than swallow it.
+    &--raw {
+        font-family: $font__serif-text;
+        font-size: var(--text-base);
+        line-height: var(--line-height-relaxed);
+        color: var(--ink-light);
+    }
+}

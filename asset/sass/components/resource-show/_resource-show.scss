@@ -282,10 +282,10 @@ body.item-set {
         // `.property dt/dd` column rules — with equal specificity the float
         // cascade was a source-order coin-flip.
         // Shared provenance marking: the dt carries the field label plus the
-        // EU "AI GENERATED" mark; the value reads as prose. The short
-        // DescriptionAI lede additionally gets an info-tinted panel (below);
-        // longer AI fields such as the template-21 table of contents stay as
-        // plain prose so a multi-page summary isn't trapped in a giant box.
+        // EU "AI GENERATED" mark. The short DescriptionAI lede reads as prose
+        // in an info-tinted panel (below); the template-21 table of contents
+        // is parsed into its own structured index (see _ai-toc.scss), so it
+        // needs no box and supplies its own typography.
         > dl > .property.property--ai {
             > dt {
                 display: flex;
@@ -316,9 +316,6 @@ body.item-set {
                 line-height: var(--line-height-relaxed);
                 color: var(--ink);
                 max-width: var(--measure-narrow);
-                // Keep the per-entry line breaks of a table of contents
-                // ("p. 1 : …⏎⏎p. 2 : …") rather than collapsing them to a wall.
-                white-space: pre-line;
             }
 
             .field-term { display: none; }
@@ -332,12 +329,6 @@ body.item-set {
             background: color-mix(in oklab, var(--info-bg) 55%, var(--surface-raised));
             border: 1px solid color-mix(in oklab, var(--info) 22%, var(--border) 78%);
             border-radius: var(--radius-md);
-        }
-
-        // The table of contents is a long run of per-page summaries: step the
-        // body down from the lede's display size for a comfortable read.
-        > dl > .property.property--ai[data-property-term="dcterms:tableOfContents"] > dd {
-            font-size: var(--text-base);
         }
 
         // EU "AI GENERATED" label — the official provenance mark, drawn as a
