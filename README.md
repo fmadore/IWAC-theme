@@ -155,7 +155,7 @@ sass/
 ├── components/         # Component styles (BEM-scoped)
 │   ├── accordion, advanced-search, annotation, banner
 │   ├── blocks/         # Block-layout styles (carousel, timeline, …)
-│   ├── breadcrumbs, error-page, facets, footer, header
+│   ├── breadcrumbs, error-page, footer, header
 │   ├── hierarchy, iframe-embed, linked-resources, local-contexts
 │   ├── mapping, metadata, mirador, navigation, pagination
 │   ├── resources/      # resource-grid, resource-list, browse-controls
@@ -218,7 +218,6 @@ one sanctioned exception (module-owned chart/data colours) — is documented in
 The theme also includes styling for:
 - **Mapping** - Interactive maps on resource pages
 - **Collecting** - User submission forms
-- **Faceted Browse** - Country / sub-collection browse with facets
 - **Numeric Data Types** - Date/time and number fields
 - **URI Dereferencer** - External linked data display
 

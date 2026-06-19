@@ -3,9 +3,7 @@
  * Scrolls to the top of the results area after a pagination action,
  * so users see the beginning of the new page of results.
  *
- * Handles two cases:
- * 1. Regular browse pages (full page reload) — uses sessionStorage
- * 2. Faceted browse pages (AJAX content replacement) — uses MutationObserver
+ * Used on browse pages with a full page reload, via sessionStorage.
  */
 (function () {
     'use strict';
@@ -17,7 +15,6 @@
      */
     function findScrollTarget() {
         return document.querySelector('.browse-controls')
-            || document.getElementById('section-content')
             || document.querySelector('.pagination');
     }
 
@@ -35,8 +32,6 @@
         const top = target.getBoundingClientRect().top + window.scrollY - headerHeight;
         window.scrollTo({ top: top, behavior: behavior || 'instant' });
     }
-
-    // --- Regular browse pages: sessionStorage-based scroll ---
 
     // On page load, check if we should scroll
     if (sessionStorage.getItem(STORAGE_KEY)) {
@@ -57,36 +52,4 @@
             sessionStorage.setItem(STORAGE_KEY, '1');
         }
     });
-
-    // --- Faceted browse pages: MutationObserver-based scroll ---
-
-    const sectionContent = document.getElementById('section-content');
-    const isFacetedBrowse = document.querySelector('.faceted-browse-page, .block-facetedBrowsePreview');
-
-    if (sectionContent && isFacetedBrowse) {
-        let paginationClicked = false;
-
-        // Use event delegation on sectionContent since its children are replaced by AJAX
-        sectionContent.addEventListener('click', (e) => {
-            if (e.target.closest('.pagination a.pagination-nav:not(.disabled)')) {
-                paginationClicked = true;
-            }
-        });
-
-        sectionContent.addEventListener('submit', (e) => {
-            if (e.target.closest('.pagination .pager')) {
-                paginationClicked = true;
-            }
-        });
-
-        // Watch for AJAX content replacement
-        const observer = new MutationObserver(() => {
-            if (!paginationClicked) return;
-            paginationClicked = false;
-            // Small delay to let new content render
-            requestAnimationFrame(() => scrollToResults('smooth'));
-        });
-
-        observer.observe(sectionContent, { childList: true });
-    }
 })();
