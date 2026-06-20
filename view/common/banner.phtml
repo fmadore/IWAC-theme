@@ -79,22 +79,28 @@ if ($compact) {
     // (design-review finding 1.2). Three indexed COUNT queries via the public
     // API replace the client-side ECharts overview for the four numbers, so
     // the proof of scale paints with the page and never shifts the layout.
-    // "Items" excludes the authority/index records; the six countries are a
-    // fixed editorial constant. Defensive: a query failure just drops the
-    // strip, it never breaks the homepage. See docs/DESIGN-SYSTEM / iwac-data.
+    // The figures are disjoint categories: "Items" (FR "Contenus") sums only
+    // the primary content classes — articles, periodical issues, audiovisual,
+    // documents — so it excludes every authority/index record AND the
+    // references, photographs and legacy items that a "total − index" count
+    // would leave in. Index and References each count their own classes; the
+    // six countries are a fixed editorial constant. Class IDs follow the IWAC
+    // data model (see the iwac-data skill / docs/DESIGN-SYSTEM). Defensive: a
+    // query failure just drops the strip, it never breaks the homepage.
     $stats = null;
     try {
         $statsApi = $this->api();
-        $indexClasses = [94, 9, 96, 54, 244];                    // persons, places, orgs, events, subjects
-        $refClasses   = [35, 43, 88, 40, 82, 178, 52, 77, 305];  // the 9 reference classes
-        $statsTotal = $statsApi->search('items', ['limit' => 0])->getTotalResults();
-        $statsIndex = $statsApi->search('items', ['resource_class_id' => $indexClasses, 'limit' => 0])->getTotalResults();
-        $statsRefs  = $statsApi->search('items', ['resource_class_id' => $refClasses, 'limit' => 0])->getTotalResults();
+        $contentClasses = [36, 60, 38, 49];                       // articles, issues, audiovisual, documents
+        $indexClasses   = [94, 9, 96, 54, 244];                   // persons, places, orgs, events, subjects
+        $refClasses     = [35, 43, 88, 40, 82, 178, 52, 77, 305]; // the 9 reference classes
+        $statsContent = $statsApi->search('items', ['resource_class_id' => $contentClasses, 'limit' => 0])->getTotalResults();
+        $statsIndex   = $statsApi->search('items', ['resource_class_id' => $indexClasses,   'limit' => 0])->getTotalResults();
+        $statsRefs    = $statsApi->search('items', ['resource_class_id' => $refClasses,     'limit' => 0])->getTotalResults();
         $stats = [
-            ['n' => max(0, $statsTotal - $statsIndex), 'label' => $translate('Items'),      'featured' => true],
-            ['n' => $statsIndex,                       'label' => $translate('Index')],
-            ['n' => $statsRefs,                        'label' => $translate('References')],
-            ['n' => 6,                                 'label' => $translate('Countries')],
+            ['n' => $statsContent, 'label' => $translate('Items'),      'featured' => true],
+            ['n' => $statsIndex,   'label' => $translate('Index')],
+            ['n' => $statsRefs,    'label' => $translate('References')],
+            ['n' => 6,             'label' => $translate('Countries')],
         ];
     } catch (\Throwable $e) {
         $stats = null;

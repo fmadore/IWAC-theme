@@ -9,6 +9,8 @@
 .claude/preview-patch.js
 .claude/shot.ps1
 .claude/oklch2hex.js
+.claude/gen-fr-mo.py
+.claude/proxy.log
 .claude/shots/
 nul
 

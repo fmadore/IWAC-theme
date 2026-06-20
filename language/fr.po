@@ -1,0 +1,37 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: IWAC-theme\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Available languages"
+msgstr "Langues disponibles"
+
+msgid "Back to top"
+msgstr "Haut de page"
+
+msgid "Browse sections"
+msgstr "Parcourir les sections"
+
+msgid "Collection at a glance"
+msgstr "La collection en un coup d’œil"
+
+msgid "Countries"
+msgstr "Pays"
+
+msgid "Main navigation"
+msgstr "Navigation principale"
+
+msgid "Open menu"
+msgstr "Ouvrir le menu"
+
+msgid "Switch to dark mode"
+msgstr "Passer en mode sombre"
+
+msgid "Switch to light mode"
+msgstr "Passer en mode clair"
+
+msgid "Switch to system theme"
+msgstr "Passer en mode système"

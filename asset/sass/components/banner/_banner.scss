@@ -182,6 +182,15 @@
     // The instrument, front and centre: a solid readable field over the
     // duotone, not a transparent box lost in the collage.
     &__search {
+        // Own the positioning context for the IwacSearch typeahead panel (the
+        // module pins position:relative inline as a fallback), and lift it —
+        // with the panel — above .banner__stats. Both this box and the stats
+        // keep a lingering transform from bannerFadeIn (fill-mode: both), so
+        // each is a sibling stacking context inside .banner__content; without
+        // an explicit z-index the later-in-DOM stats paint over the open
+        // dropdown (the KPI numerals bled through it).
+        position: relative;
+        z-index: 2;
         width: 100%;
         max-width: 36rem;
         margin-block-start: var(--space-6);
@@ -216,7 +225,13 @@
             &:focus { outline: none; }
         }
 
-        button {
+        // Scope to the submit button ONLY — mirror the masthead fix in
+        // _header.scss. The IwacSearch typeahead appends its row <button>s
+        // (type="button") as siblings of the form inside .banner__search; a
+        // bare `button` selector here (specificity 0,2,0) overrode the module's
+        // .iwac-header-suggest__item reset and painted those rows solid primary
+        // (the "Search for…" and entity rows showed as orange bars).
+        button[type="submit"] {
             flex: none;
             display: inline-flex;
             align-items: center;
@@ -230,6 +245,20 @@
             transition: background-color var(--transition-fast);
 
             &:hover { background: var(--primary-hover); }
+        }
+
+        // IwacSearch appends its typeahead panel (.iwac-header-suggest) here,
+        // as a sibling of the form. Its default anchoring is tuned for the
+        // narrow masthead pill (right-edge-pinned, ~28rem cap, grows leftward);
+        // the hero is a wide, left-aligned field, so stretch the panel across
+        // the full bar instead. Internal styling (rows, colours, tokens) stays
+        // owned by the module — this only re-anchors it for the hero host.
+        .iwac-header-suggest {
+            inset-inline: 0;
+            min-width: 0;
+            max-width: none;
+            width: auto;
+            box-shadow: var(--shadow-md);
         }
 
         .banner__content--center & { margin-inline: auto; }
