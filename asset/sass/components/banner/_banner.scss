@@ -173,6 +173,120 @@
             font-size: var(--text-lg);
         }
     }
+
+    // ----------------------------------------------------------------------
+    // Hero search + KPI almanac — server-rendered, in the fold
+    // (design-review findings 1.1 search-in-hero, 1.2 almanac figures).
+    // ----------------------------------------------------------------------
+
+    // The instrument, front and centre: a solid readable field over the
+    // duotone, not a transparent box lost in the collage.
+    &__search {
+        width: 100%;
+        max-width: 36rem;
+        margin-block-start: var(--space-6);
+
+        // The search-form partial renders a bare <form> (input + submit
+        // button); style by structure so the masthead CSS is untouched.
+        form {
+            display: flex;
+            align-items: stretch;
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: box-shadow var(--transition-fast);
+        }
+
+        form:focus-within {
+            box-shadow: var(--shadow-md), var(--ring-focus);
+        }
+
+        input {
+            flex: 1 1 auto;
+            min-width: 0;
+            border: none;
+            background: transparent;
+            color: var(--ink);
+            font-family: $font__body;
+            font-size: var(--text-base);
+            padding: var(--space-3) var(--space-4);
+
+            &::placeholder { color: var(--muted); }
+            &:focus { outline: none; }
+        }
+
+        button {
+            flex: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            padding-inline: var(--space-5);
+            background: var(--primary);
+            color: var(--white);
+            font-size: var(--text-lg);
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+
+            &:hover { background: var(--primary-hover); }
+        }
+
+        .banner__content--center & { margin-inline: auto; }
+        .banner__content--right &  { margin-inline-start: auto; }
+    }
+
+    // Almanac figures: the KPI grammar (2px rule, eyebrow label, Besley
+    // numeral) in white over the duotone. The featured figure (total items)
+    // gets the solid-white rule; the rest a quieter half-strength one.
+    &__stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-6) var(--space-8);
+        margin-block-start: var(--space-10);
+        margin-block-end: 0;
+        padding: 0;
+        list-style: none;
+
+        .banner__content--center & { justify-content: center; }
+        .banner__content--right &  { justify-content: flex-end; }
+    }
+
+    &__stat {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        min-width: 4.5rem;
+        border-block-start: 2px solid color-mix(in oklab, var(--white) 38%, transparent);
+        padding-block-start: var(--space-2);
+
+        &--featured {
+            border-block-start-color: var(--white);
+        }
+    }
+
+    &__stat-figure {
+        font-family: $font__headings;
+        font-size: var(--text-3xl);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.01em;
+        font-variant-numeric: tabular-nums;
+        color: var(--white);
+
+        @media (min-width: $md) {
+            font-size: var(--text-4xl);
+        }
+    }
+
+    &__stat-label {
+        font-family: $font__body;
+        font-size: var(--text-xs);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wider);
+        color: color-mix(in oklab, var(--white) 82%, transparent);
+    }
 }
 
 // Dark theme: the same plate, banked down — lamplight, not neon.
@@ -217,10 +331,14 @@ body[data-theme="dark"] {
 @media (prefers-reduced-motion: no-preference) {
     .banner__eyebrow,
     .banner__heading,
-    .banner__description {
+    .banner__description,
+    .banner__search,
+    .banner__stats {
         animation: bannerFadeIn 600ms var(--ease-out-quart) both;
     }
 
     .banner__heading        { animation-delay: 80ms; }
     .banner__description    { animation-delay: 180ms; }
+    .banner__search         { animation-delay: 260ms; }
+    .banner__stats          { animation-delay: 340ms; }
 }

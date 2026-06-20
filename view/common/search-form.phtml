@@ -16,6 +16,10 @@
  * standalone. Markup mirrors core either way, so the existing #search-form /
  * .main-header__search-form CSS keeps applying.
  *
+ * Variant — pass ['variant' => 'hero'] to render a second instance (the
+ * homepage hero) with unique element IDs, so masthead + hero don't collide
+ * on duplicate ids. Default (no variant) keeps the original masthead ids.
+ *
  * Placeholder uses 'Search' (reliably translated to "Rechercher" by Omeka
  * core on /s/afrique_ouest/) rather than core's 'Enter a search term', whose
  * msgid the French catalog doesn't supply.
@@ -23,6 +27,12 @@
 $translate  = $this->plugin('translate');
 $escapeAttr = $this->plugin('escapeHtmlAttr');
 $site       = $this->currentSite();
+
+$variant = isset($variant) ? (string) $variant : '';
+$suffix  = $variant !== '' ? '-' . $variant : '';
+$formId   = 'search-form' . $suffix;
+$inputId  = 'fulltext-search' . $suffix;
+$submitId = 'search-submit' . $suffix;
 
 $useModule = $this->getHelperPluginManager()->has('iwacSearchUrl');
 if ($useModule) {
@@ -35,7 +45,7 @@ if ($useModule) {
     $query     = $this->params()->fromQuery('fulltext_search');
 }
 ?>
-<form action="<?php echo $escapeAttr($action); ?>" method="get"<?php echo $useModule ? ' data-iwac-header-search' : ''; ?> id="search-form" aria-label="<?php echo $escapeAttr($translate('Search')); ?>" role="search">
-    <input type="text" id="fulltext-search" name="<?php echo $escapeAttr($queryName); ?>" value="<?php echo $escapeAttr($query); ?>" placeholder="<?php echo $escapeAttr($translate('Search')); ?>" aria-label="<?php echo $escapeAttr($translate('Query')); ?>" aria-labelledby="search-form fulltext-search">
-    <button id="search-submit" type="submit" aria-label="<?php echo $escapeAttr($translate('Submit')); ?>" title="<?php echo $escapeAttr($translate('Submit')); ?>"><span class="o-icon-search" aria-hidden="true"></span></button>
+<form action="<?php echo $escapeAttr($action); ?>" method="get"<?php echo $useModule ? ' data-iwac-header-search' : ''; ?> id="<?php echo $escapeAttr($formId); ?>" aria-label="<?php echo $escapeAttr($translate('Search')); ?>" role="search">
+    <input type="text" id="<?php echo $escapeAttr($inputId); ?>" name="<?php echo $escapeAttr($queryName); ?>" value="<?php echo $escapeAttr($query); ?>" placeholder="<?php echo $escapeAttr($translate('Search')); ?>" aria-label="<?php echo $escapeAttr($translate('Query')); ?>" aria-labelledby="<?php echo $escapeAttr($formId . ' ' . $inputId); ?>">
+    <button id="<?php echo $escapeAttr($submitId); ?>" type="submit" aria-label="<?php echo $escapeAttr($translate('Submit')); ?>" title="<?php echo $escapeAttr($translate('Submit')); ?>"><span class="o-icon-search" aria-hidden="true"></span></button>
 </form>

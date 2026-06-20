@@ -1,6 +1,7 @@
 <?php
 $escHtml = $this->plugin('escapeHtml');
 $escAttr = $this->plugin('escapeHtmlAttr');
+$translate = $this->plugin('translate');
 
 $banner = $this->themeSettingAsset('banner');
 $bannerWidth = $this->themeSetting('banner_width') ?? '';
@@ -73,6 +74,33 @@ if ($compact) {
     <?php endif; ?>
 
     <?php if (!$compact): ?>
+    <?php
+    // Homepage hero "almanac" figures — server-rendered collection counts
+    // (design-review finding 1.2). Three indexed COUNT queries via the public
+    // API replace the client-side ECharts overview for the four numbers, so
+    // the proof of scale paints with the page and never shifts the layout.
+    // "Items" excludes the authority/index records; the six countries are a
+    // fixed editorial constant. Defensive: a query failure just drops the
+    // strip, it never breaks the homepage. See docs/DESIGN-SYSTEM / iwac-data.
+    $stats = null;
+    try {
+        $statsApi = $this->api();
+        $indexClasses = [94, 9, 96, 54, 244];                    // persons, places, orgs, events, subjects
+        $refClasses   = [35, 43, 88, 40, 82, 178, 52, 77, 305];  // the 9 reference classes
+        $statsTotal = $statsApi->search('items', ['limit' => 0])->getTotalResults();
+        $statsIndex = $statsApi->search('items', ['resource_class_id' => $indexClasses, 'limit' => 0])->getTotalResults();
+        $statsRefs  = $statsApi->search('items', ['resource_class_id' => $refClasses, 'limit' => 0])->getTotalResults();
+        $stats = [
+            ['n' => max(0, $statsTotal - $statsIndex), 'label' => $translate('Items'),      'featured' => true],
+            ['n' => $statsIndex,                       'label' => $translate('Index')],
+            ['n' => $statsRefs,                        'label' => $translate('References')],
+            ['n' => 6,                                 'label' => $translate('Countries')],
+        ];
+    } catch (\Throwable $e) {
+        $stats = null;
+    }
+    $thin = "\xE2\x80\xAF"; // U+202F narrow no-break space — locale-neutral digit grouping
+    ?>
     <div class="banner__content banner__content--<?php echo $bannerContentPosition; ?>">
         <?php if ($bannerEyebrow): ?>
             <span class="banner__eyebrow"><?php echo $escHtml($bannerEyebrow); ?></span>
@@ -82,6 +110,22 @@ if ($compact) {
         <?php endif; ?>
         <?php if ($bannerDescription): ?>
             <p class="banner__description"><?php echo nl2br($escHtml($bannerDescription)); ?></p>
+        <?php endif; ?>
+
+        <?php // Hero search — the instrument, in the fold (finding 1.1). ?>
+        <div class="banner__search">
+            <?php echo $this->partial('common/search-form', ['variant' => 'hero']); ?>
+        </div>
+
+        <?php if ($stats): ?>
+        <ul class="banner__stats" aria-label="<?php echo $escAttr($translate('Collection at a glance')); ?>">
+            <?php foreach ($stats as $stat): ?>
+                <li class="banner__stat<?php echo !empty($stat['featured']) ? ' banner__stat--featured' : ''; ?>">
+                    <span class="banner__stat-figure"><?php echo $escHtml(number_format((int) $stat['n'], 0, '.', $thin)); ?></span>
+                    <span class="banner__stat-label"><?php echo $escHtml($stat['label']); ?></span>
+                </li>
+            <?php endforeach; ?>
+        </ul>
         <?php endif; ?>
     </div>
     <?php endif; ?>
