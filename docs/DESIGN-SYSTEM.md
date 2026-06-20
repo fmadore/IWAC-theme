@@ -136,6 +136,32 @@ even if it never paints a pixel — fix it.
 | `--error` | `#c0392b` | — | `oklch(54% .20 25)` (red — not the orange brand!) |
 | `--white` | `#fff` | `#fff` | — |
 
+### Categorical type-colour map (`--type-*`)
+
+The resource-type → colour mapping is **theme-owned**, defined once in
+`abstracts/variables/_colors.scss` as `--type-*` custom properties that
+reference the semantic tokens (so they flip with light/dark automatically).
+Both modules consume `var(--type-*, <hex>)` and **must not re-encode the
+mapping** — this is the fix for the map that previously drifted across the
+three repos (the `document` badge fallback was `#e89c4a` in IwacSearch but
+`#ea580c` in IwacVisualizations).
+
+| `--type-*` token | → semantic token | Fallback hex | Used for |
+|---|---|---|---|
+| `--type-article` | `--primary` | `#e64a19` | article |
+| `--type-publication` | `--secondary` | `#394f68` | publication |
+| `--type-audiovisual` | `--info` | `#4a90c8` | audiovisual |
+| `--type-document` | `--warning` | `#e89c4a` | document |
+| `--type-reference` | `--muted` | `#767880` | reference |
+| `--type-photograph` | `--success` | `#6cc18b` | photograph |
+| `--type-entity-personnes` | `--info` | `#4a90c8` | index: persons |
+| `--type-entity-lieux` | `--success` | `#6cc18b` | index: places |
+| `--type-entity-organisations` | `--warning` | `#e89c4a` | index: organisations |
+
+Consumers: `IwacSearch/src/svelte/components/ResultItem.svelte`
+(`.iwac-card__type[data-type=…]` / `[data-entity-type=…]`) and
+`IwacVisualizations/asset/css/iwac-core.css` (`.iwac-vis-badge--…`).
+
 ### Font tokens
 
 | Token | Stack | Role |
@@ -189,8 +215,10 @@ All of them are owned by **IwacVisualizations**:
 4. **AI-model accents** (`--iwac-vis-model-{gemini,chatgpt,mistral}`): three
    distinct hues so the article-dashboard sentiment radar separates the three
    models. Site-overridable.
-5. **Resource-type badges** (`.iwac-vis-badge--*`): pastel category fills with
-   explicit light + dark variants.
+5. **Resource-type badge chrome** (`.iwac-vis-badge--*`): the dot / pill SHAPE
+   is module-owned, but the category COLOUR now comes from the theme's
+   single-source `--type-*` map (see §3) — the module no longer owns the
+   type→colour mapping, so it can't drift from IwacSearch's result chips.
 
 If you find yourself adding a hard-coded colour anywhere else, it belongs in
 the theme as a token, or it is a bug.

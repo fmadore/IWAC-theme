@@ -76,6 +76,24 @@
   --info:       oklch(56% 0.14 245);
   --info-bg:    oklch(96% 0.03 245);
 
+  // Categorical type-colour map — the SINGLE SOURCE for resource-type
+  // colours shared with IwacSearch (result chips) and IwacVisualizations
+  // (badges). Each maps a resource type / entity kind to a semantic token,
+  // so the mapping lives once, here; the modules consume `var(--type-*,
+  // <hex>)` and never re-encode it (the old hand-copied map had already
+  // drifted — the `document` fallback was #e89c4a in one repo, #ea580c in
+  // the other). References the semantic tokens, which flip in dark mode, so
+  // this block is defined once in :root. See docs/DESIGN-SYSTEM.md §3.
+  --type-article:              var(--primary);
+  --type-publication:          var(--secondary);
+  --type-audiovisual:          var(--info);
+  --type-document:             var(--warning);
+  --type-reference:            var(--muted);
+  --type-photograph:           var(--success);
+  --type-entity-personnes:     var(--info);
+  --type-entity-lieux:         var(--success);
+  --type-entity-organisations: var(--warning);
+
   // Blockquote
   --blockquote-bg:     color-mix(in oklab, var(--surface-raised) 88%, var(--primary) 12%);
   --blockquote-border: color-mix(in oklab, var(--primary) 60%, var(--border) 40%);
