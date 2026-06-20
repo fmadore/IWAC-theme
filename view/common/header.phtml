@@ -85,6 +85,17 @@ $navDepth = (int) $this->themeSetting('nav_depth') ? (int) $this->themeSetting('
 		</div>
 	</nav>
 
+	<?php // Mobile section tabs — below $lg the section strip is hidden, so
+	      // surface the research IA as a horizontally-scrollable tab row here
+	      // (top-level items only) instead of burying it all in the drawer.
+	      // A distinct class (NOT .main-navigation) so navigation.js leaves it
+	      // alone — the hamburger drawer still carries the full menu. ?>
+	<nav class="section-tabs" aria-label="<?php echo $this->escapeHtmlAttr($translate('Browse sections')); ?>">
+		<div class="section-tabs__scroll container">
+			<?php echo $site->publicNav()->menu()->renderMenu(null, ['addClassToListItem' => true, 'maxDepth' => 0]); ?>
+		</div>
+	</nav>
+
 </header>
 
 <?php // Menu drawer placed outside header to avoid backdrop-filter containing block issues ?>
