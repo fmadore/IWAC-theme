@@ -1,95 +1,115 @@
 /**
  * Theme Toggle
- * Handles dark/light theme switching with localStorage persistence
- * and respects system preference as default
+ * Three-state theme control: system / light / dark.
+ *
+ * The button cycles system → light → dark → system. "system" means no
+ * stored preference (follow the OS); "light"/"dark" are explicit overrides
+ * persisted to localStorage. Two attributes are written to <body>:
+ *   data-theme       resolved light|dark — drives all styling
+ *   data-theme-mode  system|light|dark   — drives which toggle icon shows
+ * Both are also set synchronously by the head-script in layout.phtml so the
+ * correct theme AND icon paint on first frame with no flash.
  */
 (function() {
     'use strict';
 
     const STORAGE_KEY = 'iwac-theme-preference';
     const THEME_ATTRIBUTE = 'data-theme';
+    const MODE_ATTRIBUTE = 'data-theme-mode';
+    // Cycle order. Keep in sync with the head-script + _theme-toggle.scss.
+    const MODES = ['system', 'light', 'dark'];
 
     /**
-     * Get the user's preferred theme
-     * Priority: localStorage > system preference > light
+     * The OS-level colour-scheme preference.
      */
-    function getPreferredTheme() {
+    function systemTheme() {
+        return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? 'dark'
+            : 'light';
+    }
+
+    /**
+     * The user's explicit choice. No stored value = follow the system.
+     */
+    function getMode() {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-            return stored;
-        }
-        
-        // Check system preference
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return 'dark';
-        }
-        
-        return 'light';
+        return (stored === 'light' || stored === 'dark') ? stored : 'system';
     }
 
     /**
-     * Apply the theme to the document
+     * Resolve a mode to the concrete light|dark theme used for styling.
      */
-    function applyTheme(theme) {
-        document.body.setAttribute(THEME_ATTRIBUTE, theme);
-        updateToggleButton(theme);
+    function resolveTheme(mode) {
+        return mode === 'system' ? systemTheme() : mode;
     }
 
     /**
-     * Update the toggle button's aria-label and pressed state.
+     * Apply a mode: set the resolved theme + the mode, and sync the button.
+     */
+    function applyMode(mode) {
+        document.body.setAttribute(THEME_ATTRIBUTE, resolveTheme(mode));
+        document.body.setAttribute(MODE_ATTRIBUTE, mode);
+        updateToggleButton(mode);
+    }
+
+    /**
+     * Update the toggle button's accessible label.
      *
-     * Icon visibility is owned entirely by CSS via body[data-theme]
-     * (see _theme-toggle.scss). We deliberately do NOT write inline
-     * display styles here — doing so clobbered the pre-paint CSS state
-     * and forced `display: inline`, which broke the icon's flex centering.
+     * Icon visibility is owned entirely by CSS via body[data-theme-mode]
+     * (see _theme-toggle.scss). We deliberately do NOT write inline display
+     * styles here — that clobbered the pre-paint CSS state previously. The
+     * label announces the NEXT mode in the cycle (i.e. the action a click
+     * performs).
      */
-    function updateToggleButton(theme) {
+    function updateToggleButton(mode) {
         const toggle = document.querySelector('[data-theme-toggle]');
         if (!toggle) return;
 
-        const isDark = theme === 'dark';
-        // Labels are injected (and translated) by the template; fall back
-        // to English if the data attributes are absent.
-        const toLight = toggle.dataset.labelToLight || 'Switch to light mode';
-        const toDark = toggle.dataset.labelToDark || 'Switch to dark mode';
-        toggle.setAttribute('aria-label', isDark ? toLight : toDark);
-        toggle.setAttribute('aria-pressed', isDark.toString());
+        const next = MODES[(MODES.indexOf(mode) + 1) % MODES.length];
+        // Labels are injected (and translated) by the template; fall back to
+        // English if the data attributes are absent.
+        const labels = {
+            light: toggle.dataset.labelToLight || 'Switch to light theme',
+            dark: toggle.dataset.labelToDark || 'Switch to dark theme',
+            system: toggle.dataset.labelToSystem || 'Use system theme'
+        };
+        toggle.setAttribute('aria-label', labels[next]);
     }
 
     /**
-     * Toggle between light and dark themes
+     * Advance to the next mode in the cycle and persist it.
      */
-    function toggleTheme() {
-        const currentTheme = document.body.getAttribute(THEME_ATTRIBUTE) || getPreferredTheme();
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        localStorage.setItem(STORAGE_KEY, newTheme);
-        applyTheme(newTheme);
+    function cycleTheme() {
+        const next = MODES[(MODES.indexOf(getMode()) + 1) % MODES.length];
+        if (next === 'system') {
+            localStorage.removeItem(STORAGE_KEY);
+        } else {
+            localStorage.setItem(STORAGE_KEY, next);
+        }
+        applyMode(next);
     }
 
     /**
      * Initialize theme toggle functionality
      */
     function init() {
-        // Apply initial theme immediately to prevent flash
-        const preferredTheme = getPreferredTheme();
-        applyTheme(preferredTheme);
+        // Apply initial state immediately to prevent flash
+        applyMode(getMode());
 
         // Set up toggle button click handler
         document.addEventListener('click', function(event) {
             const toggle = event.target.closest('[data-theme-toggle]');
             if (toggle) {
                 event.preventDefault();
-                toggleTheme();
+                cycleTheme();
             }
         });
 
-        // Listen for system preference changes
+        // Follow OS changes live while in system mode.
         if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(event) {
-                // Only update if user hasn't manually set a preference
-                if (!localStorage.getItem(STORAGE_KEY)) {
-                    applyTheme(event.matches ? 'dark' : 'light');
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+                if (getMode() === 'system') {
+                    applyMode('system');
                 }
             });
         }
@@ -100,11 +120,17 @@
 
     // Expose for external use if needed
     window.IWACTheme = {
-        toggle: toggleTheme,
-        get: getPreferredTheme,
-        set: function(theme) {
-            localStorage.setItem(STORAGE_KEY, theme);
-            applyTheme(theme);
+        cycle: cycleTheme,
+        toggle: cycleTheme, // back-compat alias (was light↔dark only)
+        getMode: getMode,
+        get: function() { return resolveTheme(getMode()); },
+        set: function(mode) {
+            if (mode === 'system') {
+                localStorage.removeItem(STORAGE_KEY);
+            } else {
+                localStorage.setItem(STORAGE_KEY, mode);
+            }
+            applyMode(mode);
         }
     };
 })();

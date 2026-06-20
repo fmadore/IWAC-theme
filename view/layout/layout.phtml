@@ -157,7 +157,7 @@ if ($userBar) {
 	<?php echo $this->htmlElement('body')->appendAttribute('class', $body_class); ?>
 		<script>
 		// Apply theme synchronously before first paint to prevent FOUC.
-		// Mirrors getPreferredTheme() in js/theme-toggle.js.
+		// Mirrors getMode()/resolveTheme() in js/theme-toggle.js.
 		(function () {
 			try {
 				var stored = localStorage.getItem('iwac-theme-preference');
@@ -165,6 +165,7 @@ if ($userBar) {
 					? stored
 					: (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 				document.body.setAttribute('data-theme', theme);
+				document.body.setAttribute('data-theme-mode', (stored === 'light' || stored === 'dark') ? stored : 'system');
 			} catch (e) {}
 		})();
 		</script>

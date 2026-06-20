@@ -44,19 +44,33 @@
         }
     }
 
-    // Icon visibility driven by the synchronously-applied data-theme on
-    // <body>. The head-script in layout.phtml runs before first paint, so
-    // users with prefers-color-scheme: dark see the moon directly — no
-    // sun-flash. Defaults assume light if data-theme is missing entirely.
-    &__icon--light { display: flex; }
-    &__icon--dark  { display: none; }
+    // Icon reflects the current MODE (the user's explicit choice: system /
+    // light / dark), driven by the synchronously-applied data-theme-mode on
+    // <body>. The head-script in layout.phtml sets it before first paint, so
+    // the right icon shows directly — no icon flash. With the attribute
+    // absent (JS off) the page follows the system, so show the auto mark.
+    &__icon { display: none; }
+    &__icon--auto { display: flex; }
 
     &:hover &__icon {
         transform: scale(1.1);
     }
 }
 
-body[data-theme="dark"] {
+body[data-theme-mode="system"] {
+    .theme-toggle__icon--auto  { display: flex; }
+    .theme-toggle__icon--light { display: none; }
+    .theme-toggle__icon--dark  { display: none; }
+}
+
+body[data-theme-mode="light"] {
+    .theme-toggle__icon--auto  { display: none; }
+    .theme-toggle__icon--light { display: flex; }
+    .theme-toggle__icon--dark  { display: none; }
+}
+
+body[data-theme-mode="dark"] {
+    .theme-toggle__icon--auto  { display: none; }
     .theme-toggle__icon--light { display: none; }
     .theme-toggle__icon--dark  { display: flex; }
 }

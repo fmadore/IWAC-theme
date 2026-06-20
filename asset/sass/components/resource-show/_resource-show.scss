@@ -321,14 +321,17 @@ body.item-set {
             .field-term { display: none; }
         }
 
-        // The DescriptionAI lede — short and featured — sits in an info-tinted
-        // panel. Scoped to the term so longer AI fields don't inherit the box.
+        // The DescriptionAI lede — short and featured. "Rules, not boxes":
+        // it opens on the same 2px ink rule the design uses to start sections
+        // (masthead close, footer top, h1.title, KPI figures) instead of the
+        // old info-blue panel — boxes are reserved for true panels (charts).
+        // Provenance is carried by the EU "AI GENERATED" mark on the dt (a
+        // label), not a borrowed info-blue tint. Scoped to the term so longer
+        // AI fields (the parsed table of contents) don't inherit the rule.
         > dl > .property.property--ai[data-property-term="bibo:shortDescription"] {
-            margin-block: var(--space-5);
-            padding: var(--space-5) var(--space-5) var(--space-4);
-            background: color-mix(in oklab, var(--info-bg) 55%, var(--surface-raised));
-            border: 1px solid color-mix(in oklab, var(--info) 22%, var(--border) 78%);
-            border-radius: var(--radius-md);
+            margin-block: var(--space-6);
+            padding-block-start: var(--space-4);
+            border-block-start: 2px solid var(--ink-strong);
         }
 
         // EU "AI GENERATED" label — the official provenance mark, drawn as a

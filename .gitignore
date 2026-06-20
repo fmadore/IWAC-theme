@@ -13,3 +13,7 @@
 nul
 
 .claude/fixtures/
+
+# Claude Design review artifacts (local reference, not theme code)
+/IWAC Theme Review.html
+/_review.txt
