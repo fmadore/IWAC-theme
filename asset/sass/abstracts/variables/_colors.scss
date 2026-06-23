@@ -41,7 +41,7 @@
   --ink:          oklch(20% 0.012 264);   // body copy
   --ink-light:    oklch(38% 0.012 260);   // secondary body, eyebrow
   --ink-subtle:   oklch(48% 0.010 258);   // tertiary
-  --muted:        oklch(54% 0.008 256);   // captions, labels
+  --muted:        oklch(52% 0.008 256);   // captions, labels — AA (>=4.5:1) on every surface incl. sunken (was 54%, which fell to 4.49 on sunken)
   --ink-on-pastel: oklch(18% 0.020 264);  // dark text over tinted chips
 
   --white: #fff;
@@ -143,7 +143,7 @@
   --ink:           oklch(92% 0.008 78);
   --ink-light:     oklch(76% 0.010 75);
   --ink-subtle:    oklch(67% 0.010 72);
-  --muted:         oklch(59% 0.010 70);
+  --muted:         oklch(62% 0.010 70);   // AA (>=4.5:1) on raised/sunken (was 59%, which fell to 4.39 on raised)
   --ink-on-pastel: oklch(15% 0.015 70);
 
   --surface:         oklch(16% 0.012 70);

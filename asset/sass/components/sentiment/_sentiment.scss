@@ -1,36 +1,21 @@
-@use "../../abstracts/abstracts" as *;
-
 // ==========================================================================
-// Sentiment Analysis - Minimal Theme Integration
-// The IwacSentiment module handles its own styling via CSS custom properties.
-// This file only contains essential overrides specific to the theme.
+// Sentiment Analysis
+//
+// The AI-sentiment properties (gemini / chatgpt / mistral centralité,
+// polarité, subjectivité + justifications — 18 terms) are no longer rendered
+// in the public value list, so there is nothing to hide here anymore.
+//
+// They are excluded SERVER-SIDE in
+// `view/common/resource-page-block-layout/values.phtml` via Omeka S 4.2.0's
+// `displayValues(['excludeProperties' => …])`. Previously they were rendered
+// and then `display:none`-d here on `body.item.show`, which left ~18 hidden
+// rows of justification prose in every article's HTML (read by screen readers
+// and crawlers, shipped in the payload). Server-side exclusion removes them
+// from the markup entirely.
+//
+// They remain visible in the admin (core templates) for verification, and the
+// IwacVisualizations sentiment dashboard renders them from the API/JSON.
+//
+// Kept as a documented stub (still @forwarded in components/_components.scss)
+// to host any future sentiment-specific theme overrides.
 // ==========================================================================
-
-// --------------------------------------------------------------------------
-// Hide Sentiment Properties from Metadata Display
-// Only on public item show pages where the sentiment block displays them
-// Properties remain visible in admin and other contexts for verification
-// --------------------------------------------------------------------------
-
-body.item.show {
-    .property[data-property-term="iwac:geminiCentralite"],
-    .property[data-property-term="iwac:geminiCentraliteJustification"],
-    .property[data-property-term="iwac:geminiPolarite"],
-    .property[data-property-term="iwac:geminiPolariteJustification"],
-    .property[data-property-term="iwac:geminiSubjectiviteScore"],
-    .property[data-property-term="iwac:geminiSubjectiviteJustification"],
-    .property[data-property-term="iwac:chatgptCentralite"],
-    .property[data-property-term="iwac:chatgptCentraliteJustification"],
-    .property[data-property-term="iwac:chatgptPolarite"],
-    .property[data-property-term="iwac:chatgptPolariteJustification"],
-    .property[data-property-term="iwac:chatgptSubjectiviteScore"],
-    .property[data-property-term="iwac:chatgptSubjectiviteJustification"],
-    .property[data-property-term="iwac:mistralCentralite"],
-    .property[data-property-term="iwac:mistralCentraliteJustification"],
-    .property[data-property-term="iwac:mistralPolarite"],
-    .property[data-property-term="iwac:mistralPolariteJustification"],
-    .property[data-property-term="iwac:mistralSubjectiviteScore"],
-    .property[data-property-term="iwac:mistralSubjectiviteJustification"] {
-        display: none;
-    }
-}

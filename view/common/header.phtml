@@ -42,10 +42,13 @@ $navDepth = (int) $this->themeSetting('nav_depth') ? (int) $this->themeSetting('
 				      // before first paint, so the correct icon is shown synchronously
 				      // and there's no flash-of-wrong-icon for users with prefers-color-scheme: dark. ?>
 				<button class="theme-toggle" data-theme-toggle type="button"
-					data-label-to-light="<?php echo $this->escapeHtmlAttr($translate('Switch to light mode')); ?>"
-					data-label-to-dark="<?php echo $this->escapeHtmlAttr($translate('Switch to dark mode')); ?>"
-					data-label-to-system="<?php echo $this->escapeHtmlAttr($translate('Switch to system theme')); ?>"
-					aria-label="<?php echo $this->escapeHtmlAttr($translate('Switch to light mode')); ?>">
+					data-label-system="<?php echo $this->escapeHtmlAttr($translate('System theme active. Activate to switch to light mode.')); ?>"
+					data-label-light="<?php echo $this->escapeHtmlAttr($translate('Light theme active. Activate to switch to dark mode.')); ?>"
+					data-label-dark="<?php echo $this->escapeHtmlAttr($translate('Dark theme active. Activate to switch to system theme.')); ?>"
+					data-state-system="<?php echo $this->escapeHtmlAttr($translate('System theme')); ?>"
+					data-state-light="<?php echo $this->escapeHtmlAttr($translate('Light theme')); ?>"
+					data-state-dark="<?php echo $this->escapeHtmlAttr($translate('Dark theme')); ?>"
+					aria-label="<?php echo $this->escapeHtmlAttr($translate('System theme active. Activate to switch to light mode.')); ?>">
 					<span class="theme-toggle__icon theme-toggle__icon--auto" aria-hidden="true">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-circle-half" viewBox="0 0 16 16">
 							<path d="M8 15A7 7 0 1 0 8 1zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16"/>
@@ -62,6 +65,9 @@ $navDepth = (int) $this->themeSetting('nav_depth') ? (int) $this->themeSetting('
 						</svg>
 					</span>
 				</button>
+				<?php // Polite live region: theme-toggle.js writes the new state here
+				      // after a user toggle so screen readers announce the change. ?>
+				<span class="sr-only" data-theme-status role="status" aria-live="polite"></span>
 			</div>
 			<button class="main-navigation__toggle" aria-expanded="false" aria-controls="menu-drawer">
 				<span class="sr-only"><?php echo $translate('Open menu'); ?></span>

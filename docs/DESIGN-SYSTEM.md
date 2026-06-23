@@ -118,23 +118,42 @@ even if it never paints a pixel — fix it.
 > ~0.012) as of theme v2.6 — the older blue-cool dark hexes (`#1f232b`,
 > `#ebecf0`, …) are stale; replace them on sight.
 
-| Token | Light fallback | Dark fallback | Source token (light / dark) |
-|-------|---------------|---------------|--------------|
-| `--primary` | `#e64a19` | `#ec653f` | `mix(#e64a19, black 8%)` / `mix(#e64a19, white 12%)` |
-| `--secondary` | `#394f68` | `#708093` | seed / `mix(#394f68, white 30%)` |
-| `--ink-strong` | `#1c1f27` | `#f7f5f1` | `oklch(13% .012 264)` / `oklch(97% .006 80)` |
-| `--ink` | `#2c2f37` | `#e7e4df` | `oklch(20% .012 264)` / `oklch(92% .008 78)` |
-| `--ink-light` | `#535862` | `#b5b0aa` | `oklch(38% .012 260)` / `oklch(76% .010 75)` |
-| `--muted` | `#767880` | `#817c77` | `oklch(54% .008 256)` / `oklch(59% .010 70)` |
-| `--surface` | `#fdfdfd` | `#110c08` | `oklch(99.2% .002 60)` / `oklch(16% .012 70)` |
-| `--surface-raised` | `#fafaf9` | `#1a1510` | `oklch(98% .003 60)` / `oklch(20% .013 70)` |
-| `--surface-sunken` | `#f3f3f1` | `#0b0704` | `oklch(96% .004 60)` / `oklch(13.5% .012 72)` |
-| `--background` | `#f7f7f6` | `#080503` | `oklch(97% .003 60)` / `oklch(12% .012 75)` |
-| `--border` | `#d4d6da` | `#352f28` | `oklch(86% .007 258)` / `oklch(31% .015 70)` |
-| `--border-light` | `#e6e7eb` | `#26211a` | `oklch(92% .005 258)` / `oklch(25% .014 70)` |
-| `--border-strong` | `#b3b6bc` | `#534c44` | `oklch(76% .009 258)` / `oklch(42% .016 70)` |
-| `--error` | `#c0392b` | — | `oklch(54% .20 25)` (red — not the orange brand!) |
-| `--white` | `#fff` | `#fff` | — |
+The hex values below are **generated** from `_colors.scss` by
+`scripts/build-tokens.js` (→ `tokens.json`); do not edit them by hand. CSS
+`var(--token, #hex)` fallbacks must equal the **Light** column; the runtime
+`FALLBACK_LIGHT` / `FALLBACK_DARK` objects must equal the matching theme
+column. The OKLCH source for each value lives in `_colors.scss`.
+
+<!-- BEGIN GENERATED:TOKEN-TABLE -->
+| Token | Light fallback | Dark fallback |
+|-------|---------------|---------------|
+| `--primary` | `#ce4115` | `#ec653f` |
+| `--primary-hover` | `#b03710` | `#f17857` |
+| `--primary-active` | `#942c0c` | `#da4617` |
+| `--secondary` | `#394f68` | `#708093` |
+| `--ink-strong` | `#05070c` | `#f7f5f1` |
+| `--ink` | `#13161c` | `#e7e4df` |
+| `--ink-light` | `#3f4349` | `#b5b0aa` |
+| `--ink-subtle` | `#5a5e63` | `#99948f` |
+| `--muted` | `#66696e` | `#8a8580` |
+| `--ink-on-pastel` | `#0d121b` | `#0f0a05` |
+| `--surface` | `#fdfcfb` | `#110c08` |
+| `--surface-raised` | `#faf8f6` | `#1a1510` |
+| `--surface-sunken` | `#f4f1ef` | `#0b0704` |
+| `--background` | `#f7f5f3` | `#080503` |
+| `--border-light` | `#e2e5e8` | `#26211a` |
+| `--border` | `#ced1d6` | `#352f28` |
+| `--border-strong` | `#aeb1b7` | `#534c44` |
+| `--success` | `#2e9052` | `#56bd78` |
+| `--warning` | `#de7000` | `#f99532` |
+| `--error` | `#c9222b` | `#ff645f` |
+| `--info` | `#037ac0` | `#4dacf6` |
+| `--white` | `#ffffff` | `—` |
+<!-- END GENERATED:TOKEN-TABLE -->
+
+> `--error` is red (`oklch(54% .20 25)`), deliberately **not** the orange
+> brand. Tokens whose dark value mixes in `transparent` (the `*-bg` tints,
+> `--surface-overlay`, …) are not single-hex fallbacks and so are omitted.
 
 ### Categorical type-colour map (`--type-*`)
 
@@ -146,17 +165,22 @@ mapping** — this is the fix for the map that previously drifted across the
 three repos (the `document` badge fallback was `#e89c4a` in IwacSearch but
 `#ea580c` in IwacVisualizations).
 
-| `--type-*` token | → semantic token | Fallback hex | Used for |
+<!-- BEGIN GENERATED:TYPE-TABLE -->
+| `--type-*` token | → semantic token | Light | Dark |
 |---|---|---|---|
-| `--type-article` | `--primary` | `#e64a19` | article |
-| `--type-publication` | `--secondary` | `#394f68` | publication |
-| `--type-audiovisual` | `--info` | `#4a90c8` | audiovisual |
-| `--type-document` | `--warning` | `#e89c4a` | document |
-| `--type-reference` | `--muted` | `#767880` | reference |
-| `--type-photograph` | `--success` | `#6cc18b` | photograph |
-| `--type-entity-personnes` | `--info` | `#4a90c8` | index: persons |
-| `--type-entity-lieux` | `--success` | `#6cc18b` | index: places |
-| `--type-entity-organisations` | `--warning` | `#e89c4a` | index: organisations |
+| `--type-article` | `--primary` | `#ce4115` | `—` |
+| `--type-publication` | `--secondary` | `#394f68` | `—` |
+| `--type-audiovisual` | `--info` | `#037ac0` | `—` |
+| `--type-document` | `--warning` | `#de7000` | `—` |
+| `--type-reference` | `--muted` | `#66696e` | `—` |
+| `--type-photograph` | `--success` | `#2e9052` | `—` |
+| `--type-entity-personnes` | `--info` | `#037ac0` | `—` |
+| `--type-entity-lieux` | `--success` | `#2e9052` | `—` |
+| `--type-entity-organisations` | `--warning` | `#de7000` | `—` |
+<!-- END GENERATED:TYPE-TABLE -->
+
+Each `--type-*` resolves to its semantic token, so the fallback hex equals
+that token's value above (e.g. `--type-document` = `--warning`).
 
 Consumers: `IwacSearch/src/svelte/components/ResultItem.svelte`
 (`.iwac-card__type[data-type=…]` / `[data-entity-type=…]`) and

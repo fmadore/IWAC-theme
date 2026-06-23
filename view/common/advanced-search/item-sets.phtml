@@ -72,13 +72,20 @@ if ($this->status()->isSiteRequest()) {
     <button type="button" class="add-value o-icon-add button" aria-label="<?php echo $translate('Add new item set'); ?>" title="<?php echo $translate('Add new item set'); ?>"></button>
 </div>
 <script>
-$('#content').on('change', '.item-set-select-type', function() {
-    const typeSelect = $(this);
-    const itemSetSelect = typeSelect.closest('.value').find('.item-set-select');
-    if ('not_in' === typeSelect.val()) {
-        itemSetSelect.attr('name', 'not_item_set_id[]');
-    } else {
-        itemSetSelect.attr('name', 'item_set_id[]');
-    }
-});
+// Vanilla (no jQuery): toggling the In/Not-in condition rewrites the paired
+// item-set <select>'s name so it lands in the right query bucket. Delegated
+// from #content so dynamically-added value rows are covered too. Kept inline
+// so it works regardless of jQuery's (now deferred) load timing.
+(function () {
+    var content = document.getElementById('content');
+    if (!content) return;
+    content.addEventListener('change', function (event) {
+        var typeSelect = event.target.closest('.item-set-select-type');
+        if (!typeSelect || !content.contains(typeSelect)) return;
+        var value = typeSelect.closest('.value');
+        var itemSetSelect = value && value.querySelector('.item-set-select');
+        if (!itemSetSelect) return;
+        itemSetSelect.setAttribute('name', 'not_in' === typeSelect.value ? 'not_item_set_id[]' : 'item_set_id[]');
+    });
+}());
 </script>

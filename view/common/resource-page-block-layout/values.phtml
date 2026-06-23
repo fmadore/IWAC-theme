@@ -1,0 +1,41 @@
+<?php
+/**
+ * "Values" resource-page block — theme override of Omeka core's partial.
+ *
+ * Identical to core, except it excludes the AI-sentiment properties (the
+ * gemini / chatgpt / mistral centralité · polarité · subjectivité scores and
+ * their justifications — 18 terms) from the rendered value list, SERVER-SIDE,
+ * via Omeka S 4.2.0's `displayValues(['excludeProperties' => …])`.
+ *
+ * Why: those fields are surfaced by the IwacVisualizations sentiment dashboard
+ * (a radar driven by the API/JSON — it does NOT scrape this DOM), so listing
+ * them in the value table is pure redundancy. They were previously rendered
+ * and then `display:none`-d in components/sentiment/_sentiment.scss, which left
+ * ~18 hidden rows of justification prose in every article's HTML — read by
+ * screen readers, indexed by crawlers, and shipped in the payload. Excluding
+ * them server-side removes them from the markup entirely. They remain visible
+ * in the admin (which uses core templates) for verification, and `excludeProperties`
+ * is a no-op on resources that don't carry these terms (media, item sets).
+ *
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation $resource
+ */
+$options = [
+    'excludeProperties' => [
+        'iwac:geminiCentralite', 'iwac:geminiCentraliteJustification',
+        'iwac:geminiPolarite', 'iwac:geminiPolariteJustification',
+        'iwac:geminiSubjectiviteScore', 'iwac:geminiSubjectiviteJustification',
+        'iwac:chatgptCentralite', 'iwac:chatgptCentraliteJustification',
+        'iwac:chatgptPolarite', 'iwac:chatgptPolariteJustification',
+        'iwac:chatgptSubjectiviteScore', 'iwac:chatgptSubjectiviteJustification',
+        'iwac:mistralCentralite', 'iwac:mistralCentraliteJustification',
+        'iwac:mistralPolarite', 'iwac:mistralPolariteJustification',
+        'iwac:mistralSubjectiviteScore', 'iwac:mistralSubjectiviteJustification',
+    ],
+];
+// Core behaviour: scope linked-value display to the current site when the
+// site setting asks for it.
+if ($this->siteSetting('exclude_resources_not_in_site')) {
+    $options['siteId'] = $this->currentSite()->id();
+}
+echo $resource->displayValues($options);

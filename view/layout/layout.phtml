@@ -74,8 +74,15 @@ $iconfontsUrl = $this->assetUrl('css/iconfonts.css', 'Omeka');
 // Besley (Clarendon) carries the masthead + headlines; three static faces
 // keep the request small. Source Serif 4 stays for long-form reading.
 $this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=besley:500,600,800|public-sans:ital,wght@0,400..700;1,400|source-serif-4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap');
-$this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'));
-$this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'));
+// jQuery + Omeka's global.js are Omeka-core/module dependencies; the theme's own
+// JS is vanilla and doesn't touch them. Load them deferred so this ~30KB no longer
+// render-blocks first paint. `defer` preserves execution order (jQuery before
+// global.js) and runs both before DOMContentLoaded, so module code using jQuery's
+// ready()/DOMContentLoaded still works. Caveat: a parse-time inline <script>
+// calling $(...) would run before deferred jQuery — the theme's one such case
+// (advanced-search/item-sets) was rewritten in vanilla JS.
+$this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'), 'text/javascript', ['defer' => 'defer']);
+$this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'), 'text/javascript', ['defer' => 'defer']);
 $this->jsTranslate();
 $this->trigger('view.layout');
 

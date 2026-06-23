@@ -81,7 +81,8 @@ The system is **OKLCH-based** because equal lightness steps look equal (HSL is p
 ```bash
 npm install              # Install dependencies
 npm run start            # Watch mode - auto-compile on .scss changes
-npm run build            # One-off production build
+npm run build            # One-off production build (build:tokens, then compile CSS)
+npm run build:tokens     # Regenerate tokens.json (all 3 repos) + DESIGN-SYSTEM.md tables from _colors.scss
 ```
 
 ## Architecture
@@ -112,6 +113,8 @@ Key rules:
 ### CSS Custom Properties (Design Tokens)
 
 **CRITICAL: Only use tokens defined in `_colors.scss`, `_tokens.scss`, `_typography.scss`. Do NOT invent token names - undefined tokens fail silently at runtime.**
+
+**Canonical hex values are generated, not transcribed.** `scripts/build-tokens.js` resolves every OKLCH token in `_colors.scss` to sRGB and writes `tokens.json` (synced into IwacSearch + IwacVisualizations) plus the fallback tables in [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md). Both modules ship a `check-theme-tokens` guard that **fails the build** if any `var(--token, #hex)` fallback (or the runtime `FALLBACK_*` objects in IwacVisualizations) drifts from `tokens.json`. After changing a colour in `_colors.scss`, run `npm run build:tokens` and rebuild the modules. Never hand-edit `tokens.json` or the generated doc tables.
 
 | Category | Pattern | Examples |
 |----------|---------|----------|
@@ -229,7 +232,7 @@ The theme integrates with: Internationalisation (language switching), Mapping, C
 
 **Mirador IIIF viewer.** Mirador is a React/MUI app and cannot read theme CSS tokens, so its palette is defined as concrete hex in the module config (not the theme). The **canonical, token-derived palette + setup instructions** live in [docs/MIRADOR.md](docs/MIRADOR.md) — paste it once at the module/site level, never per item. Light/dark switching is automatic via `asset/js/mirador-theme-sync.js`; `asset/sass/components/mirador/_mirador.scss` holds only z-index/reset rules (no colours). Regenerate the hex from `_colors.scss` with the script in that doc if the tokens change.
 
-**Shared design system (IwacSearch + IwacVisualizations).** Two sibling modules — [IwacSearch](https://github.com/fmadore/IwacSearch) (Svelte search) and [IwacVisualizations](https://github.com/fmadore/IwacVisualizations) (ECharts/MapLibre dashboards) — *consume* this theme's design tokens instead of defining their own. The authoritative shared-token contract — consumable tokens, the **canonical fallback table**, dark-mode rules, and the one sanctioned exception (module-owned chart/data colours) — lives in **[docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md)**. Rules of thumb: when you change a token here, update each module's `var(--token, <fallback>)` fallback to match (or it silently drifts); data-encoding colours (chart series, sentiment scales, badges) are the *only* colours a module may own, and they live in the module prefixed `--iwac-vis-*`; everything else must resolve from a theme token.
+**Shared design system (IwacSearch + IwacVisualizations).** Two sibling modules — [IwacSearch](https://github.com/fmadore/IwacSearch) (Svelte search) and [IwacVisualizations](https://github.com/fmadore/IwacVisualizations) (ECharts/MapLibre dashboards) — *consume* this theme's design tokens instead of defining their own. The authoritative shared-token contract — consumable tokens, the **canonical fallback table**, dark-mode rules, and the one sanctioned exception (module-owned chart/data colours) — lives in **[docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md)**. Rules of thumb: when you change a token here, run `npm run build:tokens` (regenerates `tokens.json` in all three repos + the docs) and rebuild the modules — each module's `check-theme-tokens` guard fails the build if a `var(--token, <fallback>)` drifts from `tokens.json`, so drift can no longer slip through silently; data-encoding colours (chart series, sentiment scales, badges) are the *only* colours a module may own, and they live in the module prefixed `--iwac-vis-*`; everything else must resolve from a theme token.
 
 ## Constraints
 
