@@ -115,6 +115,49 @@ if ($compact) {
         $stats = null;
     }
     $thin = "\xE2\x80\xAF"; // U+202F narrow no-break space — locale-neutral digit grouping
+
+    // Secondary "corpus in depth" tier — words, pages, sources, document types,
+    // audiovisual minutes, languages. These are aggregates (sums of property
+    // values), NOT cheap indexed COUNTs, so they can't be computed live the way
+    // the four figures above are. They're read from IwacVisualizations'
+    // precomputed snapshot — the very file its Collection Overview block renders
+    // (generate_collection_overview.py, from the Hugging Face dataset). The read
+    // is best-effort and read-only: if the module isn't installed or the file
+    // is unreadable, this tier is simply omitted and the hero still shows the
+    // four live counts. Figures are therefore as fresh as the last precompute
+    // run, not live. OMEKA_PATH is the install root; modules are siblings of
+    // themes/ under it.
+    $substats = null;
+    $overviewSnapshot = defined('OMEKA_PATH')
+        ? OMEKA_PATH . '/modules/IwacVisualizations/asset/data/collection-overview.json'
+        : null;
+    if ($overviewSnapshot && is_readable($overviewSnapshot)) {
+        try {
+            $snap = json_decode((string) file_get_contents($overviewSnapshot), true);
+            $sum = (is_array($snap) && !empty($snap['summary']) && is_array($snap['summary'])) ? $snap['summary'] : null;
+            if ($sum) {
+                $depthFields = [
+                    ['key' => 'total_words',         'label' => $translate('Total words')],
+                    ['key' => 'total_pages',         'label' => $translate('Total pages')],
+                    ['key' => 'unique_sources',      'label' => $translate('Unique sources')],
+                    ['key' => 'document_types',      'label' => $translate('Document types')],
+                    ['key' => 'audiovisual_minutes', 'label' => $translate('Audiovisual minutes')],
+                    ['key' => 'languages',           'label' => $translate('Languages')],
+                ];
+                $substats = [];
+                foreach ($depthFields as $field) {
+                    if (isset($sum[$field['key']]) && is_numeric($sum[$field['key']])) {
+                        $substats[] = ['n' => $sum[$field['key']], 'label' => $field['label']];
+                    }
+                }
+                if (!$substats) {
+                    $substats = null;
+                }
+            }
+        } catch (\Throwable $e) {
+            $substats = null;
+        }
+    }
     ?>
     <div class="banner__content banner__content--<?php echo $bannerContentPosition; ?>">
         <?php if ($bannerEyebrow): ?>
@@ -138,6 +181,17 @@ if ($compact) {
                 <li class="banner__stat<?php echo !empty($stat['featured']) ? ' banner__stat--featured' : ''; ?>">
                     <span class="banner__stat-figure"><?php echo $escHtml(number_format((int) $stat['n'], 0, '.', $thin)); ?></span>
                     <span class="banner__stat-label"><?php echo $escHtml($stat['label']); ?></span>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+
+        <?php if ($substats): ?>
+        <ul class="banner__substats" aria-label="<?php echo $escAttr($translate('Corpus in depth')); ?>">
+            <?php foreach ($substats as $stat): ?>
+                <li class="banner__substat">
+                    <span class="banner__substat-figure"><?php echo $escHtml(number_format((int) $stat['n'], 0, '.', $thin)); ?></span>
+                    <span class="banner__substat-label"><?php echo $escHtml($stat['label']); ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>

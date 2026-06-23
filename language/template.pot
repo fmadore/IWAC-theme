@@ -5,6 +5,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "Audiovisual minutes"
+msgstr ""
+
 msgid "Available languages"
 msgstr ""
 
@@ -17,7 +20,16 @@ msgstr ""
 msgid "Collection at a glance"
 msgstr ""
 
+msgid "Corpus in depth"
+msgstr ""
+
 msgid "Countries"
+msgstr ""
+
+msgid "Document types"
+msgstr ""
+
+msgid "Languages"
 msgstr ""
 
 msgid "Main navigation"
@@ -33,4 +45,13 @@ msgid "Switch to light mode"
 msgstr ""
 
 msgid "Switch to system theme"
+msgstr ""
+
+msgid "Total pages"
+msgstr ""
+
+msgid "Total words"
+msgstr ""
+
+msgid "Unique sources"
 msgstr ""

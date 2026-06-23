@@ -6,6 +6,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "Audiovisual minutes"
+msgstr "Minutes audiovisuelles"
+
 msgid "Available languages"
 msgstr "Langues disponibles"
 
@@ -18,8 +21,17 @@ msgstr "Parcourir les sections"
 msgid "Collection at a glance"
 msgstr "La collection en un coup d’œil"
 
+msgid "Corpus in depth"
+msgstr "Le corpus en détail"
+
 msgid "Countries"
 msgstr "Pays"
+
+msgid "Document types"
+msgstr "Types de documents"
+
+msgid "Languages"
+msgstr "Langues"
 
 msgid "Main navigation"
 msgstr "Navigation principale"
@@ -35,3 +47,12 @@ msgstr "Passer en mode clair"
 
 msgid "Switch to system theme"
 msgstr "Passer en mode système"
+
+msgid "Total pages"
+msgstr "Pages totales"
+
+msgid "Total words"
+msgstr "Mots totaux"
+
+msgid "Unique sources"
+msgstr "Sources uniques"
