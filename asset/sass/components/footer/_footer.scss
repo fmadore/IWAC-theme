@@ -304,6 +304,18 @@
         margin: 0;
     }
 
+    // Defensive override: the admin-entered footer_copyright HTML hardcodes
+    // `style="color: white"` on its licence links (fair-use / Creative Commons),
+    // which is invisible on the light "print-room" footer surface — a real WCAG
+    // contrast failure (flagged by Lighthouse). Force a legible token regardless
+    // of the inline colour; `!important` is required to beat the inline style.
+    // Root-cause fix: drop the inline style in the footer_copyright theme setting.
+    &__copyright a {
+        color: var(--footer-text) !important;
+
+        &:hover { color: var(--primary) !important; }
+    }
+
     &__social-network {
         display: flex;
         align-items: center;

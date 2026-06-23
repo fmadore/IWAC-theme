@@ -19,7 +19,10 @@ const sharp = require('sharp');
 const imgDir = path.resolve(__dirname, '..', 'asset', 'img');
 const master = path.join(imgDir, 'banner.webp');
 const WIDTHS = [480, 768, 1024, 1280];
-const QUALITY = 80;
+// The hero is a duotone background (aria-hidden, grayscale plate multiplied over
+// the primary ground in CSS), so it tolerates aggressive WebP compression with no
+// perceptible loss — q62 roughly halves each variant vs q80 and shrinks the LCP.
+const QUALITY = 62;
 
 (async () => {
   const source = await fs.promises.readFile(master);
