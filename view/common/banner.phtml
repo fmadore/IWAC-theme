@@ -58,6 +58,14 @@ if ($compact) {
     // decorative and must not compete with content fetches.
     $imageFetchPriority = $compact ? 'low' : 'high';
     ?>
+    <?php
+    // The image lives in its own clipping layer so the Ken Burns zoom is
+    // contained WITHOUT the banner itself having to clip overflow — that
+    // overflow:hidden was swallowing the IwacSearch typeahead panel the moment
+    // it grew past the banner's bottom edge (the dropdown is appended inside
+    // .banner__content, which sits outside this layer). See _banner.scss.
+    ?>
+    <div class="banner__media">
     <?php if ($hasCustomBanner): ?>
         <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true', 'fetchpriority' => $imageFetchPriority]); ?>
     <?php else: ?>
@@ -72,6 +80,7 @@ if ($compact) {
              alt=""
              fetchpriority="<?php echo $escAttr($imageFetchPriority); ?>">
     <?php endif; ?>
+    </div>
 
     <?php if (!$compact): ?>
     <?php

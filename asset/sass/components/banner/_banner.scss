@@ -15,7 +15,14 @@
     display: flex;
     align-items: center;
     position: relative;
-    overflow: hidden;
+    // Deliberately NO overflow clip here. It used to be `overflow: hidden` (to
+    // contain the Ken Burns image zoom), but that also swallowed the IwacSearch
+    // typeahead panel the instant it grew past the banner's bottom edge — the
+    // module appends the panel inside .banner__content, so it has to be able to
+    // overflow the hero. The image is clipped by its own layer (.banner__media)
+    // instead. .banner stays a non-stacking-context (position:relative,
+    // z-index:auto) on purpose: that lets .banner__content's z-index:2 resolve
+    // at the root level, so the dropdown paints ABOVE the page content below.
 
     // Full-bleed sheet, flush under the masthead rule.
     margin-block-start: 0;
@@ -48,6 +55,18 @@
                 color-mix(in oklab, black 42%, transparent) 100%
             );
         z-index: 1;
+    }
+
+    // The image's own clipping layer — contains the Ken Burns zoom that used to
+    // rely on the banner's overflow:hidden. Crucially it carries NO z-index (and
+    // no transform/filter/opacity), so it stays a non-stacking-context: the
+    // image inside keeps blending (mix-blend-mode: multiply) against the banner
+    // ground at the root level, so the duotone is unchanged. The wrapper sits
+    // below the scrim (z-index 1) and content (z-index 2) by paint order.
+    &__media {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
     }
 
     img {
@@ -201,13 +220,24 @@
             display: flex;
             align-items: stretch;
             background: var(--surface);
+            // Transparent until focus, so the field still reads as a clean
+            // borderless plate over the duotone — but the 1px is reserved now
+            // (border-box), so colouring it primary on focus causes no jump.
+            border: 1px solid transparent;
             border-radius: var(--radius-md);
             box-shadow: var(--shadow-md);
             overflow: hidden;
-            transition: box-shadow var(--transition-fast);
+            transition:
+                box-shadow var(--transition-fast),
+                border-color var(--transition-fast);
         }
 
+        // Clear primary focus highlight: a solid border plus the ring, mirroring
+        // the masthead search (_header.scss). The bare ring alone — var(--ring-focus)
+        // is only 35% primary — read as almost nothing over the busy hero plate,
+        // which is why the "orange highlight" looked broken.
         form:focus-within {
+            border-color: var(--primary);
             box-shadow: var(--shadow-md), var(--ring-focus);
         }
 
@@ -237,14 +267,35 @@
             align-items: center;
             justify-content: center;
             border: none;
+            // Fill the right end flush. The global button rule (_buttons.scss)
+            // leaks border-radius: var(--radius-md), rounding ALL four corners
+            // so the orange floated inside the bar with a notch against the
+            // input. Zero it out — the form's radius + overflow clip the outer
+            // corners into a clean rounded end.
+            border-radius: 0;
             padding-inline: var(--space-5);
             background: var(--primary);
             color: var(--white);
             font-size: var(--text-lg);
             cursor: pointer;
+            // Neutralise the global button elevation: the base rule sets
+            // box-shadow: var(--glow-sm) and, on hover/active, grows it and adds
+            // a translateY lift — a stray orange halo and a bounce the hero
+            // never wanted. Same reset the masthead submit makes in _header.scss.
+            box-shadow: none;
             transition: background-color var(--transition-fast);
 
-            &:hover { background: var(--primary-hover); }
+            &:hover {
+                background: var(--primary-hover);
+                transform: none;
+                box-shadow: none;
+            }
+
+            &:active {
+                background: var(--primary-active);
+                transform: none;
+                box-shadow: none;
+            }
         }
 
         // IwacSearch appends its typeahead panel (.iwac-header-suggest) here,
