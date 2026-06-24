@@ -172,6 +172,11 @@
 .block-blockGroup .block-html,
 .block-html {
 
+    // Defend against unbreakable runs in admin-entered content (e.g. word
+    // sequences glued together by stray non-breaking spaces, long URLs). Without
+    // this such a run cannot wrap and spills past the card edge on narrow viewports.
+    overflow-wrap: break-word;
+
     // Ensure first element has no top margin to avoid double spacing with padding
     > :first-child {
         margin-block-start: 0;
