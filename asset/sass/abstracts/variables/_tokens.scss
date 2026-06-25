@@ -85,6 +85,12 @@
   // Letter Spacing
   // ========================================================================
   --tracking-tight:  -0.02em;
+  // Display tracking for the slab serif (Besley). Headlines, KPI numerals,
+  // section heads and result-card titles all sit at this value — slabs clog
+  // at the full --tracking-tight, so display sizes use this gentler step.
+  // One token so every display-serif use site tracks identically and can be
+  // tuned once (design review punch-list §04, item 1).
+  --tracking-display: -0.01em;
   --tracking-normal: 0;
   --tracking-wide:   0.04em;
   --tracking-wider:  0.08em;

@@ -364,7 +364,7 @@
         font-size: var(--text-lg);
         font-weight: 800;
         line-height: 1;
-        letter-spacing: -0.01em;
+        letter-spacing: var(--tracking-display);
         font-variant-numeric: tabular-nums;
         color: var(--white);
 
@@ -423,7 +423,7 @@
         font-size: var(--text-lg);
         font-weight: 800;
         line-height: 1.05;
-        letter-spacing: -0.01em;
+        letter-spacing: var(--tracking-display);
         font-variant-numeric: tabular-nums;
         color: var(--white);
 

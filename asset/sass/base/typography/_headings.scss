@@ -42,7 +42,7 @@ h1 {
     line-height: 1.08;
     // Clarendon slabs clog at the full -0.02em; track display sizes a touch
     // looser than the old Source Serif headline did.
-    letter-spacing: -0.01em;
+    letter-spacing: var(--tracking-display);
     margin-block-end: var(--space-6);
 
     @media (min-width: $md) {
