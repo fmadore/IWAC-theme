@@ -1,0 +1,83 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// PWA Install
+// Masthead "install app" control + iOS add-to-home-screen hint.
+// Shares the quiet icon-button chrome of the theme toggle. Stays hidden
+// (the [hidden] attribute) until js/pwa-install.js confirms installability.
+// ==========================================================================
+
+.pwa-install {
+    // `hidden` must win even though we set a display below — scope display to
+    // the not-hidden state so the attribute keeps the button out of the flow.
+    display: none;
+
+    &:not([hidden]) {
+        display: inline-flex;
+    }
+
+    align-items: center;
+    justify-content: center;
+    width: var(--size-control-sm);
+    height: var(--size-control-sm);
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    color: var(--ink-light);
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast);
+
+    &:hover {
+        color: var(--primary);
+        background-color: var(--selection-bg);
+    }
+
+    @include focus-ring;
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--text-lg);
+        height: var(--text-lg);
+        transition: transform var(--transition-fast);
+        color: inherit;
+
+        svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+    }
+
+    &:hover &__icon {
+        transform: scale(1.1);
+    }
+
+    // iOS hint popover — anchored under the utilities cluster.
+    &__hint {
+        position: absolute;
+        top: calc(100% + var(--space-2));
+        inset-inline-end: 0;
+        z-index: 1000;
+        max-width: min(20rem, calc(100vw - var(--space-8)));
+        padding: var(--space-3) var(--space-4);
+        background: var(--surface);
+        color: var(--ink);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+        font-family: var(--font-body);
+        font-size: var(--text-sm);
+        line-height: var(--line-height-normal);
+    }
+}
+
+// Anchor for the absolutely-positioned iOS hint (the hint is inserted as a
+// sibling of the button inside this cluster).
+.main-header__utilities {
+    position: relative;
+}
