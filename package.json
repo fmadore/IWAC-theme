@@ -1,13 +1,14 @@
 {
   "name": "iwac-theme",
-  "version": "2.6.20",
+  "version": "2.7.0",
   "description": "Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital archive.",
   "main": "gulpfile.js",
   "scripts": {
     "start": "gulp",
     "build": "npm run build:tokens && gulp css",
     "build:tokens": "node scripts/build-tokens.js",
-    "build:images": "node scripts/gen-banner-images.js"
+    "build:images": "node scripts/gen-banner-images.js",
+    "build:icons": "node scripts/gen-pwa-icons.js"
   },
   "repository": {
     "type": "git",

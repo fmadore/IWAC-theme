@@ -21,6 +21,13 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 - Dropdown menu for switching between available translations
 - Only visible when module is installed and page has translations
 
+### Installable PWA
+- Each site is installable as an app ("Add to Home Screen" / desktop "Install") with a brand icon
+- Quiet install button in the masthead — **no auto-popup**; it only appears when the browser can install
+- iOS Safari gets a click-only "Share → Add to Home Screen" hint
+- Per-site web-app manifest (name, icons, theme color, Browse/Search shortcuts) built at runtime
+- Toggle off via **General Settings → Enable PWA**. See [`docs/PWA.md`](docs/PWA.md)
+
 ### Modern Design System
 - **CSS Custom Properties** - Comprehensive design token system for colors, spacing, typography
 - **OKLCH Color System** - Perceptually-uniform palette derived from a single admin-set brand seed (`--primary-base`) via `color-mix(in oklab, …)`
@@ -58,6 +65,7 @@ npm install
 ### General Settings
 - **Primary Color** - The theme's primary brand color (default: `#E64A19`, IWAC Burnt Orange). Every primary variant (hover, active, focus ring, glows, blockquote) and the data-visualization sequential ramps derive from it via `color-mix(in oklab, …)`. Automatically adapts for dark mode.
 - **Secondary Color** - A second, **non-brand** color used only for data visualizations — chart series 2 and corpus comparison in the IwacVisualizations module (default: `#394f68`, slate blue). Not used for buttons, links, or focus. See [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md).
+- **Enable PWA (installable app)** - Adds the web app manifest, icons, and the masthead install button so visitors can install the site as an app. Default on. See [`docs/PWA.md`](docs/PWA.md).
 
 ### Header Layout
 - Inline logo and menu
