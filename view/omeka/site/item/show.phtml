@@ -106,18 +106,10 @@ if ($dateValue && !$dateValue->valueResource()) {
 <?php endif; ?>
 
 <?php
-// "How to cite" panel (#7). IWAC-SEO owns the citation contract (class→kind
-// map, Chicago/APA/MLA formatting, exports) behind the iwacCitation helper; the
-// theme renders the UI. The helper returns null for authority records (person /
-// place / organisation / …) and when the feature is disabled, so the panel is
-// automatic on citable items only.
-if ($this->getHelperPluginManager()->has('iwacCitation')) {
-    $citation = $this->iwacCitation($item);
-    if ($citation !== null) {
-        $this->headScript()->appendFile($this->assetUrl('js/citation.js'));
-        echo $this->partial('common/citation', ['citation' => $citation]);
-    }
-}
+// The "How to cite" panel is a resource page block ("How to cite", provided by
+// the IWAC-SEO module) rendered through resourcePageBlocks() above — placed via
+// Admin → Themes → Configure resource pages, not hard-coded here. The theme
+// still owns its UI (view/common/citation.phtml + components/citation +
+// asset/js/citation.js); the block delegates to that partial.
 ?>
-
 <?php $this->trigger('view.show.after'); ?>
