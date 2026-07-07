@@ -1,0 +1,245 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Citation — the item-page "How to cite" panel
+//
+// Theme UI for the citation tools the IWAC-SEO module exposes through the
+// `iwacCitation` view helper (see view/common/citation.phtml). Press-archive
+// register, "rules not boxes": the panel opens on the same 2px ink rule that
+// starts every section (h1.title, footer top, KPI figures, the AI lede), a
+// modest Besley section head, the citation set in the reading serif, and the
+// three styles offered as a tab strip whose active tab carries the primary
+// current-state underline — mirroring the masthead nav. No card, no tint;
+// the copy control and download chips stay quiet and outlined.
+// ==========================================================================
+
+.citation {
+    margin-block-start: var(--space-10);
+    padding-block-start: var(--space-4);
+    border-block-start: 2px solid var(--ink-strong);
+    max-width: var(--measure-base);
+
+    &__title {
+        margin: 0 0 var(--space-4);
+        font-family: $font__headings;
+        font-size: var(--text-lg);
+        font-weight: 700;
+        letter-spacing: var(--tracking-tight);
+        line-height: $font__headings-line-height;
+        color: var(--ink-strong);
+    }
+
+    // ── Style tabs (Chicago / APA / MLA) ─────────────────────────────────
+    // A thin uppercase strip closed by a hairline; the active tab gets the 2px
+    // primary underline (the current-state device shared with the nav). These
+    // are <button>s, so the global button base (_buttons.scss) is reset to a
+    // flat tab — no pill radius, no glow, no hover-lift.
+    &__styles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        margin-block-end: var(--space-4);
+        border-block-end: 1px solid var(--border);
+    }
+
+    &__style {
+        margin-block-end: -1px; // overlap the strip's hairline
+        padding: var(--space-2) 0;
+        background: none;
+        color: var(--muted);
+        border: none;
+        border-block-end: 2px solid transparent;
+        border-radius: 0;
+        box-shadow: none;
+        font-family: $font__body;
+        font-size: var(--text-xs);
+        font-weight: 600;
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        transition:
+            color var(--transition-fast),
+            border-color var(--transition-fast);
+
+        &:hover {
+            background: none;
+            color: var(--ink);
+            transform: none;
+            box-shadow: none;
+        }
+
+        &:active {
+            transform: none;
+            box-shadow: none;
+        }
+
+        &.is-active {
+            color: var(--ink-strong);
+            border-block-end-color: var(--primary);
+        }
+    }
+
+    // ── The formatted citation ───────────────────────────────────────────
+    &__output {
+        margin-block-end: var(--space-5);
+    }
+
+    &__text {
+        margin: 0;
+        font-family: $font__serif-text;
+        font-size: var(--text-base);
+        line-height: var(--line-height-relaxed);
+        color: var(--ink);
+        max-width: var(--measure-narrow);
+
+        // Word-break long URLs so the citation never forces a horizontal scroll.
+        a {
+            color: var(--primary);
+            word-break: break-word;
+
+            &:hover { color: var(--primary-hover); }
+        }
+    }
+
+    // ── Actions: copy + downloads ────────────────────────────────────────
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-3) var(--space-6);
+    }
+
+    // Copy: a single quiet outlined control (the panel's one action button).
+    // Resets the filled-primary button base to an outline that tints primary on
+    // hover and success-green once copied.
+    &__copy {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        // Same control height + vertical padding as the download chips so the
+        // whole actions row (Copy · DOWNLOAD · chips) lines up as one band —
+        // the copy button and chips were 40px vs 28px and read as mismatched.
+        min-height: var(--size-control-sm);
+        padding: var(--space-2) var(--space-4);
+        background: var(--surface);
+        color: var(--ink);
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-md);
+        box-shadow: none;
+        font-family: $font__body;
+        font-size: var(--text-sm);
+        font-weight: 600;
+        text-transform: none;
+        transition:
+            color var(--transition-fast),
+            border-color var(--transition-fast);
+
+        &:hover {
+            background: var(--surface);
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: none;
+            box-shadow: none;
+        }
+
+        &:active {
+            transform: none;
+            box-shadow: none;
+        }
+    }
+
+    &__copy-icon {
+        @include icon-mask("../img/clipboard.svg");
+        width: 1.05em;
+        height: 1.05em;
+        flex: none;
+    }
+
+    // Copied: green confirmation + the check glyph (JS toggles .is-copied and
+    // swaps the label text).
+    &.is-copied &__copy {
+        color: var(--success);
+        border-color: var(--success);
+    }
+
+    &.is-copied &__copy-icon {
+        @include icon-mask("../img/check2.svg");
+    }
+
+    // Downloads: an agate label + quiet outlined chips (the type-chip register),
+    // each with the download glyph. Border tints primary on hover — never filled.
+    &__downloads {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2) var(--space-3);
+    }
+
+    &__downloads-label {
+        font-family: $font__body;
+        font-size: var(--text-xs);
+        font-weight: 600;
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+
+    &__download-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    &__download {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        // Match the copy button (--size-control-sm + space-2 block padding) so
+        // the copy control and every download chip share one height and centre
+        // on the same line as the DOWNLOAD label.
+        min-height: var(--size-control-sm);
+        padding: var(--space-2) var(--space-3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--ink-light);
+        font-family: $font__body;
+        font-size: var(--text-xs);
+        font-weight: 600;
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        text-decoration: none;
+        transition:
+            color var(--transition-fast),
+            border-color var(--transition-fast);
+
+        &::before {
+            @include icon-mask("../img/download.svg");
+            content: "";
+            width: 0.9em;
+            height: 0.9em;
+            flex: none;
+        }
+
+        &:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        @include focus-ring;
+    }
+
+    // SR-only live region for the copy confirmation.
+    &__status {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        border: 0;
+    }
+}

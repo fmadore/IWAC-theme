@@ -232,13 +232,22 @@
                 border-color var(--transition-fast);
         }
 
-        // Clear primary focus highlight: a solid border plus the ring, mirroring
-        // the masthead search (_header.scss). The bare ring alone — var(--ring-focus)
-        // is only 35% primary — read as almost nothing over the busy hero plate,
-        // which is why the "orange highlight" looked broken.
+        // Single, aligned focus affordance (#6). The old state stacked three
+        // orange edges — a primary border, the faint 30%-primary --ring-focus,
+        // and the neutral *offset* --shadow-md — around a form that already ends
+        // in a flush primary submit segment; together they read as a second,
+        // offset orange outline (worst around the button and the bottom edge).
+        //
+        // Now one crisp 2px primary ring traces the form's clipped rounded
+        // rectangle exactly (box-shadow spread follows the border-radius) and is
+        // the ONLY orange edge — the border stays transparent, so nothing
+        // doubles. Solid --primary (not the faint --focus-ring token) is what
+        // makes it read over the busy hero plate, and matching the submit
+        // segment's colour keeps the right edge continuous instead of clashing.
+        // The ring is listed first so it paints on top of the resting elevation
+        // and stays sharp.
         form:focus-within {
-            border-color: var(--primary);
-            box-shadow: var(--shadow-md), var(--ring-focus);
+            box-shadow: 0 0 0 2px var(--primary), var(--shadow-md);
         }
 
         input {

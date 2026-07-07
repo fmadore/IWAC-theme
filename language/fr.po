@@ -18,8 +18,17 @@ msgstr "Haut de page"
 msgid "Browse sections"
 msgstr "Parcourir les sections"
 
+msgid "Citation style"
+msgstr "Style de citation"
+
 msgid "Collection at a glance"
 msgstr "La collection en un coup d’œil"
+
+msgid "Copied"
+msgstr "Copié"
+
+msgid "Copy"
+msgstr "Copier"
 
 msgid "Corpus in depth"
 msgstr "Le corpus en détail"
@@ -30,6 +39,12 @@ msgstr "Pays"
 msgid "Document types"
 msgstr "Types de documents"
 
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "How to cite this item"
+msgstr "Comment citer ce document"
+
 msgid "Languages"
 msgstr "Langues"
 
@@ -38,6 +53,9 @@ msgstr "Navigation principale"
 
 msgid "Open menu"
 msgstr "Ouvrir le menu"
+
+msgid "Press Ctrl+C to copy"
+msgstr "Appuyez sur Ctrl+C pour copier"
 
 msgid "Switch to dark mode"
 msgstr "Passer en mode sombre"

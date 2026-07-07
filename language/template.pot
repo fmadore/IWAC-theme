@@ -17,7 +17,16 @@ msgstr ""
 msgid "Browse sections"
 msgstr ""
 
+msgid "Citation style"
+msgstr ""
+
 msgid "Collection at a glance"
+msgstr ""
+
+msgid "Copied"
+msgstr ""
+
+msgid "Copy"
 msgstr ""
 
 msgid "Corpus in depth"
@@ -29,6 +38,12 @@ msgstr ""
 msgid "Document types"
 msgstr ""
 
+msgid "Download"
+msgstr ""
+
+msgid "How to cite this item"
+msgstr ""
+
 msgid "Languages"
 msgstr ""
 
@@ -36,6 +51,9 @@ msgid "Main navigation"
 msgstr ""
 
 msgid "Open menu"
+msgstr ""
+
+msgid "Press Ctrl+C to copy"
 msgstr ""
 
 msgid "Switch to dark mode"

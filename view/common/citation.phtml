@@ -1,0 +1,97 @@
+<?php
+/**
+ * "How to cite" panel — theme UI for the item-page citation tools (issue #7).
+ *
+ * The IWAC-SEO module owns the citation contract (the resource-class → kind map,
+ * the Chicago/APA/MLA formatting, the export serialisers) and exposes it through
+ * the `iwacCitation` view helper; this partial renders that view-model in the
+ * theme's press-archive register (2px ink-rule opener, Besley section head,
+ * reading-serif citation body, primary current-state style tabs, quiet outlined
+ * download chips). See view/omeka/site/item/show.phtml for the wiring.
+ *
+ * Progressive enhancement: without JS the default style is shown and the
+ * downloads still work (they are real links); asset/js/citation.js adds the
+ * style switcher and copy-to-clipboard.
+ *
+ * Each style's citation HTML is produced (and fully escaped) by
+ * IwacSeo\Service\CitationFormatter — echo it raw; everything else is escaped here.
+ *
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var array $citation  the iwacCitation() view-model
+ */
+$escape     = $this->plugin('escapeHtml');
+$escapeAttr = $this->plugin('escapeHtmlAttr');
+$translate  = $this->plugin('translate');
+
+if (empty($citation) || empty($citation['styles'])) {
+    return;
+}
+
+$recordId  = (int) ($citation['record']['id'] ?? 0);
+$default    = (string) ($citation['defaultStyle'] ?? '');
+$styles     = $citation['styles'];
+$downloads  = $citation['downloads'] ?? [];
+$zoteroRdf  = $citation['zoteroRdf'] ?? null;
+$multiStyle = count($styles) > 1;
+?>
+<section class="citation" aria-labelledby="citation-heading-<?php echo $recordId; ?>">
+    <h2 id="citation-heading-<?php echo $recordId; ?>" class="citation__title"><?php echo $escape($translate('How to cite this item')); ?></h2>
+
+    <?php if ($multiStyle): ?>
+    <div class="citation__styles" role="tablist" aria-label="<?php echo $escapeAttr($translate('Citation style')); ?>">
+        <?php foreach ($styles as $sid => $style): $active = ((string) $sid === $default); ?>
+        <button type="button" role="tab"
+            id="citation-tab-<?php echo $escapeAttr($sid); ?>-<?php echo $recordId; ?>"
+            class="citation__style<?php echo $active ? ' is-active' : ''; ?>"
+            data-citation-style="<?php echo $escapeAttr($sid); ?>"
+            aria-selected="<?php echo $active ? 'true' : 'false'; ?>"
+            aria-controls="citation-panel-<?php echo $escapeAttr($sid); ?>-<?php echo $recordId; ?>"
+            tabindex="<?php echo $active ? '0' : '-1'; ?>"><?php echo $escape($style['label']); ?></button>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+
+    <div class="citation__output">
+        <?php foreach ($styles as $sid => $style): $active = ((string) $sid === $default); ?>
+        <p<?php echo $multiStyle ? ' role="tabpanel"' : ''; ?>
+            id="citation-panel-<?php echo $escapeAttr($sid); ?>-<?php echo $recordId; ?>"
+            class="citation__text"
+            data-citation-panel="<?php echo $escapeAttr($sid); ?>"
+            <?php echo $multiStyle ? 'aria-labelledby="citation-tab-' . $escapeAttr($sid) . '-' . $recordId . '"' : ''; ?>
+            <?php echo $active ? '' : 'hidden'; ?>><?php
+                // Safe: the citation HTML (with <em>/<a>) is escaped by CitationFormatter.
+                echo $style['html'];
+            ?></p>
+        <?php endforeach; ?>
+    </div>
+
+    <div class="citation__actions">
+        <button type="button" class="citation__copy" data-citation-copy
+            data-copy-label="<?php echo $escapeAttr($translate('Copy')); ?>"
+            data-copied-label="<?php echo $escapeAttr($translate('Copied')); ?>"
+            data-error-label="<?php echo $escapeAttr($translate('Press Ctrl+C to copy')); ?>">
+            <span class="citation__copy-icon" aria-hidden="true"></span>
+            <span class="citation__copy-label"><?php echo $escape($translate('Copy')); ?></span>
+        </button>
+
+        <?php if ($downloads || $zoteroRdf): ?>
+        <div class="citation__downloads">
+            <span class="citation__downloads-label" id="citation-dl-<?php echo $recordId; ?>"><?php echo $escape($translate('Download')); ?></span>
+            <ul class="citation__download-list" aria-labelledby="citation-dl-<?php echo $recordId; ?>">
+                <?php foreach ($downloads as $dl): ?>
+                <li>
+                    <a class="citation__download" href="<?php echo $escapeAttr($dl['url']); ?>" download><?php echo $escape($dl['label']); ?></a>
+                </li>
+                <?php endforeach; ?>
+                <?php if ($zoteroRdf): ?>
+                <li>
+                    <a class="citation__download" href="<?php echo $escapeAttr($zoteroRdf); ?>">Zotero RDF</a>
+                </li>
+                <?php endif; ?>
+            </ul>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <p class="citation__status" role="status" aria-live="polite"></p>
+</section>
