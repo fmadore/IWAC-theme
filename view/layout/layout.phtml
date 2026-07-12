@@ -266,9 +266,9 @@ if ($userBar) {
 		echo $this->partial('common/banner', ['compact' => !$layoutIsHomepage, 'srcset' => $defaultBannerSrcset]);
 		?>
 
-		<div id="content" class="container" role="main" tabindex="-1">
+		<main id="content" class="container" tabindex="-1">
 			<?php echo $this->content; ?>
-		</div>
+		</main>
 
 		<?php echo $this->partial('common/footer'); ?>
 

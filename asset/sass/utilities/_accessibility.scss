@@ -7,8 +7,11 @@
     position: absolute;
     inset-block-start: -100%;
     inset-inline-start: var(--space-md);
-    background: var(--primary);
-    color: white;
+    // --primary-active (28% darkened) keeps white text comfortably past AA
+    // even when an admin seeds a lighter primary; raw --primary sits at
+    // ~4.5:1 with the default seed and dips below it with lighter ones.
+    background: var(--primary-active);
+    color: var(--white);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-md);
     font-weight: 500;

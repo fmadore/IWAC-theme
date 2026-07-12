@@ -79,9 +79,9 @@ $bodyTruncate = $this->themeSetting('truncate_body_property');
     <?php endif; ?>
 
     <div class="item-set-items">
-    <?php echo '<h3>' . $escape($translate('Items')) . '</h3>'; ?>
+    <?php echo '<h2>' . $escape($translate('Items')) . '</h2>'; ?>
 <?php else: ?>
-    <?php echo $this->pageTitle($translate('Items'), 2); ?>
+    <?php echo $this->pageTitle($translate('Items'), 1); ?>
 <?php endif; ?>
 
 <?php echo $this->searchFilters(); ?>

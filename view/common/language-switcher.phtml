@@ -15,9 +15,6 @@
  * @var string $displayLocale "code" (default) or "flag"
  */
 
-// Debug: uncomment the next line to see what data is being passed
-// echo '<!-- DEBUG locales: ' . print_r($locales, true) . ' -->';
-
 // No switcher if there are no locales available
 if (empty($locales)) {
     return;
@@ -32,8 +29,11 @@ $currentLocale = $this->siteSetting('locale') ?: 'en_US';
 $currentLocaleShort = rtrim(substr($currentLocale, 0, 3), '_-');
 ?>
 
+<?php // Disclosure of links (button + aria-expanded, toggled in script.js).
+      // NOT a listbox: options may not contain links and the listbox keyboard
+      // contract (arrows, aria-activedescendant) was never implemented. ?>
 <div class="language-switcher language-switcher--dropdown" data-language-switcher>
-    <button class="language-switcher__toggle" type="button" aria-expanded="false" aria-haspopup="listbox"
+    <button class="language-switcher__toggle" type="button" aria-expanded="false"
         aria-label="<?php echo $escapeAttr($translate('Select language')); ?>"
         title="<?php echo $escapeAttr($translate('Change language')); ?>">
         <span class="language-switcher__icon" aria-hidden="true">
@@ -47,20 +47,22 @@ $currentLocaleShort = rtrim(substr($currentLocale, 0, 3), '_-');
         </span>
         <span class="language-switcher__current-code"><?php echo $escape(strtoupper($currentLocaleShort)); ?></span>
     </button>
-    <ul class="language-switcher__list" role="listbox"
+    <ul class="language-switcher__list"
         aria-label="<?php echo $escapeAttr($translate('Available languages')); ?>">
         <?php foreach ($locales as $localeData):
             $siteLocale = $localeData['locale'] ?? '';
             $siteLocaleShort = rtrim(substr($siteLocale, 0, 3), '_-');
             $isCurrentLang = ($siteLocale === $currentLocale);
-            // Extract just the language name without locale code in parentheses (e.g., "English" from "English (en-US)")
-            $langName = ucwords(explode(' (', $localeData['locale_label'] ?? $siteLocaleShort)[0]);
+            // Extract just the language name without locale code in parentheses
+            // (e.g., "English" from "English (en-US)"). mb-safe capitalisation —
+            // ucwords() only handles ASCII first bytes.
+            $langName = explode(' (', $localeData['locale_label'] ?? $siteLocaleShort)[0];
+            $langName = mb_convert_case(mb_substr($langName, 0, 1), MB_CASE_TITLE) . mb_substr($langName, 1);
             $siteUrl = $localeData['url'] ?? '#';
             ?>
-            <li class="language-switcher__item <?php echo $isCurrentLang ? 'language-switcher__item--active' : ''; ?>"
-                role="option" aria-selected="<?php echo $isCurrentLang ? 'true' : 'false'; ?>">
+            <li class="language-switcher__item <?php echo $isCurrentLang ? 'language-switcher__item--active' : ''; ?>">
                 <?php if ($isCurrentLang): ?>
-                    <span class="language-switcher__link language-switcher__link--current">
+                    <span class="language-switcher__link language-switcher__link--current" aria-current="true">
                         <span class="language-switcher__code"><?php echo $escape(strtoupper($siteLocaleShort)); ?></span>
                         <span class="language-switcher__label"><?php echo $escape($langName); ?></span>
                         <span class="language-switcher__check" aria-hidden="true">✓</span>

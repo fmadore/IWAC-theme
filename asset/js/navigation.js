@@ -3,10 +3,26 @@
  *
  * Handles toggling the navigation menu for small screens and enables TAB key
  * navigation support for dropdown menus.
+ *
+ * Translated strings arrive as data-* attributes on #menu-drawer
+ * (see view/common/menu-drawer.phtml) — never as globals.
  */
 
 (function () {
-	let mmHeader, mmNavigation, mmToggli, mmBody, mmDrawer, mmBacker, mmClones, mmTargets, cleanupTrap;
+	let mmHeader, mmNavigation, mmToggli, mmBody, mmDrawer, mmBacker, mmClones, mmStrings, cleanupTrap;
+
+	// The drawer overlays these regions; they are inert while it is open so
+	// keyboard/AT focus can't wander behind the modal surface.
+	const INERT_REGIONS = '#content, .main-footer, .banner, #back-to-top';
+
+	const FOCUSABLE_SELECTOR = [
+		'a[href]',
+		'button:not([disabled])',
+		'input:not([disabled])',
+		'select:not([disabled])',
+		'textarea:not([disabled])',
+		'[tabindex]:not([tabindex="-1"])',
+	].join(', ');
 
 	document.addEventListener("DOMContentLoaded", function() {
 		let collection, menu;
@@ -17,8 +33,8 @@
 		// get the toggle menu item (li)
 		mmToggli = document.querySelector( '.main-navigation__toggle' );
 
-		// Exit early if collection is empty or the toggle button is undefined
-		if ( 0 === collection.length || null === mmToggli || 'undefined' === typeof mmToggli ) {
+		// Exit early if collection is empty or the toggle button is absent
+		if ( 0 === collection.length || null === mmToggli ) {
 			return;
 		}
 
@@ -30,7 +46,14 @@
 		mmBacker = document.getElementById( 'menu-backer' );
 		mmClones = document.getElementById( 'menu-clones' );
 
-		mmTargets = []; // array of expanded menus in the menu drawer
+		// Translated UI strings (with English fallbacks).
+		mmStrings = {
+			close: (mmDrawer && mmDrawer.dataset.closeText) || 'Close',
+			openMenu: (mmDrawer && mmDrawer.dataset.openMenuText) || 'Open menu',
+			toggleSubmenu: (mmDrawer && mmDrawer.dataset.toggleSubmenuText) || 'Toggle submenu',
+			// %s is replaced with the parent entry's name.
+			showSubmenuFor: (mmDrawer && mmDrawer.dataset.showSubmenuText) || 'show submenu for “%s”',
+		};
 
 		// reverse the collection so .main-navigation renders first in the .menu-drawer
 		collection = Array.prototype.slice.call( collection );
@@ -43,11 +66,11 @@
 		function toggleMenu() {
 			if ( ! mmDrawer.classList.contains( 'toggled' ) ) {
 				mmToggli.setAttribute('aria-expanded', 'true');
-				if (mmToggleSrText) mmToggleSrText.textContent = closeText;
+				if (mmToggleSrText) mmToggleSrText.textContent = mmStrings.close;
 				openMenuDrawer();
 			} else {
 				mmToggli.setAttribute('aria-expanded', 'false');
-				if (mmToggleSrText) mmToggleSrText.textContent = openMenuText;
+				if (mmToggleSrText) mmToggleSrText.textContent = mmStrings.openMenu;
 				closeMenuDrawer();
 			}
 		}
@@ -74,20 +97,26 @@
 
 		document.querySelectorAll( '.main-navigation .nav-menu > li.menu-item-has-children' ).forEach( item => {
 			const activatingA = item.querySelector('a');
-			const btn = '<button class="submenu-btn"><span><span class="screen-reader-text">show submenu for “' + activatingA.text + '”</span></span></button>';
-			activatingA.insertAdjacentHTML('afterend', btn);
+			const btn = document.createElement('button');
+			btn.className = 'submenu-btn';
+			const btnOuter = document.createElement('span');
+			const btnLabel = document.createElement('span');
+			btnLabel.className = 'screen-reader-text';
+			btnLabel.textContent = mmStrings.showSubmenuFor.replace('%s', activatingA.text);
+			btnOuter.appendChild(btnLabel);
+			btn.appendChild(btnOuter);
+			activatingA.after(btn);
 
-			const itemLink = item.querySelector('a');
 			const itemButton = item.querySelector('button');
 			const itemSubmenu = item.querySelector('ul');
 
-			itemLink.setAttribute('aria-expanded', 'false');
+			// aria-expanded belongs on the control that toggles (the button);
+			// putting it on the sibling link too confuses assistive tech.
 			itemButton.setAttribute('aria-expanded', 'false');
 
 			if (item.closest('.main-navigation')) { // Desktop only.
 				item.addEventListener('mouseenter', () => {
 					item.classList.add('open');
-					itemLink.setAttribute('aria-expanded', 'true');
 					itemButton.setAttribute('aria-expanded', 'true');
 
 					requestAnimationFrame(() => {
@@ -97,7 +126,6 @@
 
 				item.addEventListener('mouseleave', () => {
 					item.classList.remove('open');
-					itemLink.setAttribute('aria-expanded', 'false');
 					itemButton.setAttribute('aria-expanded', 'false');
 					itemSubmenu.style.opacity = '0';
 				});
@@ -107,7 +135,6 @@
 					requestAnimationFrame(() => {
 						if (!item.contains(document.activeElement)) {
 							item.classList.remove('open');
-							itemLink.setAttribute('aria-expanded', 'false');
 							itemButton.setAttribute('aria-expanded', 'false');
 						}
 					});
@@ -116,7 +143,6 @@
 				item.addEventListener('keydown', function (e) {
 					if (e.key === 'Escape' || e.key === 'Esc') {
 						item.classList.remove('open');
-						itemLink.setAttribute('aria-expanded', 'false');
 						itemButton.setAttribute('aria-expanded', 'false');
 						itemButton.focus(); // Return focus to button
 					}
@@ -125,8 +151,7 @@
 				itemButton.addEventListener('click', function (event) {
 					const isOpen = this.parentNode.classList.toggle('open');
 
-					this.parentNode.querySelector('a').setAttribute('aria-expanded', isOpen.toString());
-					this.parentNode.querySelector('button').setAttribute('aria-expanded', isOpen.toString());
+					this.setAttribute('aria-expanded', isOpen.toString());
 
 					requestAnimationFrame(() => {
 						itemSubmenu.style.opacity = '1';
@@ -149,13 +174,14 @@
 			// Create toggle button
 			const toggleBtn = document.createElement('button');
 			toggleBtn.className = 'mobile-dropdown-toggle';
-			toggleBtn.setAttribute('aria-label', 'Toggle submenu');
+			toggleBtn.setAttribute('aria-label', mmStrings.toggleSubmenu);
 			toggleBtn.setAttribute('aria-expanded', 'false');
 
 			// Insert after link
 			link.after(toggleBtn);
 
-			// Add click event to the button
+			// Add click event to the button. The focus trap recomputes its
+			// focusable list on every keystroke, so no re-arm is needed here.
 			toggleBtn.addEventListener( 'click', function( event ) {
 				event.stopPropagation();
 				event.preventDefault();
@@ -167,12 +193,6 @@
 					item.classList.add('expanded');
 					toggleBtn.setAttribute('aria-expanded', 'true');
 				}
-
-				if (typeof cleanupTrap === 'function') {
-					cleanupTrap();
-					cleanupTrap = null;
-				}
-				cleanupTrap = trapFocus(mmHeader);
 			});
 		});
 
@@ -180,30 +200,28 @@
 			event.preventDefault();
 			closeMenuDrawer();
 		} );
-
-		mmHeader.addEventListener('keydown', function(e) {
-			if ((e.code === 'Enter' || e.code === 'Space') && e.target.matches('.menu-container a, #menu-backer')) {
-				e.preventDefault();
-				e.target.click();
-			}
-		});
 	} );
 
-	// Trap focus.
-	function getFocusableElements(container) {
-		const elements = container.querySelectorAll('.main-navigation__toggle, #menu-backer, .menu-container a, .mobile-dropdown-toggle');
-		return Array.from(elements).filter(el => el.offsetParent !== null);
+	// Trap focus. The drawer lives OUTSIDE <header> (backdrop-filter containing
+	// block), so the trap spans both containers in DOM order — header controls
+	// first, then the drawer — while the page behind them is inert.
+	function getFocusableElements(containers) {
+		const elements = [];
+		containers.forEach((container) => {
+			if (container) {
+				elements.push(...container.querySelectorAll(FOCUSABLE_SELECTOR));
+			}
+		});
+		return elements.filter(el => el.offsetParent !== null && !el.closest('[inert]'));
 	}
 
-	function trapFocus(container) {
-		let focusable = getFocusableElements(container);
-
+	function trapFocus(containers) {
 		function handleKey(e) {
-			focusable = getFocusableElements(container); // Recalculate dynamically
+			const focusable = getFocusableElements(containers); // Recalculate dynamically
 			const first = focusable[0];
 			const last = focusable[focusable.length - 1];
 
-			if (e.key === 'Tab') {
+			if (e.key === 'Tab' && first && last) {
 				if (e.shiftKey && document.activeElement === first) {
 					e.preventDefault();
 					last.focus();
@@ -226,10 +244,19 @@
 		};
 	}
 
+	function setPageInert(state) {
+		document.querySelectorAll(INERT_REGIONS).forEach((el) => {
+			if (state) {
+				el.setAttribute('inert', '');
+			} else {
+				el.removeAttribute('inert');
+			}
+		});
+	}
+
 	cleanupTrap = null;
 
 	function openMenuDrawer() {
-		backerContext();
 		mmBacker.removeAttribute('aria-hidden');
 		mmBacker.tabIndex = 0;
 		mmDrawer.querySelectorAll( 'a' ).forEach( item => {
@@ -243,19 +270,18 @@
 		mmDrawer.style.display = '';
 		mmToggli.classList.add( 'open' );
 
-		const focusable = getFocusableElements(mmDrawer);
+		setPageInert(true);
+
+		const focusable = getFocusableElements([mmDrawer]);
 		if (focusable.length) focusable[0].focus();
 
 		mmNavigation = mmDrawer.querySelector('.navigation');
-		mmNavigation.classList.add('in-viewport');
+		if (mmNavigation) mmNavigation.classList.add('in-viewport');
 
-		cleanupTrap = trapFocus(mmHeader);
+		cleanupTrap = trapFocus([mmHeader, mmDrawer]);
 	}
 
 	function closeMenuDrawer() {
-		// clear the expanded targets array
-		mmTargets = [];
-
 		// remove the expanded class from all menu items
 		mmDrawer.querySelectorAll( '.expanded' ).forEach( item => {
 			item.classList.remove( 'expanded' );
@@ -270,8 +296,7 @@
 			item.tabIndex = -1;
 		} );
 
-		// remove clone transformations
-		mmClones.style.transform = "none";
+		setPageInert(false);
 
 		mmBacker.setAttribute('aria-hidden', 'true');
 		mmBacker.tabIndex = -1;
@@ -282,23 +307,12 @@
 		mmToggli.classList.remove( 'open' );
 		mmToggli.setAttribute('aria-expanded', 'false');
 		const srText = mmToggli.querySelector('.sr-only');
-		if (srText) srText.textContent = openMenuText;
+		if (srText) srText.textContent = mmStrings.openMenu;
 		mmToggli.focus();
 
 		if (typeof cleanupTrap === 'function') {
 			cleanupTrap();
 			cleanupTrap = null;
-		}
-	}
-
-	function backerContext() {
-		if( mmTargets.length > 0 ) {
-			mmBacker.innerHTML = previousText;
-			mmBacker.setAttribute('aria-label', previousText);
-		}
-		else {
-			mmBacker.innerHTML = closeText;
-			mmBacker.setAttribute('aria-label', closeText);
 		}
 	}
 })();

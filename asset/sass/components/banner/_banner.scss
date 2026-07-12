@@ -153,7 +153,9 @@
         font-weight: 600;
         letter-spacing: var(--tracking-wider);
         text-transform: uppercase;
-        color: color-mix(in oklab, var(--white) 86%, transparent);
+        // ≥92% white: the eyebrow sits at the TOP of the scrim where the
+        // overlay is lightest — lower alphas dipped under AA for small text.
+        color: color-mix(in oklab, var(--white) 92%, transparent);
         margin-block-end: var(--space-4);
         padding-block-start: var(--space-3);
         border-top: 2px solid color-mix(in oklab, var(--white) 80%, transparent);
@@ -391,7 +393,7 @@
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: var(--tracking-wide);
-        color: color-mix(in oklab, var(--white) 82%, transparent);
+        color: color-mix(in oklab, var(--white) 92%, transparent);
     }
 
     // Secondary tier — corpus depth. Smaller numerals, half-weight rules, so it
@@ -447,7 +449,9 @@
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: var(--tracking-wide);
-        color: color-mix(in oklab, var(--white) 70%, transparent);
+        // Small uppercase labels over the composited plate need ≥92% white
+        // for AA — the hierarchy vs the lead figures comes from size/weight.
+        color: color-mix(in oklab, var(--white) 92%, transparent);
     }
 }
 
@@ -463,8 +467,11 @@
     }
 }
 
+// data-theme lives on <body> (set pre-paint by the layout head script), so
+// the :not() guard must sit on body too — on :root it always matched and a
+// forced-light user on an OS-dark device still got the dark plate.
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
+    body:not([data-theme="light"]) {
         @include iwac-banner-dark;
     }
 }

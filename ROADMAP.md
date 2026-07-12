@@ -49,37 +49,37 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
 
 ## Phase 2 — Accessibility
 
-- [ ] **A1** Menu-drawer focus containment: the trap is scoped to `.main-header__main-bar`
+- [x] **A1** Menu-drawer focus containment: the trap is scoped to `.main-header__main-bar`
   but the drawer renders *outside* `<header>`, so Tab escapes the open drawer
   (WCAG 2.4.3). Trap across toggle + drawer and set `inert` on page content while open.
-- [ ] **A2** `view/common/search-form.phtml` — remove the self-referential
+- [x] **A2** `view/common/search-form.phtml` — remove the self-referential
   `aria-labelledby` (it makes AT announce the input's own value as its name); give the
   hero variant a distinct landmark label.
-- [ ] **A3** `view/common/language-switcher.phtml` — replace the broken
+- [x] **A3** `view/common/language-switcher.phtml` — replace the broken
   `listbox`/`option` roles (links inside options, no keyboard contract) with a plain
   disclosure of links; `aria-current` on the active language; drop non-mb-safe `ucwords()`.
-- [ ] **A4** `asset/js/navigation.js` — hardcoded English a11y strings ("Toggle
+- [x] **A4** `asset/js/navigation.js` — hardcoded English a11y strings ("Toggle
   submenu", "show submenu for …"); move drawer strings from global `const`s to
   `data-*` attributes and translate the new ones.
 - [x] **A5** `view/common/resource-values.phtml` — don't emit `lang=""` (resets language
   to *unknown* on most metadata values); add `dir="auto"` for values with a language tag.
-- [ ] **A6** Heading & landmark structure: browse pages get `pageTitle(…, 1)`; item-set
+- [x] **A6** Heading & landmark structure: browse pages get `pageTitle(…, 1)`; item-set
   "Items" heading h3 → h2; `<div role="main">` → `<main>`; drop invalid `aria-title`
   in numeric partials.
-- [ ] **A7** `view/common/menu-drawer.phtml` — close control is `<a href=".">`; make it a
+- [x] **A7** `view/common/menu-drawer.phtml` — close control is `<a href=".">`; make it a
   `<button>`.
-- [ ] **A8** Skip link contrast: literal `white` on `--primary` is exactly ~4.5:1 and
+- [x] **A8** Skip link contrast: literal `white` on `--primary` is exactly ~4.5:1 and
   fails when an admin picks a lighter primary → use `--primary-active` ground.
-- [ ] **A9** Hero label contrast: raise `.banner__eyebrow` / `__stat-label` /
+- [x] **A9** Hero label contrast: raise `.banner__eyebrow` / `__stat-label` /
   `__substat-label` alphas to ≥ 0.92 over the duotone plate.
-- [ ] **A10** `view/omeka/site/index/search.phtml` — thumbnail link has no accessible
+- [x] **A10** `view/omeka/site/index/search.phtml` — thumbnail link has no accessible
   name when media lacks alt text; use the redundant-link pattern (`alt=""` +
   `aria-hidden` + `tabindex="-1"`) since the title link is adjacent.
-- [ ] **A11** `asset/js/navigation.js` — `aria-expanded` belongs on the toggle button
+- [x] **A11** `asset/js/navigation.js` — `aria-expanded` belongs on the toggle button
   only, not the sibling link.
-- [ ] **A12** `view/common/advanced-search/properties.phtml` — `label for` points at
+- [x] **A12** `view/common/advanced-search/properties.phtml` — `label for` points at
   element *names* not ids; wrap-label instead. Translate the literal "Logical operator".
-- [ ] **A13** Dark-banner media query targets `:root:not([data-theme=…])` but
+- [x] **A13** Dark-banner media query targets `:root:not([data-theme=…])` but
   `data-theme` lives on `body` — forced-light users on OS-dark still get the dark
   plate. Mirror the `_colors.scss` pattern.
 
@@ -165,7 +165,7 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
   exists instead of polling 50 timers on every page.
 - [ ] **P5** Body-end scripts: add `defer` so the comments describing them as deferred
   become true and the parser is never blocked.
-- [ ] **P6** `advanced-search.js` — debounce the raw `resize` listener with the existing
+- [x] **P6** `advanced-search.js` — debounce the raw `resize` listener with the existing
   `IWACUtils.debounce`.
 - [~] **P7** Self-host the three font families (removes the render-blocking third-party
   origin — the single largest critical-path win). *Deferred to its own PR*: needs

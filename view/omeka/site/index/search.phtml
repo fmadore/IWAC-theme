@@ -40,13 +40,20 @@ if (is_array($decoration) && in_array('media', $decoration)) {
             <h2><?php echo $translate($resourceLabels[$resourceName]); ?></h2>
             <ul class="resources resource-list">
                 <?php foreach ($result['resources'] as $resource):
-                    $primaryMedia = $resource->primaryMedia();
+                    // Site pages have no media accessor.
+                    $primaryMedia = method_exists($resource, 'primaryMedia') ? $resource->primaryMedia() : null;
                     ?>
                     <li class="item resource">
-                        <!-- Thumbnail -->
+                        <!-- Thumbnail: redundant with the adjacent title link, so it is
+                             removed from the tab order and hidden from AT instead of
+                             exposing an unnamed duplicate link. -->
                         <?php if ($primaryMedia): ?>
                             <div class="resource__thumbnail <?php echo $decorationClass; ?>">
-                                <?php echo $resource->linkRaw($this->thumbnail($primaryMedia, 'large')); ?>
+                                <?php echo $resource->linkRaw(
+                                    $this->thumbnail($primaryMedia, 'large', ['alt' => '', 'loading' => 'lazy', 'decoding' => 'async']),
+                                    null,
+                                    ['tabindex' => '-1', 'aria-hidden' => 'true']
+                                ); ?>
                             </div>
                         <?php endif; ?>
 
