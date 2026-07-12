@@ -32,8 +32,20 @@
      * The user's explicit choice. No stored value = follow the system.
      */
     function getMode() {
-        const stored = localStorage.getItem(STORAGE_KEY);
+        const stored = IWACUtils.localStore.get(STORAGE_KEY);
         return (stored === 'light' || stored === 'dark') ? stored : 'system';
+    }
+
+    /**
+     * Persist a mode ("system" = no stored value). Storage failures are
+     * swallowed — the choice still applies for this pageview.
+     */
+    function storeMode(mode) {
+        if (mode === 'system') {
+            IWACUtils.localStore.remove(STORAGE_KEY);
+        } else {
+            IWACUtils.localStore.set(STORAGE_KEY, mode);
+        }
     }
 
     /**
@@ -97,11 +109,7 @@
      */
     function cycleTheme() {
         const next = MODES[(MODES.indexOf(getMode()) + 1) % MODES.length];
-        if (next === 'system') {
-            localStorage.removeItem(STORAGE_KEY);
-        } else {
-            localStorage.setItem(STORAGE_KEY, next);
-        }
+        storeMode(next);
         applyMode(next, true);
     }
 
@@ -141,11 +149,7 @@
         getMode: getMode,
         get: function() { return resolveTheme(getMode()); },
         set: function(mode) {
-            if (mode === 'system') {
-                localStorage.removeItem(STORAGE_KEY);
-            } else {
-                localStorage.setItem(STORAGE_KEY, mode);
-            }
+            storeMode(mode);
             applyMode(mode);
         }
     };

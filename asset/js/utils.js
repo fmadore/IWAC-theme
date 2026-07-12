@@ -7,7 +7,7 @@
 
     /**
      * Run a callback when the DOM is ready.
-     * If the DOM is already parsed, the callback runs on the next microtask.
+     * If the DOM is already parsed, the callback runs synchronously.
      */
     function onReady(callback) {
         if (document.readyState === 'loading') {
@@ -32,8 +32,29 @@
         };
     }
 
+    /**
+     * Storage wrapped in try/catch — any localStorage/sessionStorage access
+     * can throw (blocked cookies, some private/embedded contexts). Features
+     * degrade to per-pageview behaviour instead of dying on the first read.
+     */
+    function safeStorage(storageName) {
+        return {
+            get: function (key) {
+                try { return window[storageName].getItem(key); } catch (e) { return null; }
+            },
+            set: function (key, value) {
+                try { window[storageName].setItem(key, value); return true; } catch (e) { return false; }
+            },
+            remove: function (key) {
+                try { window[storageName].removeItem(key); } catch (e) { /* unavailable */ }
+            }
+        };
+    }
+
     window.IWACUtils = {
         onReady: onReady,
-        debounce: debounce
+        debounce: debounce,
+        localStore: safeStorage('localStorage'),
+        sessionStore: safeStorage('sessionStorage')
     };
 })();

@@ -28,7 +28,7 @@ if (isset($alignmentClass)) {
                             $url = $media->url();
                             break;
                         default:
-                            throw new \InvalidArgumentException(sprintf('Invalid link type "%s"', $linkType));
+                            throw new \InvalidArgumentException(sprintf('Invalid link type "%s"', $link));
                     }
                     echo $hyperlink->raw($this->thumbnail($media, $thumbnailType), $url);
                 } else {
@@ -41,8 +41,8 @@ if (isset($alignmentClass)) {
             ?>
             <?php if ($showTitleOption === 'item_title'): ?>
                 <h3><?php echo $item->link($item->displayTitle()); ?></h3>
-            <?php elseif ($showTitleOption === 'file_name'): ?>
-                <h3><?php echo $media->displayTitle(); ?></h3>
+            <?php elseif ($showTitleOption === 'file_name' && $media): ?>
+                <h3><?php echo $this->escapeHtml($media->displayTitle()); ?></h3>
             <?php endif; ?>
             <?php $caption = $attachment->caption(); ?>
             <?php if ($caption): ?>

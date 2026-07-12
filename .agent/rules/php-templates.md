@@ -8,9 +8,8 @@ trigger: always_on
 
 ```
 ├── helper/               # Laminas View Helpers
-│   ├── ContrastColor.php # WCAG contrast checking
-│   ├── ResourceTags.php  # Resource type/class tags
-│   └── ShadeColor.php    # Color shade generation
+│   ├── BrowseLayout.php  # Shared grid/list layout state for browse pages
+│   └── ResourceTags.php  # Resource type/class tags
 └── view/
     ├── layout/           # Main layout template
     ├── common/           # Shared partials (header, footer, etc.)
@@ -43,9 +42,8 @@ class MyHelper extends AbstractHelper
 
 | Helper | Usage | Purpose |
 |--------|-------|---------|
-| [ContrastColor](/helper/ContrastColor.php#6-89) | `$this->ContrastColor($bgColor, ['#fff', '#333'])` | WCAG-compliant contrast selection |
-| [ShadeColor](/helper/ShadeColor.php#6-27) | `$this->ShadeColor($color, -10)` | Darken/lighten colors |
 | [ResourceTags](helper/ResourceTags.php#6-112) | `$this->ResourceTags($resource)` | Render resource type tags |
+| [BrowseLayout](/helper/BrowseLayout.php) | `$this->browseLayout()` | Grid/list state for browse-style listings |
 
 ## Template Conventions
 

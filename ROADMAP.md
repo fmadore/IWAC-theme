@@ -11,41 +11,41 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
 
 ## Phase 1 — Correctness bugs (user-visible breakage)
 
-- [ ] **B1** `asset/js/browse.js` — grid/list toggle derives the URL `view` param from the
+- [x] **B1** `asset/js/browse.js` — grid/list toggle derives the URL `view` param from the
   *translated* `aria-label`, so the French site writes `?view=grille|liste` which the
   server never matches. Read a `data-view` attribute instead (added to the four
   templates that render the toggle).
-- [ ] **B2** `view/common/block-layout/item-with-metadata.phtml` — fatal `->lang()` call on
+- [x] **B2** `view/common/block-layout/item-with-metadata.phtml` — fatal `->lang()` call on
   `null` when an attached item has no title value; title echoed unescaped (XSS).
-- [ ] **B3** `view/common/block-layout/item-showcase.phtml` + `file.phtml` — unescaped
+- [x] **B3** `view/common/block-layout/item-showcase.phtml` + `file.phtml` — unescaped
   `displayTitle()` and a null-media fatal when `showTitleOption === 'file_name'`.
-- [ ] **B4** `view/omeka/site/media/browse.phtml` — wrong sort-config key `'medias'`
+- [x] **B4** `view/omeka/site/media/browse.phtml` — wrong sort-config key `'medias'`
   (→ `'media'`); copy-pasted `class="item-set resource"` on media rows (→ `media resource`).
-- [ ] **B5** `view/omeka/site/item/browse.phtml` — the item-set branch hard-codes a full
+- [x] **B5** `view/omeka/site/item/browse.phtml` — the item-set branch hard-codes a full
   second copy of the linked-resources ledger (duplicate IDs + duplicate top-level
   `const` → SyntaxError when the Linked-resources page block is also present). Extract
   one shared partial `view/common/linked-resources-table.phtml`; pass JS strings via
   `data-*` attributes, not global `const`s.
-- [ ] **B6** `asset/js/pagination-scroll.js` — clicks on AJAX-handled linked-resources
+- [x] **B6** `asset/js/pagination-scroll.js` — clicks on AJAX-handled linked-resources
   pagination set a sessionStorage scroll flag that is never consumed, so the *next*
   full page load auto-scrolls past the masthead. Ignore clicks inside `#linked-resources`.
-- [ ] **B7** `asset/js/pwa-install.js` — re-arms the same `BeforeInstallPromptEvent` after
+- [x] **B7** `asset/js/pwa-install.js` — re-arms the same `BeforeInstallPromptEvent` after
   dismissal; second `prompt()` throws `InvalidStateError` synchronously. Null the
   deferred prompt, guard `prompt()` with try/catch, wait for the browser to re-fire.
-- [ ] **B8** `asset/js/linked-resources.js` — Back button can't return to the initial page
+- [x] **B8** `asset/js/linked-resources.js` — Back button can't return to the initial page
   (`replaceState` the entry point); AJAX swap drops keyboard focus (focus the region,
   announce "Page N"); wrap the whole file in an IIFE (currently 20+ globals).
-- [ ] **B9** `asset/js/browse.js` — unguarded `querySelector('button:disabled')`
+- [x] **B9** `asset/js/browse.js` — unguarded `querySelector('button:disabled')`
   dereference; cached images (`img.complete`) never fire `load` so masonry can lay out
   with 0-height tiles.
-- [ ] **B10** `asset/js/script.js` — annotation tooltip positioning dereferences
+- [x] **B10** `asset/js/script.js` — annotation tooltip positioning dereferences
   `.main-header` unguarded.
-- [ ] **B11** `asset/js/theme-toggle.js` + `pagination-scroll.js` — unguarded
+- [x] **B11** `asset/js/theme-toggle.js` + `pagination-scroll.js` — unguarded
   `localStorage`/`sessionStorage` access kills the whole feature where storage access
   throws (blocked cookies / private mode). Add a `safeStorage` helper to `utils.js`.
-- [ ] **B12** `view/common/block-layout/file.phtml` — exception message references
+- [x] **B12** `view/common/block-layout/file.phtml` — exception message references
   undefined `$linkType` (variable is `$link`).
-- [ ] **B13** `view/common/resource-values.phtml` — guard possibly-null `valueResource()`.
+- [x] **B13** `view/common/resource-values.phtml` — guard possibly-null `valueResource()`.
 
 ## Phase 2 — Accessibility
 
@@ -61,7 +61,7 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
 - [ ] **A4** `asset/js/navigation.js` — hardcoded English a11y strings ("Toggle
   submenu", "show submenu for …"); move drawer strings from global `const`s to
   `data-*` attributes and translate the new ones.
-- [ ] **A5** `view/common/resource-values.phtml` — don't emit `lang=""` (resets language
+- [x] **A5** `view/common/resource-values.phtml` — don't emit `lang=""` (resets language
   to *unknown* on most metadata values); add `dir="auto"` for values with a language tag.
 - [ ] **A6** Heading & landmark structure: browse pages get `pageTitle(…, 1)`; item-set
   "Items" heading h3 → h2; `<div role="main">` → `<main>`; drop invalid `aria-title`
@@ -123,13 +123,13 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
 
 ## Phase 5 — Template refactoring & dead PHP
 
-- [ ] **R1** Shared `view/common/resource-card.phtml` partial + alt-text derivation
+- [x] **R1** Shared `view/common/resource-card.phtml` partial + alt-text derivation
   helper — currently quadruplicated across item/item-set/media browse and
   browse-preview (alt-text logic appears 5×). Includes the browse-controls markup.
 - [ ] **R2** Extract the dateline builder from `item/show.phtml` into
   `view/common/item-dateline.phtml`; reuse on `media/show.phtml` (which still shows
   legacy ResourceTags pills and no dateline); drop ResourceTags there.
-- [ ] **R3** Delete `helper/ShadeColor.php` + `helper/ContrastColor.php` (registered,
+- [x] **R3** Delete `helper/ShadeColor.php` + `helper/ContrastColor.php` (registered,
   zero call sites) and their `theme.ini` registrations.
 - [ ] **R4** Delete `asset/js/accordion.js` + `_accordion.scss` (never enqueued — any
   accordion markup currently gets no JS) — or wire them up if a block needs them.

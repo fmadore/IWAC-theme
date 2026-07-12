@@ -33,23 +33,30 @@
         window.scrollTo({ top: top, behavior: behavior || 'instant' });
     }
 
+    const store = IWACUtils.sessionStore;
+
     // On page load, check if we should scroll
-    if (sessionStorage.getItem(STORAGE_KEY)) {
-        sessionStorage.removeItem(STORAGE_KEY);
+    if (store.get(STORAGE_KEY)) {
+        store.remove(STORAGE_KEY);
         // Wait for layout to settle
         requestAnimationFrame(() => scrollToResults('instant'));
     }
 
-    // Mark pagination actions so we scroll after the reload
+    // Mark pagination actions so we scroll after the reload. Pagination
+    // inside a .linked-resources root is AJAX-swapped by linked-resources.js
+    // (no reload ever consumes the flag), so skip it — otherwise the stale
+    // flag auto-scrolls the NEXT full page load.
     document.addEventListener('click', (e) => {
+        if (e.target.closest('.linked-resources')) return;
         if (e.target.closest('.pagination a.pagination-nav:not(.disabled)')) {
-            sessionStorage.setItem(STORAGE_KEY, '1');
+            store.set(STORAGE_KEY, '1');
         }
     });
 
     document.addEventListener('submit', (e) => {
+        if (e.target.closest('.linked-resources')) return;
         if (e.target.closest('.pagination .pager')) {
-            sessionStorage.setItem(STORAGE_KEY, '1');
+            store.set(STORAGE_KEY, '1');
         }
     });
 })();

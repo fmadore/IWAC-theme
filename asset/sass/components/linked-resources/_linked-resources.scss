@@ -32,7 +32,7 @@
 // Controls toolbar (search + sort)
 // ==========================================================================
 
-#linked-resources {
+.linked-resources {
 
     .linked-resources__controls {
         display: flex;
@@ -153,7 +153,7 @@
 // Facet chips (property filter)
 // ==========================================================================
 
-#linked-resources .linked-resources__facets {
+.linked-resources .linked-resources__facets {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -161,7 +161,7 @@
     margin-block-end: var(--space-5);
 }
 
-#linked-resources .linked-resources__facets-label {
+.linked-resources .linked-resources__facets-label {
     font-size: var(--text-xs);
     font-weight: 600;
     text-transform: uppercase;
@@ -170,7 +170,7 @@
     margin-inline-end: var(--space-1);
 }
 
-#linked-resources .linked-resources__facet {
+.linked-resources .linked-resources__facet {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
@@ -211,7 +211,7 @@
     }
 }
 
-#linked-resources .linked-resources__facet-count {
+.linked-resources .linked-resources__facet-count {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -234,7 +234,7 @@
 // No results message
 // ==========================================================================
 
-#linked-resources .linked-resources__no-results {
+.linked-resources .linked-resources__no-results {
     padding: var(--space-8) var(--space-4);
     text-align: center;
     color: var(--muted);
@@ -255,11 +255,11 @@
 // Table
 // ==========================================================================
 
-#linked-resources .linked-resources-table-wrapper {
+.linked-resources .linked-resources-table-wrapper {
     width: 100%;
 }
 
-#linked-resources .linked-resources-table {
+.linked-resources .linked-resources-table {
     width: 100%;
     border-collapse: collapse;
     font-size: var(--text-sm);
@@ -518,7 +518,7 @@
 // (border-top/bottom, linear-gradient background, padding). Resetting the
 // mixin's margin keeps the bar visually attached to the table below it.
 
-#linked-resources .linked-footer {
+.linked-resources .linked-footer {
     margin-block-start: var(--space-4);
 
     > .pagination {
@@ -528,7 +528,7 @@
 }
 
 // Subtle loading state during AJAX facet/page swap.
-#linked-resources[aria-busy="true"] {
+.linked-resources[aria-busy="true"] {
     pointer-events: none;
     opacity: 0.55;
     transition: opacity var(--transition-base);

@@ -179,17 +179,28 @@
 
 		button.addEventListener('click', function () {
 			if (deferredPrompt) {
+				// A BeforeInstallPromptEvent allows exactly one prompt() call —
+				// never re-arm with the same event (the second call throws
+				// synchronously). After a dismissal Chromium re-fires
+				// beforeinstallprompt on its own schedule, which re-reveals
+				// the button; hide it in the meantime.
 				var dp = deferredPrompt;
 				deferredPrompt = null;
-				dp.prompt();
+				try {
+					dp.prompt();
+				} catch (e) {
+					hideButton();
+					return;
+				}
 				dp.userChoice.then(function (choice) {
 					if (choice && choice.outcome === 'accepted') {
 						hideButton();
 					} else {
-						// Dismissed — re-arm so the button still works on a later click.
-						deferredPrompt = dp;
+						button.hidden = true;
 					}
-				}).catch(function () { deferredPrompt = dp; });
+				}).catch(function () {
+					button.hidden = true;
+				});
 			} else if (button.hasAttribute('data-pwa-ios')) {
 				toggleHint();
 			}
@@ -203,9 +214,5 @@
 		}
 	}
 
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', init);
-	} else {
-		init();
-	}
+	IWACUtils.onReady(init);
 })();

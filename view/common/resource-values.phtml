@@ -1,6 +1,7 @@
 <?php
 $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
+$escapeAttr = $this->plugin('escapeHtmlAttr');
 $decoration = $this->themeSetting('image_decoration');
 
 if ($this->status()->isSiteRequest()) {
@@ -94,11 +95,15 @@ foreach ($values as $term => $propertyData):
             $valueAnnotation = $value->valueAnnotation();
             $class = ['value'];
             if ('resource' == $valueType || strpos($valueType, 'resource') !== false) {
+                // The target can be null when the anonymous user can't see it.
+                $valueResource = $value->valueResource();
                 $class[] = 'resource';
-                $class[] = $escape($value->valueResource()->resourceName());
+                if ($valueResource) {
+                    $class[] = $escape($valueResource->resourceName());
 
-                if ('media' == $value->valueResource()->resourceName() && is_array($decoration) && in_array('media', $decoration)) {
-                    $class[] = 'decoration decoration--thumbnail';
+                    if ('media' == $valueResource->resourceName() && is_array($decoration) && in_array('media', $decoration)) {
+                        $class[] = 'decoration decoration--thumbnail';
+                    }
                 }
             } elseif ('uri' == $valueType) {
                 $class[] = 'uri';
@@ -107,14 +112,17 @@ foreach ($values as $term => $propertyData):
             // it into structured markup (common/ai-toc) instead of a raw text dump.
             $isAiTocValue = $isAiGenerated && 'dcterms:tableOfContents' === $term && 'literal' === $valueType;
             ?>
-            <dd class="<?php echo implode(' ', $class); ?>" lang="<?php echo $escape($valueLang); ?>">
+            <?php // Only emit lang when set — lang="" resets the language to
+                  // *unknown*, overriding the document language on every
+                  // untagged value (screen readers lose FR/EN pronunciation). ?>
+            <dd class="<?php echo implode(' ', $class); ?>"<?php echo $valueLang ? ' lang="' . $escapeAttr($valueLang) . '"' : ''; ?>>
                 <?php if ($showLocale && $valueLang && !$isAiTocValue) : ?>
                     <span class="language"><?php echo $escape($valueLang); ?></span>
                 <?php endif; ?>
                 <?php if ($isAiTocValue): ?>
                     <?php echo $this->partial('common/ai-toc', ['text' => (string) $value->value()]); ?>
                 <?php else: ?>
-                    <span class="value-content"><?php echo $filterLocale ? $value->asHtml($lang) : $value->asHtml(); ?></span>
+                    <span class="value-content" dir="auto"><?php echo $filterLocale ? $value->asHtml($lang) : $value->asHtml(); ?></span>
                 <?php endif; ?>
                 <?php if(!$value->isPublic()) : ?>
                     <span class="o-icon-private" role="img" title="<?php echo $this->escapeHtml($translate('Private')); ?>" aria-label="<?php echo $this->escapeHtml($translate('Private')); ?>"></span>
