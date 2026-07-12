@@ -32,7 +32,7 @@
         width: 100%;
 
         @media (min-width: $lg) {
-            width: 27%;
+            width: var(--sidebar-width);
         }
 
         &::after {
@@ -76,7 +76,7 @@
             width: 100% !important;
 
             @media (min-width: $xl) {
-                width: 27% !important;
+                width: var(--sidebar-width) !important;
             }
         }
     }

@@ -7,42 +7,7 @@
 // ==========================================================================
 
 .theme-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--size-control-sm);
-    height: var(--size-control-sm);
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: var(--radius-full);
-    cursor: pointer;
-    color: var(--ink-light);
-    transition:
-        color var(--transition-fast),
-        background-color var(--transition-fast);
-
-    &:hover {
-        color: var(--primary);
-        background-color: var(--selection-bg);
-    }
-
-    @include focus-ring;
-
-    &__icon {
-        align-items: center;
-        justify-content: center;
-        width: var(--text-lg);
-        height: var(--text-lg);
-        transition: transform var(--transition-fast);
-        color: inherit;
-
-        svg {
-            width: 100%;
-            height: 100%;
-            fill: currentColor;
-        }
-    }
+    @include masthead-icon-button;
 
     // Icon reflects the current MODE (the user's explicit choice: system /
     // light / dark), driven by the synchronously-applied data-theme-mode on
@@ -51,10 +16,6 @@
     // absent (JS off) the page follows the system, so show the auto mark.
     &__icon { display: none; }
     &__icon--auto { display: flex; }
-
-    &:hover &__icon {
-        transform: scale(1.1);
-    }
 }
 
 body[data-theme-mode="system"] {

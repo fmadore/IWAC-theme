@@ -31,17 +31,10 @@
             border: var(--panel-border);
             border-radius: var(--radius-md);
             box-shadow: var(--panel-shadow);
-            transition:
-                box-shadow var(--transition-fast),
-                border-color var(--transition-fast);
+            @include card-hover;
             overflow: hidden;
             height: 100%;
             text-decoration: none;
-
-            &:hover {
-                box-shadow: var(--shadow-md);
-                border-color: var(--border-strong);
-            }
 
             img {
                 width: 100%;
@@ -89,7 +82,11 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all var(--transition-fast);
+        transition:
+            background-color var(--transition-fast),
+            border-color var(--transition-fast),
+            color var(--transition-fast),
+            box-shadow var(--transition-fast);
         padding: 0;
         box-shadow: var(--shadow-sm);
 

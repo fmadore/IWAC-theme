@@ -57,53 +57,20 @@
     justify-content: center;
 }
 
+// The CTAs use the shared button mixins so error pages match every other
+// button in the theme (they previously drifted to --shadow-* hovers while
+// the base buttons use --glow-*).
 .error-page__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: var(--space-3) var(--space-6);
     font-size: var(--text-sm);
-    font-weight: 500;
-    text-decoration: none;
-    border-radius: var(--radius-md);
-    transition:
-        background-color var(--transition-fast),
-        color var(--transition-fast),
-        transform var(--transition-fast),
-        box-shadow var(--transition-fast);
-
-    &:hover {
-        transform: translateY(var(--lift-xxs));
-    }
-
-    &:active {
-        transform: translateY(0);
-    }
 }
 
 .error-page__button--primary {
-    background-color: var(--primary);
-    color: var(--white);
-    box-shadow: var(--shadow-sm);
-
-    &:hover {
-        background-color: var(--primary-hover);
-        box-shadow: var(--shadow-md);
-    }
-
-    &:active {
-        background-color: var(--primary-active);
-    }
+    @include primary-button;
 }
 
 .error-page__button--secondary {
-    background-color: var(--surface-raised);
-    color: var(--ink);
-    border: 1px solid var(--border);
-
-    &:hover {
-        background-color: var(--surface);
-        border-color: var(--border);
-        box-shadow: var(--shadow-sm);
-    }
+    @include secondary-button;
 }

@@ -94,31 +94,31 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
 
 ## Phase 4 — Design-system compliance (theme violating its own rules)
 
-- [ ] **D1** `_linked-resources.scss` — active facet chips are filled orange; restyle as
+- [x] **D1** `_linked-resources.scss` — active facet chips are filled orange; restyle as
   primary border + oklab wash + primary text (the documented chip spec). Replace
   literal `white` with `var(--white)`.
-- [ ] **D2** Swap `--tracking-tight` → `--tracking-display` on all seven Besley display
+- [x] **D2** Swap `--tracking-tight` → `--tracking-display` on all seven Besley display
   sites (masthead wordmark, h2, h3, `h1.title`, hero heading, citation head, hierarchy
   label).
-- [ ] **D3** `_block-group.scss` — remove the "likely a date header" primary-colored h3
+- [x] **D3** `_block-group.scss` — remove the "likely a date header" primary-colored h3
   heuristic (violates "never primary on heading text").
-- [ ] **D4** Adopt the documented-but-unused mixins: `card-hover` at the 9 hand-copied
+- [x] **D4** Adopt the documented-but-unused mixins: `card-hover` at the 9 hand-copied
   sites; `primary-button`/`secondary-button` in `_error-page.scss`.
-- [ ] **D5** Resolve the two conflicting global box-sizing resets (keep the
+- [x] **D5** Resolve the two conflicting global box-sizing resets (keep the
   border-box reset in `_theme.scss`, delete `generic/_box-sizing.scss`).
-- [ ] **D6** De-duplicate the global reduced-motion kill block (keep the utilities copy);
+- [x] **D6** De-duplicate the global reduced-motion kill block (keep the utilities copy);
   remove the dead `scroll-padding-top: 5rem`.
-- [ ] **D7** Wire up defined-but-unused tokens at their obvious consumers:
+- [x] **D7** Wire up defined-but-unused tokens at their obvious consumers:
   `--sidebar-width` (regions), `--accent-line-md` (blockquote), `--size-control-xl`
   (48px linked-resources thumbs); replace hardcoded `0.04em`/`0.08em` letter-spacing
   with `--tracking-wide`/`--tracking-wider`.
-- [ ] **D8** Delete dead code: `$space-*`/`$radius-*`/`$transition-*` alias block in
+- [x] **D8** Delete dead code: `$space-*`/`$radius-*`/`$transition-*` alias block in
   `_tokens.scss`, `--panel-border-color` (3 declarations, 0 uses), `.slide-text`
   vestige, dead hamburger `transform` transition, `transition: all` in carousel.
-- [ ] **D9** Add `@mixin visually-hidden` and replace the five hand-copied SR-only blocks.
-- [ ] **D10** Extract an icon-button mixin for `.theme-toggle` / `.pwa-install` (~45
+- [x] **D9** Add `@mixin visually-hidden` and replace the five hand-copied SR-only blocks.
+- [x] **D10** Extract an icon-button mixin for `.theme-toggle` / `.pwa-install` (~45
   duplicated lines).
-- [ ] **D11** Fix stale headers/comments: `style.scss` version 2.4.2 → current, stale
+- [x] **D11** Fix stale headers/comments: `style.scss` version 2.4.2 → current, stale
   "linear-gradient" mixin description, `_abstracts.scss` comment.
 
 ## Phase 5 — Template refactoring & dead PHP

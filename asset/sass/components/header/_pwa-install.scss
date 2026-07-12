@@ -8,53 +8,18 @@
 // ==========================================================================
 
 .pwa-install {
-    // `hidden` must win even though we set a display below — scope display to
-    // the not-hidden state so the attribute keeps the button out of the flow.
+    @include masthead-icon-button;
+
+    // `hidden` must win even though the mixin sets a display — scope display
+    // to the not-hidden state so the attribute keeps the button out of flow.
     display: none;
 
     &:not([hidden]) {
         display: inline-flex;
     }
 
-    align-items: center;
-    justify-content: center;
-    width: var(--size-control-sm);
-    height: var(--size-control-sm);
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: var(--radius-full);
-    cursor: pointer;
-    color: var(--ink-light);
-    transition:
-        color var(--transition-fast),
-        background-color var(--transition-fast);
-
-    &:hover {
-        color: var(--primary);
-        background-color: var(--selection-bg);
-    }
-
-    @include focus-ring;
-
     &__icon {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        width: var(--text-lg);
-        height: var(--text-lg);
-        transition: transform var(--transition-fast);
-        color: inherit;
-
-        svg {
-            width: 100%;
-            height: 100%;
-            fill: currentColor;
-        }
-    }
-
-    &:hover &__icon {
-        transform: scale(1.1);
     }
 
     // iOS hint popover — anchored under the utilities cluster.
@@ -62,7 +27,7 @@
         position: absolute;
         top: calc(100% + var(--space-2));
         inset-inline-end: 0;
-        z-index: 1000;
+        z-index: var(--z-tooltip);
         max-width: min(20rem, calc(100vw - var(--space-8)));
         padding: var(--space-3) var(--space-4);
         background: var(--surface);

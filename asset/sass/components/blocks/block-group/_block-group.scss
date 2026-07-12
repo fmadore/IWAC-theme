@@ -19,14 +19,7 @@
     padding: var(--space-lg);
     margin-block-end: var(--space-lg);
 
-    transition:
-        box-shadow var(--transition-fast),
-        border-color var(--transition-fast);
-
-    &:hover {
-        border-color: var(--border-strong);
-        box-shadow: var(--shadow-md);
-    }
+    @include card-hover;
 }
 
 // News-style block groups (contain asset + html blocks)
@@ -41,14 +34,7 @@
         box-shadow: var(--shadow-sm);
         padding: var(--space-lg);
         margin-block-end: var(--space-lg);
-        transition:
-            box-shadow var(--transition-fast),
-            border-color var(--transition-fast);
-
-        &:hover {
-            box-shadow: var(--shadow-md);
-            border-color: var(--border-strong);
-        }
+        @include card-hover;
 
         // Reset child block margins inside card
         .block {
@@ -132,13 +118,16 @@
     }
 }
 
-// Date headers for news sections
+// Date headers for news sections: the quiet uppercase eyebrow voice.
+// (Primary text on headings is off-limits — and "an HTML block whose only
+// child is an h3" is a guess about admin content, so keep it neutral.)
 .block-html h3:first-child {
     &:only-child {
-        // Likely a date header
-        color: var(--primary);
-        font-size: var(--text-base);
+        color: var(--muted);
+        font-size: var(--text-sm);
         font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: var(--tracking-wide);
         margin-block: var(--space-sm) var(--space-xs);
     }
 }
@@ -158,14 +147,7 @@
     padding: var(--space-lg);
     margin-block-end: var(--space-lg);
 
-    transition:
-        box-shadow var(--transition-fast),
-        border-color var(--transition-fast);
-
-    &:hover {
-        border-color: var(--border-strong);
-        box-shadow: var(--shadow-md);
-    }
+    @include card-hover;
 }
 
 // Content blocks - enhanced readability for both standalone and grouped

@@ -1,3 +1,5 @@
+@use "../abstracts/abstracts" as *;
+
 // ==========================================================================
 // Accessibility Utilities
 // Skip links, screen reader text, and focus states
@@ -27,15 +29,7 @@
 // Screen reader only - hidden but accessible
 .screen-reader-text,
 .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: var(--lift-xxs);
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
+    @include visually-hidden;
 
     &:focus {
         background: var(--panel-bg);

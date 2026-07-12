@@ -22,14 +22,7 @@
         box-shadow: var(--panel-shadow);
         position: absolute;
         overflow: hidden;
-        transition:
-            box-shadow var(--transition-fast),
-            border-color var(--transition-fast);
-
-        &:hover {
-            box-shadow: var(--shadow-sm);
-            border-color: var(--border-strong);
-        }
+        @include card-hover;
 
         &__thumbnail {
             line-height: 1;
