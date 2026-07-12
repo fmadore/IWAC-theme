@@ -5,8 +5,9 @@
   "main": "gulpfile.js",
   "scripts": {
     "start": "gulp",
-    "build": "npm run build:tokens && gulp css",
+    "build": "npm run build:tokens && npm run build:i18n && gulp css",
     "build:tokens": "node scripts/build-tokens.js",
+    "build:i18n": "node scripts/build-i18n.js",
     "build:images": "node scripts/gen-banner-images.js",
     "build:icons": "node scripts/gen-pwa-icons.js"
   },

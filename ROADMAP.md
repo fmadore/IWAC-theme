@@ -85,11 +85,11 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
 
 ## Phase 3 — i18n catalog
 
-- [ ] **I1** Regenerate `language/template.pot` from the actual templates + JS-consumed
+- [x] **I1** Regenerate `language/template.pot` from the actual templates + JS-consumed
   strings (drop dead msgids: old theme-toggle labels).
-- [ ] **I2** Update `language/fr.po` — translate the current theme-toggle states, PWA
+- [x] **I2** Update `language/fr.po` — translate the current theme-toggle states, PWA
   install strings, "Change language", nav submenu strings; recompile `fr.mo`.
-- [ ] **I3** Add `npm run build:i18n` (node script — no gettext binaries needed) so the
+- [x] **I3** Add `npm run build:i18n` (node script — no gettext binaries needed) so the
   catalog can't silently drift again.
 
 ## Phase 4 — Design-system compliance (theme violating its own rules)
