@@ -35,23 +35,14 @@ class ResourceTags extends AbstractHelper
                 $resourceName = $resource->resourceName();
 
                 if ($resourceName) {
-                    $mapResourceName = array(
-                        'items' => array(
-                            'id' => 0,
-                            'label' => 'Item'
-                        ),
-                        'item_sets' => array(
-                            'id' => 7,
-                            'label' => 'Item set'
-                        ),
-                        'media' => array(
-                            'id' => 3,
-                            'label' => 'Media'
-                        )
-                    );
-    
+                    $mapResourceName = [
+                        'items' => 'Item',
+                        'item_sets' => 'Item set',
+                        'media' => 'Media',
+                    ];
+
                     if (array_key_exists($resourceName, $mapResourceName)) {
-                        $tagLabel = $view->escapeHtml($view->translate($mapResourceName[$resourceName]['label']));
+                        $tagLabel = $view->escapeHtml($view->translate($mapResourceName[$resourceName]));
                         $tagsHtml .= '<div class="resource-tag">' . $tagLabel . '</div>';
                     }
                 }
@@ -62,16 +53,10 @@ class ResourceTags extends AbstractHelper
             // Resource Class Tag.
 
             if (in_array('resource_class', $resource_tags)) {
-                
-                $resourceClass = $resource->resourceClass();
 
-                if ($resourceClass) {
-                    $resourceClassId = $resourceClass->id();
-
-                    if ($resourceClassId) {
-                        $tagLabel = $view->escapeHtml($view->translate($resource->displayResourceClassLabel()));
-                        $tagsHtml .= '<div class="resource-tag">' . $tagLabel . '</div>';
-                    }
+                if ($resource->resourceClass()) {
+                    $tagLabel = $view->escapeHtml($view->translate($resource->displayResourceClassLabel()));
+                    $tagsHtml .= '<div class="resource-tag">' . $tagLabel . '</div>';
                 }
             }
 

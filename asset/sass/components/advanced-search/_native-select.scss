@@ -1,0 +1,132 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Advanced Search — styled native <select multiple> (non-Chosen fallback)
+// ==========================================================================
+// =============================================================================
+// NATIVE MULTI-SELECT LIST BOXES
+// Limited styling for native <select multiple> elements
+// NOTE: <option> elements have VERY limited CSS support - only color and
+// background-color work, and even those are browser-dependent
+// =============================================================================
+
+// Multi-select list box container
+#advanced-search select[multiple],
+select[multiple].chosen-select,
+select.query-property[multiple],
+select.query-filter[multiple] {
+    // Override the 44px height for multi-selects - they need to show multiple options
+    height: auto;
+    min-height: 120px;
+    max-height: 200px;
+
+    // Container styling
+    background: var(--panel-bg);
+    border: var(--panel-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-2);
+
+    // Text styling
+    color: var(--ink);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+
+    // Scrollbar styling (webkit)
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: var(--surface-raised);
+        border-radius: var(--radius-sm);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: var(--radius-sm);
+
+        &:hover {
+            background: var(--muted);
+        }
+    }
+
+    // Firefox scrollbar
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) var(--surface-raised);
+
+    &:focus {
+        border-color: var(--primary);
+        box-shadow: var(--ring-focus);
+        outline: none;
+    }
+}
+
+// Native <option> elements - VERY limited styling support
+// Only color and background-color work, and they're browser-dependent
+#advanced-search select option,
+#advanced-search select[multiple] option,
+select.chosen-select option,
+select.query-property option,
+select.query-filter option {
+    // Text color - works in most browsers
+    color: var(--ink);
+
+    // Padding - works in Firefox, ignored in Chrome/Safari
+    padding: var(--space-2) var(--space-3);
+
+    // Line height - limited support
+    line-height: 1.6;
+
+    // Background for unselected options
+    background-color: var(--surface);
+
+    // Minimum height - limited support
+    min-height: 2rem;
+}
+
+// Selected option styling
+#advanced-search select option:checked,
+#advanced-search select[multiple] option:checked,
+select.chosen-select option:checked,
+select.query-property option:checked,
+select.query-filter option:checked {
+    // Primary color tint for selected items (current-state marker)
+    background: color-mix(in oklab, var(--primary) 15%, var(--surface));
+    color: var(--ink);
+    font-weight: 500;
+}
+
+// Hover state - limited browser support
+#advanced-search select option:hover,
+#advanced-search select[multiple] option:hover {
+    background-color: var(--surface-raised);
+}
+
+// Option groups (categories)
+#advanced-search select optgroup,
+#advanced-search select[multiple] optgroup,
+select.chosen-select optgroup,
+select.query-property optgroup,
+select.query-filter optgroup {
+    // Group header styling
+    color: var(--muted);
+    font-weight: 600;
+    font-style: normal;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    background-color: var(--surface);
+
+    // Padding - Firefox only
+    padding: var(--space-2) var(--space-3);
+}
+
+// Options within groups
+#advanced-search select optgroup option,
+#advanced-search select[multiple] optgroup option {
+    // Indent options within groups
+    padding-inline-start: var(--space-6);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+}

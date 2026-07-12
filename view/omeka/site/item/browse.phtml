@@ -18,15 +18,6 @@ $query = $this->params()->fromQuery();
 $itemSetShow = isset($itemSet);
 if ($itemSetShow) {
     $this->headLink()->appendStylesheet($this->assetUrl('css/resource-page-blocks.css', 'Omeka'));
-
-    // Regions
-    $mainBlockContent = $this->resourcePageBlocks($itemSet);
-    $mainHasBlocks = $mainBlockContent->hasBlocks();
-    $leftSidebarBlockContent = $this->resourcePageBlocks($itemSet, 'left');
-    $leftSidebarHasBlocks = $leftSidebarBlockContent->hasBlocks();
-    $rightSidebarBlockContent = $this->resourcePageBlocks($itemSet, 'right');
-    $rightSidebarHasBlocks = $rightSidebarBlockContent->hasBlocks();
-
     $this->htmlElement('body')->appendAttribute('class', 'item-set');
     $query['item_set_id'] = $itemSet->id();
 }
@@ -41,42 +32,7 @@ $bodyTruncate = $this->themeSetting('truncate_body_property');
     <?php echo $this->ResourceTags($itemSet); ?>
     <?php echo $this->pageTitle($itemSet->displayTitle(null, ($valueLang)), 1); ?>
 
-    <?php if ($mainHasBlocks || $leftSidebarHasBlocks || $rightSidebarHasBlocks): ?>
-
-        <?php
-        $additionalContainerClasses = '';
-        if ($mainHasBlocks && $leftSidebarHasBlocks && $rightSidebarHasBlocks) {
-            $additionalContainerClasses = 'regions-container--all';
-        }
-        ?>
-
-        <div class="regions-container <?php echo $additionalContainerClasses; ?>">
-            <?php if ($leftSidebarHasBlocks && $blockContent = $leftSidebarBlockContent->getBlocks()): ?>
-                <div class="sidebar-region sidebar-region--left">
-                    <div class="metadata">
-                        <?php echo $blockContent; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($mainHasBlocks && $blockContent = $mainBlockContent->getBlocks()): ?>
-                <div class="main-region">
-                    <div class="metadata">
-                        <?php echo $blockContent; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($rightSidebarHasBlocks && $blockContent = $rightSidebarBlockContent->getBlocks()): ?>
-                <div class="sidebar-region sidebar-region--right">
-                    <div class="metadata">
-                        <?php echo $blockContent; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
-        </div>
-
-    <?php endif; ?>
+    <?php echo $this->partial('common/resource-regions', ['resource' => $itemSet]); ?>
 
     <div class="item-set-items">
     <?php echo '<h2>' . $escape($translate('Items')) . '</h2>'; ?>

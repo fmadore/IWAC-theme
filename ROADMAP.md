@@ -126,30 +126,30 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
 - [x] **R1** Shared `view/common/resource-card.phtml` partial + alt-text derivation
   helper — currently quadruplicated across item/item-set/media browse and
   browse-preview (alt-text logic appears 5×). Includes the browse-controls markup.
-- [ ] **R2** Extract the dateline builder from `item/show.phtml` into
+- [x] **R2** Extract the dateline builder from `item/show.phtml` into
   `view/common/item-dateline.phtml`; reuse on `media/show.phtml` (which still shows
   legacy ResourceTags pills and no dateline); drop ResourceTags there.
 - [x] **R3** Delete `helper/ShadeColor.php` + `helper/ContrastColor.php` (registered,
   zero call sites) and their `theme.ini` registrations.
-- [ ] **R4** Delete `asset/js/accordion.js` + `_accordion.scss` (never enqueued — any
+- [x] **R4** Delete `asset/js/accordion.js` + `_accordion.scss` (never enqueued — any
   accordion markup currently gets no JS) — or wire them up if a block needs them.
   Decision: delete; restore from git if a future block layout needs an accordion.
-- [ ] **R5** `view/hierarchy/...` — memoize grouping resolution and batch item-set reads
+- [x] **R5** `view/hierarchy/...` — memoize grouping resolution and batch item-set reads
   (N+1: up to 2 API reads per card); guard the fragile regex count-parse.
-- [ ] **R6** Split `_advanced-search.scss` (1,042 lines) into form / Chosen-vendor /
+- [x] **R6** Split `_advanced-search.scss` (1,042 lines) into form / Chosen-vendor /
   native-select partials; de-duplicate the twice-declared input block and `.field-meta`;
   tokenize `0.04em`, `38px`/`28px` control heights; comment the vendor z-index.
-- [ ] **R7** Attribute-context escaping consistency: `escapeHtmlAttr` for attributes in
+- [x] **R7** Attribute-context escaping consistency: `escapeHtmlAttr` for attributes in
   `menu-drawer`, `pagination`, `asset.phtml`, `item/search.phtml`, `resource-values`.
   Cast nullable values before escaping (PHP 8.1 deprecations) in `search-form`, `ids.phtml`.
-- [ ] **R8** `view/common/pagination.phtml` — dead `readonly` ternary; suffix-parameterize
+- [x] **R8** `view/common/pagination.phtml` — dead `readonly` ternary; suffix-parameterize
   the input id so two paginations can coexist.
-- [ ] **R9** `$_GET['view']` → `$this->params()->fromQuery('view')` in the three browse
+- [x] **R9** `$_GET['view']` → `$this->params()->fromQuery('view')` in the three browse
   templates; hoist per-loop `siteSetting()` calls in `item-with-metadata.phtml`;
   de-duplicate `themeSetting('nav_depth')` in `header.phtml`.
-- [ ] **R10** `helper/ResourceTags.php` — drop dead `id` map entries and redundant
+- [x] **R10** `helper/ResourceTags.php` — drop dead `id` map entries and redundant
   `$resourceClassId` fetch.
-- [ ] **R11** XHR fast path (`layout.phtml`, `item/show.phtml`) — emit
+- [x] **R11** XHR fast path (`layout.phtml`, `item/show.phtml`) — emit
   `Vary: X-Requested-With` so proxies never cache the chrome-less fragment for
   normal visitors.
 

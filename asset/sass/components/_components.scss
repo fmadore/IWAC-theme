@@ -19,11 +19,12 @@
 
 /* Accordion
 --------------------------------------------- */
-@forward "accordion/accordion";
 
 /* Advanced Search
 --------------------------------------------- */
 @forward "advanced-search/advanced-search";
+@forward "advanced-search/chosen";
+@forward "advanced-search/native-select";
 
 /* AI Table of Contents
 --------------------------------------------- */

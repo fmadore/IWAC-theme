@@ -1,13 +1,12 @@
 <?php
-$translate = $this->plugin('translate');
-$escape = $this->plugin('escapeHtml');
-
 // XHR fast path: linked-resources pagination fetches /item/<id>?page=N with
-// X-Requested-With: fetch and discards everything except #linked-resources.
-// Render only that block's partial so we don't pay for the heavy
+// X-Requested-With: fetch and discards everything except the linked-resources
+// block. Render only that block's partial so we don't pay for the heavy
 // Visualizations block, value rows, media list, etc. Layout chrome is
-// stripped by the matching early return at the top of layout/layout.phtml.
+// stripped by the matching early return at the top of layout/layout.phtml,
+// which also emits the Vary: X-Requested-With header for shared caches.
 if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'fetch') {
+    header('Vary: X-Requested-With');
     echo $this->partial('common/resource-page-block-layout/linked-resources', ['resource' => $item]);
     return;
 }
@@ -18,96 +17,18 @@ $this->htmlElement('body')->appendAttribute('class', 'item resource show');
 $filterLocale = (bool) $this->siteSetting('filter_locale_values');
 $lang = $this->lang();
 $valueLang = $filterLocale ? [$lang, ''] : null;
-
-// Regions
-$mainBlockContent = $this->resourcePageBlocks($item);
-$mainHasBlocks = $mainBlockContent->hasBlocks();
-$leftSidebarBlockContent = $this->resourcePageBlocks($item, 'left');
-$leftSidebarHasBlocks = $leftSidebarBlockContent->hasBlocks();
-$rightSidebarBlockContent = $this->resourcePageBlocks($item, 'right');
-$rightSidebarHasBlocks = $rightSidebarBlockContent->hasBlocks();
 ?>
 
-<?php
-// Dateline — the press convention: TYPE · PUBLISHER · DATE in tracked
-// uppercase above the headline (replaces the colored resource-tag pills).
-// Each segment is optional; resource-backed segments link to their record.
-$datelineParts = [];
-
-$classLabel = $item->displayResourceClassLabel();
-if ($classLabel) {
-    $datelineParts[] = $escape($translate($classLabel));
-}
-
-$publisherValue = $item->value('dcterms:publisher');
-if ($publisherValue) {
-    $publisherResource = $publisherValue->valueResource();
-    if ($publisherResource) {
-        $datelineParts[] = '<a href="' . $this->escapeHtmlAttr($publisherResource->siteUrl()) . '">'
-            . $escape($publisherResource->displayTitle(null, $valueLang)) . '</a>';
-    } else {
-        $publisherLiteral = (string) $publisherValue->value();
-        if ($publisherLiteral !== '') {
-            $datelineParts[] = $escape($publisherLiteral);
-        }
-    }
-}
-
-$dateValue = $item->value('dcterms:date');
-if ($dateValue && !$dateValue->valueResource()) {
-    // asHtml() lets NumericDataTypes render the localized date.
-    $datelineParts[] = $dateValue->asHtml();
-}
-?>
-<?php if ($datelineParts): ?>
-<p class="item-dateline"><?php echo implode(' <span class="item-dateline__sep" aria-hidden="true">·</span> ', $datelineParts); ?></p>
-<?php endif; ?>
+<?php echo $this->partial('common/item-dateline', ['resource' => $item, 'valueLang' => $valueLang]); ?>
 <?php echo $this->pageTitle($item->displayTitle(null, $valueLang), 1); ?>
 
 <?php $this->trigger('view.show.before'); ?>
 
-<?php if ($mainHasBlocks || $leftSidebarHasBlocks || $rightSidebarHasBlocks): ?>
-
-    <?php
-    $additionalContainerClasses = '';
-    if ($mainHasBlocks && $leftSidebarHasBlocks && $rightSidebarHasBlocks) {
-        $additionalContainerClasses = 'regions-container--all';
-    } elseif ($mainHasBlocks && !$leftSidebarHasBlocks && !$rightSidebarHasBlocks) {
-        $additionalContainerClasses = 'regions-container--main';
-    }
-    ?>
-
-    <div class="regions-container <?php echo $additionalContainerClasses; ?>">
-        <?php if ($leftSidebarHasBlocks && $blockContent = $leftSidebarBlockContent->getBlocks()): ?>
-            <div class="sidebar-region sidebar-region--left">
-                <div class="metadata">
-                    <?php echo $blockContent; ?>
-                </div>
-            </div>
-        <?php endif; ?>
-
-        <?php if ($mainHasBlocks && $blockContent = $mainBlockContent->getBlocks()): ?>
-            <div class="main-region">
-                <div class="metadata">
-                    <?php echo $blockContent; ?>
-                </div>
-            </div>
-        <?php endif; ?>
-
-        <?php if ($rightSidebarHasBlocks && $blockContent = $rightSidebarBlockContent->getBlocks()): ?>
-            <div class="sidebar-region sidebar-region--right">
-                <div class="metadata">
-                    <?php echo $blockContent; ?>
-                </div>
-            </div>
-        <?php endif; ?>
-    </div>
-
-<?php endif; ?>
+<?php echo $this->partial('common/resource-regions', ['resource' => $item]); ?>
 
 <?php
 // The "How to cite" panel is a resource page block ("How to cite", provided by
-// the IWAC-SEO module) rendered through resourcePageBlocks() above — placed via
+// the IWAC-SEO module) rendered through resource-regions above — placed via
 // Admin → Themes → Configure resource pages, not hard-coded here. The theme
 // still owns its UI (view/common/citation.phtml + components/citation +
 // asset/js/citation.js); the block delegates to that partial.

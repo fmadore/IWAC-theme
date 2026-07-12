@@ -1,7 +1,9 @@
 <?php
 $translate = $this->plugin('translate');
+$escape = $this->plugin('escapeHtml');
+$escapeAttr = $this->plugin('escapeHtmlAttr');
 ?>
-<nav class="pagination" aria-label="<?php echo $translate('Pagination'); ?>">
+<nav class="pagination" aria-label="<?php echo $escapeAttr($translate('Pagination')); ?>">
     <?php if ($totalCount): ?>
 
         <?php
@@ -12,7 +14,7 @@ $translate = $this->plugin('translate');
         <?php if ($pageCount > 1): ?>
 
             <div class="pager-wrapper">
-                <span class="row-count"><?php echo sprintf($translate('%1$s–%2$s of %3$s'), $from, $to, $totalCount); ?></span>
+                <span class="row-count"><?php echo sprintf($escape($translate('%1$s–%2$s of %3$s')), $from, $to, $totalCount); ?></span>
 
                 <!-- Prev Button -->
                 <?php if ($currentPage != 1): ?>
@@ -22,14 +24,16 @@ $translate = $this->plugin('translate');
                 <?php endif; ?>
 
                 <!-- Pager -->
+                <?php // No id on the input: two paginations can share a page
+                      // (browse + linked resources); the wrapping label names it. ?>
                 <form class="pager" method="GET" action="">
                     <?php echo $this->queryToHiddenInputs(['page']); ?>
                     <label>
-                        <?php echo $translate('Page'); ?>
-                        <input type="text" id="pagination-page-input" name="page" class="page-input-top" value="<?php echo $currentPage; ?>" size="4" <?php echo ($pageCount == 1) ? 'readonly' : ''; ?> aria-label="<?php echo $translate('Page'); ?>">
+                        <?php echo $escape($translate('Page')); ?>
+                        <input type="text" name="page" class="page-input-top" value="<?php echo $escapeAttr($currentPage); ?>" size="4" aria-label="<?php echo $escapeAttr($translate('Page')); ?>">
                     </label>
-                    <span class="page-count"><?php echo sprintf($translate('of %s'), $pageCount); ?></span>
-                    <button type="submit" class="pagination-nav gotopage-btn" aria-label="<?php echo $this->escapeHtmlAttr($translate('Go')); ?>"><span class="sr-only"><?php echo $translate('Go'); ?></span></button>
+                    <span class="page-count"><?php echo sprintf($escape($translate('of %s')), $pageCount); ?></span>
+                    <button type="submit" class="pagination-nav gotopage-btn" aria-label="<?php echo $escapeAttr($translate('Go')); ?>"><span class="sr-only"><?php echo $escape($translate('Go')); ?></span></button>
                 </form>
 
                 <!-- Next Button -->
@@ -41,10 +45,10 @@ $translate = $this->plugin('translate');
             </div>
 
         <?php else: ?>
-            <span class="row-count"><?php echo sprintf($translate('%1$s–%2$s of %3$s'), $from, $to, $totalCount); ?></span>
+            <span class="row-count"><?php echo sprintf($escape($translate('%1$s–%2$s of %3$s')), $from, $to, $totalCount); ?></span>
         <?php endif; ?>
 
     <?php else: ?>
-        <?php echo $translate('0 results'); ?>
+        <?php echo $escape($translate('0 results')); ?>
     <?php endif; ?>
 </nav>

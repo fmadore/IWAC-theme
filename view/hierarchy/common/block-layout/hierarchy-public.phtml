@@ -1,6 +1,4 @@
 <?php
-use Omeka\Api\Exception\NotFoundException;
-
 $translate   = $this->plugin('translate');
 $escape      = $this->plugin('escapeHtml');
 $escapeAttr  = $this->plugin('escapeHtmlAttr');
@@ -19,6 +17,53 @@ foreach ($site->siteItemSets() as $siteItemSet) {
     $siteItemSetArray[] = $siteItemSet->itemSet()->id();
 }
 
+// ---------------------------------------------------------------------------
+// Prefetch: a hierarchy of N nodes used to trigger up to 2 API reads PER card
+// (item set + grouping), and top-level leaves resolved twice. Collect every id
+// up front, fetch each set in one API search, and memoize resolved nodes.
+// ---------------------------------------------------------------------------
+$itemSetIds = [];
+$groupingIds = [];
+$collectIds = function (array $grouping) use (&$collectIds, &$itemSetIds, &$groupingIds) {
+    $data = $grouping['data'];
+    if (!empty($data['itemSet'])) {
+        $itemSetIds[$data['itemSet']] = true;
+    }
+    if (!empty($data['groupingID'])) {
+        $groupingIds[$data['groupingID']] = true;
+    }
+    foreach ($grouping['children'] ?? [] as $child) {
+        $collectIds($child);
+    }
+};
+foreach ($hierarchyData as $topLevel) {
+    $collectIds($topLevel);
+}
+
+$itemSetMap = [];
+if ($itemSetIds) {
+    try {
+        foreach ($this->api()->search('item_sets', ['id' => array_keys($itemSetIds)])->getContent() as $set) {
+            $itemSetMap[$set->id()] = $set;
+        }
+    } catch (\Exception $e) {
+        // fall through — $resolve treats missing entries as private
+    }
+}
+
+$groupingMap = [];
+if ($groupingIds) {
+    try {
+        foreach ($this->api()->search('hierarchy_grouping', ['id' => array_keys($groupingIds)])->getContent() as $g) {
+            $groupingMap[$g->id()] = $g;
+        }
+    } catch (\Exception $e) {
+        // fall through — counts are omitted when the grouping isn't mapped
+    }
+}
+
+$resolveCache = [];
+
 /**
  * Resolve a grouping node into a normalized structure used by the card renderer.
  *
@@ -26,24 +71,28 @@ foreach ($site->siteItemSets() as $siteItemSet) {
  */
 $resolve = function (array $grouping) use (
     $siteItemSetArray, $valueLang, $allGroupings, $siteSlug,
-    $linkItemSet, $translate
+    $linkItemSet, $translate, $itemSetMap, $groupingMap, &$resolveCache
 ) {
     $data        = $grouping['data'];
     $groupingID  = $data['groupingID'] ?? null;
     $itemSetId   = $data['itemSet']    ?? null;
     $customLabel = $data['label']      ?? '';
 
+    $cacheKey = $groupingID . '|' . $itemSetId . '|' . $customLabel;
+    if (isset($resolveCache[$cacheKey])) {
+        return $resolveCache[$cacheKey];
+    }
+
     $itemSet = null;
     $private = false;
 
     if ($itemSetId) {
-        try {
-            $itemSet = $this->api()->read('item_sets', $itemSetId)->getContent();
-            if ($siteItemSetArray && !in_array($itemSet->id(), $siteItemSetArray)) {
-                $itemSet = null;
-                $private = true;
-            }
-        } catch (NotFoundException $e) {
+        $itemSet = $itemSetMap[$itemSetId] ?? null;
+        if (!$itemSet) {
+            // Not found or not visible to this user.
+            $private = true;
+        } elseif ($siteItemSetArray && !in_array($itemSet->id(), $siteItemSetArray)) {
+            $itemSet = null;
             $private = true;
         }
     }
@@ -61,11 +110,12 @@ $resolve = function (array $grouping) use (
 
     // Resolve item count via the module's view helper (returns a formatted
     // string like " (131 items)" or null) and parse out the integer.
+    // NOTE: parsing the module's translated format string is fragile — if the
+    // module ever changes it, counts silently disappear (they don't break).
     $count = null;
-    if ($groupingID) {
+    if ($groupingID && isset($groupingMap[$groupingID])) {
         try {
-            $groupingObject = $this->api()->read('hierarchy_grouping', $groupingID)->getContent();
-            $formatted = $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings);
+            $formatted = $this->hierarchyHelper()->itemSetCount($groupingMap[$groupingID], $allGroupings);
             if ($formatted && preg_match('/(\d[\d\s,\.]*)/', $formatted, $m)) {
                 $count = (int) preg_replace('/\D+/', '', $m[1]);
             }
@@ -90,7 +140,7 @@ $resolve = function (array $grouping) use (
         }
     }
 
-    return compact('label', 'url', 'itemSet', 'count', 'private');
+    return $resolveCache[$cacheKey] = compact('label', 'url', 'itemSet', 'count', 'private');
 };
 
 /**
