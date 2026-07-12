@@ -68,6 +68,18 @@ if ($compact) {
     <div class="banner__media">
     <?php if ($hasCustomBanner): ?>
         <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true', 'fetchpriority' => $imageFetchPriority]); ?>
+    <?php elseif ($compact): ?>
+        <?php // The compact band is a ~100px-tall decorative strip cropped by
+              // object-fit: cover — a fixed mid-size candidate is plenty and
+              // saves ~60-120 KB per inner-page navigation vs the hero srcset. ?>
+        <img src="<?php echo $escAttr($this->assetUrl('img/banner-768.webp')); ?>"
+             width="768"
+             height="432"
+             style="<?php echo $escAttr($imageInlineStyles); ?>"
+             role="presentation"
+             aria-hidden="true"
+             alt=""
+             fetchpriority="low">
     <?php else: ?>
         <img src="<?php echo $escAttr($defaultBannerUrl); ?>"
              <?php if ($bannerSrcset): ?>srcset="<?php echo $escAttr($bannerSrcset); ?>"

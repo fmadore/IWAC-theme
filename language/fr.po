@@ -62,7 +62,7 @@ msgstr "Une erreur s’est produite lors du traitement de votre demande. Veuille
 msgid "Ascending"
 msgstr ""
 
-#: view/common/banner.phtml:146
+#: view/common/banner.phtml:158
 msgid "Audiovisual minutes"
 msgstr "Minutes audiovisuelles"
 
@@ -70,7 +70,7 @@ msgstr "Minutes audiovisuelles"
 msgid "Available languages"
 msgstr "Langues disponibles"
 
-#: view/layout/layout.phtml:277
+#: view/layout/layout.phtml:282
 msgid "Back to top"
 msgstr "Haut de page"
 
@@ -102,7 +102,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: view/common/banner.phtml:181
+#: view/common/banner.phtml:193
 msgid "Collection at a glance"
 msgstr "La collection en un coup d’œil"
 
@@ -118,11 +118,11 @@ msgstr "Copié"
 msgid "Copy"
 msgstr "Copier"
 
-#: view/common/banner.phtml:192
+#: view/common/banner.phtml:204
 msgid "Corpus in depth"
 msgstr "Le corpus en détail"
 
-#: view/common/banner.phtml:112
+#: view/common/banner.phtml:124
 msgid "Countries"
 msgstr "Pays"
 
@@ -166,7 +166,7 @@ msgstr "Par défaut"
 msgid "Descending"
 msgstr ""
 
-#: view/common/banner.phtml:145
+#: view/common/banner.phtml:157
 msgid "Document types"
 msgstr "Types de documents"
 
@@ -250,7 +250,7 @@ msgstr "Comment installer cette application"
 msgid "In"
 msgstr ""
 
-#: view/common/banner.phtml:110
+#: view/common/banner.phtml:122
 msgid "Index"
 msgstr "Index"
 
@@ -274,11 +274,11 @@ msgstr ""
 msgid "Item: %s"
 msgstr "Document : %s"
 
-#: view/common/banner.phtml:109 view/common/linked-resources.phtml:19 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
+#: view/common/banner.phtml:121 view/common/linked-resources.phtml:19 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
 msgid "Items"
 msgstr ""
 
-#: view/common/banner.phtml:147
+#: view/common/banner.phtml:159
 msgid "Languages"
 msgstr "Langues"
 
@@ -426,7 +426,7 @@ msgstr ""
 msgid "Query type"
 msgstr ""
 
-#: view/common/banner.phtml:111
+#: view/common/banner.phtml:123
 msgid "References"
 msgstr "Références"
 
@@ -514,7 +514,7 @@ msgstr ""
 msgid "Show annotation"
 msgstr "Afficher l’annotation"
 
-#: view/layout/layout.phtml:258
+#: view/layout/layout.phtml:263
 msgid "Skip to main content"
 msgstr "Aller au contenu principal"
 
@@ -578,11 +578,11 @@ msgstr "Titre (Z-A)"
 msgid "Toggle submenu"
 msgstr "Afficher ou masquer le sous-menu"
 
-#: view/common/banner.phtml:143
+#: view/common/banner.phtml:155
 msgid "Total pages"
 msgstr "Pages totales"
 
-#: view/common/banner.phtml:142
+#: view/common/banner.phtml:154
 msgid "Total words"
 msgstr "Mots totaux"
 
@@ -590,7 +590,7 @@ msgstr "Mots totaux"
 msgid "Type"
 msgstr ""
 
-#: view/common/banner.phtml:144
+#: view/common/banner.phtml:156
 msgid "Unique sources"
 msgstr "Sources uniques"
 

@@ -155,16 +155,17 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
 
 ## Phase 6 — Performance
 
-- [ ] **P1** Browse/search thumbnails: pass `loading="lazy"`, `decoding="async"` through
+- [x] **P1** Browse/search thumbnails: pass `loading="lazy"`, `decoding="async"` through
   the thumbnail helper; keep first-row images eager. (Folded into the R1 partial.)
-- [ ] **P2** Compact banner: stop shipping the hero-sized image to every inner page —
+- [x] **P2** Compact banner: stop shipping the hero-sized image to every inner page —
   cap the compact variant's srcset at the small candidates via `sizes`.
-- [ ] **P3** Custom-banner path: emit the same homepage LCP preload for admin-uploaded
+- [x] **P3** Custom-banner path: emit the same homepage LCP preload for admin-uploaded
   banners (currently only the default banner is preloaded).
-- [ ] **P4** Gate `mirador-theme-sync.js`: bail immediately when no Mirador mount point
+- [x] **P4** Gate `mirador-theme-sync.js`: bail immediately when no Mirador mount point
   exists instead of polling 50 timers on every page.
-- [ ] **P5** Body-end scripts: add `defer` so the comments describing them as deferred
-  become true and the parser is never blocked.
+- [x] **P5** Body-end scripts: resolved by correcting the comments instead of adding
+  `defer` — at body end `defer` gains nothing, and it would force defer onto every
+  module-enqueued script to preserve `IWACUtils` ordering.
 - [x] **P6** `advanced-search.js` — debounce the raw `resize` listener with the existing
   `IWACUtils.debounce`.
 - [~] **P7** Self-host the three font families (removes the render-blocking third-party

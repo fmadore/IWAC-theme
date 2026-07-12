@@ -142,7 +142,7 @@ $this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=besley:
 // time. Deferring these (tried in v2.6.14) leaves those globals undefined when
 // the inline scripts run ("Omeka is not defined" on the homepage), so they must
 // execute before parsing continues. The theme's OWN scripts are vanilla and stay
-// deferred at the body end (see inlineScript below). The advanced-search
+// loaded at the body end (see inlineScript below). The advanced-search
 // item-sets inline jQuery was still rewritten in vanilla JS — a net win kept.
 $this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'));
 $this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'));
@@ -197,6 +197,11 @@ if ($userBar) {
 		      href="<?php echo $this->escapeHtmlAttr($defaultBannerUrl); ?>"
 		      imagesrcset="<?php echo $this->escapeHtmlAttr($defaultBannerSrcset); ?>"
 		      imagesizes="100vw">
+		<?php elseif ($customBannerAsset && $layoutIsHomepage): ?>
+		<?php // Admin-uploaded banners are still the homepage LCP — preload the
+		      // same large derivative common/banner.phtml renders. ?>
+		<link rel="preload" as="image" fetchpriority="high"
+		      href="<?php echo $this->escapeHtmlAttr($customBannerAsset->assetUrl()); ?>">
 		<?php endif; ?>
 		<?php echo $this->headTitle(); ?>
 		<?php echo $this->headLink(); ?>
@@ -225,7 +230,7 @@ if ($userBar) {
 
 		<?php if ($pwaEnabled): ?>
 		<?php // PWA: icons, status-bar theming, and the manifest data island.
-		      // js/pwa-install.js (deferred at body end) turns the island into a
+		      // js/pwa-install.js (loaded at body end) turns the island into a
 		      // same-origin blob: manifest and wires the masthead install button. ?>
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fdfcfb">
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#110c08">
@@ -278,7 +283,8 @@ if ($userBar) {
 
 		<?php
 		if ($pwaEnabled) {
-			// Deferred like the theme's other vanilla scripts. Self-guards if the
+			// Loaded at body end like the theme's other vanilla scripts (order:
+			// utils.js first — see the prepend chain below). Self-guards if the
 			// manifest island or install button is absent.
 			$this->inlineScript()->prependFile($this->assetUrl('js/pwa-install.js'));
 		}

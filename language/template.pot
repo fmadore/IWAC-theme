@@ -64,7 +64,7 @@ msgstr ""
 msgid "Ascending"
 msgstr ""
 
-#: view/common/banner.phtml:146
+#: view/common/banner.phtml:158
 msgid "Audiovisual minutes"
 msgstr ""
 
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Available languages"
 msgstr ""
 
-#: view/layout/layout.phtml:277
+#: view/layout/layout.phtml:282
 msgid "Back to top"
 msgstr ""
 
@@ -104,7 +104,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: view/common/banner.phtml:181
+#: view/common/banner.phtml:193
 msgid "Collection at a glance"
 msgstr ""
 
@@ -120,11 +120,11 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: view/common/banner.phtml:192
+#: view/common/banner.phtml:204
 msgid "Corpus in depth"
 msgstr ""
 
-#: view/common/banner.phtml:112
+#: view/common/banner.phtml:124
 msgid "Countries"
 msgstr ""
 
@@ -168,7 +168,7 @@ msgstr ""
 msgid "Descending"
 msgstr ""
 
-#: view/common/banner.phtml:145
+#: view/common/banner.phtml:157
 msgid "Document types"
 msgstr ""
 
@@ -252,7 +252,7 @@ msgstr ""
 msgid "In"
 msgstr ""
 
-#: view/common/banner.phtml:110
+#: view/common/banner.phtml:122
 msgid "Index"
 msgstr ""
 
@@ -276,11 +276,11 @@ msgstr ""
 msgid "Item: %s"
 msgstr ""
 
-#: view/common/banner.phtml:109 view/common/linked-resources.phtml:19 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
+#: view/common/banner.phtml:121 view/common/linked-resources.phtml:19 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
 msgid "Items"
 msgstr ""
 
-#: view/common/banner.phtml:147
+#: view/common/banner.phtml:159
 msgid "Languages"
 msgstr ""
 
@@ -428,7 +428,7 @@ msgstr ""
 msgid "Query type"
 msgstr ""
 
-#: view/common/banner.phtml:111
+#: view/common/banner.phtml:123
 msgid "References"
 msgstr ""
 
@@ -516,7 +516,7 @@ msgstr ""
 msgid "Show annotation"
 msgstr ""
 
-#: view/layout/layout.phtml:258
+#: view/layout/layout.phtml:263
 msgid "Skip to main content"
 msgstr ""
 
@@ -580,11 +580,11 @@ msgstr ""
 msgid "Toggle submenu"
 msgstr ""
 
-#: view/common/banner.phtml:143
+#: view/common/banner.phtml:155
 msgid "Total pages"
 msgstr ""
 
-#: view/common/banner.phtml:142
+#: view/common/banner.phtml:154
 msgid "Total words"
 msgstr ""
 
@@ -592,7 +592,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: view/common/banner.phtml:144
+#: view/common/banner.phtml:156
 msgid "Unique sources"
 msgstr ""
 
