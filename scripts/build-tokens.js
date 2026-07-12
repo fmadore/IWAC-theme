@@ -263,7 +263,13 @@ function typeTable(tokens, typeMap) {
 /* ------------------------------------------------------------------ */
 
 function main() {
-    const scss = fs.readFileSync(COLORS_SCSS, 'utf8');
+    const scss = (() => {
+        if (!fs.existsSync(COLORS_SCSS)) {
+            console.error('✗ ' + path.relative(THEME_ROOT, COLORS_SCSS) + ' not found — run from the theme root.');
+            process.exit(1);
+        }
+        return fs.readFileSync(COLORS_SCSS, 'utf8');
+    })();
     const seeds = {
         '--primary-base': readSeed(scss, '--primary-base'),
         '--secondary-base': readSeed(scss, '--secondary-base'),
@@ -284,7 +290,13 @@ function main() {
     const targets = [TOKENS_OUT];
     for (const sib of SIBLINGS) {
         const dir = path.join(THEME_ROOT, '..', sib);
-        if (fs.existsSync(dir)) targets.push(path.join(dir, 'tokens.json'));
+        if (fs.existsSync(dir)) {
+            targets.push(path.join(dir, 'tokens.json'));
+        } else {
+            // Loud, not silent: a checkout without the sibling repos would
+            // otherwise "succeed" while the module copies quietly drift.
+            console.warn('  ! sibling repo not found — tokens.json NOT synced: ../' + sib);
+        }
     }
     for (const t of targets) {
         fs.writeFileSync(t, json);

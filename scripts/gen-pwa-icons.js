@@ -18,10 +18,18 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-// Brand burnt-orange (IWAC default primary). Kept in sync with
-// config/theme.ini `primary_color`. The PNGs are static, so an admin override
-// of primary_color does not re-tint them — re-run this script to match.
-const BRAND = '#E64A19';
+// Brand color: read from config/theme.ini `primary_color` so there is a
+// single source of truth. The PNGs are static, so an admin override of
+// primary_color does not re-tint them — re-run this script to match.
+const BRAND = (() => {
+    const ini = fs.readFileSync(path.join(__dirname, '..', 'config', 'theme.ini'), 'utf8');
+    const m = ini.match(/^elements\.primary_color\.attributes\.value\s*=\s*"([^"]+)"/m);
+    if (!m) {
+        console.warn('! primary_color not found in theme.ini — falling back to #E64A19');
+        return '#E64A19';
+    }
+    return m[1];
+})();
 const GLYPH_FILL = '#ffffff';
 
 // Bootstrap-Icons "newspaper" path (asset/img/newspaper.svg), 16×16 viewBox.

@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  build:
+    name: Verify generated artifacts are fresh
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Runs the token-usage guard, regenerates tokens.json + the
+      # DESIGN-SYSTEM.md tables + the i18n catalog, and compiles the CSS.
+      - run: npm run build
+
+      # Everything npm run build produces is committed. If this diff is
+      # non-empty, a source file changed without regenerating its artifact
+      # (stale style.css, tokens.json, fr.mo, doc tables, …).
+      - name: Generated artifacts must match the committed ones
+        run: git diff --exit-code
+
+      - name: PHP syntax check (templates + helpers)
+        run: |
+          find view helper -name '*.phtml' -o -name '*.php' | while read -r f; do
+            php -l "$f" > /dev/null || exit 1
+          done
+
+      - name: JS syntax check
+        run: |
+          for f in asset/js/*.js; do
+            node --check "$f" || exit 1
+          done

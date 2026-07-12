@@ -1,0 +1,28 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{js,json,scss,yml,php,phtml,md,ini,po,pot}]
+indent_style = space
+indent_size = 4
+
+[*.{yml,json}]
+indent_size = 2
+
+# Historic exceptions — these files use tabs; keep them consistent with
+# themselves rather than churning the diffs.
+[view/layout/layout.phtml]
+indent_style = tab
+
+[view/common/{footer,menu-drawer}.phtml]
+indent_style = tab
+
+[asset/js/{navigation,pwa-install}.js]
+indent_style = tab
+
+[*.md]
+trim_trailing_whitespace = false

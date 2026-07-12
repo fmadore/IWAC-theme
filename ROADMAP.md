@@ -179,31 +179,35 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
 
 ## Phase 7 — Build, config & guardrails
 
-- [ ] **C1** Align the Omeka version floor everywhere at `^4.2.0` (theme.ini already
+- [x] **C1** Align the Omeka version floor everywhere at `^4.2.0` (theme.ini already
   enforces it; `values.phtml` relies on a 4.2-only `displayValues` option) —
   composer.json, README, CLAUDE.md, `style.scss` header.
-- [ ] **C2** composer.json: drop the unresolvable `require: omeka/omeka-s`; align the
+- [x] **C2** composer.json: drop the unresolvable `require: omeka/omeka-s`; align the
   SPDX license id with package.json (`GPL-3.0-or-later`).
-- [ ] **C3** Gulp: `default`/`start` compile before watching; watch regenerates tokens
+- [x] **C3** Gulp: `default`/`start` compile before watching; watch regenerates tokens
   when `_colors.scss` changes; remove the no-op `includePaths`.
-- [ ] **C4** `package-lock.json` metadata resync (stuck at 2.6.7).
-- [ ] **C5** browserslist honesty: raise the floor to match the CSS reality
+- [x] **C4** `package-lock.json` metadata resync (stuck at 2.6.7).
+- [x] **C5** browserslist honesty: raise the floor to match the CSS reality
   (`oklch()`/`color-mix()` ⇒ Safari ≥ 16.2).
-- [ ] **C6** README drift: remove ghost Logo/Footer-Logo settings, add Bluesky, mention
+- [x] **C6** README drift: remove ghost Logo/Footer-Logo settings, add Bluesky, mention
   Besley, correct the build-task descriptions (`build:tokens`, `build:images`,
   `build:icons`).
-- [ ] **C7** CI workflow: `npm ci && npm run build && git diff --exit-code` — mechanically
+- [x] **C7** CI workflow: `npm ci && npm run build && git diff --exit-code` — mechanically
   prevents every stale-generated-artifact class (CSS, tokens.json, doc tables).
-- [ ] **C8** Token-usage guard: `scripts/check-token-usage.js` — fails the build when any
+- [x] **C8** Token-usage guard: `scripts/check-token-usage.js` — fails the build when any
   `var(--…)` in `asset/sass/` doesn't resolve to a defined token (turns the CLAUDE.md
   rule from prose into an invariant). Wire into `npm run build` + CI.
-- [ ] **C9** `.editorconfig`; `.gitattributes` `linguist-generated` for `style.css` /
+- [x] **C9** `.editorconfig`; `.gitattributes` `linguist-generated` for `style.css` /
   `tokens.json`; drop the stale `.tx/` export-ignore.
-- [ ] **C10** `theme.jpg`: regenerate the admin/README screenshot from the current (v2.6+)
-  design.
-- [ ] **C11** `scripts/build-tokens.js` — loud warning (not silence) when sibling module
+- [~] **C10** `theme.jpg`: regenerate the admin/README screenshot from the current (v2.6+)
+  design. *Deferred*: this session's network policy blocks `islam.zmo.de`, so a live
+  screenshot can't be captured here. One-liner to run locally, then commit the result:
+  `chromium --headless --screenshot=theme.jpg --window-size=1280,800 https://islam.zmo.de/s/westafrica/`
+  (any 1280×800-ish JPEG of the homepage works — Omeka shows it in Admin → Themes and
+  README.md embeds it).
+- [x] **C11** `scripts/build-tokens.js` — loud warning (not silence) when sibling module
   repos are absent; friendly error when `_colors.scss` is missing.
-- [ ] **C12** `scripts/gen-pwa-icons.js` — read the brand color from `config/theme.ini`
+- [x] **C12** `scripts/gen-pwa-icons.js` — read the brand color from `config/theme.ini`
   instead of a hardcoded duplicate hex.
 
 ---

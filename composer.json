@@ -3,8 +3,5 @@
     "description": "Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC database.",
     "type": "omeka-s-theme",
     "license": "GPL-3.0-or-later",
-    "homepage": "https://github.com/fmadore/IWAC-theme",
-    "require": {
-        "omeka/omeka-s": "^4.1.0"
-    }
+    "homepage": "https://github.com/fmadore/IWAC-theme"
 }
