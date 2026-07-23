@@ -32,7 +32,7 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 - **CSS Custom Properties** - Comprehensive design token system for colors, spacing, typography
 - **OKLCH Color System** - Perceptually-uniform palette derived from a single admin-set brand seed (`--primary-base`) via `color-mix(in oklab, …)`
 - **Display-tier fluid type** - `clamp()` on the largest headings; a fixed `rem` scale for body/UI so labels don't drift between breakpoints
-- **Source Serif 4 + Public Sans** - font stacks exposed as `--font-*` tokens for sibling modules to consume
+- **Besley + Source Serif 4 + Public Sans** - three-font system (Clarendon display / long-form serif / UI sans) exposed as `--font-*` tokens for sibling modules to consume
 - **Logical Properties** - RTL-ready with `margin-inline`, `padding-block`, etc.
 
 ### Additional Features
@@ -43,7 +43,7 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 
 ## Requirements
 
-- **Omeka S**: 4.1.0 or higher
+- **Omeka S**: 4.2.0 or higher
 - **PHP**: 8.1 or higher
 - **Node.js**: 18.x or higher (for Sass compilation)
 
@@ -74,9 +74,6 @@ npm install
 ### Top Navigation Depth
 Maximum number of levels to show in the site's top navigation bar. Set to 0 to show all levels.
 
-### Logo
-A custom logo (SVG, JPG, PNG)
-
 ### Banner
 - Banner image
 - Heading
@@ -89,7 +86,6 @@ A custom logo (SVG, JPG, PNG)
 - Banner image horizontal position within the wrapper
 
 ### Footer
-- Footer Logo
 - Footer Site description
 - Footer Menu
 - Footer Menu Depth
@@ -98,11 +94,12 @@ A custom logo (SVG, JPG, PNG)
 
 ### Social Media
 - Facebook
-- Twitter
+- X (Twitter)
 - LinkedIn
 - Instagram
 - Youtube
 - Mastodon
+- Bluesky
 
 ### Image Settings
 - Decorative border for Media and/or Assets
@@ -124,10 +121,11 @@ For advanced CSS and Sass users, this theme includes variables and mixins for ma
 
 Run these commands within the theme's root directory.
 
-* **npm run start**: While this task runs, it watches for changes to sass files and recompiles the CSS.
-* **npm run build**: One-off task for compiling the current Sass/CSS.
-* **gulp css**: Alias for `npm run build`.
-* **gulp css:watch**: This task watches for changes in the Sass, then compiles the CSS.
+* **npm run start**: Compiles once, then watches the Sass (and `_colors.scss` token changes) and recompiles on save.
+* **npm run build**: Full production build — validates token usage, regenerates `tokens.json` + the DESIGN-SYSTEM.md tables (`build:tokens`), regenerates the i18n catalog (`build:i18n`), then compiles the CSS. Always use this (never bare `gulp css`) so the generated artifacts can't drift.
+* **npm run build:tokens**: Regenerates `tokens.json` (theme + sibling modules) and the docs tables from `_colors.scss`.
+* **npm run build:i18n**: Re-extracts `language/template.pot` from the templates, merges `fr.po`, and recompiles `fr.mo`.
+* **npm run build:images** / **npm run build:icons**: Regenerate the responsive banner variants and the PWA icon set.
 
 ### Sass Module System
 

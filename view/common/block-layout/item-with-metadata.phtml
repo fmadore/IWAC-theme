@@ -1,8 +1,14 @@
 <?php
 
 $translate = $this->plugin('translate');
+$escape = $this->plugin('escapeHtml');
 $showLocale = (bool) $this->siteSetting('show_locale_label', true);
 $decoration = $this->themeSetting('image_decoration');
+
+$options = [];
+if ($this->siteSetting('exclude_resources_not_in_site')) {
+    $options['siteId'] = $this->currentSite()->id();
+}
 ?>
 <div class="item-with-metadata">
     <?php foreach($attachments as $attachment): ?>
@@ -12,13 +18,8 @@ $decoration = $this->themeSetting('image_decoration');
 
             $primaryMedia = $item->primaryMedia();
 
-            $options = [];
-            if ($this->siteSetting('exclude_resources_not_in_site')) {
-                $options['siteId'] = $this->currentSite()->id();
-            }
-
             // Get title and title lang.
-            $title = $item->displayTitle();
+            $title = $escape($item->displayTitle());
 
             if ($showLocale) {
                 $template = $item->resourceTemplate();
@@ -28,10 +29,10 @@ $decoration = $this->themeSetting('image_decoration');
                     $titleTerm = 'dcterms:title';
                 }
                 $titleObj = $item->value($titleTerm);
-                $titleLang = (string) $titleObj->lang();
+                $titleLang = $titleObj ? (string) $titleObj->lang() : '';
 
                 if ($titleLang) {
-                    $title .= '<span class="language">' . $titleLang . '</span>';
+                    $title .= '<span class="language">' . $escape($titleLang) . '</span>';
                 }
             }
         ?>

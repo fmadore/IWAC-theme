@@ -61,10 +61,17 @@
         text-align: start;
         padding: var(--space-4) var(--space-6);
 
-        a {
+        // The close control is a <button> (it closes the drawer, it doesn't
+        // navigate) — reset the UA button chrome to the quiet link look.
+        .menu-backer {
             display: inline-flex;
             align-items: center;
             gap: var(--space-2);
+            background: none;
+            border: 0;
+            padding: 0;
+            cursor: pointer;
+            font-family: inherit;
             color: var(--muted);
             text-decoration: none;
             font-size: var(--text-xs);

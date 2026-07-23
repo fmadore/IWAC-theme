@@ -18,102 +18,37 @@ $query = $this->params()->fromQuery();
 $itemSetShow = isset($itemSet);
 if ($itemSetShow) {
     $this->headLink()->appendStylesheet($this->assetUrl('css/resource-page-blocks.css', 'Omeka'));
-
-    // Regions
-    $mainBlockContent = $this->resourcePageBlocks($itemSet);
-    $mainHasBlocks = $mainBlockContent->hasBlocks();
-    $leftSidebarBlockContent = $this->resourcePageBlocks($itemSet, 'left');
-    $leftSidebarHasBlocks = $leftSidebarBlockContent->hasBlocks();
-    $rightSidebarBlockContent = $this->resourcePageBlocks($itemSet, 'right');
-    $rightSidebarHasBlocks = $rightSidebarBlockContent->hasBlocks();
-
     $this->htmlElement('body')->appendAttribute('class', 'item-set');
     $query['item_set_id'] = $itemSet->id();
 }
 
-$layoutSetting = $this->themeSetting('browse_layout', 'grid');
-$gridState = ($layoutSetting == 'togglegrid') ? 'disabled' : '';
-$listState = ($layoutSetting == 'togglelist') ? 'disabled': '';
-$isGrid = (strpos($layoutSetting, 'grid') !== false) ? true : false;
+$layout = $this->browseLayout();
+$isGrid = $layout['isGrid'];
 $bodyTerm = $this->siteSetting('browse_body_property_term');
 $bodyTruncate = $this->themeSetting('truncate_body_property');
-
-if (isset($_GET['view'])) {
-	if ('list' === $_GET['view']) {
-		$gridState = '';
-		$listState = 'disabled';
-		$isGrid = false;
-	} else {
-		$gridState = 'disabled';
-		$listState = '';
-		$isGrid = true;
-	}
-}
-
-$decoration = $this->themeSetting('image_decoration');
-$decorationClass = '';
-
-if (is_array($decoration) && in_array('media', $decoration)) {
-    $decorationClass = $isGrid ? 'decoration' : 'decoration decoration--thumbnail';
-}
 ?>
 
 <?php if ($itemSetShow): ?>
     <?php echo $this->ResourceTags($itemSet); ?>
     <?php echo $this->pageTitle($itemSet->displayTitle(null, ($valueLang)), 1); ?>
 
-    <?php if ($mainHasBlocks || $leftSidebarHasBlocks || $rightSidebarHasBlocks): ?>
-
-        <?php
-        $additionalContainerClasses = '';
-        if ($mainHasBlocks && $leftSidebarHasBlocks && $rightSidebarHasBlocks) {
-            $additionalContainerClasses = 'regions-container--all';
-        }
-        ?>
-
-        <div class="regions-container <?php echo $additionalContainerClasses; ?>">
-            <?php if ($leftSidebarHasBlocks && $blockContent = $leftSidebarBlockContent->getBlocks()): ?>
-                <div class="sidebar-region sidebar-region--left">
-                    <div class="metadata">
-                        <?php echo $blockContent; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($mainHasBlocks && $blockContent = $mainBlockContent->getBlocks()): ?>
-                <div class="main-region">
-                    <div class="metadata">
-                        <?php echo $blockContent; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($rightSidebarHasBlocks && $blockContent = $rightSidebarBlockContent->getBlocks()): ?>
-                <div class="sidebar-region sidebar-region--right">
-                    <div class="metadata">
-                        <?php echo $blockContent; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
-        </div>
-
-    <?php endif; ?>
+    <?php echo $this->partial('common/resource-regions', ['resource' => $itemSet]); ?>
 
     <div class="item-set-items">
-    <?php echo '<h3>' . $escape($translate('Items')) . '</h3>'; ?>
+    <?php echo '<h2>' . $escape($translate('Items')) . '</h2>'; ?>
 <?php else: ?>
-    <?php echo $this->pageTitle($translate('Items'), 2); ?>
+    <?php echo $this->pageTitle($translate('Items'), 1); ?>
 <?php endif; ?>
 
 <?php echo $this->searchFilters(); ?>
 
 <div class="browse-controls">
     <?php // The grid/list toggle has no meaning for the item-set ledger table. ?>
-    <?php if (!$itemSetShow && strpos($layoutSetting, 'toggle') !== false): ?>
-        <div class="layout-toggle">
-            <button type="button" aria-label="<?php echo $translate('Grid'); ?>" title="<?php echo $translate('Grid'); ?>" class="grid icon-btn o-icon-grid" <?php echo $gridState; ?>></button>
-            <button type="button" aria-label="<?php echo $translate('List'); ?>" title="<?php echo $translate('List'); ?>" class="list icon-btn o-icon-list" <?php echo $listState; ?>></button>
-        </div>
+    <?php if (!$itemSetShow && $layout['hasToggle']): ?>
+        <?php echo $this->partial('common/browse-toggle', [
+            'gridState' => $layout['gridState'],
+            'listState' => $layout['listState'],
+        ]); ?>
     <?php endif; ?>
     <?php echo $this->browse()->renderSortSelector('items'); ?>
     <div class="advanced-search-container">
@@ -128,12 +63,20 @@ if (is_array($decoration) && in_array('media', $decoration)) {
     <?php
     // Ledger table mirroring the item pages' linked-resources section —
     // same classes (the linked-resources CSS applies as-is) and the same
-    // #linked-resources root, so linked-resources.js provides the client
-    // title filter and AJAX pagination here too.
+    // .linked-resources root, so linked-resources.js provides the client
+    // title filter and AJAX pagination here too. The id differs from the
+    // linked-resources page block's so both can coexist on one page.
     $noResultsText = $translate('No resources match your search.');
     $resultsFoundText = $translate('{count} resources found');
+    $rows = [];
+    foreach ($items as $item) {
+        $rows[] = ['resource' => $item, 'relationLabel' => null];
+    }
     ?>
-    <div id="linked-resources">
+    <div id="item-set-resources"
+         class="linked-resources"
+         data-no-results-text="<?php echo $this->escapeHtmlAttr($noResultsText); ?>"
+         data-results-found-text="<?php echo $this->escapeHtmlAttr($resultsFoundText); ?>">
 
         <div class="linked-resources__controls">
             <div class="linked-resources__search">
@@ -142,8 +85,8 @@ if (is_array($decoration) && in_array('media', $decoration)) {
                      alt=""
                      aria-hidden="true">
                 <input type="search"
-                       id="linked-resources-search"
-                       name="linked-resources-search"
+                       id="item-set-resources-search"
+                       name="item-set-resources-search"
                        class="linked-resources__search-input"
                        placeholder="<?php echo $this->escapeHtmlAttr($translate('Filter by title...')); ?>"
                        aria-label="<?php echo $this->escapeHtmlAttr($translate('Filter items by title')); ?>">
@@ -156,89 +99,17 @@ if (is_array($decoration) && in_array('media', $decoration)) {
             <p><?php echo $escape($noResultsText); ?></p>
         </div>
 
-        <div class="linked-resources-table-wrapper">
-            <table class="linked-resources-table">
-                <thead>
-                    <tr>
-                        <th scope="col" class="linked-resources-table__col-thumb">
-                            <span class="sr-only"><?php echo $translate('Thumbnail'); ?></span>
-                        </th>
-                        <th scope="col" class="linked-resources-table__col-title">
-                            <?php echo $translate('Title'); ?>
-                        </th>
-                        <th scope="col" class="linked-resources-table__col-type">
-                            <?php echo $translate('Type'); ?>
-                        </th>
-                        <th scope="col" class="linked-resources-table__col-date">
-                            <?php echo $translate('Date'); ?>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($items as $item): ?>
-                        <?php
-                        $resourceTitle = $item->displayTitle(null, $valueLang);
-                        $resourceUrl = $item->url();
-
-                        // Prefer dcterms:date, fall back to record created date.
-                        $displayDate = '';
-                        $sortDate = '';
-                        $dctermsDate = $item->value('dcterms:date', ['default' => null]);
-                        if ($dctermsDate) {
-                            $displayDate = (string) $dctermsDate;
-                            $sortDate = $displayDate;
-                        } elseif ($item->created()) {
-                            $sortDate = $item->created()->format('c');
-                        }
-                        ?>
-                        <tr class="linked-resources-table__row"
-                            data-title="<?php echo $this->escapeHtmlAttr($resourceTitle); ?>"
-                            data-date="<?php echo $this->escapeHtmlAttr($sortDate); ?>">
-                            <td class="linked-resources-table__cell linked-resources-table__cell--thumb">
-                                <a href="<?php echo $this->escapeHtmlAttr($resourceUrl); ?>"
-                                   class="linked-resources-table__thumb-link"
-                                   tabindex="-1"
-                                   aria-hidden="true">
-                                    <?php echo $this->thumbnail($item, 'square', ['alt' => '']); ?>
-                                </a>
-                            </td>
-                            <td class="linked-resources-table__cell linked-resources-table__cell--title"
-                                data-label="<?php echo $this->escapeHtmlAttr($translate('Title')); ?>">
-                                <a href="<?php echo $this->escapeHtmlAttr($resourceUrl); ?>"
-                                   class="linked-resources-table__title-link">
-                                    <?php echo $escape($resourceTitle); ?>
-                                </a>
-                            </td>
-                            <td class="linked-resources-table__cell linked-resources-table__cell--type"
-                                data-label="<?php echo $this->escapeHtmlAttr($translate('Type')); ?>">
-                                <?php echo $this->ResourceTags($item); ?>
-                            </td>
-                            <td class="linked-resources-table__cell linked-resources-table__cell--date"
-                                data-label="<?php echo $this->escapeHtmlAttr($translate('Date')); ?>">
-                                <?php if ($displayDate): ?>
-                                    <span class="linked-resources-table__date">
-                                        <?php echo $escape($displayDate); ?>
-                                    </span>
-                                <?php else: ?>
-                                    <span class="linked-resources-table__date linked-resources-table__date--empty" aria-hidden="true">—</span>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+        <?php echo $this->partial('common/linked-resources-table', [
+            'rows' => $rows,
+            'showRelation' => false,
+            'valueLang' => $valueLang,
+        ]); ?>
 
         <div class="linked-footer">
             <?php echo $this->pagination(); ?>
         </div>
 
     </div>
-
-    <script>
-    const linkedResourcesNoResults = <?php echo json_encode($noResultsText); ?>;
-    const linkedResourcesResultsFound = <?php echo json_encode($resultsFoundText); ?>;
-    </script>
 
     </div><?php // close .item-set-items ?>
     <?php $this->trigger('view.browse.after'); ?>
@@ -247,39 +118,17 @@ if (is_array($decoration) && in_array('media', $decoration)) {
 
 <ul class="resources <?php echo ($isGrid) ? 'resource-grid' : 'resource-list'; ?>">
 
-    <?php
-    foreach ($items as $item):
-        $body = $bodyTerm ? $item->value($bodyTerm, ['lang' => ($valueLang)]) : $item->displayDescription(null, ($valueLang));
-        $primaryMedia = $item->primaryMedia();
-        $altText = '';
-        if ($primaryMedia) {
-            $altText = method_exists($primaryMedia, 'altText') ? (string) $primaryMedia->altText() : '';
-        }
-        if (!$altText) {
-            $altText = $item->displayTitle(null, $valueLang);
-        }
-        $thumbnail = $this->thumbnail($item, 'large', ['alt' => $altText]);
-        ?>
-        <li class="item resource <?php echo ($isGrid) ? '' : 'media-object'; ?>">
-            <!-- Thumbnail -->
-            <?php if ($thumbnail): ?>
-                <div class="resource__thumbnail <?php echo $decorationClass; ?>">
-                    <?php echo $item->linkRaw($thumbnail); ?>
-                </div>
-            <?php endif; ?>
-
-            <!-- Content -->
-            <div class="resource__content">
-                <?php echo $this->ResourceTags($item); ?>
-                <!-- Metadata -->
-                <div class="resource__meta <?php echo ($isGrid) ? '' : 'media-object-section'; ?>">
-                    <?php echo $item->link($item->displayTitle(null, $valueLang)); ?>
-                    <?php if ($body): ?>
-                        <div class="description <?php echo ($bodyTruncate) ? $bodyTruncate : ''; ?>"><?php echo $escape($body); ?></div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </li>
+    <?php foreach ($items as $index => $item): ?>
+        <?php echo $this->partial('common/resource-card', [
+            'resource' => $item,
+            'isGrid' => $isGrid,
+            'valueLang' => $valueLang,
+            'liClass' => 'item',
+            'decorationClass' => $layout['decorationClass'],
+            'bodyTerm' => $bodyTerm,
+            'bodyTruncate' => $bodyTruncate,
+            'eager' => $index < 4,
+        ]); ?>
     <?php endforeach; ?>
 
 </ul>

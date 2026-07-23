@@ -52,8 +52,26 @@ $sortOptions = [
 
 $noResultsText = $this->translate('No resources match your search.');
 $resultsFoundText = $this->translate('{count} resources found');
+
+// Flatten the grouped subject values into the row shape the shared
+// ledger-table partial expects.
+$rows = [];
+foreach ($subjectValues as $values) {
+    $propertyLabel = $values[0]['property_alternate_label']
+        ?? $this->translate($values[0]['property_label']);
+    foreach ($values as $value) {
+        $rows[] = [
+            'resource' => $value['val']->resource(),
+            'relationLabel' => $propertyLabel,
+        ];
+    }
+}
 ?>
-<div id="linked-resources">
+<div id="linked-resources"
+     class="linked-resources"
+     data-no-results-text="<?php echo $this->escapeHtmlAttr($noResultsText); ?>"
+     data-results-found-text="<?php echo $this->escapeHtmlAttr($resultsFoundText); ?>"
+     data-fragment="<?php echo $this->escapeHtmlAttr($fragment); ?>">
 
     <div class="linked-resources__controls">
         <div class="linked-resources__search">
@@ -117,98 +135,12 @@ $resultsFoundText = $this->translate('{count} resources found');
         <p><?php echo $this->escapeHtml($noResultsText); ?></p>
     </div>
 
-    <div class="linked-resources-table-wrapper">
-        <table class="linked-resources-table">
-            <thead>
-                <tr>
-                    <th scope="col" class="linked-resources-table__col-thumb">
-                        <span class="sr-only"><?php echo $this->translate('Thumbnail'); ?></span>
-                    </th>
-                    <th scope="col" class="linked-resources-table__col-title">
-                        <?php echo $this->translate('Title'); ?>
-                    </th>
-                    <th scope="col" class="linked-resources-table__col-relation">
-                        <?php echo $this->translate('Relation'); ?>
-                    </th>
-                    <th scope="col" class="linked-resources-table__col-type">
-                        <?php echo $this->translate('Type'); ?>
-                    </th>
-                    <th scope="col" class="linked-resources-table__col-date">
-                        <?php echo $this->translate('Date'); ?>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($subjectValues as $values): ?>
-                    <?php
-                    $propertyLabel = $values[0]['property_alternate_label']
-                        ?? $this->translate($values[0]['property_label']);
-                    ?>
-                    <?php foreach ($values as $value): ?>
-                        <?php
-                        $valueResource = $value['val']->resource();
-                        $resourceTitle = $valueResource->displayTitle(null, $valueLang);
-                        $resourceUrl = $valueResource->url();
-
-                        // Prefer dcterms:date, fall back to record created date.
-                        $displayDate = '';
-                        $sortDate = '';
-                        $dctermsDate = $valueResource->value('dcterms:date', ['default' => null]);
-                        if ($dctermsDate) {
-                            $displayDate = (string) $dctermsDate;
-                            $sortDate = $displayDate;
-                        } elseif ($valueResource->created()) {
-                            $sortDate = $valueResource->created()->format('c');
-                        }
-                        ?>
-                        <tr class="linked-resources-table__row"
-                            data-title="<?php echo $this->escapeHtmlAttr($resourceTitle); ?>"
-                            data-date="<?php echo $this->escapeHtmlAttr($sortDate); ?>">
-                            <td class="linked-resources-table__cell linked-resources-table__cell--thumb">
-                                <a href="<?php echo $this->escapeHtmlAttr($resourceUrl); ?>"
-                                   class="linked-resources-table__thumb-link"
-                                   tabindex="-1"
-                                   aria-hidden="true">
-                                    <?php echo $this->thumbnail($valueResource, 'square', ['alt' => '']); ?>
-                                </a>
-                            </td>
-                            <td class="linked-resources-table__cell linked-resources-table__cell--title"
-                                data-label="<?php echo $this->escapeHtmlAttr($this->translate('Title')); ?>">
-                                <a href="<?php echo $this->escapeHtmlAttr($resourceUrl); ?>"
-                                   class="linked-resources-table__title-link">
-                                    <?php echo $this->escapeHtml($resourceTitle); ?>
-                                </a>
-                            </td>
-                            <td class="linked-resources-table__cell linked-resources-table__cell--relation"
-                                data-label="<?php echo $this->escapeHtmlAttr($this->translate('Relation')); ?>">
-                                <?php echo $this->escapeHtml($propertyLabel); ?>
-                            </td>
-                            <td class="linked-resources-table__cell linked-resources-table__cell--type"
-                                data-label="<?php echo $this->escapeHtmlAttr($this->translate('Type')); ?>">
-                                <?php echo $this->ResourceTags($valueResource); ?>
-                            </td>
-                            <td class="linked-resources-table__cell linked-resources-table__cell--date"
-                                data-label="<?php echo $this->escapeHtmlAttr($this->translate('Date')); ?>">
-                                <?php if ($displayDate): ?>
-                                    <span class="linked-resources-table__date">
-                                        <?php echo $this->escapeHtml($displayDate); ?>
-                                    </span>
-                                <?php else: ?>
-                                    <span class="linked-resources-table__date linked-resources-table__date--empty" aria-hidden="true">—</span>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
+    <?php echo $this->partial('common/linked-resources-table', [
+        'rows' => $rows,
+        'showRelation' => true,
+        'valueLang' => $valueLang,
+    ]); ?>
 
     <?php echo ($totalCount > $perPage) ? '<div class="linked-footer">' . $pagination . '</div>' : ''; ?>
 
 </div>
-
-<script>
-const linkedResourcesNoResults = <?php echo json_encode($noResultsText); ?>;
-const linkedResourcesResultsFound = <?php echo json_encode($resultsFoundText); ?>;
-</script>

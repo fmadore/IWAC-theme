@@ -1,16 +1,15 @@
 // ==========================================================================
 // Abstracts Index
 // Forward Sass-only variables and mixins for use in other files
-// NOTE: Files with :root blocks (tokens, colors, layout, typography) 
-//       are imported directly in style.scss to avoid duplication
+// NOTE: layout/typography also carry :root blocks, but Sass emits a
+//       module's CSS exactly once no matter how many files @use it —
+//       so forwarding them here duplicates nothing.
 // ==========================================================================
 
 // Sass-only variables (no CSS output)
 @forward "variables/breakpoints";
 
 // These files have both Sass variables AND :root CSS output
-// We need to forward them for the Sass variables, but the CSS 
-// is only output once via style.scss direct imports
 @forward "variables/layout";
 @forward "variables/typography";
 

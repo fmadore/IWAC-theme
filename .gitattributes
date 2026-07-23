@@ -1,5 +1,11 @@
 /.gitattributes export-ignore
+/.github/ export-ignore
 /.gitignore export-ignore
-/.tx/ export-ignore
+/.editorconfig export-ignore
 /language/*.pot export-ignore
 /language/*.po export-ignore
+
+# Generated artifacts — collapse in diffs/PR review
+/asset/css/style.css linguist-generated
+/tokens.json linguist-generated
+/language/fr.mo linguist-generated

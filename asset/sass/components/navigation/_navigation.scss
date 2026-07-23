@@ -34,8 +34,6 @@
         height: 16px;
         position: relative;
         flex-shrink: 0;
-        transform: rotate(0deg);
-        transition: transform 0.5s ease-in-out;
         cursor: pointer;
 
         @include focus-ring;

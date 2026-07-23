@@ -1,3 +1,6 @@
+(function () {
+'use strict';
+
 const advancedSearchScripts = () => {
     const propertyQueries = document.getElementById('property-queries');
     
@@ -19,13 +22,19 @@ const advancedSearchScripts = () => {
     const placeLabels = () => {
         setTimeout(() => {
             subFields = propertyQueries.querySelectorAll('.sub-field');
+            // Batch the reads before the writes so each caption doesn't
+            // force a fresh layout.
+            const placements = [];
             subFields.forEach((subField) => {
                 const prev = subField.previousElementSibling;
-                if (prev && prev.tagName === 'LABEL') {
-                    prev.style.left = subField.offsetLeft + 'px';
-                    prev.style.top = (subField.offsetTop - 19) + 'px';
-                    prev.style.opacity = 1;
+                if (prev && prev.classList.contains('sub-label')) {
+                    placements.push([prev, subField.offsetLeft, subField.offsetTop - 19]);
                 }
+            });
+            placements.forEach(([label, left, top]) => {
+                label.style.left = left + 'px';
+                label.style.top = top + 'px';
+                label.style.opacity = 1;
             });
 
             removeRowBtns = propertyQueries.querySelectorAll('.remove-value');
@@ -39,7 +48,8 @@ const advancedSearchScripts = () => {
 
     addRowBtn.addEventListener('click', placeLabels);
 
-    window.addEventListener('resize', placeLabels);
+    window.addEventListener('resize', IWACUtils.debounce(placeLabels, 250));
 }
 
 IWACUtils.onReady(advancedSearchScripts);
+})();

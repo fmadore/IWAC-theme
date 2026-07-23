@@ -131,7 +131,6 @@
   // it lets the inner var() pick up the active --border in each block.
   // ========================================================================
   --panel-bg: var(--surface);
-  --panel-border-color: var(--border);
   --panel-border: 1px solid var(--border);
   --panel-radius: var(--radius-md);
   --panel-shadow: var(--shadow-sm);
@@ -175,7 +174,6 @@
   --shadow-xl: 0 20px 40px -12px color-mix(in oklab, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
 
   --panel-bg: var(--surface-raised);
-  --panel-border-color: var(--border);
   // See comment in :root block — re-declare for dark cascade.
   --panel-border: 1px solid var(--border);
 }
@@ -199,28 +197,5 @@ body[data-theme="light"] {
   --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color-subtle);
 
   --panel-bg: var(--surface);
-  --panel-border-color: var(--border);
   --panel-border: 1px solid var(--border);
 }
-
-// ==========================================================================
-// Sass Variable Aliases (for use in Sass files where var() can't be used,
-// e.g. in @media or selector composition)
-// ==========================================================================
-$space-xs: var(--space-xs);
-$space-sm: var(--space-sm);
-$space-md: var(--space-md);
-$space-lg: var(--space-lg);
-$space-xl: var(--space-xl);
-$space-2xl: var(--space-2xl);
-$space-3xl: var(--space-3xl);
-
-$radius-sm: var(--radius-sm);
-$radius-md: var(--radius-md);
-$radius-lg: var(--radius-lg);
-$radius-xl: var(--radius-xl);
-$radius-full: var(--radius-full);
-
-$transition-fast: var(--transition-fast);
-$transition-base: var(--transition-base);
-$transition-slow: var(--transition-slow);

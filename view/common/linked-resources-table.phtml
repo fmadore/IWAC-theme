@@ -1,0 +1,104 @@
+<?php
+/**
+ * Shared ledger table for linked-resources style listings.
+ *
+ * Used by common/linked-resources.phtml (subject values on item pages,
+ * with a Relation column) and omeka/site/item/browse.phtml (an item
+ * set's items). Both render inside a `.linked-resources` root so
+ * linked-resources.js provides the client title filter, sorting and
+ * AJAX pagination.
+ *
+ * Expected variables:
+ * - $rows: list of ['resource' => AbstractResourceEntityRepresentation,
+ *          'relationLabel' => ?string]
+ * - $showRelation: bool — render the Relation column
+ * - $valueLang: locale filter passed to displayTitle(), or null
+ */
+$translate = $this->plugin('translate');
+$escape = $this->plugin('escapeHtml');
+$escapeAttr = $this->plugin('escapeHtmlAttr');
+?>
+<div class="linked-resources-table-wrapper">
+    <table class="linked-resources-table">
+        <thead>
+            <tr>
+                <th scope="col" class="linked-resources-table__col-thumb">
+                    <span class="sr-only"><?php echo $translate('Thumbnail'); ?></span>
+                </th>
+                <th scope="col" class="linked-resources-table__col-title">
+                    <?php echo $translate('Title'); ?>
+                </th>
+                <?php if ($showRelation): ?>
+                <th scope="col" class="linked-resources-table__col-relation">
+                    <?php echo $translate('Relation'); ?>
+                </th>
+                <?php endif; ?>
+                <th scope="col" class="linked-resources-table__col-type">
+                    <?php echo $translate('Type'); ?>
+                </th>
+                <th scope="col" class="linked-resources-table__col-date">
+                    <?php echo $translate('Date'); ?>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($rows as $row): ?>
+                <?php
+                $resource = $row['resource'];
+                $resourceTitle = $resource->displayTitle(null, $valueLang);
+                $resourceUrl = $resource->url();
+
+                // Prefer dcterms:date, fall back to record created date.
+                $displayDate = '';
+                $sortDate = '';
+                $dctermsDate = $resource->value('dcterms:date', ['default' => null]);
+                if ($dctermsDate) {
+                    $displayDate = (string) $dctermsDate;
+                    $sortDate = $displayDate;
+                } elseif ($resource->created()) {
+                    $sortDate = $resource->created()->format('c');
+                }
+                ?>
+                <tr class="linked-resources-table__row"
+                    data-title="<?php echo $escapeAttr($resourceTitle); ?>"
+                    data-date="<?php echo $escapeAttr($sortDate); ?>">
+                    <td class="linked-resources-table__cell linked-resources-table__cell--thumb">
+                        <a href="<?php echo $escapeAttr($resourceUrl); ?>"
+                           class="linked-resources-table__thumb-link"
+                           tabindex="-1"
+                           aria-hidden="true">
+                            <?php echo $this->thumbnail($resource, 'square', ['alt' => '', 'loading' => 'lazy', 'decoding' => 'async']); ?>
+                        </a>
+                    </td>
+                    <td class="linked-resources-table__cell linked-resources-table__cell--title"
+                        data-label="<?php echo $escapeAttr($translate('Title')); ?>">
+                        <a href="<?php echo $escapeAttr($resourceUrl); ?>"
+                           class="linked-resources-table__title-link">
+                            <?php echo $escape($resourceTitle); ?>
+                        </a>
+                    </td>
+                    <?php if ($showRelation): ?>
+                    <td class="linked-resources-table__cell linked-resources-table__cell--relation"
+                        data-label="<?php echo $escapeAttr($translate('Relation')); ?>">
+                        <?php echo $escape($row['relationLabel'] ?? ''); ?>
+                    </td>
+                    <?php endif; ?>
+                    <td class="linked-resources-table__cell linked-resources-table__cell--type"
+                        data-label="<?php echo $escapeAttr($translate('Type')); ?>">
+                        <?php echo $this->ResourceTags($resource); ?>
+                    </td>
+                    <td class="linked-resources-table__cell linked-resources-table__cell--date"
+                        data-label="<?php echo $escapeAttr($translate('Date')); ?>">
+                        <?php if ($displayDate): ?>
+                            <span class="linked-resources-table__date">
+                                <?php echo $escape($displayDate); ?>
+                            </span>
+                        <?php else: ?>
+                            <span class="linked-resources-table__date linked-resources-table__date--empty" aria-hidden="true">—</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>

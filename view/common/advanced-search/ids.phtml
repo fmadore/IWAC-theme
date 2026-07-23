@@ -16,6 +16,6 @@ if (isset($query['id'])) {
         </div>
     </div>
     <div class="inputs">
-        <input type="text" name="id" id="id" value="<?php echo $this->escapeHtml($value); ?>">
+        <input type="text" name="id" id="id" value="<?php echo $this->escapeHtmlAttr((string) $value); ?>">
     </div>
 </div>

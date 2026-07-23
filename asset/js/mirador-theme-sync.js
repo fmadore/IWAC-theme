@@ -75,20 +75,19 @@
 
     /**
      * Initialize: sync theme once Mirador is ready, then watch for changes.
+     * Bail immediately on pages without a Mirador mount point — this script
+     * is enqueued site-wide, and polling 50 timers on every page for a
+     * viewer that isn't there is pure waste.
      */
     function init() {
+        const hasMount = window.miradors
+            || document.querySelector('[id^="mirador"], .mirador-viewer, [data-mirador]');
+        if (!hasMount) {
+            return;
+        }
         waitForMirador(() => {
             syncMiradorTheme(getCurrentTheme());
             observeThemeChanges();
-
-            // Also listen for system preference changes
-            if (window.matchMedia) {
-                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                    if (!document.body.getAttribute('data-theme')) {
-                        syncMiradorTheme(getCurrentTheme());
-                    }
-                });
-            }
         });
     }
 

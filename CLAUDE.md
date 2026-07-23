@@ -10,7 +10,7 @@ IWAC-theme is a customized Omeka S theme (fork of Freedom theme) for the Islam W
 
 **Visual debugging**: When diagnosing visual/layout issues on the live site, use Playwright MCP (`browser_navigate`, `browser_snapshot`, `browser_take_screenshot`, `browser_evaluate`) to inspect the rendered DOM and computed styles before proposing fixes. The site is publicly accessible at `https://islam.zmo.de/s/westafrica/` (English) or `https://islam.zmo.de/s/afrique_ouest/` (French).
 
-**Stack**: Omeka S 4.1.0+ (PHP), Sass with modern module system, Gulp build, vanilla JavaScript
+**Stack**: Omeka S 4.2.0+ (PHP), Sass with modern module system, Gulp build, vanilla JavaScript
 
 ## Design Philosophy
 
@@ -80,9 +80,11 @@ The system is **OKLCH-based** because equal lightness steps look equal (HSL is p
 
 ```bash
 npm install              # Install dependencies
-npm run start            # Watch mode - auto-compile on .scss changes
-npm run build            # One-off production build (build:tokens, then compile CSS)
+npm run start            # Compile once, then watch .scss (token changes re-run build:tokens)
+npm run build            # Production build: check:tokens, build:tokens, build:i18n, compile CSS
+npm run check:tokens     # Fail if any var(--…) in asset/sass doesn't resolve to a defined token
 npm run build:tokens     # Regenerate tokens.json (all 3 repos) + DESIGN-SYSTEM.md tables from _colors.scss
+npm run build:i18n       # Re-extract template.pot, merge fr.po, recompile fr.mo (pure node)
 ```
 
 ## Architecture

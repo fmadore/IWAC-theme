@@ -5,8 +5,10 @@
   "main": "gulpfile.js",
   "scripts": {
     "start": "gulp",
-    "build": "npm run build:tokens && gulp css",
+    "build": "npm run check:tokens && npm run build:tokens && npm run build:i18n && gulp css",
+    "check:tokens": "node scripts/check-token-usage.js",
     "build:tokens": "node scripts/build-tokens.js",
+    "build:i18n": "node scripts/build-i18n.js",
     "build:images": "node scripts/gen-banner-images.js",
     "build:icons": "node scripts/gen-pwa-icons.js"
   },
@@ -19,7 +21,7 @@
     "theme"
   ],
   "author": "Frédérick Madore",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/fmadore/IWAC-theme/issues"
   },
@@ -37,7 +39,7 @@
     "last 2 versions",
     "> 1%",
     "not dead",
-    "safari >= 14",
-    "ios >= 14"
+    "safari >= 16.2",
+    "ios >= 16.2"
   ]
 }

@@ -1,7 +1,6 @@
+// Only breakpoints are consumed here; the other variable modules are
+// reachable through abstracts/_abstracts.scss where components need them.
 @use "../variables/breakpoints" as *;
-@use "../variables/layout" as *;
-@use "../variables/colors" as *;
-@use "../variables/typography" as *;
 
 // Center block
 @mixin center-block {
@@ -150,6 +149,72 @@
 
     &:hover {
         color: var(--primary);
+    }
+}
+
+// ==========================================================================
+// Visually hidden
+// Screen-reader-only content: rendered, announced, but not painted.
+// One canonical block — don't hand-copy the clip pattern per component.
+// ==========================================================================
+@mixin visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+// ==========================================================================
+// Masthead icon button
+// The quiet round utility control in the masthead row (theme toggle,
+// PWA install). Also styles its `&__icon` child; the component decides the
+// icon's display (the theme toggle shows one of three icons via CSS).
+// ==========================================================================
+@mixin masthead-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-control-sm);
+    height: var(--size-control-sm);
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    color: var(--ink-light);
+    transition:
+        color var(--transition-fast),
+        background-color var(--transition-fast);
+
+    &:hover {
+        color: var(--primary);
+        background-color: var(--selection-bg);
+    }
+
+    @include focus-ring;
+
+    &__icon {
+        align-items: center;
+        justify-content: center;
+        width: var(--text-lg);
+        height: var(--text-lg);
+        transition: transform var(--transition-fast);
+        color: inherit;
+
+        svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+    }
+
+    &:hover &__icon {
+        transform: scale(1.1);
     }
 }
 

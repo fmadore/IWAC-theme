@@ -1,3 +1,6 @@
+(function () {
+'use strict';
+
 const freedomScripts = () => {
 
     const mainHeader = document.querySelector('.main-header');
@@ -200,7 +203,9 @@ const freedomScripts = () => {
                 annotationTooltip.style.left = '0px';
             }
 
-            if ((top - mainHeader.offsetHeight - mainHeader.offsetTop) < (annotationTooltipWrapper.offsetHeight + 15)) {
+            // Header chrome can be absent on minimal pages.
+            const headerClearance = mainHeader ? mainHeader.offsetHeight + mainHeader.offsetTop : 0;
+            if ((top - headerClearance) < (annotationTooltipWrapper.offsetHeight + 15)) {
                 annotationTooltip.style.bottom = (- annotationTooltipWrapper.offsetHeight - 20) + 'px';
                 annotationTooltipWrapper.classList.add('below-button');
             } else {
@@ -266,3 +271,4 @@ const freedomScripts = () => {
 }
 
 IWACUtils.onReady(freedomScripts);
+})();

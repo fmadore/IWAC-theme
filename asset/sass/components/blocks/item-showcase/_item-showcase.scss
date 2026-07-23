@@ -35,14 +35,7 @@
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        transition:
-            box-shadow var(--transition-fast),
-            border-color var(--transition-fast);
-
-        &:hover {
-            box-shadow: var(--shadow-md);
-            border-color: var(--border-strong);
-        }
+        @include card-hover;
 
         h3 {
             color: var(--ink);

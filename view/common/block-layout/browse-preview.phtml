@@ -10,12 +10,9 @@ $filterLocale = (bool) $this->siteSetting('filter_locale_values');
 $lang = $this->lang();
 $valueLang = $filterLocale ? [$lang, ''] : null;
 
-$layoutSetting = $this->themeSetting('browse_layout', 'grid');
+$layout = $this->browseLayout();
+$isGrid = $layout['isGrid'];
 $bodyTruncate = $this->themeSetting('truncate_body_property');
-$gridState = ($layoutSetting == 'togglegrid') ? 'disabled' : '';
-$listState = ($layoutSetting == 'togglelist') ? 'disabled': '';
-$currentLayout = (strpos($layoutSetting, 'grid') !== false) ? 'grid' : 'list';
-$isGrid = ($currentLayout == 'grid') ? true : false;
 $queryUrl = $this->url(
     'site/resource', ['controller' => $this->resourceType, 'action' => 'browse'], ['query' => $this->query], true
 );
@@ -25,12 +22,6 @@ $showHeading = in_array('resource-heading', $this->components);
 $showBody = in_array('resource-body', $this->components);
 $headingTerm = $this->siteSetting('browse_heading_property_term');
 $bodyTerm = $this->siteSetting('browse_body_property_term');
-$decoration = $this->themeSetting('image_decoration');
-$decorationClass = '';
-
-if (is_array($decoration) && in_array('media', $decoration)) {
-    $decorationClass = $isGrid ? 'decoration' : 'decoration decoration--thumbnail';
-}
 ?>
 
 <div class="preview-block clearfix">
@@ -41,51 +32,36 @@ if (is_array($decoration) && in_array('media', $decoration)) {
         </div>
     <?php endif; ?>
 
-    <?php if (strpos($layoutSetting, 'toggle') !== false) : ?>
+    <?php if ($layout['hasToggle']) : ?>
         <div class="browse-controls">
-            <div class="layout-toggle">
-                <button type="button" aria-label="<?php echo $translate('Grid'); ?>" title="<?php echo $translate('Grid'); ?>" class="grid icon-btn o-icon-grid" <?php echo $gridState; ?>></button>
-                <button type="button" aria-label="<?php echo $translate('List'); ?>" title="<?php echo $translate('List'); ?>" class="list icon-btn o-icon-list" <?php echo $listState; ?>></button>
-            </div>
+            <?php echo $this->partial('common/browse-toggle', [
+                'gridState' => $layout['gridState'],
+                'listState' => $layout['listState'],
+            ]); ?>
         </div>
     <?php endif; ?>
 
 
     <ul class="resources <?php echo ($isGrid) ? 'resource-grid' : 'resource-list'; ?>">
-        <?php
-        foreach ($this->resources as $resource):
-            $heading = $headingTerm ? $resource->value($headingTerm, ['default' => $translate('[Untitled]'), 'lang' => $valueLang]) : $resource->displayTitle(null, ($valueLang));
-            $body = $bodyTerm ? $resource->value($bodyTerm) : $resource->displayDescription(null, ($valueLang));
-            $primaryMedia = $resource->primaryMedia();
-            $altText = '';
-            if ($primaryMedia) {
-                $altText = method_exists($primaryMedia, 'altText') ? (string) $primaryMedia->altText() : '';
-            }
-            if (!$altText) {
-                $altText = $resource->displayTitle(null, $valueLang);
-            }
+        <?php foreach ($this->resources as $resource): ?>
+            <?php
+            $heading = $headingTerm
+                ? $resource->value($headingTerm, ['default' => $translate('[Untitled]'), 'lang' => $valueLang])
+                : null;
             ?>
-            <li class="<?php echo $this->resourceType; ?> resource <?php echo ($isGrid) ? '' : 'media-object'; ?>">
-                <!-- Thumbnail -->
-                <?php if ($showThumbnail) : ?>
-                    <div class="resource__thumbnail <?php echo $decorationClass; ?>">
-                        <?php echo $resource->linkRaw($this->thumbnail($resource, 'large', ['alt' => $altText])); ?>
-                    </div>
-                <?php endif; ?>
-
-                <!-- Content -->
-                <div class="resource__content">
-                    <?php if ($showHeading) : ?>
-                        <?php echo $this->ResourceTags($resource); ?>
-                        <?php echo $resource->link($heading); ?>
-                    <?php endif; ?>
-
-                    <?php if ($showBody && $body) : ?>
-                        <div class="description <?php echo ($bodyTruncate) ? $bodyTruncate : ''; ?>"><?php echo $escape($body); ?></div>
-                    <?php endif; ?>
-                </div>
-            </li>
-
+            <?php echo $this->partial('common/resource-card', [
+                'resource' => $resource,
+                'isGrid' => $isGrid,
+                'valueLang' => $valueLang,
+                'liClass' => $this->resourceType,
+                'decorationClass' => $layout['decorationClass'],
+                'bodyTerm' => $bodyTerm,
+                'bodyTruncate' => $bodyTruncate,
+                'heading' => $heading,
+                'showThumbnail' => $showThumbnail,
+                'showHeading' => $showHeading,
+                'showBody' => $showBody,
+            ]); ?>
         <?php endforeach; ?>
     </ul>
 

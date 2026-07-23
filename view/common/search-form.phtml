@@ -45,7 +45,15 @@ if ($useModule) {
     $query     = $this->params()->fromQuery('fulltext_search');
 }
 ?>
-<form action="<?php echo $escapeAttr($action); ?>" method="get"<?php echo $useModule ? ' data-iwac-header-search' : ''; ?> id="<?php echo $escapeAttr($formId); ?>" aria-label="<?php echo $escapeAttr($translate('Search')); ?>" role="search">
-    <input type="text" id="<?php echo $escapeAttr($inputId); ?>" name="<?php echo $escapeAttr($queryName); ?>" value="<?php echo $escapeAttr($query); ?>" placeholder="<?php echo $escapeAttr($translate('Search')); ?>" aria-label="<?php echo $escapeAttr($translate('Query')); ?>" aria-labelledby="<?php echo $escapeAttr($formId . ' ' . $inputId); ?>">
+<?php
+// Distinguish the two search landmarks on the homepage (masthead + hero).
+$formLabel = $variant === 'hero'
+    ? $translate('Search the collection')
+    : $translate('Search');
+?>
+<form action="<?php echo $escapeAttr($action); ?>" method="get"<?php echo $useModule ? ' data-iwac-header-search' : ''; ?> id="<?php echo $escapeAttr($formId); ?>" aria-label="<?php echo $escapeAttr($formLabel); ?>" role="search">
+    <?php // One name source only: aria-labelledby would override aria-label,
+          // and a self-reference makes AT announce the input's own value. ?>
+    <input type="text" id="<?php echo $escapeAttr($inputId); ?>" name="<?php echo $escapeAttr($queryName); ?>" value="<?php echo $escapeAttr((string) $query); ?>" placeholder="<?php echo $escapeAttr($translate('Search')); ?>" aria-label="<?php echo $escapeAttr($translate('Query')); ?>">
     <button id="<?php echo $escapeAttr($submitId); ?>" type="submit" aria-label="<?php echo $escapeAttr($translate('Submit')); ?>" title="<?php echo $escapeAttr($translate('Submit')); ?>"><span class="o-icon-search" aria-hidden="true"></span></button>
 </form>

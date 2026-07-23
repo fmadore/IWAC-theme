@@ -1,3 +1,5 @@
+@use "../abstracts/abstracts" as *;
+
 // ==========================================================================
 // Accessibility Utilities
 // Skip links, screen reader text, and focus states
@@ -7,8 +9,11 @@
     position: absolute;
     inset-block-start: -100%;
     inset-inline-start: var(--space-md);
-    background: var(--primary);
-    color: white;
+    // --primary-active (28% darkened) keeps white text comfortably past AA
+    // even when an admin seeds a lighter primary; raw --primary sits at
+    // ~4.5:1 with the default seed and dips below it with lighter ones.
+    background: var(--primary-active);
+    color: var(--white);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-md);
     font-weight: 500;
@@ -24,15 +29,7 @@
 // Screen reader only - hidden but accessible
 .screen-reader-text,
 .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: var(--lift-xxs);
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
+    @include visually-hidden;
 
     &:focus {
         background: var(--panel-bg);

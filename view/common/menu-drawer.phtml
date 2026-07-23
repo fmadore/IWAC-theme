@@ -1,21 +1,27 @@
 <?php
+$escapeAttr = $this->plugin('escapeHtmlAttr');
 $closeText = $this->translate('Close');
-$previousText = $this->translate('Previous');
 ?>
-<nav id="menu-drawer" class="menu-drawer" aria-hidden="true" inert style="display: none;">
+<?php // Translated strings for navigation.js travel as data-* attributes —
+      // global consts would collide if any module declared the same name. ?>
+<nav id="menu-drawer" class="menu-drawer" aria-hidden="true" inert style="display: none;"
+	data-close-text="<?php echo $escapeAttr($closeText); ?>"
+	data-open-menu-text="<?php echo $escapeAttr($this->translate('Open menu')); ?>"
+	data-toggle-submenu-text="<?php echo $escapeAttr($this->translate('Toggle submenu')); ?>"
+	data-show-submenu-text="<?php echo $escapeAttr($this->translate('show submenu for “%s”')); ?>"
+>
 	<div class="wrap">
 
 		<div class="navigation-controls">
-			<a href="."
+			<button type="button"
 				id="menu-backer"
 				class="menu-backer is-empty"
-				aria-label="<?php echo $closeText; ?>"
 				aria-hidden="true"
 				tabindex="-1"
-				title="<?php echo $closeText; ?>"
+				title="<?php echo $escapeAttr($closeText); ?>"
 			>
-                <?php echo $closeText; ?>
-			</a>
+                <?php echo $this->escapeHtml($closeText); ?>
+			</button>
 		</div><!-- .navigation-controls -->
 
 		<div id="menu-clones" class="menu-container">
@@ -28,9 +34,3 @@ $previousText = $this->translate('Previous');
 
 	</div><!-- .wrap -->
 </nav><!-- menu-drawer -->
-
-<script>
-    const closeText = <?php echo json_encode($closeText); ?>;
-    const previousText = <?php echo json_encode($previousText); ?>;
-    const openMenuText = <?php echo json_encode($this->translate('Open menu')); ?>;
-</script>

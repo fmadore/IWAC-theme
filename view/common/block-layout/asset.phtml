@@ -22,7 +22,7 @@ $decoration = $this->themeSetting('image_decoration');
         ?>
         <?php $page = (array_key_exists('page', $attachment)) ? $attachment['page'] : null; ?>
         <?php if ($page): ?>
-            <a href="<?php echo $escape($page->siteUrl()); ?>">
+            <a href="<?php echo $this->escapeHtmlAttr($page->siteUrl()); ?>">
                 <?php echo $assetImage; ?>
                 <?php $altLinkTitle = ($attachment['alt_link_title'] !== '') ? $escape($attachment['alt_link_title']) : false; ?>
                 <span class="link-title"><?php echo ($altLinkTitle) ? $altLinkTitle : $escape($page->title()); ?></span>

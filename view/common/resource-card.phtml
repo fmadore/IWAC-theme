@@ -1,0 +1,71 @@
+<?php
+/**
+ * Shared resource card for browse-style listings (item, item-set and
+ * media browse pages, browse-preview block).
+ *
+ * Expected variables:
+ * - $resource: AbstractResourceEntityRepresentation
+ * - $isGrid: bool
+ * - $valueLang: locale filter for displayTitle()/displayDescription(), or null
+ * - $liClass: resource-type class for the <li> ('item', 'item-set', 'media', …)
+ * - $decorationClass: '' or the decoration classes (from the browseLayout helper)
+ * - $bodyTerm: property term for the body text, or '' (falls back to description)
+ * - $bodyTruncate: truncation class from the theme setting, or ''
+ * - $heading: optional pre-computed heading (string|ValueRepresentation);
+ *   defaults to the resource title
+ * - $showThumbnail / $showHeading / $showBody: optional bools (default true)
+ * - $eager: optional bool — set for above-the-fold cards to skip lazy-loading
+ */
+$escape = $this->plugin('escapeHtml');
+
+$showThumbnail = $showThumbnail ?? true;
+$showHeading = $showHeading ?? true;
+$showBody = $showBody ?? true;
+$eager = $eager ?? false;
+$heading = $heading ?? null;
+
+$body = null;
+if ($showBody) {
+    $body = $bodyTerm
+        ? $resource->value($bodyTerm, ['lang' => $valueLang])
+        : $resource->displayDescription(null, $valueLang);
+}
+
+$thumbnail = '';
+if ($showThumbnail) {
+    $primaryMedia = $resource->primaryMedia();
+    $altText = '';
+    if ($primaryMedia) {
+        $altText = method_exists($primaryMedia, 'altText') ? (string) $primaryMedia->altText() : '';
+    }
+    if (!$altText) {
+        $altText = $resource->displayTitle(null, $valueLang);
+    }
+    $thumbnailAttribs = ['alt' => $altText, 'decoding' => 'async'];
+    if (!$eager) {
+        $thumbnailAttribs['loading'] = 'lazy';
+    }
+    $thumbnail = $this->thumbnail($resource, 'large', $thumbnailAttribs);
+}
+?>
+<li class="<?php echo $escape($liClass); ?> resource <?php echo $isGrid ? '' : 'media-object'; ?>">
+    <?php if ($thumbnail): ?>
+        <div class="resource__thumbnail <?php echo $decorationClass; ?>">
+            <?php echo $resource->linkRaw($thumbnail); ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="resource__content">
+        <?php if ($showHeading): ?>
+            <?php echo $this->ResourceTags($resource); ?>
+            <div class="resource__meta <?php echo $isGrid ? '' : 'media-object-section'; ?>">
+                <?php echo $resource->link($heading ?? $resource->displayTitle(null, $valueLang)); ?>
+                <?php if ($body): ?>
+                    <div class="description <?php echo $bodyTruncate ?: ''; ?>"><?php echo $escape($body); ?></div>
+                <?php endif; ?>
+            </div>
+        <?php elseif ($body): ?>
+            <div class="description <?php echo $bodyTruncate ?: ''; ?>"><?php echo $escape($body); ?></div>
+        <?php endif; ?>
+    </div>
+</li>

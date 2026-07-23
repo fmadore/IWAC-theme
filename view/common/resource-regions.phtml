@@ -1,0 +1,51 @@
+<?php
+/**
+ * Resource page block regions (main + left/right sidebars) for resource
+ * show pages and item-set pages. Renders nothing when no region has blocks.
+ *
+ * Expected variables:
+ * - $resource: AbstractResourceEntityRepresentation
+ */
+$mainBlockContent = $this->resourcePageBlocks($resource);
+$mainHasBlocks = $mainBlockContent->hasBlocks();
+$leftSidebarBlockContent = $this->resourcePageBlocks($resource, 'left');
+$leftSidebarHasBlocks = $leftSidebarBlockContent->hasBlocks();
+$rightSidebarBlockContent = $this->resourcePageBlocks($resource, 'right');
+$rightSidebarHasBlocks = $rightSidebarBlockContent->hasBlocks();
+
+if (!$mainHasBlocks && !$leftSidebarHasBlocks && !$rightSidebarHasBlocks) {
+    return;
+}
+
+$additionalContainerClasses = '';
+if ($mainHasBlocks && $leftSidebarHasBlocks && $rightSidebarHasBlocks) {
+    $additionalContainerClasses = 'regions-container--all';
+} elseif ($mainHasBlocks && !$leftSidebarHasBlocks && !$rightSidebarHasBlocks) {
+    $additionalContainerClasses = 'regions-container--main';
+}
+?>
+<div class="regions-container <?php echo $additionalContainerClasses; ?>">
+    <?php if ($leftSidebarHasBlocks && $blockContent = $leftSidebarBlockContent->getBlocks()): ?>
+        <div class="sidebar-region sidebar-region--left">
+            <div class="metadata">
+                <?php echo $blockContent; ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($mainHasBlocks && $blockContent = $mainBlockContent->getBlocks()): ?>
+        <div class="main-region">
+            <div class="metadata">
+                <?php echo $blockContent; ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($rightSidebarHasBlocks && $blockContent = $rightSidebarBlockContent->getBlocks()): ?>
+        <div class="sidebar-region sidebar-region--right">
+            <div class="metadata">
+                <?php echo $blockContent; ?>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>

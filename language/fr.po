@@ -6,71 +6,698 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: view/common/pagination.phtml:17 view/common/pagination.phtml:48
+msgid "%1$s–%2$s of %3$s"
+msgstr "%1$s–%2$s sur %3$s"
+
+#: view/hierarchy/common/block-layout/hierarchy-public.phtml:102
+msgid "(Private)"
+msgstr "(Privé)"
+
+#: view/common/pagination.phtml:52
+msgid "0 results"
+msgstr "0 résultat"
+
+#: view/common/resource-values.phtml:85
+msgid "AI-generated content"
+msgstr "Contenu généré par IA"
+
+#: view/common/advanced-search/properties.phtml:68
+msgid "AND"
+msgstr ""
+
+#: view/common/advanced-search/resource-class.phtml:48
+msgid "Add new class"
+msgstr ""
+
+#: view/common/advanced-search/item-sets.phtml:72
+msgid "Add new item set"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:113
+msgid "Add new value"
+msgstr ""
+
+#: view/omeka/site/item/search.phtml:7
+msgid "Advanced item search"
+msgstr ""
+
+#: view/omeka/site/item-set/browse.phtml:31 view/omeka/site/item/browse.phtml:55 view/omeka/site/media/browse.phtml:31
+msgid "Advanced search"
+msgstr ""
+
+#: view/common/footer.phtml:64
+msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
+msgstr ""
+
+#: view/common/linked-resources.phtml:114
+msgid "All"
+msgstr "Tout"
+
+#: view/error/index.phtml:22
+msgid "An error occurred while processing your request. Please try again later."
+msgstr "Une erreur s’est produite lors du traitement de votre demande. Veuillez réessayer plus tard."
+
+#: view/common/advanced-search/sort.phtml:27
+msgid "Ascending"
+msgstr ""
+
+#: view/common/banner.phtml:158
 msgid "Audiovisual minutes"
 msgstr "Minutes audiovisuelles"
 
+#: view/common/language-switcher.phtml:51
 msgid "Available languages"
 msgstr "Langues disponibles"
 
+#: view/layout/layout.phtml:282
 msgid "Back to top"
 msgstr "Haut de page"
 
+#: view/common/footer.phtml:57
+msgid "Berlin Senate Department"
+msgstr ""
+
+#: view/error/404.phtml:27 view/layout/layout.phtml:82
+msgid "Browse items"
+msgstr "Parcourir les documents"
+
+#: view/common/header.phtml:115
 msgid "Browse sections"
 msgstr "Parcourir les sections"
 
+#: view/common/language-switcher.phtml:38
+msgid "Change language"
+msgstr "Changer de langue"
+
+#: view/common/citation.phtml:41
 msgid "Citation style"
 msgstr "Style de citation"
 
+#: view/common/advanced-search/resource-class.phtml:32
+msgid "Class"
+msgstr ""
+
+#: view/common/menu-drawer.phtml:3
+msgid "Close"
+msgstr ""
+
+#: view/common/banner.phtml:193
 msgid "Collection at a glance"
 msgstr "La collection en un coup d’œil"
 
+#: view/common/advanced-search/item-sets.phtml:51
+msgid "Condition"
+msgstr ""
+
+#: view/common/citation.phtml:71
 msgid "Copied"
 msgstr "Copié"
 
+#: view/common/citation.phtml:70 view/common/citation.phtml:74
 msgid "Copy"
 msgstr "Copier"
 
+#: view/common/banner.phtml:204
 msgid "Corpus in depth"
 msgstr "Le corpus en détail"
 
+#: view/common/banner.phtml:124
 msgid "Countries"
 msgstr "Pays"
 
+#: view/common/header.phtml:51
+msgid "Dark theme"
+msgstr "Thème sombre"
+
+#: view/common/header.phtml:48
+msgid "Dark theme active. Activate to switch to system theme."
+msgstr "Thème sombre actif. Activer pour passer au thème système."
+
+#: view/common/linked-resources-table.phtml:40 view/common/linked-resources-table.phtml:91
+msgid "Date"
+msgstr ""
+
+#: view/common/numeric-data-types-advanced-search.phtml:14
+msgid "Date comes on or after"
+msgstr ""
+
+#: view/common/numeric-data-types-advanced-search.phtml:43
+msgid "Date comes on or before"
+msgstr ""
+
+#: view/common/numeric-data-types-advanced-search.phtml:125
+msgid "Date in interval"
+msgstr ""
+
+#: view/common/numeric-timestamp.phtml:19
+msgid "Day"
+msgstr ""
+
+#: view/common/numeric-duration.phtml:19
+msgid "Days"
+msgstr ""
+
+#: view/common/linked-resources.phtml:46
+msgid "Default"
+msgstr "Par défaut"
+
+#: view/common/advanced-search/sort.phtml:28
+msgid "Descending"
+msgstr ""
+
+#: view/common/banner.phtml:157
 msgid "Document types"
 msgstr "Types de documents"
 
+#: view/common/citation.phtml:79
 msgid "Download"
 msgstr "Télécharger"
 
+#: view/common/numeric-data-types-advanced-search.phtml:71
+msgid "Duration is greater than"
+msgstr ""
+
+#: view/common/numeric-data-types-advanced-search.phtml:98
+msgid "Duration is less than"
+msgstr ""
+
+#: view/error/index.phtml:10
+msgid "Error"
+msgstr "Erreur"
+
+#: view/common/linked-resources.phtml:107
+msgid "Filter by relation"
+msgstr "Filtrer par relation"
+
+#: view/common/linked-resources.phtml:86 view/omeka/site/item/browse.phtml:91
+msgid "Filter by title..."
+msgstr "Filtrer par titre…"
+
+#: view/omeka/site/item/browse.phtml:92
+msgid "Filter items by title"
+msgstr "Filtrer les documents par titre"
+
+#: view/common/linked-resources.phtml:87
+msgid "Filter linked resources by title"
+msgstr "Filtrer les ressources liées par titre"
+
+#: view/common/linked-resources.phtml:109
+msgid "Filter:"
+msgstr "Filtrer :"
+
+#: view/common/resource-values.phtml:85
+msgid "Generated by an AI model. Verify against the original source."
+msgstr "Généré par un modèle d’IA. Vérifiez avec la source originale."
+
+#: view/common/pagination.phtml:36
+msgid "Go"
+msgstr ""
+
+#: view/error/404.phtml:24 view/error/404.phtml:31 view/error/index.phtml:28 view/error/index.phtml:32
+msgid "Go to homepage"
+msgstr "Aller à la page d’accueil"
+
+#: view/common/browse-toggle.phtml:15
+msgid "Grid"
+msgstr ""
+
+#: view/common/advanced-search/has-media.phtml:5
+msgid "Has media"
+msgstr ""
+
+#: view/common/advanced-search/has-media.phtml:6
+msgid "Has no media"
+msgstr ""
+
+#: view/common/numeric-timestamp.phtml:25
+msgid "Hour"
+msgstr ""
+
+#: view/common/numeric-duration.phtml:25
+msgid "Hours"
+msgstr ""
+
+#: view/common/citation.phtml:38
 msgid "How to cite this item"
 msgstr "Comment citer ce document"
 
+#: view/common/header.phtml:78
+msgid "How to install this app"
+msgstr "Comment installer cette application"
+
+#: view/common/advanced-search/item-sets.phtml:53
+msgid "In"
+msgstr ""
+
+#: view/common/banner.phtml:122
+msgid "Index"
+msgstr "Index"
+
+#: view/common/header.phtml:77
+msgid "Install app"
+msgstr "Installer l’application"
+
+#: view/common/numeric-duration.phtml:7 view/common/numeric-integer.phtml:7 view/common/numeric-timestamp.phtml:7
+msgid "Invalid value: %s"
+msgstr ""
+
+#: view/common/advanced-search/item-sets.phtml:57
+msgid "Item Set"
+msgstr ""
+
+#: view/common/block-layout/item-with-metadata.phtml:63 view/common/linked-resources.phtml:20 view/omeka/site/item-set/browse.phtml:18
+msgid "Item sets"
+msgstr ""
+
+#: view/common/block-layout/mapping-block-popup-content.phtml:14
+msgid "Item: %s"
+msgstr "Document : %s"
+
+#: view/common/banner.phtml:121 view/common/linked-resources.phtml:19 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
+msgid "Items"
+msgstr ""
+
+#: view/common/banner.phtml:159
 msgid "Languages"
 msgstr "Langues"
 
+#: view/common/footer.phtml:50
+msgid "Leibniz-Zentrum Moderner Orient"
+msgstr ""
+
+#: view/common/header.phtml:50
+msgid "Light theme"
+msgstr "Thème clair"
+
+#: view/common/header.phtml:47
+msgid "Light theme active. Activate to switch to dark mode."
+msgstr "Thème clair actif. Activer pour passer au mode sombre."
+
+#: view/common/resource-page-block-layout/linked-resources.phtml:15
+msgid "Linked resources"
+msgstr ""
+
+#: view/common/browse-toggle.phtml:16
+msgid "List"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:66 view/common/advanced-search/properties.phtml:67
+msgid "Logical operator"
+msgstr "Opérateur logique"
+
+#: view/common/header.phtml:99
 msgid "Main navigation"
 msgstr "Navigation principale"
 
+#: view/common/block-layout/item-with-metadata.phtml:73 view/common/linked-resources.phtml:21 view/common/resource-page-block-layout/media-list.phtml:8 view/omeka/site/media/browse.phtml:18
+msgid "Media"
+msgstr ""
+
+#: view/common/block-layout/mapping-block-popup-content.phtml:19
+msgid "Media: %s"
+msgstr "Média : %s"
+
+#: view/common/numeric-timestamp.phtml:28
+msgid "Minute"
+msgstr ""
+
+#: view/common/numeric-duration.phtml:28
+msgid "Minutes"
+msgstr ""
+
+#: view/common/numeric-timestamp.phtml:16
+msgid "Month"
+msgstr ""
+
+#: view/common/numeric-duration.phtml:16
+msgid "Months"
+msgstr ""
+
+#: view/common/linked-resources.phtml:49
+msgid "Newest first"
+msgstr "Plus récents d’abord"
+
+#: view/common/pagination.phtml:41
+msgid "Next"
+msgstr ""
+
+#: view/omeka/site/page/browse.phtml:14
+msgid "No pages found"
+msgstr "Aucune page trouvée"
+
+#: view/common/linked-resources.phtml:53 view/omeka/site/item/browse.phtml:69
+msgid "No resources match your search."
+msgstr "Aucune ressource ne correspond à votre recherche."
+
+#: view/omeka/site/index/search.phtml:22
+msgid "No result found"
+msgstr "Aucun résultat trouvé"
+
+#: view/common/advanced-search/item-sets.phtml:54
+msgid "Not in"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:69
+msgid "OR"
+msgstr ""
+
+#: view/common/numeric-timestamp.phtml:34
+msgid "Offset"
+msgstr ""
+
+#: view/common/linked-resources.phtml:50
+msgid "Oldest first"
+msgstr "Plus anciens d’abord"
+
+#: view/common/header.phtml:89 view/common/menu-drawer.phtml:9
 msgid "Open menu"
 msgstr "Ouvrir le menu"
 
+#: view/common/pagination.phtml:32 view/common/pagination.phtml:33
+msgid "Page"
+msgstr ""
+
+#: view/error/404.phtml:10 view/error/404.phtml:16
+msgid "Page not found"
+msgstr "Page non trouvée"
+
+#: view/omeka/site/page/browse.phtml:5
+msgid "Pages"
+msgstr ""
+
+#: view/common/pagination.phtml:6
+msgid "Pagination"
+msgstr "Pagination"
+
+#: view/omeka/site/media/show.phtml:23
+msgid "Part of %s"
+msgstr "Fait partie de %s"
+
+#: view/common/footer.phtml:150
+msgid "Powered by Omeka S"
+msgstr ""
+
+#: view/common/citation.phtml:72
 msgid "Press Ctrl+C to copy"
 msgstr "Appuyez sur Ctrl+C pour copier"
 
-msgid "Switch to dark mode"
-msgstr "Passer en mode sombre"
+#: view/common/pagination.phtml:21
+msgid "Previous"
+msgstr ""
 
-msgid "Switch to light mode"
-msgstr "Passer en mode clair"
+#: view/common/resource-values.phtml:128 view/hierarchy/common/block-layout/hierarchy-public.phtml:230
+msgid "Private"
+msgstr ""
 
-msgid "Switch to system theme"
-msgstr "Passer en mode système"
+#: view/common/advanced-search/properties.phtml:72 view/common/advanced-search/properties.phtml:79 view/common/numeric-data-types-advanced-search.phtml:101 view/common/numeric-data-types-advanced-search.phtml:128 view/common/numeric-data-types-advanced-search.phtml:156 view/common/numeric-data-types-advanced-search.phtml:17 view/common/numeric-data-types-advanced-search.phtml:183 view/common/numeric-data-types-advanced-search.phtml:46 view/common/numeric-data-types-advanced-search.phtml:74
+msgid "Property"
+msgstr ""
 
+#: view/common/search-form.phtml:57
+msgid "Query"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:103 view/common/advanced-search/properties.phtml:38
+msgid "Query text"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:88 view/common/advanced-search/properties.phtml:89
+msgid "Query type"
+msgstr ""
+
+#: view/common/banner.phtml:123
+msgid "References"
+msgstr "Références"
+
+#: view/common/linked-resources-table.phtml:33 view/common/linked-resources-table.phtml:82
+msgid "Relation"
+msgstr "Relation"
+
+#: view/common/advanced-search/item-sets.phtml:68 view/common/advanced-search/properties.phtml:105 view/common/advanced-search/resource-class.phtml:44
+msgid "Remove value"
+msgstr ""
+
+#: view/omeka/site/item/search.phtml:15
+msgid "Reset"
+msgstr ""
+
+#: view/common/search-form.phtml:52 view/common/search-form.phtml:57 view/layout/layout.phtml:87 view/omeka/site/item/search.phtml:14
+msgid "Search"
+msgstr ""
+
+#: view/common/advanced-search/ids.phtml:13
+msgid "Search by ID"
+msgstr ""
+
+#: view/common/advanced-search/resource-class.phtml:24
+msgid "Search by class"
+msgstr ""
+
+#: view/common/advanced-search/item-sets.phtml:43
+msgid "Search by item set"
+msgstr ""
+
+#: view/common/advanced-search/has-media.phtml:3
+msgid "Search by media presence"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:54
+msgid "Search by value"
+msgstr ""
+
+#: view/omeka/site/index/search.phtml:19
+msgid "Search results for “%s”"
+msgstr "Résultats de recherche pour « %s »"
+
+#: view/common/search-form.phtml:51
+msgid "Search the collection"
+msgstr "Rechercher dans la collection"
+
+#: view/common/advanced-search/item-sets.phtml:45
+msgid "Searches for items that are assigned to any of these item sets."
+msgstr ""
+
+#: view/common/advanced-search/ids.phtml:15
+msgid "Searches for resources by Omeka S ID. You can search for more than one ID by separating them by commas."
+msgstr ""
+
+#: view/common/advanced-search/resource-class.phtml:26
+msgid "Searches for resources that are any of these classes."
+msgstr ""
+
+#: view/common/numeric-timestamp.phtml:31
+msgid "Second"
+msgstr ""
+
+#: view/common/numeric-duration.phtml:31
+msgid "Seconds"
+msgstr ""
+
+#: view/common/language-switcher.phtml:37
+msgid "Select language"
+msgstr "Choisir la langue"
+
+#: view/common/advanced-search/has-media.phtml:8
+msgid "Select media presence…"
+msgstr ""
+
+#: view/common/advanced-search/sort.phtml:20
+msgid "Select sort by…"
+msgstr ""
+
+#: view/common/advanced-search/sort.phtml:25
+msgid "Select sort order…"
+msgstr ""
+
+#: view/common/resource-values.phtml:132
+msgid "Show annotation"
+msgstr "Afficher l’annotation"
+
+#: view/layout/layout.phtml:263
+msgid "Skip to main content"
+msgstr "Aller au contenu principal"
+
+#: view/error/index.phtml:20
+msgid "Something went wrong"
+msgstr "Une erreur s’est produite"
+
+#: view/common/advanced-search/sort.phtml:34
+msgid "Sort"
+msgstr ""
+
+#: view/common/advanced-search/sort.phtml:37 view/common/linked-resources.phtml:92
+msgid "Sort by"
+msgstr ""
+
+#: view/common/advanced-search/sort.phtml:40
+msgid "Sort order"
+msgstr ""
+
+#: view/common/search-form.phtml:58
+msgid "Submit"
+msgstr ""
+
+#: view/common/header.phtml:49
+msgid "System theme"
+msgstr "Thème système"
+
+#: view/common/header.phtml:46 view/common/header.phtml:52
+msgid "System theme active. Activate to switch to light mode."
+msgstr "Thème système actif. Activer pour passer au mode clair."
+
+#: view/common/header.phtml:79
+msgid "Tap the Share icon, then “Add to Home Screen”."
+msgstr "Touchez l’icône Partager, puis « Sur l’écran d’accueil »."
+
+#: view/error/404.phtml:18
+msgid "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable."
+msgstr "La page que vous recherchez a peut-être été supprimée, renommée ou est temporairement indisponible."
+
+#: view/common/linked-resources-table.phtml:26
+msgid "Thumbnail"
+msgstr "Vignette"
+
+#: view/common/numeric-duration.phtml:22 view/common/numeric-timestamp.phtml:22
+msgid "Time"
+msgstr ""
+
+#: view/common/linked-resources-table.phtml:29 view/common/linked-resources-table.phtml:74
+msgid "Title"
+msgstr ""
+
+#: view/common/linked-resources.phtml:47
+msgid "Title (A-Z)"
+msgstr "Titre (A-Z)"
+
+#: view/common/linked-resources.phtml:48
+msgid "Title (Z-A)"
+msgstr "Titre (Z-A)"
+
+#: view/common/menu-drawer.phtml:10
+msgid "Toggle submenu"
+msgstr "Afficher ou masquer le sous-menu"
+
+#: view/common/banner.phtml:155
 msgid "Total pages"
 msgstr "Pages totales"
 
+#: view/common/banner.phtml:154
 msgid "Total words"
 msgstr "Mots totaux"
 
+#: view/common/linked-resources-table.phtml:37 view/common/linked-resources-table.phtml:87
+msgid "Type"
+msgstr ""
+
+#: view/common/banner.phtml:156
 msgid "Unique sources"
 msgstr "Sources uniques"
+
+#: view/common/numeric-integer.phtml:11
+msgid "Value"
+msgstr ""
+
+#: view/common/resource-values.phtml:137
+msgid "Value Annotations"
+msgstr "Annotations de valeur"
+
+#: view/common/numeric-data-types-advanced-search.phtml:153
+msgid "Value is greater than"
+msgstr ""
+
+#: view/common/numeric-data-types-advanced-search.phtml:180
+msgid "Value is less than"
+msgstr ""
+
+#: view/common/numeric-timestamp.phtml:8
+msgid "Value must be a datetime"
+msgstr ""
+
+#: view/common/numeric-duration.phtml:8
+msgid "Value must be a duration"
+msgstr ""
+
+#: view/common/numeric-integer.phtml:8
+msgid "Value must be an integer"
+msgstr ""
+
+#: view/omeka/site/index/search.phtml:77
+msgid "View all results (%s total)"
+msgstr "Voir tous les résultats (%s au total)"
+
+#: view/common/footer.phtml:71
+msgid "Volkswagen Foundation"
+msgstr ""
+
+#: view/common/numeric-timestamp.phtml:13
+msgid "Year"
+msgstr ""
+
+#: view/common/numeric-duration.phtml:13
+msgid "Years"
+msgstr ""
+
+#: view/common/block-layout/browse-preview.phtml:49 view/hierarchy/common/block-layout/hierarchy-public.phtml:108
+msgid "[Untitled]"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:92
+msgid "contains"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:93
+msgid "does not contain"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:97
+msgid "does not end with"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:95
+msgid "does not start with"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:96
+msgid "ends with"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:100
+msgid "has any value"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:101
+msgid "has no values"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:90
+msgid "is exactly"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:91
+msgid "is not exactly"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:99
+msgid "is not resource with ID"
+msgstr ""
+
+#: view/common/advanced-search/properties.phtml:98
+msgid "is resource with ID"
+msgstr ""
+
+#: view/common/pagination.phtml:35
+msgid "of %s"
+msgstr "sur %s"
+
+#: view/common/menu-drawer.phtml:11
+msgid "show submenu for “%s”"
+msgstr "afficher le sous-menu de « %s »"
+
+#: view/common/advanced-search/properties.phtml:94
+msgid "starts with"
+msgstr ""
+
+#: view/common/linked-resources.phtml:54 view/omeka/site/item/browse.phtml:70
+msgid "{count} resources found"
+msgstr "{count} ressources trouvées"

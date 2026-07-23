@@ -23,12 +23,7 @@
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
-    transition: box-shadow var(--transition-base), border-color var(--transition-base);
-
-    &:hover {
-        box-shadow: var(--shadow-md);
-        border-color: var(--border-strong);
-    }
+    @include card-hover;
 
     &:focus-within {
         outline: 2px solid var(--primary);
