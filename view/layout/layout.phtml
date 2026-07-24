@@ -12,8 +12,6 @@ if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'fetch') {
 
 $siteTitle = $site->title();
 $userBar = $this->userBar();
-$header_layout = ($this->themeSetting('header_layout')) ?? 'inline';
-$body_class = 'main-header--' . $header_layout;
 $bannerHeightMobile = $this->themeSetting('banner_height_mobile');
 $bannerEyebrow = $this->themeSetting('banner_eyebrow');
 $bannerHeading = $this->themeSetting('banner_heading');
@@ -245,7 +243,7 @@ if ($userBar) {
 		<?php endif; ?>
 	</head>
 
-	<?php echo $this->htmlElement('body')->appendAttribute('class', $body_class); ?>
+	<?php echo $this->htmlElement('body'); ?>
 		<script>
 		// Apply theme synchronously before first paint to prevent FOUC.
 		// Mirrors getMode()/resolveTheme() in js/theme-toggle.js.

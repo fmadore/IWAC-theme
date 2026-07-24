@@ -22,10 +22,6 @@ body {
     @media (min-width: $lg) {
         padding-block-start: var(--header-height-lg);
     }
-
-    &.main-header--center {
-        padding-block-start: var(--header-height-center);
-    }
 }
 
 .container {

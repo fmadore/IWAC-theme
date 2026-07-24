@@ -76,11 +76,11 @@ value (see §3). Do **not** invent token names — undefined tokens fail silentl
 | **Borders** | `--border-light`, `--border`, `--border-strong` |
 | **Status** | `--success`, `--warning`, `--error`, `--info` (+ matching `*-bg`) |
 | **Focus** | `--focus-color`, `--focus-ring`, `--ring-focus`, `--ring-focus-sm` |
-| **Typography** | `--font-headings`, `--font-serif-text`, `--font-body`, `--font-mono`; `--text-xs … --text-5xl`; `--line-height-normal`, `--line-height-relaxed`; `--tracking-tight/normal/wide/wider` |
+| **Typography** | `--font-headings`, `--font-serif-text`, `--font-body`, `--font-mono`; `--text-xs … --text-5xl`; `--line-height-normal`, `--line-height-relaxed`; `--tracking-display/tight/normal/wide/wider` |
 | **Spacing** | `--space-1 … --space-40`; `--space-xs/sm/md/lg/xl/2xl/3xl` |
 | **Radius** | `--radius-sm/md/lg/xl/full` |
 | **Shadow / glow** | `--shadow-xs … --shadow-xl`; `--glow-xs/sm/md` |
-| **Panel** | `--panel-bg`, `--panel-border`, `--panel-border-color`, `--panel-radius`, `--panel-shadow` |
+| **Panel** | `--panel-bg`, `--panel-border`, `--panel-radius`, `--panel-shadow` |
 | **Controls** | `--size-control-xs … --size-control-xl` |
 | **Measures** | `--measure-narrow/base/wide` |
 | **Motion** | `--transition-fast/base/slow`, `--ease-out-quart` |
