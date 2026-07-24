@@ -17,35 +17,13 @@
 const fs = require('fs');
 const path = require('path');
 
+// Shared with build-tokens.js, which publishes the same set as `names` in
+// tokens.json so the sibling modules can run this check too.
+const { collectDefinedTokenNames, walk } = require('./lib/theme-tokens');
+
 const ROOT = path.join(__dirname, '..');
 
-function* walk(dir, exts) {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        const full = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-            yield* walk(full, exts);
-        } else if (exts.some((e) => entry.name.endsWith(e))) {
-            yield full;
-        }
-    }
-}
-
-const defined = new Set();
-const DECL_RE = /(--[a-z0-9-]+)\s*:/gi;
-const SET_RE = /setProperty\(\s*['"](--[a-z0-9-]+)['"]/g;
-
-for (const file of walk(path.join(ROOT, 'asset/sass'), ['.scss'])) {
-    const src = fs.readFileSync(file, 'utf8');
-    for (const m of src.matchAll(DECL_RE)) defined.add(m[1]);
-}
-for (const file of walk(path.join(ROOT, 'view'), ['.phtml'])) {
-    const src = fs.readFileSync(file, 'utf8');
-    for (const m of src.matchAll(DECL_RE)) defined.add(m[1]);
-}
-for (const file of walk(path.join(ROOT, 'asset/js'), ['.js'])) {
-    const src = fs.readFileSync(file, 'utf8');
-    for (const m of src.matchAll(SET_RE)) defined.add(m[1]);
-}
+const defined = collectDefinedTokenNames(ROOT);
 
 const USE_RE = /var\(\s*(--[a-z0-9-]+)/gi;
 const failures = [];

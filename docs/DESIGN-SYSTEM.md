@@ -103,6 +103,35 @@ admin-tunable so a site can keep its two-corpus comparisons on-brand.
 
 ---
 
+## 2b. The token vocabulary (`tokens.json` → `names`)
+
+`tokens.json` publishes a `names` array: **every** custom property the theme
+defines — not just the colours resolved in `light` / `dark`, but spacing,
+tracking, panel, control-size and measure tokens too. It is generated from the
+theme's SCSS, templates and JS by `scripts/build-tokens.js`.
+
+It exists because value-checking alone let *name* drift through unnoticed. A
+module could write `var(--space-2xs, 0.25rem)` or
+`var(--panel-border-color, var(--border, #ced1d6))` — names the theme has never
+defined / no longer defines — and every guard would pass, because the hex
+fallbacks were correct and nothing downstream knew the names were fiction. The
+declarations then render from their fallback forever, silently decoupled from
+the scale they appear to track.
+
+Each module's `check-theme-tokens.js` therefore also asserts that every
+`var(--…)` it finds is either:
+
+- present in `names` (a real theme token), **or**
+- prefixed `--iwac-` (module-owned: data-series colours, and runtime-set
+  properties like `--iwac-drawer-width`), **or**
+- defined by that module's own sources.
+
+Anything else fails the build. When you add a token to the theme, run
+`npm run build:tokens` and rebuild the modules — same workflow as a colour
+change.
+
+---
+
 ## 3. The fallback-harmonization rule
 
 Fallbacks (`var(--token, #hex)`) only render when the IWAC theme is **not** the
