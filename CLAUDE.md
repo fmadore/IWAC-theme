@@ -118,6 +118,8 @@ Key rules:
 
 **Canonical hex values are generated, not transcribed.** `scripts/build-tokens.js` resolves every OKLCH token in `_colors.scss` to sRGB and writes `tokens.json` (synced into IwacSearch + IwacVisualizations) plus the fallback tables in [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md). Both modules ship a `check-theme-tokens` guard that **fails the build** if any `var(--token, #hex)` fallback (or the runtime `FALLBACK_*` objects in IwacVisualizations) drifts from `tokens.json`. After changing a colour in `_colors.scss`, run `npm run build:tokens` and rebuild the modules. Never hand-edit `tokens.json` or the generated doc tables.
 
+**`tokens.json` also publishes `names` — the theme's full token vocabulary** (every custom property defined across `asset/sass/`, `view/`, and `asset/js/`, not just the colours resolved in `light`/`dark`). The modules' guards check every `var(--…)` against it, so referencing a token this theme doesn't define now fails their build instead of silently rendering from a fallback forever. `scripts/lib/theme-tokens.js` is the one definition of "defined", shared by `build-tokens.js` and `check-token-usage.js` so the two can't disagree. **Adding a token is therefore a cross-repo change**: run `npm run build:tokens`, then rebuild both modules.
+
 | Category | Pattern | Examples |
 |----------|---------|----------|
 | Colors (ink scale) | direct names | `--ink-strong`, `--ink`, `--ink-light`, `--ink-subtle`, `--muted`, `--ink-on-pastel` |
