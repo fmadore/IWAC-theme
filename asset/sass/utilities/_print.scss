@@ -1,33 +1,73 @@
 // ==========================================================================
 // Print Styles
-// Optimized styles for printed output
+//
+// Printing an article is a normal research action here, so print is treated
+// as a real target: the light "print room" palette, chrome stripped, and
+// link targets spelled out.
 // ==========================================================================
 
+@use "../abstracts/variables/colors" as *;
+
 @media print {
-    // Hide non-essential elements
+    // ----------------------------------------------------------------------
+    // Force the light palette.
+    //
+    // `body { color: black }` alone was never enough: every heading, rule,
+    // label and border keeps its own var(--ink-*) / var(--border) value, and
+    // in dark mode those resolve to near-WHITE. Printing an item page from
+    // dark mode produced a sheet with an invisible headline, invisible
+    // metadata labels and invisible hairlines — only the inherited body copy
+    // survived. Re-apply the light theme so the sheet prints as designed no
+    // matter which theme is on screen.
+    //
+    // `body[data-theme]` matches whichever manual override is active and ties
+    // its specificity (0,1,1); utilities are emitted after abstracts, so
+    // source order carries it.
+    // ----------------------------------------------------------------------
+    :root,
+    body,
+    body[data-theme] {
+        @include iwac-light-theme;
+    }
+
+    // Hide non-essential chrome. The masthead, both nav strips, the drawer,
+    // the hero/compact banner plate and every floating or interactive control
+    // are screen affordances that only waste toner on paper.
     .main-header,
     .main-footer,
     .main-navigation,
+    .section-tabs,
+    .menu-drawer,
+    .banner,
     #user-bar,
+    #back-to-top,
+    #skipnav,
     .pagination,
     .browse-controls,
+    .layout-toggle,
     .theme-toggle,
-    .menu-drawer,
-    #skipnav {
+    .pwa-install,
+    .language-switcher,
+    [role="search"],
+    .citation__styles,
+    .citation__actions,
+    .citation__downloads {
         display: none !important;
     }
-    
-    // Reset colors for print
+
     body {
-        background: white;
-        color: black;
+        background: var(--white);
+        color: var(--black);
         font-size: 12pt;
         line-height: 1.5;
+        // The sticky masthead reserves this on screen; on paper it is a blank
+        // band at the top of page 1.
+        padding-block-start: 0;
     }
-    
+
     // Ensure readable links
     a {
-        color: black;
+        color: var(--black);
         text-decoration: underline;
     }
 
@@ -35,7 +75,7 @@
     main a[href]::after {
         content: " (" attr(href) ")";
         font-size: 0.8em;
-        color: #666;
+        color: var(--ink-light);
     }
 
     // Don't show URL for internal anchors or javascript links
@@ -62,7 +102,7 @@
 
     // Ensure blockquotes are readable
     blockquote {
-        border-left: 2px solid #999;
+        border-left: var(--accent-line-sm) solid var(--border-strong);
         margin-left: 0;
         padding-left: 1rem;
     }
@@ -73,7 +113,7 @@
     }
 
     th, td {
-        border: 1px solid #999;
+        border: 1px solid var(--border-strong);
         padding: 0.5rem;
     }
 }

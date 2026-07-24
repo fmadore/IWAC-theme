@@ -13,6 +13,9 @@ $bannerEyebrow = $this->themeSetting('banner_eyebrow');
 $bannerHeading = $this->themeSetting('banner_heading');
 $bannerDescription = $this->themeSetting('banner_description');
 $bannerContentPosition = $this->themeSetting('banner_content_position') ?? 'left';
+if (!in_array($bannerContentPosition, ['left', 'center', 'right'], true)) {
+    $bannerContentPosition = 'left';
+}
 
 // Default banner image path (included with theme)
 $defaultBannerUrl = $this->assetUrl('img/banner.webp');
@@ -31,7 +34,15 @@ $bannerInlineStyles = '';
 $imageInlineStyles = '';
 
 if (!$compact) {
-    if ($bannerHeight) {
+    // Validate before it reaches the style attribute. This is a free-text
+    // admin setting spliced straight into inline CSS; escapeHtmlAttr stops an
+    // attribute breakout but not `10px; background: url(https://…)`. The
+    // mobile counterpart in layout.phtml has always guarded with this same
+    // pattern — match it here rather than trusting the field.
+    $bannerHeight = trim((string) $bannerHeight);
+    $bannerHeightValid = $bannerHeight !== ''
+        && preg_match('/^-?[0-9]*\.?[0-9]+(px|em|rem|%|vh|vw|svh|dvh|lvh)$/', $bannerHeight);
+    if ($bannerHeightValid) {
         $bannerInlineStyles .= "{$bannerHeightProperty}: {$bannerHeight};";
     } else {
         // Default hero stature: tall enough to carry the display heading,
@@ -42,8 +53,12 @@ if (!$compact) {
 
 $imageInlineStyles .= "object-position: {$bannerHorizontalPosition} {$bannerVerticalPosition};";
 
+// banner_width is a select, but only its two declared options are meaningful
+// as class names — whitelist rather than concatenating the stored value.
 $class = ['banner'];
-$class[] = $bannerWidth;
+if (in_array($bannerWidth, ['container', 'alignfull'], true)) {
+    $class[] = $bannerWidth;
+}
 if ($compact) {
     $class[] = 'banner--compact';
 } elseif ($bannerEyebrow || $bannerHeading || $bannerDescription) {
@@ -51,7 +66,7 @@ if ($compact) {
 }
 ?>
 
-<div class="<?php echo implode(' ', $class); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>">
+<div class="<?php echo $escAttr(implode(' ', $class)); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>">
 
     <?php
     // The homepage hero is the LCP candidate; the compact inner-page band is
@@ -173,7 +188,7 @@ if ($compact) {
         }
     }
     ?>
-    <div class="banner__content banner__content--<?php echo $bannerContentPosition; ?>">
+    <div class="banner__content banner__content--<?php echo $escAttr($bannerContentPosition); ?>">
         <?php if ($bannerEyebrow): ?>
             <span class="banner__eyebrow"><?php echo $escHtml($bannerEyebrow); ?></span>
         <?php endif; ?>

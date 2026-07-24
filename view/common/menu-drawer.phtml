@@ -4,7 +4,11 @@ $closeText = $this->translate('Close');
 ?>
 <?php // Translated strings for navigation.js travel as data-* attributes —
       // global consts would collide if any module declared the same name. ?>
+<?php // Every other <nav> in the theme is labelled; without one this landmark
+      // is announced as an anonymous "navigation" alongside the masthead and
+      // section strips, which is exactly when a name matters most. ?>
 <nav id="menu-drawer" class="menu-drawer" aria-hidden="true" inert style="display: none;"
+	aria-label="<?php echo $escapeAttr($this->translate('Site menu')); ?>"
 	data-close-text="<?php echo $escapeAttr($closeText); ?>"
 	data-open-menu-text="<?php echo $escapeAttr($this->translate('Open menu')); ?>"
 	data-toggle-submenu-text="<?php echo $escapeAttr($this->translate('Toggle submenu')); ?>"

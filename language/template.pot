@@ -64,7 +64,7 @@ msgstr ""
 msgid "Ascending"
 msgstr ""
 
-#: view/common/banner.phtml:158
+#: view/common/banner.phtml:173
 msgid "Audiovisual minutes"
 msgstr ""
 
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Available languages"
 msgstr ""
 
-#: view/layout/layout.phtml:282
+#: view/layout/layout.phtml:280
 msgid "Back to top"
 msgstr ""
 
@@ -80,7 +80,7 @@ msgstr ""
 msgid "Berlin Senate Department"
 msgstr ""
 
-#: view/error/404.phtml:27 view/layout/layout.phtml:82
+#: view/error/404.phtml:27 view/layout/layout.phtml:80
 msgid "Browse items"
 msgstr ""
 
@@ -104,7 +104,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: view/common/banner.phtml:193
+#: view/common/banner.phtml:208
 msgid "Collection at a glance"
 msgstr ""
 
@@ -120,11 +120,11 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: view/common/banner.phtml:204
+#: view/common/banner.phtml:219
 msgid "Corpus in depth"
 msgstr ""
 
-#: view/common/banner.phtml:124
+#: view/common/banner.phtml:139
 msgid "Countries"
 msgstr ""
 
@@ -168,7 +168,7 @@ msgstr ""
 msgid "Descending"
 msgstr ""
 
-#: view/common/banner.phtml:157
+#: view/common/banner.phtml:172
 msgid "Document types"
 msgstr ""
 
@@ -252,7 +252,7 @@ msgstr ""
 msgid "In"
 msgstr ""
 
-#: view/common/banner.phtml:122
+#: view/common/banner.phtml:137
 msgid "Index"
 msgstr ""
 
@@ -276,11 +276,11 @@ msgstr ""
 msgid "Item: %s"
 msgstr ""
 
-#: view/common/banner.phtml:121 view/common/linked-resources.phtml:19 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
+#: view/common/banner.phtml:136 view/common/linked-resources.phtml:19 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
 msgid "Items"
 msgstr ""
 
-#: view/common/banner.phtml:159
+#: view/common/banner.phtml:174
 msgid "Languages"
 msgstr ""
 
@@ -372,7 +372,7 @@ msgstr ""
 msgid "Oldest first"
 msgstr ""
 
-#: view/common/header.phtml:89 view/common/menu-drawer.phtml:9
+#: view/common/header.phtml:89 view/common/menu-drawer.phtml:13
 msgid "Open menu"
 msgstr ""
 
@@ -428,7 +428,7 @@ msgstr ""
 msgid "Query type"
 msgstr ""
 
-#: view/common/banner.phtml:123
+#: view/common/banner.phtml:138
 msgid "References"
 msgstr ""
 
@@ -444,7 +444,7 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: view/common/search-form.phtml:52 view/common/search-form.phtml:57 view/layout/layout.phtml:87 view/omeka/site/item/search.phtml:14
+#: view/common/search-form.phtml:52 view/common/search-form.phtml:57 view/layout/layout.phtml:85 view/omeka/site/item/search.phtml:14
 msgid "Search"
 msgstr ""
 
@@ -516,7 +516,11 @@ msgstr ""
 msgid "Show annotation"
 msgstr ""
 
-#: view/layout/layout.phtml:263
+#: view/common/menu-drawer.phtml:11
+msgid "Site menu"
+msgstr ""
+
+#: view/layout/layout.phtml:261
 msgid "Skip to main content"
 msgstr ""
 
@@ -576,15 +580,15 @@ msgstr ""
 msgid "Title (Z-A)"
 msgstr ""
 
-#: view/common/menu-drawer.phtml:10
+#: view/common/menu-drawer.phtml:14
 msgid "Toggle submenu"
 msgstr ""
 
-#: view/common/banner.phtml:155
+#: view/common/banner.phtml:170
 msgid "Total pages"
 msgstr ""
 
-#: view/common/banner.phtml:154
+#: view/common/banner.phtml:169
 msgid "Total words"
 msgstr ""
 
@@ -592,7 +596,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: view/common/banner.phtml:156
+#: view/common/banner.phtml:171
 msgid "Unique sources"
 msgstr ""
 
@@ -692,7 +696,7 @@ msgstr ""
 msgid "of %s"
 msgstr ""
 
-#: view/common/menu-drawer.phtml:11
+#: view/common/menu-drawer.phtml:15
 msgid "show submenu for “%s”"
 msgstr ""
 

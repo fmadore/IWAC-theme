@@ -5,6 +5,33 @@
 // color-mix(in oklab, ...) so admin color overrides cascade automatically.
 // ==========================================================================
 
+// ==========================================================================
+// Light-theme shadow + panel values.
+//
+// Defined as a mixin (mirroring iwac-light-theme in _colors.scss) because
+// they must be emitted TWICE: once as the default in :root, and again at
+// body[data-theme="light"] so a manual light choice wins back against the
+// prefers-color-scheme: dark block below. They used to be hand-copied into
+// both places, which is two lists to keep in step every time a shadow is
+// retuned — exactly the drift the colour system already solved with a mixin.
+// ==========================================================================
+@mixin iwac-light-tokens {
+  --shadow-color:        color-mix(in oklab, oklch(15% 0.01 264) 12%, transparent);
+  --shadow-color-strong: color-mix(in oklab, oklch(15% 0.01 264) 18%, transparent);
+  --shadow-color-subtle: color-mix(in oklab, oklch(20% 0.01 264) 6%,  transparent);
+
+  --shadow-xs: 0 1px 2px 0  var(--shadow-color-subtle);
+  --shadow-sm: 0 1px 3px 0  var(--shadow-color), 0 1px 2px -1px var(--shadow-color-subtle);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
+  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
+  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color-subtle);
+
+  --panel-bg: var(--surface);
+  // See the note in :root — re-declare so the inner var() resolves against
+  // the --border active in this cascade block.
+  --panel-border: 1px solid var(--border);
+}
+
 :root {
   // ========================================================================
   // Spacing Scale (Numeric, 4pt grid)
@@ -104,34 +131,20 @@
   --glow-md: 0 4px 12px -2px color-mix(in oklab, var(--primary) 30%, transparent);
 
   // ========================================================================
-  // Shadow Color Tokens — neutral cool, no warm tint.
+  // Shadow / panel values — neutral cool, no warm tint.
   // (Old recipe used hsl(30, 20%, 15%) which carried a warm cast that
   // reinforced the "cream / parchment" register we're now dropping.)
-  // ========================================================================
-  --shadow-color:        color-mix(in oklab, oklch(15% 0.01 264) 12%, transparent);
-  --shadow-color-strong: color-mix(in oklab, oklch(15% 0.01 264) 18%, transparent);
-  --shadow-color-subtle: color-mix(in oklab, oklch(20% 0.01 264) 6%,  transparent);
-
-  // ========================================================================
-  // Shadows — subtle, layered, neutral
-  // ========================================================================
-  --shadow-xs: 0 1px 2px 0  var(--shadow-color-subtle);
-  --shadow-sm: 0 1px 3px 0  var(--shadow-color), 0 1px 2px -1px var(--shadow-color-subtle);
-  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
-  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
-  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color-subtle);
-
-  // ========================================================================
-  // Panel/Card Elevation Helpers
   //
   // IMPORTANT: --panel-border must be re-declared in every theme override
   // block (light / dark manual + @media dark). Custom properties inherit
   // their COMPUTED value; the inner var(--border) substitution is frozen
   // at the cascade block where --panel-border is declared. Re-declaring
   // it lets the inner var() pick up the active --border in each block.
+  // That is why these live in a mixin — see iwac-light-tokens above.
   // ========================================================================
-  --panel-bg: var(--surface);
-  --panel-border: 1px solid var(--border);
+  @include iwac-light-tokens;
+
+  // Theme-independent panel geometry.
   --panel-radius: var(--radius-md);
   --panel-shadow: var(--shadow-sm);
 
@@ -185,17 +198,4 @@
 body[data-theme="dark"] { @include iwac-dark-tokens; }
 
 // Manual light wins back the light-theme panel/shadow values.
-body[data-theme="light"] {
-  --shadow-color:        color-mix(in oklab, oklch(15% 0.01 264) 12%, transparent);
-  --shadow-color-strong: color-mix(in oklab, oklch(15% 0.01 264) 18%, transparent);
-  --shadow-color-subtle: color-mix(in oklab, oklch(20% 0.01 264) 6%,  transparent);
-
-  --shadow-xs: 0 1px 2px 0  var(--shadow-color-subtle);
-  --shadow-sm: 0 1px 3px 0  var(--shadow-color), 0 1px 2px -1px var(--shadow-color-subtle);
-  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
-  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
-  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color-subtle);
-
-  --panel-bg: var(--surface);
-  --panel-border: 1px solid var(--border);
-}
+body[data-theme="light"] { @include iwac-light-tokens; }

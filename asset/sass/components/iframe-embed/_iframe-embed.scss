@@ -5,19 +5,18 @@
 
 @use "../../abstracts/abstracts" as *;
 
-// Override module CSS custom properties with theme design tokens
 .iframe-embed {
-    --iframe-embed-bg: var(--surface-raised);
-    --iframe-embed-border: var(--border);
-    --iframe-embed-radius: var(--radius-md);
-    --iframe-embed-caption-color: var(--muted);
-
     margin: 0 auto var(--space-6);
     width: 100%;
     text-align: center; // Center caption and open link button
 }
 
 .iframe-embed__wrapper {
+    // Positioning context for the loading skeleton below. Without it the
+    // skeleton's `inset: 0` resolved against the nearest positioned ancestor
+    // (often the page itself), painting a full-height shimmer band across
+    // unrelated content instead of sitting over the frame.
+    position: relative;
     background-color: var(--surface-raised);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
@@ -69,64 +68,17 @@
     }
 }
 
-// Dark mode adjustments (if needed beyond CSS custom properties)
-@media (prefers-color-scheme: dark) {
-    body:not([data-theme="light"]) .iframe-embed__wrapper {
-        box-shadow: var(--shadow-sm);
-    }
-}
+// NOTE: a shimmer "loading skeleton" used to live here. It was removed
+// because it could never do its job: nothing in CSS can observe an iframe
+// finishing its load, so the only gate was
+// `:has(iframe[loading="lazy"]:not([src^="data:"]))` — permanently true. The
+// skeleton therefore ran an infinite keyframe animation for the lifetime of
+// every page carrying an embed, while sitting invisibly behind the frame
+// (.iframe-embed__frame paints an opaque --surface over it). All cost, no
+// signal. If a real loading state is wanted, drive it from the iframe's
+// `load` event in JS.
 
-body[data-theme="dark"] .iframe-embed__wrapper {
-    box-shadow: var(--shadow-sm);
-}
-
-// Loading state placeholder
-.iframe-embed__wrapper::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        90deg,
-        var(--surface-raised) 0%,
-        var(--surface) 50%,
-        var(--surface-raised) 100%
-    );
-    background-size: 200% 100%;
-    animation: iframe-loading 1.5s ease-in-out infinite;
-    opacity: 0;
-    transition: opacity var(--transition-base);
-    pointer-events: none;
-    z-index: 1;
-}
-
-.iframe-embed__wrapper:has(iframe[loading="lazy"]:not([src^="data:"])) {
-    &::before {
-        opacity: 1;
-    }
-}
-
-@keyframes iframe-loading {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
-}
-
-// Hide loading animation once iframe has loaded
-.iframe-embed__frame {
-    position: relative;
-    z-index: 2;
-}
-
-// Reduced motion preference
 @media (prefers-reduced-motion: reduce) {
-    .iframe-embed__wrapper::before {
-        animation: none;
-        background: var(--surface-raised);
-    }
-
     .iframe-embed__wrapper {
         transition: none;
     }
@@ -157,7 +109,7 @@ body[data-theme="dark"] .iframe-embed__wrapper {
     }
 
     .iframe-embed__wrapper {
-        border: 1px solid #ccc;
+        border: 1px solid var(--border);
         box-shadow: none;
     }
 
@@ -170,13 +122,13 @@ body[data-theme="dark"] .iframe-embed__wrapper {
         display: block;
         padding: var(--space-4);
         text-align: center;
-        color: #666;
+        color: var(--ink-light);
         font-style: italic;
     }
 
     .iframe-embed__open-link {
-        color: #333;
-        border-color: #333;
+        color: var(--ink);
+        border-color: var(--ink);
 
         // Show URL in print
         &::after {

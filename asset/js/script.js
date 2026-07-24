@@ -51,6 +51,8 @@ const freedomScripts = () => {
         syncMenuDrawer();
     }
 
+    // Passive: this handler never calls preventDefault, and saying so lets the
+    // browser start compositing the scroll without waiting on it.
     document.addEventListener('scroll', (event) => {
         scrollDirection = Math.max(lastKnownScrollPosition, window.scrollY) == lastKnownScrollPosition ? 'up': 'down';
         lastKnownScrollPosition = window.scrollY;
@@ -64,7 +66,7 @@ const freedomScripts = () => {
 
             ticking = true;
         }
-    });
+    }, { passive: true });
 
     // Back to top — appears once the page has scrolled past ~a viewport.
     // Toggled outside onScroll, which early-returns while an input is
@@ -129,15 +131,39 @@ const freedomScripts = () => {
     }
 
     // Keep the drawer pinned under whatever part of the header is visible.
+    // Called from every scroll frame, so it stays cheap: the drawer only needs
+    // pinning while it is actually open, and even then only when the header's
+    // bottom edge has really moved. Previously this wrote three inline styles
+    // to a display:none element on every single frame of every scroll.
+    let lastMenuTop = null;
+
     function syncMenuDrawer() {
         if (!menuDrawer || !mainHeader) {
             return;
         }
-        const headerRect = mainHeader.getBoundingClientRect();
-        const menuTop = Math.max(0, headerRect.bottom);
+        if (!menuDrawer.classList.contains('toggled')) {
+            // Force a re-sync when it next opens.
+            lastMenuTop = null;
+            return;
+        }
+        const menuTop = Math.max(0, mainHeader.getBoundingClientRect().bottom);
+        if (menuTop === lastMenuTop) {
+            return;
+        }
+        lastMenuTop = menuTop;
         menuDrawer.style.setProperty('--menu-drawer-top', menuTop + 'px');
         menuDrawer.style.top = menuTop + 'px';
         menuDrawer.style.height = 'calc(100vh - ' + menuTop + 'px)';
+    }
+
+    // The drawer is opened by navigation.js (it adds .toggled). Watch for that
+    // rather than reaching across files, so the first sync happens the moment
+    // it opens instead of waiting for the next scroll frame.
+    if (menuDrawer) {
+        new MutationObserver(syncMenuDrawer).observe(menuDrawer, {
+            attributes: true,
+            attributeFilter: ['class'],
+        });
     }
 
     function getUserBarHeight() {

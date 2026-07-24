@@ -130,7 +130,7 @@ Key rules:
 | Control sizes | `--size-control-{size}` | `--size-control-xs` (28px), `--size-control-sm` (36px), `--size-control-md` (40px), `--size-control-lg` (44px), `--size-control-xl` (48px) |
 | Reading measures | `--measure-{size}` | `--measure-narrow` (704px), `--measure-base` (840px), `--measure-wide` (1160px) |
 | Focus rings | `--ring-focus{-size}` | `--ring-focus` (3px ring), `--ring-focus-sm` (2px ring) — use as `box-shadow` value |
-| Letter spacing | `--tracking-{size}` | `--tracking-tight` (-0.02em), `--tracking-wide` (0.04em), `--tracking-wider` (0.08em) |
+| Letter spacing | `--tracking-{size}` | `--tracking-display` (-0.01em — **the one to use on Besley display sizes**), `--tracking-tight` (-0.02em), `--tracking-wide` (0.04em), `--tracking-wider` (0.08em) |
 | Effects | `--shadow-{size}`, `--radius-{size}` | `--shadow-sm`, `--shadow-md`, `--radius-md`, `--radius-lg` |
 | Accent lines | `--accent-line-{size}` | `--accent-line-sm` (2px), `--accent-line-md` (3px) |
 | Transitions | `--transition-{speed}` | `--transition-fast`, `--transition-base`, `--transition-slow` |

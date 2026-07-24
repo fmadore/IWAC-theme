@@ -192,3 +192,23 @@ body[data-theme="dark"] { @include iwac-dark-theme; }
 // already overridden :root with dark values; we need to win against that
 // at the body level).
 body[data-theme="light"] { @include iwac-light-theme; }
+
+// ==========================================================================
+// color-scheme must reach the ROOT element
+//
+// Every token above is declared on <body> (that is where the pre-paint
+// script writes data-theme, and where the sibling modules read it), and
+// custom properties inherit down from there just fine. `color-scheme` does
+// NOT: the viewport scrollbars and the page canvas are painted from the
+// ROOT element's value, so with the attribute on <body> the root kept
+// whatever the @media block above gave it. A user on a light OS who toggled
+// dark got a white scrollbar against the dark page — and the reverse on a
+// dark OS with light forced.
+//
+// Mirror just this one property up to :root. `:has()` keeps <body> the
+// single source of truth, so nothing outside the theme has to change.
+// Specificity (0,2,1) clears the `:root:not([data-theme="light"])` rule
+// above (0,2,0) in both directions.
+// ==========================================================================
+:root:has(> body[data-theme="dark"])  { color-scheme: dark; }
+:root:has(> body[data-theme="light"]) { color-scheme: light; }

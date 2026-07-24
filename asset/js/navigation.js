@@ -9,7 +9,7 @@
  */
 
 (function () {
-	let mmHeader, mmNavigation, mmToggli, mmBody, mmDrawer, mmBacker, mmClones, mmStrings, cleanupTrap;
+	let mmHeader, mmToggli, mmBody, mmDrawer, mmBacker, mmClones, mmStrings, cleanupTrap;
 
 	// The drawer overlays these regions; they are inert while it is open so
 	// keyboard/AT focus can't wander behind the modal surface.
@@ -275,9 +275,6 @@
 		const focusable = getFocusableElements([mmDrawer]);
 		if (focusable.length) focusable[0].focus();
 
-		mmNavigation = mmDrawer.querySelector('.navigation');
-		if (mmNavigation) mmNavigation.classList.add('in-viewport');
-
 		cleanupTrap = trapFocus([mmHeader, mmDrawer]);
 	}
 
@@ -286,10 +283,6 @@
 		mmDrawer.querySelectorAll( '.expanded' ).forEach( item => {
 			item.classList.remove( 'expanded' );
 		} );
-
-		mmDrawer.querySelectorAll( '.in-viewport' ).forEach( item => {
-			item.classList.remove( 'in-viewport' );
-		});
 
 		// remove collapsed items from the tabindex
 		mmDrawer.querySelectorAll( 'a' ).forEach( item => {
