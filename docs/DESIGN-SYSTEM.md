@@ -14,8 +14,9 @@ once, consumed everywhere.
   - [`IwacVisualizations`](https://github.com/fmadore/IwacVisualizations) —
     ECharts / MapLibre dashboards (vanilla JS block layouts).
 
-Read this alongside `CLAUDE.md` (the canonical token list + common-mistake
-table) and the **Design Philosophy** section there.
+Read this alongside [`DESIGN-PHILOSOPHY.md`](DESIGN-PHILOSOPHY.md) (the visual
+stance) and `CLAUDE.md` (repo gotchas). The canonical token list is the
+generated `tokens.json`, not prose.
 
 ---
 
@@ -86,8 +87,9 @@ value (see §3). Do **not** invent token names — undefined tokens fail silentl
 | **Motion** | `--transition-fast/base/slow`, `--ease-out-quart` |
 | **Accent mix** | `--accent-mix-subtle/medium/strong`, `--accent-line-sm/md` |
 
-The full list and the table of *non-existent* names to avoid live in
-`CLAUDE.md` → "CSS Custom Properties (Design Tokens)".
+The full list lives in the generated `tokens.json` (`names` publishes the
+complete vocabulary). Rather than consulting a table of names to avoid, run
+`npm run check:tokens` — it fails on anything that doesn't resolve.
 
 ### `--secondary` — read this before using it
 

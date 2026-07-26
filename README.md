@@ -170,8 +170,9 @@ sass/
 └── utilities/          # Accessibility, alignments, clearfix, print
 ```
 
-See `CLAUDE.md` for design-token guidelines and the canonical list of CSS
-custom properties.
+The canonical list of CSS custom properties is `tokens.json` (generated — see
+`docs/DESIGN-SYSTEM.md`); `npm run check:tokens` fails on any token that isn't
+defined there.
 
 ## Utility Classes
 
@@ -230,8 +231,9 @@ The theme also includes styling for:
 ## Design Tokens
 
 The theme uses CSS custom properties for consistent theming. Only the tokens
-listed below are stable — do **not** invent new token names, and see
-`CLAUDE.md` for the full reference and common-mistake table.
+listed below are stable — do **not** invent new token names. The generated
+`tokens.json` is the full reference, and `npm run check:tokens` will tell you
+immediately if a name doesn't resolve.
 
 ```css
 /* Colors (semantic, auto-adapted for light/dark theme) */
