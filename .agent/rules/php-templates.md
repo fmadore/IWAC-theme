@@ -43,7 +43,7 @@ class MyHelper extends AbstractHelper
 | Helper | Usage | Purpose |
 |--------|-------|---------|
 | [ResourceTags](helper/ResourceTags.php#6-112) | `$this->ResourceTags($resource)` | Render resource type tags |
-| [BrowseLayout](/helper/BrowseLayout.php) | `$this->browseLayout()` | Grid/list state for browse-style listings |
+| [BrowseLayout](/helper/BrowseLayout.php) | `$this->BrowseLayout()` | Grid/list state for browse-style listings |
 
 ## Template Conventions
 

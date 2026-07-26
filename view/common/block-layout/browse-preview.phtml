@@ -10,7 +10,7 @@ $filterLocale = (bool) $this->siteSetting('filter_locale_values');
 $lang = $this->lang();
 $valueLang = $filterLocale ? [$lang, ''] : null;
 
-$layout = $this->browseLayout();
+$layout = $this->BrowseLayout();
 $isGrid = $layout['isGrid'];
 $bodyTruncate = $this->themeSetting('truncate_body_property');
 $queryUrl = $this->url(

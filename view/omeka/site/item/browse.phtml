@@ -22,7 +22,7 @@ if ($itemSetShow) {
     $query['item_set_id'] = $itemSet->id();
 }
 
-$layout = $this->browseLayout();
+$layout = $this->BrowseLayout();
 $isGrid = $layout['isGrid'];
 $bodyTerm = $this->siteSetting('browse_body_property_term');
 $bodyTruncate = $this->themeSetting('truncate_body_property');
