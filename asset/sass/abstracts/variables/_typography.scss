@@ -1,3 +1,5 @@
+@use "sass:meta";
+
 // ==========================================================================
 // Typography System
 // Fluid type scale using clamp() for responsive sizing
@@ -46,10 +48,21 @@ $font__pre: $font__code;
   --text-5xl: clamp(3.25rem, 2.5rem + 3.2vw, 4.75rem);        // 52-76px — homepage hero display
 
   // Font stacks exposed for runtime consumers (see note above).
-  --font-headings:   #{$font__headings};
-  --font-serif-text: #{$font__serif-text};
-  --font-body:       #{$font__body};
-  --font-mono:       #{$font__code};
+  //
+  // meta.inspect(), NOT bare #{$var}: plain interpolation strips the quotes
+  // off every family name, which turns "Source Serif 4" into the identifier
+  // sequence `Source Serif 4`. That is not a valid <family-name> — an
+  // identifier cannot begin with a digit — so the whole declaration is
+  // invalid at computed-value time and silently falls back to the inherited
+  // font. The theme's own rules use the Sass variables directly and so were
+  // never affected, which is why this went unnoticed: it broke only the
+  // downstream consumers these properties exist for. IwacVisualizations had
+  // ~30 declarations rendering in Public Sans instead of Besley.
+  // inspect() preserves the quotation, so the emitted value stays valid CSS.
+  --font-headings:   #{meta.inspect($font__headings)};
+  --font-serif-text: #{meta.inspect($font__serif-text)};
+  --font-body:       #{meta.inspect($font__body)};
+  --font-mono:       #{meta.inspect($font__code)};
 }
 
 // ==========================================================================

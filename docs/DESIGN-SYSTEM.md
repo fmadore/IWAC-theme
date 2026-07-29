@@ -228,6 +228,19 @@ Consumers: `IwacSearch/src/svelte/components/ResultItem.svelte`
 Module fallbacks for `--font-headings` must name **Besley** (not the removed
 "Noto Serif").
 
+> **The quotes are load-bearing.** These four properties are emitted through
+> `meta.inspect()` in `_typography.scss`, not bare `#{$var}` interpolation,
+> because interpolation strips the quotation off every family name. Unquoted,
+> `Source Serif 4` is not a valid `<family-name>` — an identifier cannot begin
+> with a digit — so `font-family: var(--font-headings, …)` becomes invalid at
+> computed-value time and silently falls back to the *inherited* font. The
+> theme's own rules use the Sass variables directly and never saw this; it
+> broke only the downstream consumers these properties exist for (fixed in
+> 2.9.2, after ~30 IwacVisualizations declarations had been rendering in
+> Public Sans instead of Besley). Note that `var(--token, fallback)` does not
+> rescue it: the token *is* defined, just to an invalid value — so verify by
+> reading the **computed** `font-family` in a browser, not by eye.
+
 > The light cool-neutral set above is mirrored verbatim in
 > `IwacVisualizations/asset/js/iwac-theme.js` (`FALLBACK_LIGHT` / `FALLBACK_DARK`),
 > which is the runtime fallback object the charts use when the theme is absent.
