@@ -99,8 +99,6 @@ const freedomScripts = () => {
 
     let userBarHeight = 0;
 
-    onResize();
-
     function onResize() {
         if (!mainHeader || !mainHeaderMainBar) {
             return;
@@ -294,6 +292,11 @@ const freedomScripts = () => {
             }
         }
     }
+
+    // Initial header sync. Must stay LAST: onResize() reaches through onScroll
+    // into syncMenuDrawer, so every `let` above has to be past its temporal
+    // dead zone before it runs. Only the `function` declarations hoist.
+    onResize();
 }
 
 IWACUtils.onReady(freedomScripts);
