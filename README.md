@@ -53,7 +53,7 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 
 For basic out-of-the-box use of the theme, follow the [Omeka S User Manual instructions for installing themes](https://omeka.org/s/docs/user-manual/sites/site_theme/#installing-themes).
 
-For more advanced use, such as customizing the theme with Sass, you'll need to install the tools with [NodeJS](https://nodejs.org/en/) (18.x or greater). Navigate to your theme directory and run:
+For more advanced use, such as customizing the theme with Sass, install [Node.js](https://nodejs.org/en/) 20.19 or newer. Navigate to the theme directory and run:
 
 ```bash
 npm install
@@ -122,7 +122,10 @@ Run these commands within the theme's root directory.
 * **npm run sync:tokens**: Explicitly regenerates tokens and copies them into checked-out sibling IwacSearch/IwacVisualizations repositories.
 * **npm run build:i18n**: Re-extracts `language/template.pot` from the templates, merges `fr.po`, and recompiles `fr.mo`.
 * **npm test** / **npm run check:js**: Runs the DOM interaction regressions and JavaScript syntax checks used by CI.
+* **npm run test:live**: Runs the opt-in Playwright smoke suite against `https://islam.zmo.de/s/westafrica` (override with `IWAC_LIVE_BASE_URL`). The scheduled GitHub workflow runs this weekly; it is intentionally separate from pull-request checks because it tests the deployed site.
 * **npm run build:images** / **npm run build:icons**: Regenerate the responsive banner variants and the PWA icon set.
+
+GitHub's quality workflow also validates Composer metadata and lints every PHP helper and template on PHP 8.5, matching production, plus PHP 8.1, the theme's declared minimum.
 
 ### Sass Module System
 
