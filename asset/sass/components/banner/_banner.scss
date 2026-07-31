@@ -255,7 +255,16 @@
         input {
             flex: 1 1 auto;
             min-width: 0;
+            // The shared field baseline gives text inputs an 8px bottom
+            // margin and rounded corners. Inside this clipped flex control
+            // that margin exposed a tinted strip below the field, while the
+            // inner radius made the input look detached from the submit
+            // segment. The form owns the outer geometry here.
+            align-self: stretch;
+            height: auto;
+            margin: 0;
             border: none;
+            border-radius: 0;
             background: transparent;
             color: var(--ink);
             font-family: $font__body;
