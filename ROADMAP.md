@@ -136,9 +136,8 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
   Decision: delete; restore from git if a future block layout needs an accordion.
 - [x] **R5** `view/hierarchy/...` — memoize grouping resolution and batch item-set reads
   (N+1: up to 2 API reads per card); guard the fragile regex count-parse.
-- [x] **R6** Split `_advanced-search.scss` (1,042 lines) into form / Chosen-vendor /
-  native-select partials; de-duplicate the twice-declared input block and `.field-meta`;
-  tokenize `0.04em`, `38px`/`28px` control heights; comment the vendor z-index.
+- [x] **R6** Superseded: the legacy advanced-search override, its JavaScript, and its
+  Chosen/native-select Sass were removed after IwacSearch became the canonical search UI.
 - [x] **R7** Attribute-context escaping consistency: `escapeHtmlAttr` for attributes in
   `menu-drawer`, `pagination`, `asset.phtml`, `item/search.phtml`, `resource-values`.
   Cast nullable values before escaping (PHP 8.1 deprecations) in `search-form`, `ids.phtml`.
@@ -199,12 +198,8 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
   rule from prose into an invariant). Wire into `npm run build` + CI.
 - [x] **C9** `.editorconfig`; `.gitattributes` `linguist-generated` for `style.css` /
   `tokens.json`; drop the stale `.tx/` export-ignore.
-- [~] **C10** `theme.jpg`: regenerate the admin/README screenshot from the current (v2.6+)
-  design. *Deferred*: this session's network policy blocks `islam.zmo.de`, so a live
-  screenshot can't be captured here. One-liner to run locally, then commit the result:
-  `chromium --headless --screenshot=theme.jpg --window-size=1280,800 https://islam.zmo.de/s/westafrica/`
-  (any 1280×800-ish JPEG of the homepage works — Omeka shows it in Admin → Themes and
-  README.md embeds it).
+- [x] **C10** Removed the broken README reference to the absent `theme.jpg`. A future
+  admin-preview image can be added deliberately without leaving dead documentation.
 - [x] **C11** `scripts/build-tokens.js` — loud warning (not silence) when sibling module
   repos are absent; friendly error when `_colors.scss` is missing.
 - [x] **C12** `scripts/gen-pwa-icons.js` — read the brand color from `config/theme.ini`

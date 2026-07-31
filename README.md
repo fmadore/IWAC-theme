@@ -4,8 +4,6 @@
 
 This is a customized Omeka S theme for the [Islam West Africa Collection](https://islam.zmo.de/s/westafrica/page/home) digital archive at ZMO Berlin, with modern enhancements including a light/dark mode toggle and multilingual support.
 
-![IWAC Theme](https://github.com/fmadore/IWAC-theme/blob/master/theme.jpg?raw=true)
-
 ## Features
 
 ### Light/Dark Mode Toggle
@@ -17,7 +15,7 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 
 ### Language Switcher
 - Integration with the [Internationalisation module](https://github.com/Daniel-KM/Omeka-S-module-Internationalisation)
-- Displays current language with flag-style abbreviation (EN/FR)
+- Displays the current language code (EN/FR) without country flags
 - Dropdown menu for switching between available translations
 - Only visible when module is installed and page has translations
 
@@ -45,10 +43,11 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 
 - **Omeka S**: 4.2.0 or higher
 - **PHP**: 8.1 or higher
-- **Node.js**: 18.x or higher (for Sass compilation)
+- **Node.js**: 20.19 or higher (for builds and tests; CI uses Node 22)
 
 ### Optional Modules
 - [Internationalisation](https://github.com/Daniel-KM/Omeka-S-module-Internationalisation) - For language switching functionality
+- [IwacSearch](https://github.com/fmadore/IwacSearch) - Canonical Typesense search UI; when active, legacy advanced-search links redirect to it
 
 ## Installation
 
@@ -66,10 +65,6 @@ npm install
 - **Primary Color** - The theme's primary brand color (default: `#E64A19`, IWAC Burnt Orange). Every primary variant (hover, active, focus ring, glows, blockquote) and the data-visualization sequential ramps derive from it via `color-mix(in oklab, …)`. Automatically adapts for dark mode.
 - **Secondary Color** - A second, **non-brand** color used only for data visualizations — chart series 2 and corpus comparison in the IwacVisualizations module (default: `#394f68`, slate blue). Not used for buttons, links, or focus. See [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md).
 - **Enable PWA (installable app)** - Adds the web app manifest, icons, and the masthead install button so visitors can install the site as an app. Default on. See [`docs/PWA.md`](docs/PWA.md).
-
-### Header Layout
-- Inline logo and menu
-- Centered logo and menu
 
 ### Top Navigation Depth
 Maximum number of levels to show in the site's top navigation bar. Set to 0 to show all levels.
@@ -123,8 +118,10 @@ Run these commands within the theme's root directory.
 
 * **npm run start**: Compiles once, then watches the Sass (and `_colors.scss` token changes) and recompiles on save.
 * **npm run build**: Full production build — validates token usage, regenerates `tokens.json` + the DESIGN-SYSTEM.md tables (`build:tokens`), regenerates the i18n catalog (`build:i18n`), then compiles the CSS. Always use this (never bare `gulp css`) so the generated artifacts can't drift.
-* **npm run build:tokens**: Regenerates `tokens.json` (theme + sibling modules) and the docs tables from `_colors.scss`.
+* **npm run build:tokens**: Regenerates this theme's `tokens.json` and the docs tables from `_colors.scss`.
+* **npm run sync:tokens**: Explicitly regenerates tokens and copies them into checked-out sibling IwacSearch/IwacVisualizations repositories.
 * **npm run build:i18n**: Re-extracts `language/template.pot` from the templates, merges `fr.po`, and recompiles `fr.mo`.
+* **npm test** / **npm run check:js**: Runs the DOM interaction regressions and JavaScript syntax checks used by CI.
 * **npm run build:images** / **npm run build:icons**: Regenerate the responsive banner variants and the PWA icon set.
 
 ### Sass Module System
@@ -159,7 +156,7 @@ sass/
 │   ├── typography/
 │   └── _theme.scss     # Dark/light theme infrastructure
 ├── components/         # Component styles (BEM-scoped)
-│   ├── accordion, advanced-search, annotation, banner
+│   ├── ai-toc, annotation, banner, back-to-top, citation
 │   ├── blocks/         # Block-layout styles (carousel, timeline, …)
 │   ├── breadcrumbs, error-page, footer, header
 │   ├── hierarchy, iframe-embed, linked-resources, local-contexts

@@ -32,17 +32,7 @@ $filterLocaleCallback = function ($value) use ($lang) {
 // template — e.g. the table of contents is auto-summarised per page for the
 // periodical issues on template 21, whereas a ToC on another template could
 // be human-authored — so those are gated by template id.
-$aiGeneratedTerms = ['bibo:shortDescription'];
-$aiGeneratedTermsByTemplate = [
-    21 => ['dcterms:tableOfContents'],
-];
-$aiResourceTemplate = (isset($resource) && is_object($resource) && method_exists($resource, 'resourceTemplate'))
-    ? $resource->resourceTemplate()
-    : null;
-$aiTemplateId = $aiResourceTemplate ? $aiResourceTemplate->id() : null;
-if ($aiTemplateId !== null && isset($aiGeneratedTermsByTemplate[$aiTemplateId])) {
-    $aiGeneratedTerms = array_merge($aiGeneratedTerms, $aiGeneratedTermsByTemplate[$aiTemplateId]);
-}
+$aiGeneratedTerms = $this->AiGeneratedTerms(isset($resource) && is_object($resource) ? $resource : null);
 ?>
 
 <dl>

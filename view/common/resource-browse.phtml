@@ -1,0 +1,53 @@
+<?php
+$translate = $this->plugin('translate');
+$this->inlineScript()->appendFile($this->assetUrl('js/minimasonry.min.js'));
+$this->inlineScript()->appendFile($this->assetUrl('js/browse.js'));
+$this->htmlElement('body')->appendAttribute('class', $bodyClass);
+
+$filterLocale = (bool) $this->siteSetting('filter_locale_values');
+$lang = $this->lang();
+$valueLang = $filterLocale ? [$lang, ''] : null;
+$layout = $this->BrowseLayout();
+$isGrid = $layout['isGrid'];
+$bodyTerm = $this->siteSetting('browse_body_property_term');
+$bodyTruncate = $this->themeSetting('truncate_body_property');
+$collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
+    ? $this->iwacSearchUrl()
+    : $this->url(null, ['action' => 'search'], true);
+?>
+
+<?php echo $this->pageTitle($title, 1); ?>
+<?php echo $this->searchFilters(); ?>
+
+<div class="browse-controls">
+    <?php if ($layout['hasToggle']): ?>
+        <?php echo $this->partial('common/browse-toggle', [
+            'gridState' => $layout['gridState'],
+            'listState' => $layout['listState'],
+        ]); ?>
+    <?php endif; ?>
+    <?php echo $this->browse()->renderSortSelector($resourceName); ?>
+    <div class="advanced-search-container">
+        <?php echo $this->hyperlink($translate('Search the collection'), $collectionSearchUrl, ['class' => 'advanced-search']); ?>
+    </div>
+</div>
+
+<?php $this->trigger('view.browse.before'); ?>
+
+<ul class="resources <?php echo $isGrid ? 'resource-grid' : 'resource-list'; ?>">
+    <?php foreach ($resources as $index => $resource): ?>
+        <?php echo $this->partial('common/resource-card', [
+            'resource' => $resource,
+            'isGrid' => $isGrid,
+            'valueLang' => $valueLang,
+            'liClass' => $liClass,
+            'decorationClass' => $layout['decorationClass'],
+            'bodyTerm' => $bodyTerm,
+            'bodyTruncate' => $bodyTruncate,
+            'eager' => $index < 4,
+        ]); ?>
+    <?php endforeach; ?>
+</ul>
+
+<?php $this->trigger('view.browse.after'); ?>
+<?php echo $this->pagination(); ?>

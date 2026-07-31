@@ -1,5 +1,6 @@
 <?php
 $translate   = $this->plugin('translate');
+$translatePlural = $this->plugin('translatePlural');
 $escape      = $this->plugin('escapeHtml');
 $escapeAttr  = $this->plugin('escapeHtmlAttr');
 
@@ -25,7 +26,7 @@ foreach ($site->siteItemSets() as $siteItemSet) {
 $itemSetIds = [];
 $groupingIds = [];
 $collectIds = function (array $grouping) use (&$collectIds, &$itemSetIds, &$groupingIds) {
-    $data = $grouping['data'];
+    $data = $grouping['data'] ?? [];
     if (!empty($data['itemSet'])) {
         $itemSetIds[$data['itemSet']] = true;
     }
@@ -46,8 +47,8 @@ if ($itemSetIds) {
         foreach ($this->api()->search('item_sets', ['id' => array_keys($itemSetIds)])->getContent() as $set) {
             $itemSetMap[$set->id()] = $set;
         }
-    } catch (\Exception $e) {
-        // fall through — $resolve treats missing entries as private
+    } catch (\Throwable $e) {
+        error_log('[IWAC theme] Unable to preload hierarchy item sets: ' . $e->getMessage());
     }
 }
 
@@ -57,8 +58,8 @@ if ($groupingIds) {
         foreach ($this->api()->search('hierarchy_grouping', ['id' => array_keys($groupingIds)])->getContent() as $g) {
             $groupingMap[$g->id()] = $g;
         }
-    } catch (\Exception $e) {
-        // fall through — counts are omitted when the grouping isn't mapped
+    } catch (\Throwable $e) {
+        error_log('[IWAC theme] Unable to preload hierarchy groupings: ' . $e->getMessage());
     }
 }
 
@@ -73,7 +74,7 @@ $resolve = function (array $grouping) use (
     $siteItemSetArray, $valueLang, $allGroupings, $siteSlug,
     $linkItemSet, $translate, $itemSetMap, $groupingMap, &$resolveCache
 ) {
-    $data        = $grouping['data'];
+    $data        = $grouping['data'] ?? [];
     $groupingID  = $data['groupingID'] ?? null;
     $itemSetId   = $data['itemSet']    ?? null;
     $customLabel = $data['label']      ?? '';
@@ -91,7 +92,7 @@ $resolve = function (array $grouping) use (
         if (!$itemSet) {
             // Not found or not visible to this user.
             $private = true;
-        } elseif ($siteItemSetArray && !in_array($itemSet->id(), $siteItemSetArray)) {
+        } elseif ($siteItemSetArray && !in_array($itemSet->id(), $siteItemSetArray, true)) {
             $itemSet = null;
             $private = true;
         }
@@ -119,8 +120,8 @@ $resolve = function (array $grouping) use (
             if ($formatted && preg_match('/(\d[\d\s,\.]*)/', $formatted, $m)) {
                 $count = (int) preg_replace('/\D+/', '', $m[1]);
             }
-        } catch (\Exception $e) {
-            // ignore
+        } catch (\Throwable $e) {
+            error_log('[IWAC theme] Unable to resolve hierarchy item count: ' . $e->getMessage());
         }
     }
 
@@ -182,9 +183,34 @@ $categoryFor = function (string $nodeLabel, ?string $parentLabel = null): string
 /**
  * Render a single card for a grouping node (with optional children list).
  */
+$renderChildren = function (array $children, int $depth = 0) use (
+    &$renderChildren, $resolve, $escape, $escapeAttr
+) {
+    $nestedClass = $depth > 0 ? ' hierarchy-card__children--nested' : '';
+    echo '<ul class="hierarchy-card__children' . $nestedClass . '">';
+    foreach ($children as $child) {
+        $childNode = $resolve($child);
+        $chipOpen = $childNode['url']
+            ? '<a class="hierarchy-card__child" href="' . $escapeAttr($childNode['url']) . '">'
+            : '<span class="hierarchy-card__child hierarchy-card__child--disabled">';
+        $chipClose = $childNode['url'] ? '</a>' : '</span>';
+        echo '<li>' . $chipOpen
+            . '<span class="hierarchy-card__child-label">' . $escape($childNode['label']) . '</span>';
+        if ($childNode['count'] !== null) {
+            echo '<span class="hierarchy-card__child-count">' . $escape(number_format($childNode['count'])) . '</span>';
+        }
+        echo $chipClose;
+        if (!empty($child['children'])) {
+            $renderChildren($child['children'], $depth + 1);
+        }
+        echo '</li>';
+    }
+    echo '</ul>';
+};
+
 $renderCard = function (array $grouping, ?string $parentLabel = null) use (
-    &$renderCard, $resolve, $thumbUrl, $categoryFor,
-    $escape, $escapeAttr, $translate
+    $resolve, $thumbUrl, $categoryFor, $renderChildren,
+    $escape, $escapeAttr, $translate, $translatePlural
 ) {
     $node  = $resolve($grouping);
     $thumb = $thumbUrl($node['itemSet']);
@@ -220,10 +246,7 @@ $renderCard = function (array $grouping, ?string $parentLabel = null) use (
     echo '<span class="hierarchy-card__body">';
     echo '<span class="hierarchy-card__title">' . $escape($node['label']) . '</span>';
     if ($node['count'] !== null) {
-        $label = sprintf(
-            $translate($node['count'] === 1 ? '%s item' : '%s items'),
-            number_format($node['count'])
-        );
+        $label = sprintf($translatePlural('%s item', '%s items', $node['count']), number_format($node['count']));
         echo '<span class="hierarchy-card__count">' . $escape($label) . '</span>';
     } elseif ($node['private']) {
         echo '<span class="hierarchy-card__count hierarchy-card__count--muted">'
@@ -235,21 +258,7 @@ $renderCard = function (array $grouping, ?string $parentLabel = null) use (
 
     // Nested children render as a subtle chip list inside the card.
     if ($hasChildren) {
-        echo '<ul class="hierarchy-card__children">';
-        foreach ($grouping['children'] as $child) {
-            $childNode = $resolve($child);
-            $chipOpen  = $childNode['url']
-                ? '<a class="hierarchy-card__child" href="' . $escapeAttr($childNode['url']) . '">'
-                : '<span class="hierarchy-card__child hierarchy-card__child--disabled">';
-            $chipClose = $childNode['url'] ? '</a>' : '</span>';
-            echo '<li>' . $chipOpen
-                . '<span class="hierarchy-card__child-label">' . $escape($childNode['label']) . '</span>';
-            if ($childNode['count'] !== null) {
-                echo '<span class="hierarchy-card__child-count">' . $escape(number_format($childNode['count'])) . '</span>';
-            }
-            echo $chipClose . '</li>';
-        }
-        echo '</ul>';
+        $renderChildren($grouping['children']);
     }
 
     echo '</li>';
@@ -260,7 +269,8 @@ $renderCard = function (array $grouping, ?string $parentLabel = null) use (
  * - If the grouping has children, render them as a grid of cards beneath the heading.
  * - If it has no children, render the grouping itself as a single card.
  */
-$renderSection = function (array $grouping) use ($resolve, $renderCard, $escape, $translate) {
+$sectionHeadingLevel = $showLabel ? 3 : 2;
+$renderSection = function (array $grouping) use ($resolve, $renderCard, $escape, $translatePlural, $sectionHeadingLevel) {
     $node = $resolve($grouping);
     $hasChildren = !empty($grouping['children']);
 
@@ -277,12 +287,9 @@ $renderSection = function (array $grouping) use ($resolve, $renderCard, $escape,
 
     echo '<section class="hierarchy-section">';
     echo '<header class="hierarchy-section__header">';
-    echo '<h3 class="hierarchy-section__title">' . $escape($node['label']) . '</h3>';
+    echo '<h' . $sectionHeadingLevel . ' class="hierarchy-section__title">' . $escape($node['label']) . '</h' . $sectionHeadingLevel . '>';
     if ($node['count'] !== null) {
-        $label = sprintf(
-            $translate($node['count'] === 1 ? '%s item' : '%s items'),
-            number_format($node['count'])
-        );
+        $label = sprintf($translatePlural('%s item', '%s items', $node['count']), number_format($node['count']));
         echo '<span class="hierarchy-section__count">' . $escape($label) . '</span>';
     }
     echo '</header>';

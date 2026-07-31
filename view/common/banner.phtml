@@ -8,6 +8,12 @@ $bannerWidth = $this->themeSetting('banner_width') ?? '';
 $bannerHeight = $this->themeSetting('banner_height') ?? '';
 $bannerVerticalPosition = ($this->themeSetting('banner_v_position')) ?? 'center';
 $bannerHorizontalPosition = ($this->themeSetting('banner_h_position')) ?? 'center';
+if (!in_array($bannerVerticalPosition, ['top', 'center', 'bottom'], true)) {
+    $bannerVerticalPosition = 'center';
+}
+if (!in_array($bannerHorizontalPosition, ['left', 'center', 'right'], true)) {
+    $bannerHorizontalPosition = 'center';
+}
 
 $bannerEyebrow = $this->themeSetting('banner_eyebrow');
 $bannerHeading = $this->themeSetting('banner_heading');
@@ -111,81 +117,39 @@ if ($compact) {
 
     <?php if (!$compact): ?>
     <?php
-    // Homepage hero "almanac" figures — server-rendered collection counts
-    // (design-review finding 1.2). Three indexed COUNT queries via the public
-    // API replace the client-side ECharts overview for the four numbers, so
-    // the proof of scale paints with the page and never shifts the layout.
-    // The figures are disjoint categories: "Items" (FR "Contenus") sums only
-    // the primary content classes — articles, periodical issues, audiovisual,
-    // documents — so it excludes every authority/index record AND the
-    // references, photographs and legacy items that a "total − index" count
-    // would leave in. Index and References each count their own classes; the
-    // six countries are a fixed editorial constant. Class IDs follow the IWAC
-    // data model (see the iwac-data skill / docs/DESIGN-SYSTEM). Defensive: a
-    // query failure just drops the strip, it never breaks the homepage.
+    // Data access and IWAC class mappings live in the helper; this template
+    // only maps the resulting values to translated presentation labels.
+    $bannerStats = $this->BannerStats();
+    $counts = $bannerStats['counts'];
     $stats = null;
-    try {
-        $statsApi = $this->api();
-        $contentClasses = [36, 60, 38, 49];                       // articles, issues, audiovisual, documents
-        $indexClasses   = [94, 9, 96, 54, 244];                   // persons, places, orgs, events, subjects
-        $refClasses     = [35, 43, 88, 40, 82, 178, 52, 77, 305]; // the 9 reference classes
-        $statsContent = $statsApi->search('items', ['resource_class_id' => $contentClasses, 'limit' => 0])->getTotalResults();
-        $statsIndex   = $statsApi->search('items', ['resource_class_id' => $indexClasses,   'limit' => 0])->getTotalResults();
-        $statsRefs    = $statsApi->search('items', ['resource_class_id' => $refClasses,     'limit' => 0])->getTotalResults();
+    if ($counts) {
         $stats = [
-            ['n' => $statsContent, 'label' => $translate('Items'),      'featured' => true],
-            ['n' => $statsIndex,   'label' => $translate('Index')],
-            ['n' => $statsRefs,    'label' => $translate('References')],
-            ['n' => 6,             'label' => $translate('Countries')],
+            ['n' => $counts['items'], 'label' => $translate('Items'), 'featured' => true],
+            ['n' => $counts['index'], 'label' => $translate('Index')],
+            ['n' => $counts['references'], 'label' => $translate('References')],
+            ['n' => $counts['countries'], 'label' => $translate('Countries')],
         ];
-    } catch (\Throwable $e) {
-        $stats = null;
     }
     $thin = "\xE2\x80\xAF"; // U+202F narrow no-break space — locale-neutral digit grouping
 
-    // Secondary "corpus in depth" tier — words, pages, sources, document types,
-    // audiovisual minutes, languages. These are aggregates (sums of property
-    // values), NOT cheap indexed COUNTs, so they can't be computed live the way
-    // the four figures above are. They're read from IwacVisualizations'
-    // precomputed snapshot — the very file its Collection Overview block renders
-    // (generate_collection_overview.py, from the Hugging Face dataset). Since the
-    // module decoupled its data from git (issue #7), that snapshot is built in CI
-    // and delivered into files/iwac-visualizations/ by the admin "Sync Data" job,
-    // so we read it from OMEKA_PATH/files/ — the exact path the module's own
-    // server-side fallback uses. The read is best-effort and read-only: if the
-    // file is absent (module not installed, or no data pull yet) or unreadable,
-    // this tier is simply omitted and the hero still shows the four live counts.
-    // Figures are therefore as fresh as the last Sync Data run, not live.
+    $summary = $bannerStats['summary'];
     $substats = null;
-    $overviewSnapshot = defined('OMEKA_PATH')
-        ? OMEKA_PATH . '/files/iwac-visualizations/collection-overview.json'
-        : null;
-    if ($overviewSnapshot && is_readable($overviewSnapshot)) {
-        try {
-            $snap = json_decode((string) file_get_contents($overviewSnapshot), true);
-            $sum = (is_array($snap) && !empty($snap['summary']) && is_array($snap['summary'])) ? $snap['summary'] : null;
-            if ($sum) {
-                $depthFields = [
-                    ['key' => 'total_words',         'label' => $translate('Total words')],
-                    ['key' => 'total_pages',         'label' => $translate('Total pages')],
-                    ['key' => 'unique_sources',      'label' => $translate('Unique sources')],
-                    ['key' => 'document_types',      'label' => $translate('Document types')],
-                    ['key' => 'audiovisual_minutes', 'label' => $translate('Audiovisual minutes')],
-                    ['key' => 'languages',           'label' => $translate('Languages')],
-                ];
-                $substats = [];
-                foreach ($depthFields as $field) {
-                    if (isset($sum[$field['key']]) && is_numeric($sum[$field['key']])) {
-                        $substats[] = ['n' => $sum[$field['key']], 'label' => $field['label']];
-                    }
-                }
-                if (!$substats) {
-                    $substats = null;
-                }
+    if ($summary) {
+        $depthFields = [
+            'total_words' => $translate('Total words'),
+            'total_pages' => $translate('Total pages'),
+            'unique_sources' => $translate('Unique sources'),
+            'document_types' => $translate('Document types'),
+            'audiovisual_minutes' => $translate('Audiovisual minutes'),
+            'languages' => $translate('Languages'),
+        ];
+        $substats = [];
+        foreach ($depthFields as $key => $label) {
+            if (isset($summary[$key])) {
+                $substats[] = ['n' => $summary[$key], 'label' => $label];
             }
-        } catch (\Throwable $e) {
-            $substats = null;
         }
+        $substats = $substats ?: null;
     }
     ?>
     <div class="banner__content banner__content--<?php echo $escAttr($bannerContentPosition); ?>">

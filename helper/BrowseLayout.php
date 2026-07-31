@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace OmekaTheme\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
@@ -15,12 +17,12 @@ class BrowseLayout extends AbstractHelper
      * @return array{setting: string, hasToggle: bool, isGrid: bool,
      *     gridState: string, listState: string, decorationClass: string}
      */
-    public function __invoke()
+    public function __invoke(): array
     {
         $view = $this->getView();
 
-        $layoutSetting = $view->themeSetting('browse_layout', 'grid');
-        $isGrid = strpos($layoutSetting, 'grid') !== false;
+        $layoutSetting = (string) $view->themeSetting('browse_layout', 'grid');
+        $isGrid = str_contains($layoutSetting, 'grid');
 
         $viewParam = $view->params()->fromQuery('view');
         if (null !== $viewParam) {
@@ -29,13 +31,13 @@ class BrowseLayout extends AbstractHelper
 
         $decoration = $view->themeSetting('image_decoration');
         $decorationClass = '';
-        if (is_array($decoration) && in_array('media', $decoration)) {
+        if (is_array($decoration) && in_array('media', $decoration, true)) {
             $decorationClass = $isGrid ? 'decoration' : 'decoration decoration--thumbnail';
         }
 
         return [
             'setting' => $layoutSetting,
-            'hasToggle' => strpos($layoutSetting, 'toggle') !== false,
+            'hasToggle' => str_contains($layoutSetting, 'toggle'),
             'isGrid' => $isGrid,
             'gridState' => $isGrid ? 'disabled' : '',
             'listState' => $isGrid ? '' : 'disabled',

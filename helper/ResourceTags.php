@@ -1,4 +1,6 @@
-<?php 
+<?php
+declare(strict_types=1);
+
 namespace OmekaTheme\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
@@ -12,7 +14,7 @@ class ResourceTags extends AbstractHelper
      * @param object $resource The resource to add a tag to.
      * @return string
      */
-    public function __invoke($resource)
+    public function __invoke(?object $resource): string
     {
         if (!$resource) {
             return '';
@@ -20,25 +22,25 @@ class ResourceTags extends AbstractHelper
 
         $view = $this->getView();
 
-        $resource_tags = $view->themeSetting('resource_tags');
+        $resourceTags = $view->themeSetting('resource_tags');
 
         $tagsHtml = '';
 
-        if (is_array($resource_tags) && (in_array('resource_type', $resource_tags) || in_array('resource_class', $resource_tags))) {
+        if (is_array($resourceTags) && (in_array('resource_type', $resourceTags, true) || in_array('resource_class', $resourceTags, true))) {
 
             $tagsHtml .= '<div class="resource-tags">';
 
             // Resource Type Tag ('Item', 'Item set', 'Media').
 
-            if (in_array('resource_type', $resource_tags)) {
+            if (in_array('resource_type', $resourceTags, true)) {
 
                 $resourceName = $resource->resourceName();
 
                 if ($resourceName) {
                     $mapResourceName = [
-                        'items' => 'Item',
-                        'item_sets' => 'Item set',
-                        'media' => 'Media',
+                        'items' => 'Item', // @translate
+                        'item_sets' => 'Item set', // @translate
+                        'media' => 'Media', // @translate
                     ];
 
                     if (array_key_exists($resourceName, $mapResourceName)) {
@@ -52,7 +54,7 @@ class ResourceTags extends AbstractHelper
 
             // Resource Class Tag.
 
-            if (in_array('resource_class', $resource_tags)) {
+            if (in_array('resource_class', $resourceTags, true)) {
 
                 if ($resource->resourceClass()) {
                     $tagLabel = $view->escapeHtml($view->translate($resource->displayResourceClassLabel()));

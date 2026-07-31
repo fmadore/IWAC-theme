@@ -73,6 +73,7 @@ $bodyTruncate = $this->themeSetting('truncate_body_property');
     // linked-resources page block's so both can coexist on one page.
     $noResultsText = $translate('No resources match your search.');
     $resultsFoundText = $translate('{count} resources found');
+    $pageResultsText = $translate('{count} resources on this page');
     $rows = [];
     foreach ($items as $item) {
         $rows[] = ['resource' => $item, 'relationLabel' => null];
@@ -81,7 +82,8 @@ $bodyTruncate = $this->themeSetting('truncate_body_property');
     <div id="item-set-resources"
          class="linked-resources"
          data-no-results-text="<?php echo $this->escapeHtmlAttr($noResultsText); ?>"
-         data-results-found-text="<?php echo $this->escapeHtmlAttr($resultsFoundText); ?>">
+         data-results-found-text="<?php echo $this->escapeHtmlAttr($resultsFoundText); ?>"
+         data-page-results-text="<?php echo $this->escapeHtmlAttr($pageResultsText); ?>">
 
         <div class="linked-resources__controls">
             <div class="linked-resources__search">
@@ -93,8 +95,8 @@ $bodyTruncate = $this->themeSetting('truncate_body_property');
                        id="item-set-resources-search"
                        name="item-set-resources-search"
                        class="linked-resources__search-input"
-                       placeholder="<?php echo $this->escapeHtmlAttr($translate('Filter by title...')); ?>"
-                       aria-label="<?php echo $this->escapeHtmlAttr($translate('Filter items by title')); ?>">
+                       placeholder="<?php echo $this->escapeHtmlAttr($translate('Filter this page by title…')); ?>"
+                       aria-label="<?php echo $this->escapeHtmlAttr($translate('Filter items on this page by title')); ?>">
             </div>
         </div>
 

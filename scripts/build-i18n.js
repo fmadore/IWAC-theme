@@ -46,6 +46,7 @@ function* walk(dir) {
 // translate('…') / translate("…") — including the plugin-variable forms
 // $translate('…') used throughout the templates.
 const CALL_RE = /translate\s*\(\s*('((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")/g;
+const PLURAL_RE = /translatePlural\s*\(\s*('((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")\s*,\s*('((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")/g;
 const PHP_STRING_RE = /'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)"/g;
 
 function unescapePhp(str, quote) {
@@ -61,6 +62,7 @@ function unescapePhp(str, quote) {
 
 function extract() {
     const messages = new Map(); // msgid -> Set of "file:line" refs
+    const plurals = new Map(); // singular msgid -> plural msgid
     for (const dir of SOURCE_DIRS) {
         for (const file of walk(path.join(ROOT, dir))) {
             const src = fs.readFileSync(file, 'utf8');
@@ -76,6 +78,18 @@ function extract() {
                 const line = src.slice(0, m.index).split('\n').length;
                 if (!messages.has(msgid)) messages.set(msgid, new Set());
                 messages.get(msgid).add(`${rel}:${line}`);
+            }
+
+            while ((m = PLURAL_RE.exec(src)) !== null) {
+                const singularQuote = m[1][0];
+                const pluralQuote = m[4][0];
+                const singular = unescapePhp(singularQuote === "'" ? m[2] : m[3], singularQuote);
+                const plural = unescapePhp(pluralQuote === "'" ? m[5] : m[6], pluralQuote);
+                if (!singular || !plural) continue;
+                const line = src.slice(0, m.index).split('\n').length;
+                if (!messages.has(singular)) messages.set(singular, new Set());
+                messages.get(singular).add(`${rel}:${line}`);
+                plurals.set(singular, plural);
             }
 
             // Dynamic lookup tables cannot call translate() at declaration
@@ -101,7 +115,7 @@ function extract() {
             });
         }
     }
-    return messages;
+    return { messages, plurals };
 }
 
 // ---------------------------------------------------------------------------
@@ -127,33 +141,69 @@ function poUnescape(str) {
 /** Minimal PO parser: returns { header, entries: Map<msgid, msgstr> }. */
 function parsePo(text) {
     const entries = new Map();
+    const plurals = new Map();
     let header = '';
+
+    function readDirective(block, directive) {
+        const lines = block.split('\n');
+        const prefix = `${directive} `;
+        const index = lines.findIndex((line) => line.startsWith(prefix));
+        if (index === -1) return null;
+        const parts = [];
+        const first = lines[index].slice(prefix.length).trim();
+        if (first.startsWith('"')) parts.push(first);
+        for (let i = index + 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line.startsWith('"')) break;
+            parts.push(line);
+        }
+        return parts
+            .map((part) => poUnescape(part.slice(1, -1)))
+            .join('');
+    }
+
     // Split on blank lines; each block is one entry.
     for (const block of text.split(/\n\s*\n/)) {
-        const idMatch = block.match(/msgid\s+((?:"(?:[^"\\]|\\.)*"\s*)+)msgstr/);
-        const strMatch = block.match(/msgstr\s+((?:"(?:[^"\\]|\\.)*"\s*)+)/);
-        if (!idMatch || !strMatch) continue;
-        const joinParts = (s) => (s.match(/"(?:[^"\\]|\\.)*"/g) || [])
-            .map((p) => poUnescape(p.slice(1, -1)))
-            .join('');
-        const msgid = joinParts(idMatch[1]);
-        const msgstr = joinParts(strMatch[1]);
+        const msgid = readDirective(block, 'msgid');
+        if (msgid === null) continue;
+        const pluralId = readDirective(block, 'msgid_plural');
+        if (pluralId !== null) {
+            const normalized = [
+                readDirective(block, 'msgstr[0]') || '',
+                readDirective(block, 'msgstr[1]') || '',
+            ];
+            entries.set(msgid, normalized[0]);
+            plurals.set(msgid, {
+                msgid: pluralId,
+                translations: normalized,
+            });
+            continue;
+        }
+        const msgstr = readDirective(block, 'msgstr');
+        if (msgstr === null) continue;
         if (msgid === '') {
             header = msgstr;
         } else {
             entries.set(msgid, msgstr);
         }
     }
-    return { header, entries };
+    return { header, entries, plurals };
 }
 
-function formatEntry(msgid, msgstr, refs) {
+function formatEntry(msgid, msgstr, refs, pluralId, pluralTranslations) {
     let out = '';
     if (refs && refs.size) {
         out += `#: ${Array.from(refs).sort().join(' ')}\n`;
     }
     out += `msgid "${poEscape(msgid)}"\n`;
-    out += `msgstr "${poEscape(msgstr)}"\n`;
+    if (pluralId) {
+        const translations = pluralTranslations || ['', ''];
+        out += `msgid_plural "${poEscape(pluralId)}"\n`;
+        out += `msgstr[0] "${poEscape(translations[0] || '')}"\n`;
+        out += `msgstr[1] "${poEscape(translations[1] || '')}"\n`;
+    } else {
+        out += `msgstr "${poEscape(msgstr)}"\n`;
+    }
     return out;
 }
 
@@ -161,12 +211,22 @@ function formatEntry(msgid, msgstr, refs) {
 // 3. MO compilation (GNU gettext binary format, little-endian)
 // ---------------------------------------------------------------------------
 
-function compileMo(header, entries) {
+function compileMo(header, entries, plurals) {
     // Only translated entries ship; include the header (empty msgid).
     const pairs = [['', header]];
     for (const [id, str] of Array.from(entries.entries()).sort((a, b) =>
         a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)) {
-        if (str) pairs.push([id, str]);
+        const plural = plurals.get(id);
+        if (plural) {
+            if (plural.translations.some(Boolean)) {
+                pairs.push([
+                    `${id}\0${plural.msgid}`,
+                    plural.translations.join('\0'),
+                ]);
+            }
+        } else if (str) {
+            pairs.push([id, str]);
+        }
     }
 
     const n = pairs.length;
@@ -210,7 +270,7 @@ function compileMo(header, entries) {
 // Main
 // ---------------------------------------------------------------------------
 
-const messages = extract();
+const { messages, plurals } = extract();
 const sortedIds = Array.from(messages.keys()).sort();
 
 // template.pot
@@ -225,7 +285,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\\n"
 
 `;
-pot += sortedIds.map((id) => formatEntry(id, '', messages.get(id))).join('\n');
+pot += sortedIds.map((id) => formatEntry(id, '', messages.get(id), plurals.get(id))).join('\n');
 
 // fr.po — merge
 const frPath = path.join(LANG_DIR, 'fr.po');
@@ -242,12 +302,31 @@ msgstr ""
 
 `;
 po += sortedIds
-    .map((id) => formatEntry(id, fr.entries.get(id) || '', messages.get(id)))
+    .map((id) => {
+        const pluralId = plurals.get(id);
+        const existingPlural = fr.plurals.get(id);
+        const translations = existingPlural && existingPlural.msgid === pluralId
+            ? existingPlural.translations
+            : ['', ''];
+        return formatEntry(id, fr.entries.get(id) || '', messages.get(id), pluralId, translations);
+    })
     .join('\n');
 
 const mo = compileMo(
-    'Project-Id-Version: IWAC-theme\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n',
-    new Map(sortedIds.map((id) => [id, fr.entries.get(id) || '']))
+    'Project-Id-Version: IWAC-theme\nLanguage: fr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\n',
+    new Map(sortedIds.map((id) => [id, fr.entries.get(id) || ''])),
+    new Map(sortedIds
+        .filter((id) => plurals.has(id))
+        .map((id) => {
+            const pluralId = plurals.get(id);
+            const existing = fr.plurals.get(id);
+            return [id, {
+                msgid: pluralId,
+                translations: existing && existing.msgid === pluralId
+                    ? existing.translations
+                    : ['', ''],
+            }];
+        }))
 );
 
 const outputs = [
@@ -272,7 +351,13 @@ for (const [file, content] of outputs) {
     }
 }
 
-const untranslated = sortedIds.filter((id) => !fr.entries.get(id));
+const untranslated = sortedIds.filter((id) => {
+    if (plurals.has(id)) {
+        const entry = fr.plurals.get(id);
+        return !entry || entry.msgid !== plurals.get(id) || !entry.translations.every(Boolean);
+    }
+    return !fr.entries.get(id);
+});
 console.log(`✓ ${sortedIds.length} msgids (${untranslated.length} untranslated in fr)`);
 if (dropped.length) console.log(`  dropped stale: ${dropped.join(' | ')}`);
 if (untranslated.length) {
