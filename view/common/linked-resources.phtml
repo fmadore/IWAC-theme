@@ -52,6 +52,25 @@ $sortOptions = [
 
 $noResultsText = $this->translate('No resources match your search.');
 $resultsFoundText = $this->translate('{count} resources found');
+$pageResultsText = $this->translate('{count} resources on this page');
+
+// $totalCount is scoped to the active property filter. The reset chip points
+// to Omeka's default resource type, so calculate that unfiltered type total
+// separately instead of showing the filtered count beside “All”.
+$defaultResourceType = null;
+foreach ($resourcePropertiesAll as $type => $resourceProperties) {
+    if ($resourceProperties) {
+        $defaultResourceType = $type;
+        break;
+    }
+}
+$siteId = null;
+if ($this->status()->isSiteRequest() && $this->siteSetting('exclude_resources_not_in_site')) {
+    $siteId = $this->currentSite()->id();
+}
+$allCount = $objectResource->subjectValueTotalCount(null, $defaultResourceType, $siteId);
+$defaultResourceProperty = $defaultResourceType ? $defaultResourceType . ':' : null;
+$isAllActive = !$resourceProperty || $resourceProperty === $defaultResourceProperty;
 
 // Flatten the grouped subject values into the row shape the shared
 // ledger-table partial expects.
@@ -71,6 +90,7 @@ foreach ($subjectValues as $values) {
      class="linked-resources"
      data-no-results-text="<?php echo $this->escapeHtmlAttr($noResultsText); ?>"
      data-results-found-text="<?php echo $this->escapeHtmlAttr($resultsFoundText); ?>"
+     data-page-results-text="<?php echo $this->escapeHtmlAttr($pageResultsText); ?>"
      data-fragment="<?php echo $this->escapeHtmlAttr($fragment); ?>">
 
     <div class="linked-resources__controls">
@@ -83,8 +103,8 @@ foreach ($subjectValues as $values) {
                    id="linked-resources-search"
                    name="linked-resources-search"
                    class="linked-resources__search-input"
-                   placeholder="<?php echo $this->escapeHtmlAttr($this->translate('Filter by title...')); ?>"
-                   aria-label="<?php echo $this->escapeHtmlAttr($this->translate('Filter linked resources by title')); ?>">
+                   placeholder="<?php echo $this->escapeHtmlAttr($this->translate('Filter this page by title…')); ?>"
+                   aria-label="<?php echo $this->escapeHtmlAttr($this->translate('Filter linked resources on this page by title')); ?>">
         </div>
 
         <div class="linked-resources__sort">
@@ -109,10 +129,10 @@ foreach ($subjectValues as $values) {
             <?php echo $this->translate('Filter:'); ?>
         </span>
         <a href="<?php echo $this->escapeHtmlAttr($baseUrl . '#' . $fragment); ?>"
-           class="linked-resources__facet<?php echo !$resourceProperty ? ' is-active' : ''; ?>"
-           <?php echo !$resourceProperty ? 'aria-current="true"' : ''; ?>>
+           class="linked-resources__facet<?php echo $isAllActive ? ' is-active' : ''; ?>"
+           <?php echo $isAllActive ? 'aria-current="true"' : ''; ?>>
             <span class="linked-resources__facet-label"><?php echo $this->translate('All'); ?></span>
-            <span class="linked-resources__facet-count"><?php echo $totalCount; ?></span>
+            <span class="linked-resources__facet-count"><?php echo $this->escapeHtml($allCount); ?></span>
         </a>
         <?php foreach ($facetChips as $chip): ?>
             <?php

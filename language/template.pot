@@ -32,7 +32,7 @@ msgstr ""
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
 msgstr ""
 
-#: view/common/linked-resources.phtml:114
+#: view/common/linked-resources.phtml:134
 msgid "All"
 msgstr ""
 
@@ -136,11 +136,11 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: view/common/linked-resources.phtml:107
+#: view/common/linked-resources.phtml:127
 msgid "Filter by relation"
 msgstr ""
 
-#: view/common/linked-resources.phtml:86 view/omeka/site/item/browse.phtml:96
+#: view/omeka/site/item/browse.phtml:96
 msgid "Filter by title..."
 msgstr ""
 
@@ -148,11 +148,15 @@ msgstr ""
 msgid "Filter items by title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:87
-msgid "Filter linked resources by title"
+#: view/common/linked-resources.phtml:107
+msgid "Filter linked resources on this page by title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:109
+#: view/common/linked-resources.phtml:106
+msgid "Filter this page by title…"
+msgstr ""
+
+#: view/common/linked-resources.phtml:129
 msgid "Filter:"
 msgstr ""
 
@@ -376,7 +380,7 @@ msgstr ""
 msgid "Select language"
 msgstr ""
 
-#: view/common/resource-values.phtml:132
+#: view/common/resource-values.phtml:136
 msgid "Show annotation"
 msgstr ""
 
@@ -396,7 +400,7 @@ msgstr ""
 msgid "Something went wrong"
 msgstr ""
 
-#: view/common/linked-resources.phtml:92
+#: view/common/linked-resources.phtml:112
 msgid "Sort by"
 msgstr ""
 
@@ -464,7 +468,7 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: view/common/resource-values.phtml:137
+#: view/common/resource-values.phtml:141
 msgid "Value Annotations"
 msgstr ""
 
@@ -514,4 +518,8 @@ msgstr ""
 
 #: view/common/linked-resources.phtml:54 view/omeka/site/item/browse.phtml:75
 msgid "{count} resources found"
+msgstr ""
+
+#: view/common/linked-resources.phtml:55
+msgid "{count} resources on this page"
 msgstr ""

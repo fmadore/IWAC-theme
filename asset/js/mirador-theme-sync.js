@@ -42,20 +42,36 @@
 
     /**
      * Wait for Mirador to initialize, then apply the current site theme.
-     * Mirador loads asynchronously via an ES module, so we poll briefly.
+     * Mirador loads asynchronously via an ES module. Observe DOM changes and
+     * keep a low-frequency fallback check until the store becomes available.
      */
-    function waitForMirador(callback, attempts = 0) {
-        if (window.miradors && Object.keys(window.miradors).length > 0) {
-            // Check if the first entry has a store (viewer initialized vs raw config)
-            const first = window.miradors[Object.keys(window.miradors)[0]];
-            if (first && first.store) {
-                callback();
-                return;
+    function waitForMirador(callback) {
+        let interval = null;
+        let observer = null;
+
+        function stop() {
+            if (interval) window.clearInterval(interval);
+            if (observer) observer.disconnect();
+            interval = null;
+            observer = null;
+        }
+
+        function check() {
+            if (window.miradors && Object.keys(window.miradors).length > 0) {
+                // Check if the first entry has a store (viewer initialized vs raw config)
+                const first = window.miradors[Object.keys(window.miradors)[0]];
+                if (first && first.store) {
+                    callback();
+                    stop();
+                }
             }
         }
-        if (attempts < 50) { // ~5 seconds max
-            setTimeout(() => waitForMirador(callback, attempts + 1), 100);
-        }
+
+        interval = window.setInterval(check, 250);
+        observer = new MutationObserver(check);
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+        window.addEventListener('pagehide', stop, { once: true });
+        check();
     }
 
     /**
@@ -85,9 +101,9 @@
         if (!hasMount) {
             return;
         }
+        observeThemeChanges();
         waitForMirador(() => {
             syncMiradorTheme(getCurrentTheme());
-            observeThemeChanges();
         });
     }
 

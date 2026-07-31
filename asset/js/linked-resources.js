@@ -25,6 +25,16 @@
     // Cache of in-flight and completed prefetch promises keyed by URL, so
     // hovering a pagination link and then clicking it reuses the warmed request.
     const prefetchCache = new Map();
+    const requestGenerations = new Map();
+    const activeRequests = new Map();
+    const currentUrls = new Map();
+
+    function linkedResourceHistory() {
+        const value = history.state && history.state.linkedResources;
+        return value && typeof value === 'object' && !Array.isArray(value)
+            ? value
+            : {};
+    }
 
     function prefetch(url) {
         if (!url || prefetchCache.has(url)) return;
@@ -227,6 +237,13 @@
         if (!root) return;
         const skipHistory = options && options.skipHistory;
 
+        const generation = (requestGenerations.get(rootId) || 0) + 1;
+        requestGenerations.set(rootId, generation);
+        const previousRequest = activeRequests.get(rootId);
+        if (previousRequest) previousRequest.abort();
+        const controller = new AbortController();
+        activeRequests.set(rootId, controller);
+
         root.setAttribute('aria-busy', 'true');
 
         try {
@@ -240,64 +257,91 @@
                 const response = await fetch(url, {
                     credentials: 'same-origin',
                     headers: { 'X-Requested-With': 'fetch' },
+                    signal: controller.signal,
                 });
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
                 html = await response.text();
             }
+            if (generation !== requestGenerations.get(rootId)) return;
             const doc = new DOMParser().parseFromString(html, 'text/html');
             const newRoot = doc.getElementById(rootId);
             if (!newRoot) {
                 throw new Error(`Response did not contain #${rootId}`);
             }
 
-            root.innerHTML = newRoot.innerHTML;
+            const replacement = document.importNode(newRoot, true);
+            root.replaceWith(replacement);
+            currentUrls.set(rootId, url);
             if (!skipHistory) {
-                history.pushState({ linkedResources: rootId }, '', url);
+                const linkedResources = Object.assign(
+                    {},
+                    linkedResourceHistory(),
+                    { [rootId]: url }
+                );
+                history.pushState(
+                    Object.assign({}, history.state, { linkedResources }),
+                    '',
+                    url
+                );
             }
-            bindRoot(root);
+            bindRoot(replacement);
 
             // The clicked control was destroyed by the swap — put keyboard
             // focus back on the region so tabbing resumes in place, and let
             // the live region announce the update.
-            root.setAttribute('tabindex', '-1');
-            root.focus({ preventScroll: true });
-            const statusRegion = root.querySelector('.linked-resources__status');
-            const rowCount = root.querySelectorAll('.linked-resources-table tbody tr').length;
+            replacement.setAttribute('tabindex', '-1');
+            replacement.focus({ preventScroll: true });
+            const statusRegion = replacement.querySelector('.linked-resources__status');
+            const rowCount = replacement.querySelectorAll('.linked-resources-table tbody tr').length;
             if (statusRegion) {
-                statusRegion.textContent = (root.dataset.resultsFoundText || '{count} resources found')
+                statusRegion.textContent = (replacement.dataset.pageResultsText || '{count} resources on this page')
                     .replace('{count}', rowCount);
             }
         } catch (err) {
+            if (err.name === 'AbortError' || generation !== requestGenerations.get(rootId)) {
+                return;
+            }
             // eslint-disable-next-line no-console
             console.warn('[linked-resources] AJAX swap failed, falling back to full reload', err);
             window.location.href = url;
         } finally {
-            root.removeAttribute('aria-busy');
+            if (generation === requestGenerations.get(rootId)) {
+                const currentRoot = document.getElementById(rootId);
+                if (currentRoot) currentRoot.removeAttribute('aria-busy');
+                activeRequests.delete(rootId);
+            }
         }
     }
 
     function handlePopState(event) {
-        // Only react to history entries we created (or the marked entry
-        // point), so we don't hijack other back-button navigation.
-        if (event.state && event.state.linkedResources) {
-            swapContent(event.state.linkedResources, window.location.href, { skipHistory: true });
-        }
+        if (!event.state || !event.state.linkedResources) return;
+        Object.entries(event.state.linkedResources).forEach(([rootId, url]) => {
+            if (document.getElementById(rootId) && currentUrls.get(rootId) !== url) {
+                swapContent(rootId, url, { skipHistory: true });
+            }
+        });
     }
 
     IWACUtils.onReady(() => {
         const roots = document.querySelectorAll(ROOT_SELECTOR);
         if (!roots.length) return;
-        roots.forEach(bindRoot);
-        // Mark the entry-point history record so Back from the first
-        // AJAX-created entry restores page 1 instead of leaving stale DOM.
-        // With two roots on one page only the first drives history — the
-        // Back behaviour for the other stays a plain URL change, never
-        // stale-DOM-plus-wrong-URL.
-        if (!history.state || !history.state.linkedResources) {
-            history.replaceState({ linkedResources: roots[0].id }, '', window.location.href);
-        }
+        const initialUrls = {};
+        roots.forEach((root) => {
+            bindRoot(root);
+            initialUrls[root.id] = window.location.href;
+            currentUrls.set(root.id, window.location.href);
+        });
+        // Mark every root's entry-point so Back from the first AJAX-created
+        // entry restores each independently instead of leaving stale DOM.
+        history.replaceState(
+            Object.assign({}, history.state, {
+                linkedResources: initialUrls,
+            }),
+            '',
+            window.location.href
+        );
         window.addEventListener('popstate', handlePopState);
     });
 })();

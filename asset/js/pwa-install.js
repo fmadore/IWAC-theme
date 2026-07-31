@@ -214,5 +214,12 @@
 		}
 	}
 
+	window.addEventListener('pagehide', function (event) {
+		if (!event.persisted && manifestObjectUrl) {
+			URL.revokeObjectURL(manifestObjectUrl);
+			manifestObjectUrl = null;
+		}
+	});
+
 	IWACUtils.onReady(init);
 })();

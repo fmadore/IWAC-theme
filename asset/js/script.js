@@ -182,6 +182,8 @@ const freedomScripts = () => {
                 if (trigger) {
                     trigger.setAttribute('aria-expanded', 'false');
                 }
+                const tooltip = btn.querySelector('.annotation-tooltip');
+                if (tooltip) tooltip.setAttribute('aria-hidden', 'true');
             }
         });
     }
@@ -204,10 +206,12 @@ const freedomScripts = () => {
                 if (!isActive) {
                     annotationBtn.classList.add('is-active');
                     trigger.setAttribute('aria-expanded', 'true');
+                    annotationTooltip.setAttribute('aria-hidden', 'false');
                     setAnnotationTooltipPos();
                 } else {
                     annotationBtn.classList.remove('is-active');
                     trigger.setAttribute('aria-expanded', 'false');
+                    annotationTooltip.setAttribute('aria-hidden', 'true');
                 }
             });
         }
@@ -248,6 +252,15 @@ const freedomScripts = () => {
         if (!e.target.closest('.annotation-btn')) {
             closeAllAnnotations();
         }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const activeAnnotation = document.querySelector('.annotation-btn.is-active');
+        if (!activeAnnotation) return;
+        const trigger = activeAnnotation.querySelector('.annotation-trigger');
+        closeAllAnnotations();
+        if (trigger) trigger.focus();
     });
 
     // Language Switcher dropdown functionality

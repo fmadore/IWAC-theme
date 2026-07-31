@@ -30,7 +30,7 @@ msgstr ""
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
 msgstr ""
 
-#: view/common/linked-resources.phtml:114
+#: view/common/linked-resources.phtml:134
 msgid "All"
 msgstr "Tout"
 
@@ -134,11 +134,11 @@ msgstr "Télécharger"
 msgid "Error"
 msgstr "Erreur"
 
-#: view/common/linked-resources.phtml:107
+#: view/common/linked-resources.phtml:127
 msgid "Filter by relation"
 msgstr "Filtrer par relation"
 
-#: view/common/linked-resources.phtml:86 view/omeka/site/item/browse.phtml:96
+#: view/omeka/site/item/browse.phtml:96
 msgid "Filter by title..."
 msgstr "Filtrer par titre…"
 
@@ -146,11 +146,15 @@ msgstr "Filtrer par titre…"
 msgid "Filter items by title"
 msgstr "Filtrer les documents par titre"
 
-#: view/common/linked-resources.phtml:87
-msgid "Filter linked resources by title"
-msgstr "Filtrer les ressources liées par titre"
+#: view/common/linked-resources.phtml:107
+msgid "Filter linked resources on this page by title"
+msgstr "Filtrer les ressources liées de cette page par titre"
 
-#: view/common/linked-resources.phtml:109
+#: view/common/linked-resources.phtml:106
+msgid "Filter this page by title…"
+msgstr "Filtrer cette page par titre…"
+
+#: view/common/linked-resources.phtml:129
 msgid "Filter:"
 msgstr "Filtrer :"
 
@@ -374,7 +378,7 @@ msgstr ""
 msgid "Select language"
 msgstr "Choisir la langue"
 
-#: view/common/resource-values.phtml:132
+#: view/common/resource-values.phtml:136
 msgid "Show annotation"
 msgstr "Afficher l’annotation"
 
@@ -394,7 +398,7 @@ msgstr "Aller au contenu principal"
 msgid "Something went wrong"
 msgstr "Une erreur s’est produite"
 
-#: view/common/linked-resources.phtml:92
+#: view/common/linked-resources.phtml:112
 msgid "Sort by"
 msgstr ""
 
@@ -462,7 +466,7 @@ msgstr "Sources uniques"
 msgid "Value"
 msgstr ""
 
-#: view/common/resource-values.phtml:137
+#: view/common/resource-values.phtml:141
 msgid "Value Annotations"
 msgstr "Annotations de valeur"
 
@@ -513,3 +517,7 @@ msgstr "afficher le sous-menu de « %s »"
 #: view/common/linked-resources.phtml:54 view/omeka/site/item/browse.phtml:75
 msgid "{count} resources found"
 msgstr "{count} ressources trouvées"
+
+#: view/common/linked-resources.phtml:55
+msgid "{count} resources on this page"
+msgstr "{count} ressources sur cette page"

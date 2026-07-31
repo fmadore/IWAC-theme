@@ -52,7 +52,9 @@
      * Resolve a mode to the concrete light|dark theme used for styling.
      */
     function resolveTheme(mode) {
-        return mode === 'system' ? systemTheme() : mode;
+        return mode === 'system' ? systemTheme()
+            : (mode === 'light' || mode === 'dark') ? mode
+            : systemTheme();
     }
 
     /**
@@ -149,8 +151,10 @@
         getMode: getMode,
         get: function() { return resolveTheme(getMode()); },
         set: function(mode) {
+            if (!MODES.includes(mode)) return false;
             storeMode(mode);
             applyMode(mode);
+            return true;
         }
     };
 })();

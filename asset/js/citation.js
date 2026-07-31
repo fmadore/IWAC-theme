@@ -23,8 +23,9 @@
             return navigator.clipboard.writeText(text);
         }
         return new Promise(function (resolve, reject) {
+            var ta = null;
             try {
-                var ta = document.createElement('textarea');
+                ta = document.createElement('textarea');
                 ta.value = text;
                 ta.setAttribute('readonly', '');
                 ta.style.position = 'absolute';
@@ -32,10 +33,11 @@
                 document.body.appendChild(ta);
                 ta.select();
                 var ok = document.execCommand('copy');
-                document.body.removeChild(ta);
                 ok ? resolve() : reject(new Error('execCommand failed'));
             } catch (err) {
                 reject(err);
+            } finally {
+                if (ta && ta.parentNode) ta.parentNode.removeChild(ta);
             }
         });
     }
@@ -99,7 +101,9 @@
             var idleLabel = copyBtn.getAttribute('data-copy-label') || copyLabel.textContent;
             copyBtn.addEventListener('click', function () {
                 var panel = current
-                    ? root.querySelector('[data-citation-panel="' + current + '"]')
+                    ? panels.filter(function (candidate) {
+                        return candidate.getAttribute('data-citation-panel') === current;
+                    })[0]
                     : panels[0];
                 var text = panel ? (panel.textContent || '').replace(/\s+/g, ' ').trim() : '';
                 if (!text) {

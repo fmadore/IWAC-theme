@@ -9,11 +9,22 @@
  */
 
 (function () {
-	let mmHeader, mmToggli, mmBody, mmDrawer, mmBacker, mmClones, mmStrings, cleanupTrap;
+	let mmToggli, mmBody, mmDrawer, mmBacker, mmClones, mmStrings, cleanupTrap;
+	const desktopNavigation = window.matchMedia('(min-width: 1024px)');
 
 	// The drawer overlays these regions; they are inert while it is open so
 	// keyboard/AT focus can't wander behind the modal surface.
-	const INERT_REGIONS = '#content, .main-footer, .banner, #back-to-top';
+	const INERT_REGIONS = [
+		'#content',
+		'.main-footer',
+		'.banner',
+		'#back-to-top',
+		'.main-header__site-title',
+		'.main-header__search-form',
+		'.main-header__utilities',
+		'.main-navigation',
+		'.section-tabs',
+	].join(', ');
 
 	const FOCUSABLE_SELECTOR = [
 		'a[href]',
@@ -41,10 +52,12 @@
 		// the top-most element containing content (i.e. body)
 		mmBody = document.getElementsByTagName( 'body' )[0];
 
-		mmHeader = document.querySelector('.main-header__main-bar');
 		mmDrawer = document.getElementById( 'menu-drawer' );
 		mmBacker = document.getElementById( 'menu-backer' );
 		mmClones = document.getElementById( 'menu-clones' );
+		if (!mmBody || !mmDrawer || !mmBacker || !mmClones) {
+			return;
+		}
 
 		// Translated UI strings (with English fallbacks).
 		mmStrings = {
@@ -62,6 +75,12 @@
 		const mmToggleSrText = mmToggli.querySelector('.sr-only');
 
 		mmToggli.onclick = toggleMenu;
+		const closeAtDesktop = (event) => {
+			if (event.matches && mmDrawer.classList.contains('toggled')) {
+				closeMenuDrawer({ restoreFocus: false });
+			}
+		};
+		desktopNavigation.addEventListener('change', closeAtDesktop);
 
 		function toggleMenu() {
 			if ( ! mmDrawer.classList.contains( 'toggled' ) ) {
@@ -77,6 +96,7 @@
 
 		collection.forEach( container => {
 			menu = container.querySelector( 'ul' );
+			if (!menu) return;
 
 			menu.querySelectorAll('li').forEach(item => {
 				for (const child of item.children) {
@@ -97,8 +117,10 @@
 
 		document.querySelectorAll( '.main-navigation .nav-menu > li.menu-item-has-children' ).forEach( item => {
 			const activatingA = item.querySelector('a');
+			if (!activatingA) return;
 			const btn = document.createElement('button');
 			btn.className = 'submenu-btn';
+			btn.type = 'button';
 			const btnOuter = document.createElement('span');
 			const btnLabel = document.createElement('span');
 			btnLabel.className = 'screen-reader-text';
@@ -107,8 +129,9 @@
 			btn.appendChild(btnOuter);
 			activatingA.after(btn);
 
-			const itemButton = item.querySelector('button');
+			const itemButton = btn;
 			const itemSubmenu = item.querySelector('ul');
+			if (!itemSubmenu) return;
 
 			// aria-expanded belongs on the control that toggles (the button);
 			// putting it on the sibling link too confuses assistive tech.
@@ -136,14 +159,16 @@
 						if (!item.contains(document.activeElement)) {
 							item.classList.remove('open');
 							itemButton.setAttribute('aria-expanded', 'false');
+							itemSubmenu.style.opacity = '0';
 						}
 					});
 				});
 
 				item.addEventListener('keydown', function (e) {
 					if (e.key === 'Escape' || e.key === 'Esc') {
-						item.classList.remove('open');
-						itemButton.setAttribute('aria-expanded', 'false');
+					item.classList.remove('open');
+					itemButton.setAttribute('aria-expanded', 'false');
+					itemSubmenu.style.opacity = '0';
 						itemButton.focus(); // Return focus to button
 					}
 				});
@@ -154,7 +179,7 @@
 					this.setAttribute('aria-expanded', isOpen.toString());
 
 					requestAnimationFrame(() => {
-						itemSubmenu.style.opacity = '1';
+						itemSubmenu.style.opacity = isOpen ? '1' : '0';
 					});
 
 					event.preventDefault();
@@ -170,10 +195,12 @@
 
 		mmDrawer.querySelectorAll( '.menu-item-has-children' ).forEach( item => {
 			const link = item.querySelector('a');
+			if (!link) return;
 
 			// Create toggle button
 			const toggleBtn = document.createElement('button');
 			toggleBtn.className = 'mobile-dropdown-toggle';
+			toggleBtn.type = 'button';
 			toggleBtn.setAttribute('aria-label', mmStrings.toggleSubmenu);
 			toggleBtn.setAttribute('aria-expanded', 'false');
 
@@ -203,8 +230,8 @@
 	} );
 
 	// Trap focus. The drawer lives OUTSIDE <header> (backdrop-filter containing
-	// block), so the trap spans both containers in DOM order — header controls
-	// first, then the drawer — while the page behind them is inert.
+	// block). While open it behaves as a modal navigation surface, so focus is
+	// contained within the drawer itself.
 	function getFocusableElements(containers) {
 		const elements = [];
 		containers.forEach((container) => {
@@ -245,11 +272,17 @@
 	}
 
 	function setPageInert(state) {
-		document.querySelectorAll(INERT_REGIONS).forEach((el) => {
-			if (state) {
-				el.setAttribute('inert', '');
-			} else {
+		if (!state) {
+			document.querySelectorAll('[data-menu-inert]').forEach((el) => {
 				el.removeAttribute('inert');
+				el.removeAttribute('data-menu-inert');
+			});
+			return;
+		}
+		document.querySelectorAll(INERT_REGIONS).forEach((el) => {
+			if (!el.hasAttribute('inert')) {
+				el.setAttribute('inert', '');
+				el.setAttribute('data-menu-inert', '');
 			}
 		});
 	}
@@ -257,6 +290,7 @@
 	cleanupTrap = null;
 
 	function openMenuDrawer() {
+		if (desktopNavigation.matches) return;
 		mmBacker.removeAttribute('aria-hidden');
 		mmBacker.tabIndex = 0;
 		mmDrawer.querySelectorAll( 'a' ).forEach( item => {
@@ -272,13 +306,17 @@
 
 		setPageInert(true);
 
-		const focusable = getFocusableElements([mmDrawer]);
-		if (focusable.length) focusable[0].focus();
+		if (typeof cleanupTrap === 'function') cleanupTrap();
+		cleanupTrap = trapFocus([mmDrawer]);
 
-		cleanupTrap = trapFocus([mmHeader, mmDrawer]);
+		// Visibility/layout changes settle on the next frame. Focusing earlier
+		// leaves keyboard focus on the hamburger in Chromium.
+		requestAnimationFrame(() => {
+			if (mmDrawer.classList.contains('toggled')) mmBacker.focus();
+		});
 	}
 
-	function closeMenuDrawer() {
+	function closeMenuDrawer(options = {}) {
 		// remove the expanded class from all menu items
 		mmDrawer.querySelectorAll( '.expanded' ).forEach( item => {
 			item.classList.remove( 'expanded' );
@@ -301,11 +339,13 @@
 		mmToggli.setAttribute('aria-expanded', 'false');
 		const srText = mmToggli.querySelector('.sr-only');
 		if (srText) srText.textContent = mmStrings.openMenu;
-		mmToggli.focus();
 
 		if (typeof cleanupTrap === 'function') {
 			cleanupTrap();
 			cleanupTrap = null;
+		}
+		if (options.restoreFocus !== false && !desktopNavigation.matches) {
+			mmToggli.focus();
 		}
 	}
 })();

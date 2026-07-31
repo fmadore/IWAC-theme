@@ -6,6 +6,8 @@
   "scripts": {
     "start": "gulp",
     "build": "npm run check:tokens && npm run build:tokens && npm run build:i18n && gulp css",
+    "test": "node --test --test-concurrency=1 test/navigation.test.js test/linked-resources.test.js test/interactions.test.js",
+    "check:js": "node scripts/check-js-syntax.js",
     "check:tokens": "node scripts/check-token-usage.js",
     "build:tokens": "node scripts/build-tokens.js",
     "sync:tokens": "node scripts/build-tokens.js --sync-siblings",
@@ -33,6 +35,7 @@
     "gulp": "^5.0.1",
     "gulp-postcss": "^10.0.0",
     "gulp-sass": "^6.0.1",
+    "jsdom": "^29.1.1",
     "sass": "^1.96.0",
     "sharp": "^0.34.5"
   },

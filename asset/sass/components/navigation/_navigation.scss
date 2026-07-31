@@ -30,8 +30,8 @@
 
         // Slim ink hamburger (the old 4px orange bars shouted brand where
         // identity now lives in the masthead + rules).
-        width: 22px;
-        height: 16px;
+        width: 44px;
+        height: 44px;
         position: relative;
         flex-shrink: 0;
         cursor: pointer;
@@ -55,35 +55,35 @@
             display: block;
             position: absolute;
             height: 2px;
-            width: 100%;
+            width: 22px;
             background: var(--ink-strong);
             border-radius: var(--radius-full);
             opacity: 1;
-            inset-inline-start: 0;
+            inset-inline-start: 11px;
             transform: rotate(0deg);
             transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out, top 0.25s ease-in-out, width 0.25s ease-in-out;
         }
 
         span:nth-child(2) {
-            top: 0;
+            top: 14px;
             transform-origin: left center;
         }
 
         span:nth-child(3) {
-            top: 7px;
+            top: 21px;
             transform-origin: left center;
         }
 
         span:nth-child(4) {
-            top: 14px;
+            top: 28px;
             transform-origin: left center;
         }
 
         &.open {
             span:nth-child(2) {
                 transform: rotate(45deg);
-                top: -1px;
-                inset-inline-start: 3px;
+                top: 13px;
+                inset-inline-start: 14px;
             }
 
             span:nth-child(3) {
@@ -93,8 +93,8 @@
 
             span:nth-child(4) {
                 transform: rotate(-45deg);
-                top: 15px;
-                inset-inline-start: 3px;
+                top: 29px;
+                inset-inline-start: 14px;
             }
         }
     }

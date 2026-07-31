@@ -26,7 +26,7 @@
         if (!target) return;
 
         let headerHeight = 0;
-        const header = document.querySelector('.main-header__main-bar');
+        const header = document.querySelector('.main-header');
         if (header) headerHeight = header.offsetHeight + 20;
 
         const top = target.getBoundingClientRect().top + window.scrollY - headerHeight;
