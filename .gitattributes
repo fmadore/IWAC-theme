@@ -9,3 +9,7 @@
 /asset/css/style.css linguist-generated
 /tokens.json linguist-generated
 /language/fr.mo linguist-generated
+
+# Keep gettext source catalogs deterministic across platforms.
+/language/*.po text eol=lf
+/language/*.pot text eol=lf

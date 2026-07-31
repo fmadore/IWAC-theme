@@ -28,7 +28,12 @@ $bodyTruncate = $this->themeSetting('truncate_body_property');
     <?php endif; ?>
     <?php echo $this->browse()->renderSortSelector('item_sets'); ?>
     <div class="advanced-search-container">
-        <?php echo $this->hyperlink($translate('Advanced search'), $this->url(null, ['action' => 'search'], true), ['class' => 'advanced-search']); ?>
+        <?php
+        $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
+            ? $this->iwacSearchUrl()
+            : $this->url(null, ['action' => 'search'], true);
+        echo $this->hyperlink($translate('Search the collection'), $collectionSearchUrl, ['class' => 'advanced-search']);
+        ?>
     </div>
 </div>
 

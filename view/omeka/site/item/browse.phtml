@@ -52,7 +52,12 @@ $bodyTruncate = $this->themeSetting('truncate_body_property');
     <?php endif; ?>
     <?php echo $this->browse()->renderSortSelector('items'); ?>
     <div class="advanced-search-container">
-        <?php echo $this->hyperlink($translate('Advanced search'), $this->url('site/resource', ['controller' => 'item', 'action' => 'search'], ['query' => $query], true), ['class' => 'advanced-search']); ?>
+        <?php
+        $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
+            ? $this->iwacSearchUrl()
+            : $this->url('site/resource', ['controller' => 'item', 'action' => 'search'], ['query' => $query], true);
+        echo $this->hyperlink($translate('Search the collection'), $collectionSearchUrl, ['class' => 'advanced-search']);
+        ?>
     </div>
 </div>
 

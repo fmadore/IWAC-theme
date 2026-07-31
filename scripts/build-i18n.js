@@ -46,6 +46,7 @@ function* walk(dir) {
 // translate('…') / translate("…") — including the plugin-variable forms
 // $translate('…') used throughout the templates.
 const CALL_RE = /translate\s*\(\s*('((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")/g;
+const PHP_STRING_RE = /'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)"/g;
 
 function unescapePhp(str, quote) {
     if (quote === "'") {
@@ -63,7 +64,9 @@ function extract() {
     for (const dir of SOURCE_DIRS) {
         for (const file of walk(path.join(ROOT, dir))) {
             const src = fs.readFileSync(file, 'utf8');
-            const rel = path.relative(ROOT, file);
+            // Gettext references conventionally use `/`, including when the
+            // catalog is rebuilt on Windows.
+            const rel = path.relative(ROOT, file).split(path.sep).join('/');
             let m;
             while ((m = CALL_RE.exec(src)) !== null) {
                 const quote = m[1][0];
@@ -74,6 +77,28 @@ function extract() {
                 if (!messages.has(msgid)) messages.set(msgid, new Set());
                 messages.get(msgid).add(`${rel}:${line}`);
             }
+
+            // Dynamic lookup tables cannot call translate() at declaration
+            // time. A trailing `// @translate` marks the final literal on
+            // that line for extraction.
+            src.split('\n').forEach((sourceLine, index) => {
+                const marker = sourceLine.indexOf('// @translate');
+                if (-1 === marker) return;
+
+                const candidates = Array.from(
+                    sourceLine.slice(0, marker).matchAll(PHP_STRING_RE)
+                );
+                const candidate = candidates.at(-1);
+                if (!candidate) return;
+
+                const quote = candidate[0][0];
+                const raw = "'" === quote ? candidate[1] : candidate[2];
+                const msgid = unescapePhp(raw, quote);
+                if (!msgid) return;
+
+                if (!messages.has(msgid)) messages.set(msgid, new Set());
+                messages.get(msgid).add(`${rel}:${index + 1}`);
+            });
         }
     }
     return messages;
@@ -235,7 +260,12 @@ let changed = false;
 for (const [file, content] of outputs) {
     const current = fs.existsSync(file) ? fs.readFileSync(file) : Buffer.alloc(0);
     const next = Buffer.isBuffer(content) ? content : Buffer.from(content, 'utf8');
-    if (!current.equals(next)) {
+    // Git may check text catalogs out as CRLF on Windows. Compare their
+    // normalized text so `--check` reports content drift, not platform EOLs.
+    const comparableCurrent = Buffer.isBuffer(content)
+        ? current
+        : Buffer.from(current.toString('utf8').replace(/\r\n/g, '\n'), 'utf8');
+    if (!comparableCurrent.equals(next)) {
         changed = true;
         if (!CHECK) fs.writeFileSync(file, next);
         console.log(`${CHECK ? 'would update' : 'wrote'} ${path.relative(ROOT, file)}`);

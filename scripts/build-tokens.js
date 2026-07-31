@@ -11,8 +11,8 @@
  *
  * It then:
  *   1. writes tokens.json at the theme root,
- *   2. syncs a copy into each sibling module repo (so each can run its own
- *      value-checking guard offline), and
+ *   2. optionally syncs a copy into each sibling module repo when invoked
+ *      with `--sync-siblings`, and
  *   3. regenerates the fallback tables in docs/DESIGN-SYSTEM.md between
  *      `<!-- BEGIN GENERATED:* -->` / `<!-- END GENERATED:* -->` markers, so
  *      the docs can't silently drift from the SCSS.
@@ -21,7 +21,7 @@
  * parser in IwacVisualizations/asset/js/iwac-theme.js and the Mirador regen
  * snippet in docs/MIRADOR.md, so every consumer resolves the same hex.
  *
- * Usage: node scripts/build-tokens.js   (npm run build:tokens)
+ * Usage: node scripts/build-tokens.js [--sync-siblings]
  * No dependencies.
  */
 'use strict';
@@ -38,6 +38,7 @@ const COLORS_SCSS = path.join(THEME_ROOT, 'asset', 'sass', 'abstracts', 'variabl
 const TOKENS_OUT = path.join(THEME_ROOT, 'tokens.json');
 const DESIGN_DOC = path.join(THEME_ROOT, 'docs', 'DESIGN-SYSTEM.md');
 const SIBLINGS = ['IwacSearch', 'IwacVisualizations'];
+const SYNC_SIBLINGS = process.argv.includes('--sync-siblings');
 
 /* ------------------------------------------------------------------ */
 /*  Colour math — Oklab/OKLCH → sRGB hex (matches MIRADOR.md regen)    */
@@ -300,16 +301,17 @@ function main() {
 
     const json = JSON.stringify(tokens, null, 2) + '\n';
 
-    // 1. theme root + 2. sibling modules
+    // 1. Theme root. Cross-repository writes are opt-in so a normal build is
+    // hermetic and succeeds in CI, containers, and read-only sibling clones.
     const targets = [TOKENS_OUT];
-    for (const sib of SIBLINGS) {
-        const dir = path.join(THEME_ROOT, '..', sib);
-        if (fs.existsSync(dir)) {
-            targets.push(path.join(dir, 'tokens.json'));
-        } else {
-            // Loud, not silent: a checkout without the sibling repos would
-            // otherwise "succeed" while the module copies quietly drift.
-            console.warn('  ! sibling repo not found — tokens.json NOT synced: ../' + sib);
+    if (SYNC_SIBLINGS) {
+        for (const sib of SIBLINGS) {
+            const dir = path.join(THEME_ROOT, '..', sib);
+            if (fs.existsSync(dir)) {
+                targets.push(path.join(dir, 'tokens.json'));
+            } else {
+                console.warn('  ! sibling repo not found — tokens.json NOT synced: ../' + sib);
+            }
         }
     }
     for (const t of targets) {

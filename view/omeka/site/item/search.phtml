@@ -1,7 +1,38 @@
 <?php
 $translate = $this->plugin('translate');
-$this->inlineScript()->appendFile($this->assetUrl('js/advanced-search.js'));
 $this->htmlElement('body')->appendAttribute('class', 'items search');
+
+// IwacSearch is the collection's canonical search surface. Keep this theme
+// override as a compatibility bridge for bookmarks and core-generated links
+// until the module owns the legacy Omeka routes itself (IwacSearch #36).
+if ($this->getHelperPluginManager()->has('iwacSearchUrl')) {
+    $target = $this->iwacSearchUrl();
+    $query = $this->params()->fromQuery('q')
+        ?? $this->params()->fromQuery('fulltext_search');
+    if (is_scalar($query) && '' !== trim((string) $query)) {
+        $target .= (str_contains($target, '?') ? '&' : '?')
+            . http_build_query(['q' => trim((string) $query)]);
+    }
+
+    $this->headTitle($translate('Search'));
+    $this->headMeta()->appendHttpEquiv('refresh', '0;url=' . $target);
+    $this->inlineScript()->appendScript(sprintf(
+        'window.location.replace(%s);',
+        json_encode($target, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
+    ));
+    ?>
+    <main class="search-redirect" aria-labelledby="search-redirect-heading">
+        <h1 id="search-redirect-heading"><?php echo $this->escapeHtml($translate('Opening search…')); ?></h1>
+        <p>
+            <?php echo $this->escapeHtml($translate('You are being redirected to the collection search.')); ?>
+            <a href="<?php echo $this->escapeHtmlAttr($target); ?>">
+                <?php echo $this->escapeHtml($translate('Continue to search')); ?>
+            </a>
+        </p>
+    </main>
+    <?php
+    return;
+}
 ?>
 
 <h2><?php echo $translate('Advanced item search'); ?></h2>
