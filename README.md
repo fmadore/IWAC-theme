@@ -43,7 +43,7 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 
 - **Omeka S**: 4.2.0 or higher
 - **PHP**: 8.1 or higher
-- **Node.js**: 20.19 or higher (for builds and tests; CI uses Node 22)
+- **Node.js**: 24.15 or higher on an even-numbered release line (for builds and tests; CI uses Node 24.18.1)
 
 ### Optional Modules
 - [Internationalisation](https://github.com/Daniel-KM/Omeka-S-module-Internationalisation) - For language switching functionality
@@ -53,7 +53,7 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 
 For basic out-of-the-box use of the theme, follow the [Omeka S User Manual instructions for installing themes](https://omeka.org/s/docs/user-manual/sites/site_theme/#installing-themes).
 
-For more advanced use, such as customizing the theme with Sass, install [Node.js](https://nodejs.org/en/) 20.19 or newer. Navigate to the theme directory and run:
+For more advanced use, such as customizing the theme with Sass, install [Node.js](https://nodejs.org/en/) 24.15 or newer on an even-numbered release line. The current `.nvmrc` selects the CI-tested release. Navigate to the theme directory and run:
 
 ```bash
 npm install

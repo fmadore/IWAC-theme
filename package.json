@@ -28,7 +28,7 @@
   "author": "Frédérick Madore",
   "license": "GPL-3.0-or-later",
   "engines": {
-    "node": ">=20.19"
+    "node": "^24.15.0 || >=26.0.0"
   },
   "bugs": {
     "url": "https://github.com/fmadore/IWAC-theme/issues"
@@ -42,7 +42,7 @@
     "gulp": "^5.0.1",
     "gulp-postcss": "^10.0.0",
     "gulp-sass": "^6.0.1",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.1",
     "sass": "^1.102.0",
     "sharp": "^0.35.3"
   },
