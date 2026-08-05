@@ -2,7 +2,7 @@
 
 > **Origin**: IWAC Theme started as a fork of the [Freedom theme](https://github.com/omeka-s-themes/freedom) by the [Omeka Team](https://omeka.org) at the Corporation for Digital Scholarship. It has since diverged substantially and is maintained as a standalone theme, but we gratefully acknowledge Freedom as the foundation it grew out of.
 
-This is a customized Omeka S theme for the [Islam West Africa Collection](https://islam.zmo.de/s/westafrica/page/home) digital archive at ZMO Berlin, with modern enhancements including a light/dark mode toggle and multilingual support.
+This is a customized Omeka S theme for the [Islam West Africa Collection](https://islam.zmo.de/s/westafrica/page/home), an open-access digital collection at ZMO Berlin, with modern enhancements including a light/dark mode toggle and multilingual support.
 
 ## Features
 

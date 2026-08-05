@@ -3,7 +3,7 @@
 ## What this is
 
 IWAC-theme — an Omeka S 4.2+ theme (fork of Freedom) for the **Islam West Africa
-Collection**, a francophone West African press archive at ZMO Berlin. PHP templates
+Collection**, a francophone West African digital collection at ZMO Berlin. PHP templates
 (`view/`), Sass on the modern module system (`asset/sass/`), Gulp build, vanilla JS.
 
 Live: [EN](https://islam.zmo.de/s/westafrica/) · [FR](https://islam.zmo.de/s/afrique_ouest/)

@@ -10,10 +10,10 @@ message: "If you use this software, please cite it using the metadata below."
 title: "IWAC Theme: an Omeka S theme for the Islam West Africa Collection"
 abstract: >-
   IWAC Theme is the Omeka S 4.2+ theme of the Islam West Africa Collection
-  (IWAC), a bilingual open-access archive of press articles, Islamic
-  publications, archival documents and audiovisual records on Muslim public
-  life in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria and Togo, hosted
-  at Leibniz-Zentrum Moderner Orient (ZMO), Berlin. It implements a
+  (IWAC), a bilingual open-access digital collection of press articles,
+  Islamic publications, archival documents and audiovisual records on Muslim
+  public life in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria and Togo,
+  hosted at Leibniz-Zentrum Moderner Orient (ZMO), Berlin. It implements a
   "press archive" design register — masthead wordmark, ink rules, datelines
   and ledger rows — over an OKLCH design-token system derived from a single
   admin-set brand seed, with a light/dark mode toggle, a per-site installable
@@ -36,7 +36,7 @@ keywords:
   - Omeka S
   - Omeka S theme
   - digital humanities
-  - digital archives
+  - digital collections
   - design system
   - design tokens
   - OKLCH

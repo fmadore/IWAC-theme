@@ -1,6 +1,6 @@
 {
     "name": "fmadore/iwac-theme",
-    "description": "Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC database.",
+    "description": "Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital collection.",
     "type": "omeka-s-theme",
     "require": {
         "php": "^8.1"
