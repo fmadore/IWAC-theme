@@ -38,16 +38,18 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
-      # The theme directory name is the Omeka S theme id. Sites at islam.zmo.de
-      # are configured against "IWAC-theme", so the archive must extract to a
-      # directory of exactly that name or an in-place upgrade orphans them.
-      - name: Version must match config/theme.ini and package.json
+      # Three files carry the version; a tag that disagrees with any of them
+      # ships a theme whose admin screen or citation record lies about itself.
+      - name: Version must match theme.ini, package.json and CITATION.cff
         run: |
+          WANT="${{ steps.v.outputs.version }}"
           INI=$(sed -n 's/^version *= *"\(.*\)"/\1/p' config/theme.ini)
           PKG=$(node -p "require('./package.json').version")
-          echo "tag=${{ steps.v.outputs.version }}  theme.ini=$INI  package.json=$PKG"
-          test "$INI" = "${{ steps.v.outputs.version }}" || { echo "::error::config/theme.ini says $INI"; exit 1; }
-          test "$PKG" = "${{ steps.v.outputs.version }}" || { echo "::error::package.json says $PKG"; exit 1; }
+          CFF=$(sed -n 's/^version: *"\?\([^"]*\)"\?/\1/p' CITATION.cff)
+          echo "tag=$WANT  theme.ini=$INI  package.json=$PKG  CITATION.cff=$CFF"
+          test "$INI" = "$WANT" || { echo "::error::config/theme.ini says $INI"; exit 1; }
+          test "$PKG" = "$WANT" || { echo "::error::package.json says $PKG"; exit 1; }
+          test "$CFF" = "$WANT" || { echo "::error::CITATION.cff says $CFF"; exit 1; }
 
       - run: npm ci
 
@@ -56,6 +58,9 @@ jobs:
           npm run build
           git diff --exit-code
 
+      # The theme directory name is the Omeka S theme id. Sites at islam.zmo.de
+      # are configured against "IWAC-theme", so the archive must extract to a
+      # directory of exactly that name or an in-place upgrade orphans them.
       - name: Build installable archive
         id: zip
         run: |
