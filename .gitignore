@@ -2,19 +2,17 @@
 /node_modules/
 .sass-cache
 .DS_Store
-.claude/settings.local.json
-# Local live-site preview tooling (proxy, headless screenshot rig) — session aids, not theme code
-.claude/launch.json
-.claude/live-proxy.js
-.claude/preview-patch.js
-.claude/shot.ps1
-.claude/oklch2hex.js
-.claude/gen-fr-mo.py
-.claude/proxy.log
-.claude/shots/
 nul
 
-.claude/fixtures/
+# Local agent + live-site preview tooling: the reverse proxy, the headless
+# screenshot rig, fixtures and shots. Session aids, not theme code.
+#
+# Ignored as a whole directory on purpose. This used to list each rig file
+# individually, so every new one (cite-harness.html, worktrees/) started out
+# tracked and one `git add .` from being committed. Nothing here has ever
+# belonged in the repo; if something ever does, unignore it explicitly with
+# a `!.claude/<file>` line below.
+.claude/
 
 # Claude Design review artifacts (local reference, not theme code)
 /IWAC Theme Review.html
