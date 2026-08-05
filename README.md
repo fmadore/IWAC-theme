@@ -209,16 +209,24 @@ The language switcher displays:
 - Dropdown with available translations for the current page
 - Links styled consistently with the theme
 
-### Sibling Modules (Shared Design System)
+### Sibling Modules
 
-Two companion modules are part of the **same design system** and *consume* the
-theme's design tokens rather than defining their own. The full contract — which
-tokens they may use, the canonical fallback values, dark-mode rules, and the
-one sanctioned exception (module-owned chart/data colours) — is documented in
-[**`docs/DESIGN-SYSTEM.md`**](docs/DESIGN-SYSTEM.md).
+Three companion modules are developed alongside the theme. They couple to it in
+two different ways, and the distinction matters when changing either side.
+
+**Design-token consumers.** These two are part of the **same design system** and
+*consume* the theme's design tokens rather than defining their own. The full
+contract — which tokens they may use, the canonical fallback values, dark-mode
+rules, and the one sanctioned exception (module-owned chart/data colours) — is
+documented in [**`docs/DESIGN-SYSTEM.md`**](docs/DESIGN-SYSTEM.md).
 
 - **[IwacSearch](https://github.com/fmadore/IwacSearch)** - Typesense-backed public search (Svelte 5). The header search box (`view/common/search-form.phtml`) feeds the module's typeahead via a `data-iwac-header-search` hook; the public/admin apps mount on `[data-iwac-search-root]` / `[data-iwac-admin-root]`. All colours, type, and spacing resolve from the theme's `--*` tokens.
 - **[IwacVisualizations](https://github.com/fmadore/IwacVisualizations)** - ECharts/MapLibre dashboards on the homepage and resource pages. Reads theme tokens at runtime (so charts track light/dark and admin colour overrides) and uses the admin **Secondary Color** as chart series 2 / corpus B.
+
+**Markup contract, not tokens.** This one ships no public-facing CSS and reads
+no theme tokens; the coupling is a shared template.
+
+- **[IWAC-SEO](https://github.com/fmadore/IWAC-SEO)** - SEO, citation metadata and XML sitemaps. It owns the **"How to cite" panel**: the module registers the `iwacCitation` resource page block and computes the Chicago/APA/MLA renderings and the BibTeX, RIS and CSL-JSON downloads, while this theme supplies only the UI partial ([`view/common/citation.phtml`](view/common/citation.phtml)). Don't reimplement citation formatting here — and don't restyle the panel without checking the markup the module's helper actually emits. The block is placed per site via **Admin → Themes → Configure resource pages**.
 
 ### Other Supported Modules
 
