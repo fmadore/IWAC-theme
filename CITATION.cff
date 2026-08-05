@@ -1,0 +1,53 @@
+cff-version: 1.2.0
+title: "IWAC Theme: An Omeka S Theme for the Islam West Africa Collection"
+message: >-
+  If you use this theme, or reuse its design system, please cite it
+  using the metadata in this file.
+type: software
+authors:
+  - given-names: Frédérick
+    family-names: Madore
+    orcid: "https://orcid.org/0000-0003-0959-2092"
+    affiliation: University of Bayreuth
+repository-code: "https://github.com/fmadore/IWAC-theme"
+url: "https://islam.zmo.de/s/westafrica/"
+abstract: >-
+  An Omeka S 4.2+ theme built for the Islam West Africa Collection
+  (IWAC), an open-access archive of press articles, Islamic
+  publications, archival documents and audiovisual records on Muslim
+  public life in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria and
+  Togo, hosted at Leibniz-Zentrum Moderner Orient (ZMO), Berlin. The
+  theme implements a bilingual (English/French) "press archive" design
+  register with an OKLCH design-token system derived from a single
+  admin-set brand seed, a light/dark mode toggle, a per-site installable
+  web app manifest, and WCAG 2.1 AA accessibility. Its design tokens are
+  the single source of truth for the sibling IwacSearch and
+  IwacVisualizations modules, which consume them via a generated
+  tokens.json contract.
+keywords:
+  - Omeka S
+  - theme
+  - digital humanities
+  - digital archives
+  - West Africa
+  - Islam
+  - design system
+  - design tokens
+  - accessibility
+  - multilingual
+license: GPL-3.0-or-later
+version: 2.9.5
+date-released: "2026-08-05"
+references:
+  - type: software
+    title: Freedom
+    abstract: >-
+      The Omeka S theme that IWAC Theme was forked from in 2024, and has
+      since diverged substantially from.
+    authors:
+      - name: Corporation for Digital Scholarship
+      - given-names: Nelson
+        family-names: Amaya
+    repository-code: "https://github.com/omeka-s-themes/freedom"
+    license: GPL-3.0-or-later
+    version: 1.1.0

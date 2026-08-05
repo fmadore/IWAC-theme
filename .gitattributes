@@ -1,15 +1,68 @@
-/.gitattributes export-ignore
-/.github/ export-ignore
-/.gitignore export-ignore
-/.editorconfig export-ignore
-/language/*.pot export-ignore
-/language/*.po export-ignore
+# ---------------------------------------------------------------------------
+# Release archives (`git archive`, and GitHub's generated source zips/tarballs)
+#
+# An Omeka S theme is installed by unzipping into `themes/`, so the archive is
+# the product: everything left in it lands on a production server. Keep it to
+# what Omeka actually loads — templates, helpers, compiled assets, compiled
+# translations, config, licence, docs — and strip the whole development
+# toolchain. Verify after any change with:
+#
+#     git archive --prefix=IWAC-theme/ -o t.zip HEAD && unzip -l t.zip
+# ---------------------------------------------------------------------------
 
+# Git and CI plumbing
+/.gitattributes   export-ignore
+/.gitignore       export-ignore
+/.github/         export-ignore
+/.editorconfig    export-ignore
+
+# Node build toolchain — the theme ships compiled CSS, never builds on the server
+/package.json         export-ignore
+/package-lock.json    export-ignore
+/gulpfile.js          export-ignore
+/.nvmrc               export-ignore
+/scripts/             export-ignore
+
+# Tests and fixtures
+/test/                export-ignore
+/test-support/        export-ignore
+/e2e/                 export-ignore
+/playwright.config.js export-ignore
+
+# Agent and contributor working notes
+/CLAUDE.md      export-ignore
+/.impeccable.md export-ignore
+/.agents/       export-ignore
+/.claude/       export-ignore
+/ROADMAP.md     export-ignore
+
+# Point-in-time internal review, superseded by docs/DESIGN-SYSTEM.md
+/docs/DESIGN-REVIEW-2026-06.md export-ignore
+
+# Gettext sources — only the compiled .mo is loaded at runtime
+/language/*.pot export-ignore
+/language/*.po  export-ignore
+
+# ---------------------------------------------------------------------------
 # Generated artifacts — collapse in diffs/PR review
+# ---------------------------------------------------------------------------
 /asset/css/style.css linguist-generated
-/tokens.json linguist-generated
-/language/fr.mo linguist-generated
+/tokens.json         linguist-generated
+/language/fr.mo      linguist-generated
+
+# ---------------------------------------------------------------------------
+# Line endings and binary safety
+# ---------------------------------------------------------------------------
 
 # Keep gettext source catalogs deterministic across platforms.
-/language/*.po text eol=lf
+/language/*.po  text eol=lf
 /language/*.pot text eol=lf
+
+# Never newline-translate binaries, whatever core.autocrlf is set to locally.
+*.mo   binary
+*.jpg  binary
+*.jpeg binary
+*.png  binary
+*.webp binary
+*.gif  binary
+*.ico  binary

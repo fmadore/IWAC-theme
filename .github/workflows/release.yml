@@ -1,0 +1,95 @@
+name: Release
+
+# Publishes the installable theme archive. Tag and push to trigger:
+#
+#     git tag v2.9.5 && git push origin v2.9.5
+#
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to (re)build the release asset for, e.g. v2.9.5'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish installable archive
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.18.1
+          cache: npm
+
+      - name: Resolve tag and version
+        id: v
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      # The theme directory name is the Omeka S theme id. Sites at islam.zmo.de
+      # are configured against "IWAC-theme", so the archive must extract to a
+      # directory of exactly that name or an in-place upgrade orphans them.
+      - name: Version must match config/theme.ini and package.json
+        run: |
+          INI=$(sed -n 's/^version *= *"\(.*\)"/\1/p' config/theme.ini)
+          PKG=$(node -p "require('./package.json').version")
+          echo "tag=${{ steps.v.outputs.version }}  theme.ini=$INI  package.json=$PKG"
+          test "$INI" = "${{ steps.v.outputs.version }}" || { echo "::error::config/theme.ini says $INI"; exit 1; }
+          test "$PKG" = "${{ steps.v.outputs.version }}" || { echo "::error::package.json says $PKG"; exit 1; }
+
+      - run: npm ci
+
+      - name: Committed build artifacts must be current
+        run: |
+          npm run build
+          git diff --exit-code
+
+      - name: Build installable archive
+        id: zip
+        run: |
+          NAME="IWAC-theme-${{ steps.v.outputs.tag }}.zip"
+          git archive --format=zip --prefix=IWAC-theme/ -o "$NAME" HEAD
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Archive must be installable and free of dev tooling
+        run: |
+          NAME="${{ steps.zip.outputs.name }}"
+          unzip -Z1 "$NAME" > /tmp/list
+
+          # Everything Omeka needs to load the theme.
+          for f in config/theme.ini theme.jpg asset/css/style.css language/fr.mo \
+                   view/layout/layout.phtml helper/BrowseLayout.php LICENSE README.md; do
+            grep -qx "IWAC-theme/$f" /tmp/list || { echo "::error::missing $f"; exit 1; }
+          done
+
+          # Nothing that only exists to develop it.
+          if grep -nEi 'IWAC-theme/(package(-lock)?\.json|gulpfile\.js|playwright\.config\.js|\.nvmrc|\.editorconfig|scripts/|test/|test-support/|e2e/|CLAUDE\.md|\.impeccable\.md|\.agents/|\.claude/|ROADMAP\.md|\.github/|language/.*\.pot?$)' /tmp/list; then
+            echo "::error::development files leaked into the release archive — check .gitattributes export-ignore"
+            exit 1
+          fi
+
+          echo "$(wc -l < /tmp/list) files, $(du -h "$NAME" | cut -f1)"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ steps.v.outputs.tag }}"
+          NAME="${{ steps.zip.outputs.name }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$NAME" --clobber
+          else
+            gh release create "$TAG" "$NAME" --title "$TAG" --generate-notes
+          fi
