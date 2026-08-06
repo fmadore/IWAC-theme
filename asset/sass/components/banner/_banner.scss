@@ -385,7 +385,17 @@
         font-weight: 800;
         line-height: 1;
         letter-spacing: var(--tracking-display);
-        font-variant-numeric: tabular-nums;
+        // Lining figures, NOT tabular. Besley ships a broken `tnum` set: its
+        // tabular zero is frozen at a 55-unit advance on every weight, while
+        // 1-9 track the weight axis (57 at 400, 59.5 at 600, 66 at 700+). So
+        // the zero is the one digit that never gets heavier — at 800 it is 17%
+        // narrower than its neighbours and reads as un-bolded ("13 930"). The
+        // heavier the face, the worse; there is no safe weight. These counts
+        // are static markup, so tabular alignment bought nothing anyway.
+        // Declared as font-feature-settings rather than font-variant-numeric
+        // because body's inherited "onum"/"pnum" settings override the
+        // high-level property (same reason _headings.scss spells out "lnum").
+        font-feature-settings: "kern" 1, "liga" 1, "lnum" 1;
         color: var(--white);
 
         @media (min-width: 400px) { font-size: var(--text-xl); }
@@ -444,7 +454,8 @@
         font-weight: 800;
         line-height: 1.05;
         letter-spacing: var(--tracking-display);
-        font-variant-numeric: tabular-nums;
+        // Lining, not tabular — Besley 800's broken zero, see __stat-figure.
+        font-feature-settings: "kern" 1, "liga" 1, "lnum" 1;
         color: var(--white);
 
         @media (min-width: $md) { font-size: var(--text-xl); }
