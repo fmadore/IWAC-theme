@@ -171,9 +171,10 @@
 
 // ==========================================================================
 // Masthead icon button
-// The quiet round utility control in the masthead row (theme toggle,
-// PWA install). Also styles its `&__icon` child; the component decides the
-// icon's display (the theme toggle shows one of three icons via CSS).
+// The quiet round utility control in the masthead row (the theme toggle; the
+// PWA install button used this too before it moved to the footer). Also styles
+// its `&__icon` child; the component decides the icon's display (the theme
+// toggle shows one of three icons via CSS).
 // ==========================================================================
 @mixin masthead-icon-button {
     display: inline-flex;

@@ -17,9 +17,62 @@ if ($this->status()->isSiteRequest()) {
     $lang = null;
     $showValueAnnotations = true;
 }
-$filterLocaleCallback = function ($value) use ($lang) {
-    $valueLang = $value->lang();
-    return $valueLang == '' || strcasecmp($valueLang, $lang) === 0;
+// Compare languages by primary subtag, never by full string. Value tags in
+// this collection are bare ("fr", "en"), but lang() returns whatever the site
+// locale is set to — "fr" on the French site and "en-US" on the English one —
+// so core's exact strcasecmp can't match an "en" value against "en-US". BCP 47
+// subtags are hyphen-separated; Omeka stores the locale with an underscore.
+$primarySubtag = static function ($valueLang): string {
+    $valueLang = strtolower(trim((string) $valueLang));
+    if ($valueLang === '') {
+        return '';
+    }
+    return explode('-', str_replace('_', '-', $valueLang))[0];
+};
+$siteLang = $primarySubtag($lang);
+
+$filterLocaleCallback = function ($value) use ($primarySubtag, $siteLang) {
+    $valueLang = $primarySubtag($value->lang());
+    return $valueLang === '' || $valueLang === $siteLang;
+};
+
+// Properties whose values are translations of one another rather than distinct
+// data: the AI lede carries one "fr" and one "en" rendering of the same
+// summary, so printing both on a monolingual site doubles the row for no gain.
+// Narrow these to the site's language whenever they *have* a value in it.
+//
+// Scoped to a named list on purpose. Other properties also come in fr/en pairs
+// (dcterms:description, dcterms:alternative), but there a second language can
+// be genuine source metadata rather than a translation, so they keep every
+// value. Add a term here only when its values are known to be translations.
+//
+// Deliberately not Omeka's `filter_locale_values` site setting either: that one
+// drops every non-matching value across every property, which would silently
+// hide French-only source metadata on the English site.
+$localePreferredTerms = ['bibo:shortDescription'];
+
+// Untagged (language-neutral) values are always kept; a property with no value
+// in the site language keeps all of them. The one thing this drops is a value
+// in a third language sitting alongside a site-language sibling — no such pair
+// exists in the corpus today (only "fr" and "en" tags are in use).
+$preferSiteLangValues = function (array $propertyValues) use ($primarySubtag, $siteLang) {
+    if ($siteLang === '') {
+        return $propertyValues;
+    }
+    $hasSiteLang = false;
+    foreach ($propertyValues as $value) {
+        if ($primarySubtag($value->lang()) === $siteLang) {
+            $hasSiteLang = true;
+            break;
+        }
+    }
+    if (!$hasSiteLang) {
+        return $propertyValues;
+    }
+    return array_filter($propertyValues, function ($value) use ($primarySubtag, $siteLang) {
+        $valueLang = $primarySubtag($value->lang());
+        return $valueLang === '' || $valueLang === $siteLang;
+    });
 };
 
 // Properties whose values are produced by an AI pipeline (LLM summary,
@@ -47,6 +100,14 @@ foreach ($values as $term => $propertyData):
     $propertyValues = $propertyData['values'];
     if ($filterLocale) {
         $propertyValues = array_filter($propertyValues, $filterLocaleCallback);
+    }
+    // True once the property has been narrowed to the site's language, which
+    // makes every surviving language tag on it redundant with <html lang>.
+    $narrowedToSiteLang = false;
+    if (in_array($term, $localePreferredTerms, true)) {
+        $preferred = $preferSiteLangValues($propertyValues);
+        $narrowedToSiteLang = count($preferred) !== count($propertyValues);
+        $propertyValues = $preferred;
     }
     if (!$propertyValues) {
         continue;
@@ -106,7 +167,10 @@ foreach ($values as $term => $propertyData):
                   // *unknown*, overriding the document language on every
                   // untagged value (screen readers lose FR/EN pronunciation). ?>
             <dd class="<?php echo implode(' ', $class); ?>"<?php echo $valueLang ? ' lang="' . $escapeAttr($valueLang) . '"' : ''; ?>>
-                <?php if ($showLocale && $valueLang && !$isAiTocValue) : ?>
+                <?php // On a narrowed property the chip would just restate
+                      // <html lang>; everywhere else it still marks a value
+                      // that departs from the page language, so it stays. ?>
+                <?php if ($showLocale && $valueLang && !$isAiTocValue && !($narrowedToSiteLang && $primarySubtag($valueLang) === $siteLang)) : ?>
                     <span class="language"><?php echo $escape($valueLang); ?></span>
                 <?php endif; ?>
                 <?php if ($isAiTocValue): ?>

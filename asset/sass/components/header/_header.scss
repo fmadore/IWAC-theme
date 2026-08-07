@@ -55,6 +55,24 @@
 
         @media (max-width: #{$sm - 0.02px}) {
             min-width: 5ch;
+
+            // Once the wordmark is down to a four-letter acronym it has
+            // nothing left to give, so take it out of the shrink pool: at
+            // 375px the box was squeezed to 53px for a mark needing 66px and
+            // "IWAC" clipped to "IW…". `ch` can't express that floor — it
+            // resolves against this div's inherited body font, not the
+            // anchor's Besley 800 at --text-lg plus display tracking — so
+            // size to content and let the search box, the designed flexible
+            // member of the tools row, give up the difference (it lands at
+            // ~145px, well clear of its 4.5rem cap).
+            //
+            // Scoped to the acronym case: without the setting the full title
+            // is the visible mark, and an unshrinkable one would push the
+            // hamburger off-canvas — the very thing __tools guards against.
+            &:has(.main-header__site-title-acronym) {
+                flex: 0 0 auto;
+                min-width: 0;
+            }
         }
 
         // Acronym wordmark on narrow screens (admin setting

@@ -142,6 +142,26 @@ foreach ($socialNetworks as $social_network) {
 				</div>
 			<?php endif; ?>
 
+			<?php // PWA install control — the masthead's business until it became the
+			      // fifth control on a 375px phone. Hidden until js/pwa-install.js
+			      // confirms the browser can install (Chromium beforeinstallprompt) or
+			      // offers the iOS "Add to Home Screen" hint. No auto-popup — click
+			      // only. The wrapper anchors that hint, which opens upward here. ?>
+			<div class="main-footer__install">
+				<?php // No aria-label: the visible label below is the accessible name. ?>
+				<button class="pwa-install" data-pwa-install type="button" hidden
+					data-label-ios="<?php echo $escAttr($translate('How to install this app')); ?>"
+					data-hint-ios="<?php echo $escAttr($translate('Tap the Share icon, then “Add to Home Screen”.')); ?>">
+					<span class="pwa-install__icon" aria-hidden="true">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+							<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+							<path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
+						</svg>
+					</span>
+					<span class="pwa-install__label"><?php echo $escHtml($translate('Install app')); ?></span>
+				</button>
+			</div>
+
 			<!-- Copyright -->
 			<div class="main-footer__copyright">
 				<?php if ($footer_copyright = $this->themeSetting('footer_copyright')): ?>

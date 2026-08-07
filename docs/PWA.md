@@ -2,15 +2,21 @@
 
 The theme makes each Omeka S site **installable** as an app — "Add to Home
 Screen" on mobile, "Install" in the desktop browser — with a brand icon and a
-quiet install button in the masthead. There is **no auto-popup**: the button
+quiet install button in the footer. There is **no auto-popup**: the button
 only appears when the browser can actually install the site.
+
+The button sat in the masthead until it was moved. On a 375px phone that row already
+carries search, language, theme and the hamburger, and a fifth control squeezed
+the wordmark to "IW…". Installing is a once-ever action, so it moved to the
+footer bottom bar beside the social links, where there is room to label it
+rather than leave a bare download glyph to be guessed at.
 
 ## What ships
 
 | Piece | File |
 |-------|------|
 | Per-site web-app manifest (built at runtime) | `view/layout/layout.phtml` (JSON island) + `asset/js/pwa-install.js` |
-| Install button + iOS hint | `view/common/header.phtml`, `asset/sass/components/header/_pwa-install.scss` |
+| Install button + iOS hint | `view/common/footer.phtml`, `asset/sass/components/footer/_pwa-install.scss` |
 | Icons (app / maskable / monochrome / Apple / favicons) | `asset/img/pwa/*.png` |
 | Icon generator | `scripts/gen-pwa-icons.js` (`npm run build:icons`) |
 | Enable/disable toggle | `config/theme.ini` → **General Settings → Enable PWA** (default on) |
@@ -18,7 +24,7 @@ only appears when the browser can actually install the site.
 ## How it behaves
 
 - **Chromium (desktop + Android).** The browser fires `beforeinstallprompt`;
-  the script suppresses the default mini-infobar and reveals the masthead
+  the script suppresses the default mini-infobar and reveals the footer
   install button instead. Clicking it shows the native install prompt.
 - **iOS Safari.** No programmatic install exists, so the same button reveals a
   short, dismissible "Share → Add to Home Screen" hint (still click-only).

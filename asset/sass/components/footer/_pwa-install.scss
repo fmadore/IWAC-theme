@@ -1,0 +1,106 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// PWA Install
+// Footer "install app" control + iOS add-to-home-screen hint.
+//
+// It used to sit in the masthead, but on a 375px phone that row already
+// carries search, language, theme and the hamburger — a fifth control left
+// the wordmark too little width. Installing happens once, so it belongs with
+// the other once-in-a-while footer affordances, where there is room to label
+// it rather than leave a bare download glyph to be guessed at.
+//
+// Borrows the footer social links' quiet chrome (same box, same border and
+// hover) so the bottom bar reads as one row. Stays hidden (the [hidden]
+// attribute) until js/pwa-install.js confirms installability.
+// ==========================================================================
+
+.pwa-install {
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    height: var(--size-control-md);
+    padding-inline: var(--space-3);
+    background: transparent;
+    border: 1px solid var(--footer-divider);
+    border-radius: var(--radius-sm);
+    color: var(--footer-text);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    line-height: 1;
+    // Every <button> inherits the global base style (_buttons.scss): radius,
+    // --glow-sm and a hover lift. Reset the halo and the bounce so this reads
+    // as the flat outlined control its social-link neighbours are.
+    box-shadow: none;
+    transition:
+        border-color var(--transition-fast),
+        color var(--transition-fast),
+        background-color var(--transition-fast);
+
+    // `hidden` must win even though we set a display — scope display to the
+    // not-hidden state so the attribute keeps the button out of flow.
+    display: none;
+
+    &:not([hidden]) {
+        display: inline-flex;
+    }
+
+    &:hover {
+        background: color-mix(in oklab, var(--footer-text) 8%, transparent);
+        border-color: var(--primary);
+        color: var(--primary);
+        box-shadow: none;
+        transform: none;
+    }
+
+    &__icon {
+        display: flex;
+    }
+
+    // iOS hint popover — opens *upward* from the footer control (in the
+    // masthead it dropped down), so it never pushes past the page bottom.
+    //
+    // `width: max-content` is load-bearing: an absolutely-positioned box
+    // shrink-to-fits inside its containing block, so without it the popover
+    // inherited the ~113px width of its anchor and wrapped one or two words
+    // per line. It grows leftward from the anchor's inline-end edge, capped
+    // against the viewport rather than the anchor.
+    &__hint {
+        position: absolute;
+        bottom: calc(100% + var(--space-2));
+        inset-inline-end: 0;
+        z-index: var(--z-tooltip);
+        width: max-content;
+        max-width: min(20rem, calc(100vw - var(--space-8)));
+        padding: var(--space-3) var(--space-4);
+        background: var(--surface);
+        color: var(--ink);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+        font-family: var(--font-body);
+        font-size: var(--text-sm);
+        line-height: var(--line-height-normal);
+        text-align: start;
+    }
+}
+
+// Anchor for the absolutely-positioned iOS hint (the hint is inserted as a
+// sibling of the button inside this wrapper).
+.main-footer__install {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+    // Below $lg the bottom bar is a centred column: stretch the wrapper across
+    // the row so the hint, anchored to its inline-end, has the full row width
+    // to open leftward into and can't run off the screen edge.
+    align-self: stretch;
+
+    // Desktop: sit with the social cluster at the end of the bottom bar
+    // (copyright keeps order 0 and stays first).
+    @media (min-width: $lg) {
+        order: 2;
+        align-self: auto;
+    }
+}
