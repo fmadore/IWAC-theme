@@ -44,7 +44,7 @@ msgstr "Tout"
 msgid "An error occurred while processing your request. Please try again later."
 msgstr "Une erreur s’est produite lors du traitement de votre demande. Veuillez réessayer plus tard."
 
-#: view/common/resource-page-block-layout/web-archive.phtml:33
+#: view/common/resource-page-block-layout/web-archive.phtml:60
 msgid "Archived web page"
 msgid_plural "Archived web pages"
 msgstr[0] "Page web archivée"

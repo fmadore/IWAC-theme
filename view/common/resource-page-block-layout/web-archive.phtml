@@ -1,16 +1,34 @@
 <?php
 /**
- * Web archive block — renders the WebArchive module's ReplayWeb.page player for
- * any web-archive media on this item.
+ * Web archive block — renders the ReplayWeb.page player for any web-archive
+ * media on this item, and nothing at all when there is no capture, so the block
+ * can sit in the default stack without leaving an empty heading everywhere.
  *
- * Renders nothing when the item carries no capture, so the block can sit in the
- * default stack without leaving an empty heading on every other item.
+ * This emits <replay-web-page> directly rather than calling $media->render(),
+ * because the WebArchive module's own template sets neither of the two
+ * attributes below and offers no way to pass them:
  *
- * Web-archive media are deliberately excluded from `media-embeds.phtml` so the
- * two blocks can never both mount a player: two ReplayWeb.page instances over
- * one .wacz means two service-worker clients and twice the range traffic. The
- * corollary is that a site which does not enable this block (Admin → Themes →
- * Configure resource pages) will not render captures at all.
+ *   sandbox        The player only sandboxes its iframe when this is set, and
+ *                  the sandbox list it applies omits allow-top-navigation.
+ *                  Without it, any archived page carrying a frame-buster (ad
+ *                  scripts, addthis, old social widgets — common in the press
+ *                  sites we capture) navigates the whole tab away mid-replay.
+ *   newWindowBase  Sets baseUrlSourcePrefix, which the player otherwise
+ *                  defaults to "https://replayweb.page/". That is where such a
+ *                  navigation lands: a third-party origin that has no copy of
+ *                  the collection, 404s its own API, then fails to load our
+ *                  .wacz cross-origin and shows "Unexpected Loading Error".
+ *                  Pointing it at our own shell keeps any escape same-origin.
+ *
+ * Trade-off: bypassing the module renderer also bypasses its assertPlayable()
+ * guard, which refuses to render when the file is served with Content-Encoding.
+ * Range requests are what the player actually uses and those are never
+ * compressed, so this is acceptable — but if playback breaks after a server
+ * change, check for Content-Encoding on the .wacz first.
+ *
+ * Web-archive media are excluded from media-embeds.phtml so the two blocks can
+ * never both mount a player over the same file. A site that does not enable
+ * this block (Admin → Themes → Configure resource pages) renders no captures.
  *
  * @var \Laminas\View\Renderer\PhpRenderer $this
  * @var \Omeka\Api\Representation\ItemRepresentation $resource
@@ -25,8 +43,17 @@ foreach ($resource->media() as $media) {
         $archives[] = $media;
     }
 }
+
+if (!$archives):
+    return;
+endif;
+
+// No version query on the base: it is a directory the player's service worker
+// serves the app shell from, not a file.
+$replayBase = $this->assetUrl('vendor/replaywebpage/', 'WebArchive', false, false);
+$this->headLink()->appendStylesheet($this->assetUrl('css/web-archive.css', 'WebArchive'));
+$this->headScript()->appendFile($this->assetUrl('vendor/replaywebpage/ui.js', 'WebArchive'));
 ?>
-<?php if ($archives): ?>
 <div id="web-archive" class="web-archive">
     <div class="web-archive__header">
         <h3 class="web-archive__heading">
@@ -34,7 +61,20 @@ foreach ($resource->media() as $media) {
         </h3>
     </div>
     <?php foreach ($archives as $media): ?>
-    <?php echo $media->render(); ?>
+    <?php
+    $mediaData = $media->mediaData() ?? [];
+    $startUrl = $mediaData['start_url'] ?? null;
+    // Same fallback order as the module's renderer: per-media, then site-wide.
+    $embedMode = $mediaData['embed_mode'] ?? $this->setting('webarchive_embed_mode', 'default');
+    ?>
+    <replay-web-page
+        source="<?php echo $this->escapeHtmlAttr($media->originalUrl()); ?>"
+        replayBase="<?php echo $this->escapeHtmlAttr($replayBase); ?>"
+        newWindowBase="<?php echo $this->escapeHtmlAttr($replayBase); ?>"
+        sandbox
+        <?php if ($startUrl): ?>url="<?php echo $this->escapeHtmlAttr($startUrl); ?>"<?php endif; ?>
+        embed="<?php echo $this->escapeHtmlAttr($embedMode); ?>"
+        style="width:100%;height:600px;display:block;">
+    </replay-web-page>
     <?php endforeach; ?>
 </div>
-<?php endif; ?>
