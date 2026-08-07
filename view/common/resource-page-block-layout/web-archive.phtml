@@ -5,20 +5,31 @@
  * can sit in the default stack without leaving an empty heading everywhere.
  *
  * This emits <replay-web-page> directly rather than calling $media->render(),
- * because the WebArchive module's own template sets neither of the two
- * attributes below and offers no way to pass them:
+ * because the WebArchive module's own template sets none of the attributes
+ * below and offers no way to pass them:
  *
- *   sandbox        The player only sandboxes its iframe when this is set, and
- *                  the sandbox list it applies omits allow-top-navigation.
- *                  Without it, any archived page carrying a frame-buster (ad
- *                  scripts, addthis, old social widgets — common in the press
- *                  sites we capture) navigates the whole tab away mid-replay.
- *   newWindowBase  Sets baseUrlSourcePrefix, which the player otherwise
- *                  defaults to "https://replayweb.page/". That is where such a
- *                  navigation lands: a third-party origin that has no copy of
- *                  the collection, 404s its own API, then fails to load our
- *                  .wacz cross-origin and shows "Unexpected Loading Error".
- *                  Pointing it at our own shell keeps any escape same-origin.
+ *   newWindowBase  Sets baseUrlSourcePrefix. Archived press pages carry ad and
+ *                  social scripts that open a new context; the service worker
+ *                  answers that with makeTopFrame(), which redirects to
+ *                  baseUrlSourcePrefix + "?source=…#url=…&view=replay". The
+ *                  player defaults that to "https://replayweb.page/" whenever
+ *                  nobody sets it, so the visitor lands on a third-party origin
+ *                  that has no copy of the collection, 404s its own API, then
+ *                  fails to load our .wacz cross-origin: "Unexpected Loading
+ *                  Error". Pointing it at our own shell keeps the escape
+ *                  same-origin and working.
+ *   coll           Pins the collection id. Without it the id is a hash of the
+ *                  source URL, and the player freezes a collection's config
+ *                  into the collDB IndexedDB store on FIRST load and reuses it
+ *                  forever — so a returning visitor keeps whatever
+ *                  baseUrlSourcePrefix was in force the first time, and no
+ *                  amount of redeploying changes it. Bumping $collVersion below
+ *                  mints a new id, which is the only reliable way to roll out a
+ *                  config change without asking every visitor to clear storage.
+ *   sandbox        Defence in depth against a plain top-level frame-bust. It is
+ *                  NOT what fixes the above: the list the player applies allows
+ *                  popups, and it pairs allow-scripts with allow-same-origin,
+ *                  which browsers warn can be self-removed.
  *
  * Trade-off: bypassing the module renderer also bypasses its assertPlayable()
  * guard, which refuses to render when the file is served with Content-Encoding.
@@ -48,6 +59,11 @@ if (!$archives):
     return;
 endif;
 
+// Bump on ANY change to the player attributes below. The config a collection
+// was first loaded with is persisted in IndexedDB and reused indefinitely;
+// changing the collection id is what forces returning visitors onto the new one.
+$collVersion = 'v2';
+
 // No version query on the base: it is a directory the player's service worker
 // serves the app shell from, not a file.
 $replayBase = $this->assetUrl('vendor/replaywebpage/', 'WebArchive', false, false);
@@ -71,6 +87,7 @@ $this->headScript()->appendFile($this->assetUrl('vendor/replaywebpage/ui.js', 'W
         source="<?php echo $this->escapeHtmlAttr($media->originalUrl()); ?>"
         replayBase="<?php echo $this->escapeHtmlAttr($replayBase); ?>"
         newWindowBase="<?php echo $this->escapeHtmlAttr($replayBase); ?>"
+        coll="<?php echo $this->escapeHtmlAttr('iwac-' . $media->id() . '-' . $collVersion); ?>"
         sandbox
         <?php if ($startUrl): ?>url="<?php echo $this->escapeHtmlAttr($startUrl); ?>"<?php endif; ?>
         embed="<?php echo $this->escapeHtmlAttr($embedMode); ?>"
