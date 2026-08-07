@@ -1,0 +1,40 @@
+<?php
+/**
+ * Web archive block — renders the WebArchive module's ReplayWeb.page player for
+ * any web-archive media on this item.
+ *
+ * Renders nothing when the item carries no capture, so the block can sit in the
+ * default stack without leaving an empty heading on every other item.
+ *
+ * Web-archive media are deliberately excluded from `media-embeds.phtml` so the
+ * two blocks can never both mount a player: two ReplayWeb.page instances over
+ * one .wacz means two service-worker clients and twice the range traffic. The
+ * corollary is that a site which does not enable this block (Admin → Themes →
+ * Configure resource pages) will not render captures at all.
+ *
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\ItemRepresentation $resource
+ */
+
+$archives = [];
+foreach ($resource->media() as $media) {
+    // Mirrors WebArchive\Module::MEDIA_TYPES. The module plays both formats
+    // through the same viewer, so matching only 'application/wacz' would
+    // silently drop a .warc upload.
+    if (in_array($media->mediaType(), ['application/wacz', 'application/warc'], true)) {
+        $archives[] = $media;
+    }
+}
+?>
+<?php if ($archives): ?>
+<div id="web-archive" class="web-archive">
+    <div class="web-archive__header">
+        <h3 class="web-archive__heading">
+            <?php echo $this->translatePlural('Archived web page', 'Archived web pages', count($archives)); ?>
+        </h3>
+    </div>
+    <?php foreach ($archives as $media): ?>
+    <?php echo $media->render(); ?>
+    <?php endforeach; ?>
+</div>
+<?php endif; ?>

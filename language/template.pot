@@ -46,6 +46,12 @@ msgstr ""
 msgid "An error occurred while processing your request. Please try again later."
 msgstr ""
 
+#: view/common/resource-page-block-layout/web-archive.phtml:33
+msgid "Archived web page"
+msgid_plural "Archived web pages"
+msgstr[0] ""
+msgstr[1] ""
+
 #: view/common/banner.phtml:143
 msgid "Audiovisual minutes"
 msgstr ""
