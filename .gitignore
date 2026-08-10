@@ -14,6 +14,10 @@ nul
 # a `!.claude/<file>` line below.
 .claude/
 
+# Playwright artifacts from `npm run test:live` (traces, screenshots, reports)
+/test-results/
+/playwright-report/
+
 # Claude Design review artifacts (local reference, not theme code)
 /IWAC Theme Review.html
 /_review.txt

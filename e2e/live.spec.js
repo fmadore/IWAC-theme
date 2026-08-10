@@ -4,13 +4,13 @@ const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 
 test('legacy advanced search reaches IwacSearch and preserves the query', async ({ page }) => {
-    await page.goto('/item/search?q=ghana', { waitUntil: 'domcontentloaded' });
+    await page.goto('item/search?q=togo', { waitUntil: 'domcontentloaded' });
     await expect(page).toHaveURL(/\/search\/everything(?:\?|$)/);
-    expect(new URL(page.url()).searchParams.get('q')).toBe('ghana');
+    expect(new URL(page.url()).searchParams.get('q')).toBe('togo');
 });
 
 test('hero search field and submit button fill the banner search box', async ({ page }) => {
-    await page.goto('/page/home', { waitUntil: 'domcontentloaded' });
+    await page.goto('page/home', { waitUntil: 'domcontentloaded' });
     const form = page.locator('#search-form-hero');
     const input = page.locator('#fulltext-search-hero');
     const submit = page.locator('#search-submit-hero');
@@ -29,7 +29,7 @@ test('hero search field and submit button fill the banner search box', async ({ 
 
 test('mobile drawer restores a clean desktop state and pages do not overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/page/home', { waitUntil: 'domcontentloaded' });
+    await page.goto('page/home', { waitUntil: 'domcontentloaded' });
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow).toBeLessThanOrEqual(1);
@@ -45,13 +45,13 @@ test('mobile drawer restores a clean desktop state and pages do not overflow', a
     await expect(page.locator('#content')).not.toHaveAttribute('inert', '');
 
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/page/browse', { waitUntil: 'domcontentloaded' });
+    await page.goto('page/browse', { waitUntil: 'domcontentloaded' });
     const browseOverflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(browseOverflow).toBeLessThanOrEqual(1);
 });
 
 test('theme chrome has no serious WCAG A/AA violations', async ({ page }) => {
-    await page.goto('/page/home', { waitUntil: 'networkidle' });
+    await page.goto('page/home', { waitUntil: 'networkidle' });
     const results = await new AxeBuilder({ page })
         .include('.main-header')
         .include('.banner')
