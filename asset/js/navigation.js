@@ -309,11 +309,23 @@
 		if (typeof cleanupTrap === 'function') cleanupTrap();
 		cleanupTrap = trapFocus([mmDrawer]);
 
-		// Visibility/layout changes settle on the next frame. Focusing earlier
-		// leaves keyboard focus on the hamburger in Chromium.
-		requestAnimationFrame(() => {
-			if (mmDrawer.classList.contains('toggled')) mmBacker.focus();
-		});
+		// The drawer animates in from `visibility: hidden`, and a hidden element
+		// cannot take focus. One frame is not enough: at the first frame the
+		// visibility transition has not advanced past 0, so the computed value is
+		// still `hidden` and focus() is a silent no-op that strands the keyboard
+		// on the hamburger. Retry until it lands rather than guess a frame count —
+		// that also covers prefers-reduced-motion, where it lands immediately.
+		let focusTries = 12;
+		const focusBacker = () => {
+			// The drawer closed again, or focus already reached it another way.
+			if (!mmDrawer.classList.contains('toggled')) return;
+			if (mmDrawer.contains(document.activeElement)) return;
+			mmBacker.focus();
+			if (document.activeElement !== mmBacker && --focusTries > 0) {
+				requestAnimationFrame(focusBacker);
+			}
+		};
+		requestAnimationFrame(focusBacker);
 	}
 
 	function closeMenuDrawer(options = {}) {
