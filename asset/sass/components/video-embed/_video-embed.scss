@@ -1,0 +1,76 @@
+// ==========================================================================
+// Video Embed Block
+// The `videoEmbeds` resource-page block (view/common/resource-page-block-layout/
+// video-embeds.phtml): external video players — currently YouTube — for items
+// whose media Mirador cannot render.
+//
+// Framed like `.mirador.viewer` on purpose: on an item where one or the other
+// renders, the player should occupy the same shape. This is one of the few
+// sanctioned boxes (a true panel, per DESIGN-PHILOSOPHY.md) — a hairline rule
+// cannot bound a video.
+// ==========================================================================
+
+@use "../../abstracts/abstracts" as *;
+
+.video-embeds {
+    display: grid;
+    gap: var(--space-6);
+    margin-block-end: var(--space-8);
+}
+
+.video-embed {
+    margin: 0;
+}
+
+.video-embed__frame {
+    // The iframe carries width/height attributes so a stylesheet-less render
+    // (print, feed reader) keeps a sane intrinsic ratio; here the wrapper owns
+    // the ratio and the frame just fills it.
+    position: relative;
+    aspect-ratio: 16 / 9;
+    // Cap the width so a 16:9 frame lands on the 600px height the Mirador
+    // module gives `.mirador.viewer`: on a full content column the video would
+    // otherwise stand ~28% taller than the viewer it stands in for, and push
+    // the whole value ledger below the fold. Clamped by width rather than
+    // height so the ratio holds — clamping height letterboxes the player in
+    // black, which is loud on a near-white page.
+    width: 100%;
+    max-width: calc(600px * 16 / 9);
+    margin-inline: auto;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    // Shows through while the player loads, and behind the letterboxing of a
+    // non-16:9 video.
+    background-color: var(--surface-sunken);
+
+    iframe {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+}
+
+.video-embed__caption {
+    margin-block-start: var(--space-3);
+    font-size: var(--text-sm);
+    line-height: var(--line-height-relaxed);
+    color: var(--muted);
+}
+
+@media print {
+    .video-embed {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    // A YouTube frame prints as an empty box; the watch URL is already in the
+    // item's value list, so drop the player rather than waste a page on it.
+    .video-embed__frame {
+        display: none;
+    }
+}

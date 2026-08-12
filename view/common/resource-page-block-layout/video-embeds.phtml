@@ -1,0 +1,109 @@
+<?php
+/**
+ * Video embeds block — renders the external video players (YouTube) that the
+ * IIIF viewer cannot show, and nothing at all on items without one, so the
+ * block can sit in the default stack next to `mirador`.
+ *
+ * Why this exists: Mirador builds its manifest from file-backed media. A media
+ * ingested with the `youtube` ingester has no file, no thumbnails and no canvas,
+ * so the viewer block renders an empty `<div class="block block-mirador">` and
+ * the item's only content is invisible — see item 108263 on the live site, and
+ * every item on the "YouTube video" resource template (id 23), which exists
+ * precisely to hold one YouTube media.
+ *
+ * Detection is by media renderer, not by resource template id: template ids are
+ * per-installation and would silently stop matching after a re-import, whereas
+ * `renderer() === 'youtube'` is what actually decides whether Mirador can show
+ * the media. Items on other templates that happen to carry a YouTube media are
+ * covered for free. To extend this to another embed ingester (Vimeo/SoundCloud
+ * arrive as core's `oembed` renderer), add a branch below — do NOT just widen
+ * the filter, since the markup here is YouTube-specific.
+ *
+ * Like web-archive.phtml, this emits the iframe directly instead of calling
+ * $media->render(). Core's Youtube renderer (Omeka\Media\Renderer\Youtube) is
+ * fine but hard-codes a fixed 420x315 frame, titles the iframe with the media
+ * source — i.e. the raw watch URL, which is what a screen reader announces —
+ * and points at youtube.com, which sets cookies on load. Building the frame
+ * here gets a responsive 16:9 player, a real accessible name, and the
+ * cookie-less youtube-nocookie host, which matters for a ZMO-hosted site.
+ *
+ * YouTube media are excluded from media-embeds.phtml so the two blocks can
+ * never both render a player for the same video.
+ *
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\ItemRepresentation $resource
+ */
+
+$translate = $this->plugin('translate');
+$itemTitle = (string) $resource->displayTitle('');
+
+// Resolve everything up front so an item whose only youtube media is a broken
+// ingest falls through the `return` below rather than emitting an empty
+// wrapper — which is not inert, it carries the block's bottom margin.
+$videos = [];
+foreach ($resource->media() as $media) {
+    if ($media->renderer() !== 'youtube') {
+        continue;
+    }
+    $data = $media->mediaData() ?: [];
+    $videoId = $data['id'] ?? null;
+    if (!$videoId) {
+        continue;
+    }
+
+    // Core's ingester stores optional clip bounds; honour them.
+    $query = [];
+    if (isset($data['start'])) {
+        $query['start'] = $data['start'];
+    }
+    if (isset($data['end'])) {
+        $query['end'] = $data['end'];
+    }
+    $src = 'https://www.youtube-nocookie.com/embed/' . rawurlencode($videoId);
+    if ($query) {
+        $src .= '?' . http_build_query($query);
+    }
+
+    // The media's own dcterms:title, when set, is a per-video caption on an item
+    // that may hold several; the item title is only the accessible-name
+    // fallback. $media->displayTitle() is deliberately not used — it falls back
+    // to o:source, which here is the raw watch URL, and a screen reader would
+    // announce the frame as "https://www.youtube.com/watch?v=…".
+    $caption = $media->value('dcterms:title', ['default' => null]);
+    $caption = $caption ? trim((string) $caption) : '';
+    $label = $caption !== '' ? $caption : $itemTitle;
+
+    $videos[] = [
+        'src' => $src,
+        'caption' => $caption,
+        'title' => $label !== ''
+            ? sprintf($translate('YouTube video: %s'), $label)
+            : $translate('YouTube video'),
+    ];
+}
+
+if (!$videos):
+    return;
+endif;
+
+$escapeAttr = $this->plugin('escapeHtmlAttr');
+?>
+<div class="video-embeds">
+    <?php foreach ($videos as $video): ?>
+    <figure class="video-embed">
+        <div class="video-embed__frame">
+            <iframe
+                src="<?php echo $escapeAttr($video['src']); ?>"
+                title="<?php echo $escapeAttr($video['title']); ?>"
+                width="560" height="315"
+                loading="lazy"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+        </div>
+        <?php if ($video['caption'] !== ''): ?>
+        <figcaption class="video-embed__caption"><?php echo $this->escapeHtml($video['caption']); ?></figcaption>
+        <?php endif; ?>
+    </figure>
+    <?php endforeach; ?>
+</div>

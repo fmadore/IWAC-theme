@@ -1,16 +1,25 @@
 <?php
 $decoration = $this->themeSetting('image_decoration');
 
-// Web-archive media are rendered by the dedicated `webArchive` block
-// (web-archive.phtml), not here. Without this exclusion an item with both
-// blocks enabled would mount two ReplayWeb.page players over the same .wacz —
-// two service-worker clients and twice the range traffic. Keep the type list in
-// sync with web-archive.phtml (both mirror WebArchive\Module::MEDIA_TYPES).
+// Two media kinds are rendered by dedicated blocks and skipped here, so an item
+// with both blocks enabled never gets two players over the same source:
+//
+//   web archives  → `webArchive` (web-archive.phtml). Two ReplayWeb.page players
+//                   over one .wacz means two service-worker clients and twice
+//                   the range traffic. Keep the type list in sync with that
+//                   template (both mirror WebArchive\Module::MEDIA_TYPES).
+//   YouTube       → `videoEmbeds` (video-embeds.phtml), which renders a
+//                   responsive, cookie-less frame instead of core's fixed
+//                   420x315 youtube.com iframe.
 $resourceMedia = [];
 foreach ($resource->media() as $media) {
-    if (!in_array($media->mediaType(), ['application/wacz', 'application/warc'], true)) {
-        $resourceMedia[] = $media;
+    if (in_array($media->mediaType(), ['application/wacz', 'application/warc'], true)) {
+        continue;
     }
+    if ($media->renderer() === 'youtube') {
+        continue;
+    }
+    $resourceMedia[] = $media;
 }
 ?>
 <?php if ($resourceMedia): ?>

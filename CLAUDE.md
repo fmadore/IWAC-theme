@@ -81,6 +81,20 @@ Omeka modules ship their own markup and vendor CSS (tablesaw; RightsStatements i
 `height:4em`). Selectors written against assumed markup silently match nothing, and a
 vendor `max-width: 100%` beats your `min-width`.
 
+### Mirador only shows file-backed media — everything else needs its own block
+
+The live sites' resource-page stack uses the Mirador module's block in place of core's
+`mediaEmbeds`, and Mirador builds its manifest from media that have a stored file. A media
+with no file — a `youtube`-ingested one, say — yields a canvas-less manifest, so the block
+renders an empty `<div class="block block-mirador">` and the item's only content is
+invisible. That is what the theme's `videoEmbeds` block
+([video-embeds.phtml](view/common/resource-page-block-layout/video-embeds.phtml)) exists to
+cover; `webArchive` covers `.wacz`/`.warc` the same way. Both output nothing on items they
+don't apply to, and both have their media excluded from `mediaEmbeds` so no source is ever
+rendered twice. A new fileless ingester needs the same treatment — plus a line in
+`config/theme.ini` and an admin visit to Themes → Configure resource pages, since a site
+whose stack is already customised does not pick up new theme defaults.
+
 ## Cross-repo contract
 
 This theme is the single source of truth for design tokens. Two sibling modules consume

@@ -442,6 +442,14 @@ msgstr ""
 msgid "You are being redirected to the collection search."
 msgstr "Vous êtes redirigé vers la recherche dans la collection."
 
+#: view/common/resource-page-block-layout/video-embeds.phtml:81
+msgid "YouTube video"
+msgstr "Vidéo YouTube"
+
+#: view/common/resource-page-block-layout/video-embeds.phtml:80
+msgid "YouTube video: %s"
+msgstr "Vidéo YouTube : %s"
+
 #: view/common/block-layout/browse-preview.phtml:49 view/hierarchy/common/block-layout/hierarchy-public.phtml:109
 msgid "[Untitled]"
 msgstr ""
