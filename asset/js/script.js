@@ -188,6 +188,8 @@ const freedomScripts = () => {
         });
     }
 
+    const annotationPositioners = [];
+
     annotationBtns.forEach((annotationBtn) => {
         const annotationTooltip = annotationBtn.querySelector('.annotation-tooltip');
         const annotationTooltipWrapper = annotationTooltip?.querySelector('.annotation-tooltip__wrapper');
@@ -223,13 +225,25 @@ const freedomScripts = () => {
         function setAnnotationTooltipPos() {
             const annotationBtnOffset = annotationBtn.getBoundingClientRect();
             const { top, left } = annotationBtnOffset;
-            const distanceToRightEdge = window.innerWidth - (left + annotationBtn.offsetWidth);
+            const visualViewport = window.visualViewport;
+            const viewportLeft = visualViewport ? visualViewport.offsetLeft : 0;
+            const viewportWidth = (visualViewport && visualViewport.width)
+                || document.documentElement.clientWidth
+                || window.innerWidth;
+            // The wrapper uses --space-4 as both padding and the intended
+            // viewport gutter. Reading its computed padding resolves rem to px.
+            const gutter = parseFloat(window.getComputedStyle(annotationTooltipWrapper).paddingInlineStart) || 16;
+            const panelWidth = annotationTooltipWrapper.offsetWidth;
+            const minimumLeft = viewportLeft + gutter;
+            const maximumLeft = Math.max(
+                minimumLeft,
+                viewportLeft + viewportWidth - panelWidth - gutter
+            );
+            const panelLeft = Math.min(Math.max(left, minimumLeft), maximumLeft);
 
-            if (distanceToRightEdge < (annotationTooltipWrapper.offsetWidth + 15)) {
-                annotationTooltip.style.left = (distanceToRightEdge - annotationTooltipWrapper.offsetWidth - 15) + 'px';
-            } else {
-                annotationTooltip.style.left = '0px';
-            }
+            // Convert the viewport-clamped coordinate back into the absolute
+            // offset expected inside .annotation-btn.
+            annotationTooltip.style.left = (panelLeft - left) + 'px';
 
             // Header chrome can be absent on minimal pages.
             const headerClearance = mainHeader ? mainHeader.offsetHeight + mainHeader.offsetTop : 0;
@@ -245,7 +259,24 @@ const freedomScripts = () => {
                 }
             }
         }
+
+        annotationPositioners.push({ annotationBtn, setAnnotationTooltipPos });
     });
+
+    // Re-clamp an open panel after rotation, browser-chrome resizing, or zoom.
+    // Closed panels remain display:none and cause no layout reads.
+    function repositionOpenAnnotations() {
+        annotationPositioners.forEach(({ annotationBtn, setAnnotationTooltipPos }) => {
+            if (annotationBtn.classList.contains('is-active') || annotationBtn.matches(':hover')) {
+                setAnnotationTooltipPos();
+            }
+        });
+    }
+
+    window.addEventListener('resize', repositionOpenAnnotations, { passive: true });
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', repositionOpenAnnotations, { passive: true });
+    }
 
     // Close annotations when clicking outside
     document.addEventListener('click', (e) => {

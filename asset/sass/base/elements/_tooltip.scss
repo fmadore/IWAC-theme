@@ -32,6 +32,7 @@
     font-size: var(--text-sm);
     inset-inline-start: 50%;
     margin-inline-start: -106px;
+    display: none;
     opacity: 0;
     padding: var(--space-3);
     position: absolute;
@@ -40,9 +41,11 @@
     transition:
         opacity var(--transition-fast),
         transform var(--transition-fast),
-        visibility var(--transition-fast);
+        visibility var(--transition-fast),
+        display var(--transition-fast) allow-discrete;
     visibility: hidden;
-    width: 212px;
+    width: min(212px, calc(100vw - var(--space-8)));
+    width: min(212px, calc(100dvw - var(--space-8)));
     z-index: var(--z-tooltip);
 }
 
@@ -58,8 +61,42 @@
 }
 
 .tooltip:hover .tooltiptext,
-.tooltip:focus .tooltiptext {
+.tooltip:focus .tooltiptext,
+.tooltip:focus-within .tooltiptext {
+    display: block;
     opacity: 1;
     transform: translateY(0);
     visibility: visible;
+
+    @starting-style {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+}
+
+// A centred mobile popover cannot be clipped when the help icon sits near an
+// edge. Desktop keeps the compact, locally anchored tooltip above its trigger.
+@media (max-width: #{$sm - 1px}) {
+    .tooltip .tooltiptext {
+        position: fixed;
+        inset-inline-start: 50%;
+        bottom: var(--space-4);
+        margin-inline-start: 0;
+        transform: translate(-50%, 4px);
+    }
+
+    .tooltip .tooltiptext::after {
+        display: none;
+    }
+
+    .tooltip:hover .tooltiptext,
+    .tooltip:focus .tooltiptext,
+    .tooltip:focus-within .tooltiptext {
+        transform: translate(-50%, 0);
+
+        @starting-style {
+            opacity: 0;
+            transform: translate(-50%, 4px);
+        }
+    }
 }

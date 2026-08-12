@@ -3,6 +3,13 @@
 const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 
+async function expectNoHorizontalOverflow(page) {
+    const overflow = await page.evaluate(() =>
+        document.documentElement.scrollWidth - document.documentElement.clientWidth
+    );
+    expect(overflow).toBeLessThanOrEqual(1);
+}
+
 test('legacy advanced search reaches IwacSearch and preserves the query', async ({ page }) => {
     await page.goto('item/search?q=togo', { waitUntil: 'domcontentloaded' });
     await expect(page).toHaveURL(/\/search\/everything(?:\?|$)/);
@@ -27,12 +34,13 @@ test('hero search field and submit button fill the banner search box', async ({ 
     expect(Math.abs(inputBox.height - submitBox.height)).toBeLessThanOrEqual(1);
 });
 
-test('mobile drawer restores a clean desktop state and pages do not overflow', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+test('mobile pages, pagination, and popovers do not overflow', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 844 });
     await page.goto('page/home', { waitUntil: 'domcontentloaded' });
+    await expectNoHorizontalOverflow(page);
 
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    expect(overflow).toBeLessThanOrEqual(1);
+    await page.locator('.language-switcher__toggle').click();
+    await expectNoHorizontalOverflow(page);
 
     await page.locator('.main-navigation__toggle').click();
     await expect(page.locator('#menu-drawer')).toHaveClass(/toggled/);
@@ -44,10 +52,19 @@ test('mobile drawer restores a clean desktop state and pages do not overflow', a
     await expect(page.locator('body')).not.toHaveClass(/menu-drawer-toggled/);
     await expect(page.locator('#content')).not.toHaveAttribute('inert', '');
 
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('page/browse', { waitUntil: 'domcontentloaded' });
-    const browseOverflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    expect(browseOverflow).toBeLessThanOrEqual(1);
+    await page.setViewportSize({ width: 320, height: 844 });
+    for (const route of ['item/browse', 'item/872', 'search/everything?q=islam']) {
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await expectNoHorizontalOverflow(page);
+    }
+
+    await page.goto('item/23365', { waitUntil: 'domcontentloaded' });
+    await page.locator('.annotation-trigger').first().click();
+    const panel = await page.locator('.annotation-tooltip__wrapper').first().boundingBox();
+    expect(panel).toBeTruthy();
+    expect(panel.x).toBeGreaterThanOrEqual(15);
+    expect(panel.x + panel.width).toBeLessThanOrEqual(305);
+    await expectNoHorizontalOverflow(page);
 });
 
 test('theme chrome has no serious WCAG A/AA violations', async ({ page }) => {

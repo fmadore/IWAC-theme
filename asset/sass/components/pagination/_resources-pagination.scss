@@ -13,6 +13,7 @@
     .pager-wrapper {
         display: inline-flex;
         align-items: center;
+        max-width: 100%;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
@@ -138,6 +139,40 @@
             outline: none;
             border-color: var(--primary);
             box-shadow: var(--ring-focus-sm);
+        }
+    }
+
+    // At the 320px floor the single-line control is wider than the content
+    // column. Give the result count its own row and let the actual pager use
+    // the full second row; nothing is hidden and every control stays 40px.
+    @media (max-width: #{$sm - 1px}) {
+        .pager-wrapper {
+            display: grid;
+            grid-template-columns: var(--size-control-md) minmax(0, 1fr) var(--size-control-md);
+            width: 100%;
+        }
+
+        .row-count {
+            grid-column: 1 / -1;
+            border-inline-end: 0;
+            border-block-end: 1px solid var(--border-light);
+            text-align: center;
+        }
+
+        .pager {
+            justify-content: center;
+            min-width: 0;
+            width: 100%;
+            gap: var(--space-1);
+            padding-inline: var(--space-1);
+
+            label {
+                gap: var(--space-1);
+            }
+
+            .gotopage-btn {
+                margin-inline-start: 0;
+            }
         }
     }
 }

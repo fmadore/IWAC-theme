@@ -32,6 +32,39 @@ test('Escape closes an annotation disclosure and restores trigger focus', () => 
     dom.window.close();
 });
 
+test('annotation disclosure stays inside a narrow viewport', () => {
+    const dom = createDom(`<!doctype html><body>
+        <div class="annotation-btn">
+            <button class="annotation-trigger" aria-expanded="false">Annotation</button>
+            <div class="annotation-tooltip" aria-hidden="true"><div class="annotation-tooltip__wrapper">Note</div></div>
+        </div>
+    </body>`);
+    dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
+    dom.window.IWACUtils = {
+        debounce: (callback) => callback,
+        onReady: (callback) => callback(),
+    };
+    Object.defineProperty(dom.window, 'innerWidth', { configurable: true, value: 320 });
+    Object.defineProperty(dom.window.document.documentElement, 'clientWidth', { configurable: true, value: 320 });
+
+    const annotation = dom.window.document.querySelector('.annotation-btn');
+    const trigger = dom.window.document.querySelector('.annotation-trigger');
+    const tooltip = dom.window.document.querySelector('.annotation-tooltip');
+    const wrapper = dom.window.document.querySelector('.annotation-tooltip__wrapper');
+    annotation.getBoundingClientRect = () => ({ top: 300, left: 305, right: 329, bottom: 324, width: 24, height: 24 });
+    Object.defineProperty(wrapper, 'offsetWidth', { configurable: true, value: 288 });
+    Object.defineProperty(wrapper, 'offsetHeight', { configurable: true, value: 100 });
+
+    runAsset(dom, 'script.js');
+    trigger.click();
+
+    assert.equal(tooltip.style.left, '-289px');
+    assert.equal(305 + parseFloat(tooltip.style.left), 16);
+    assert.equal(305 + parseFloat(tooltip.style.left) + wrapper.offsetWidth, 304);
+
+    dom.window.close();
+});
+
 test('public theme API rejects unsupported modes', () => {
     const dom = createDom('<!doctype html><body><button data-theme-toggle></button></body>');
     const values = new Map();

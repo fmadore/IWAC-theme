@@ -65,18 +65,17 @@
     }
 
     // The tooltip container. Hidden with display:none — NOT visibility:hidden
-    // — so it leaves the layout entirely when closed. As a 300px-wide box
-    // anchored at the trigger's inline-start (and only repositioned by JS on
-    // open), a visibility:hidden tooltip stayed display:block and pushed past
-    // the right edge of narrow viewports, scrolling the whole page sideways
-    // before the reader ever touched it. `display` transitions discretely so
-    // the open/close fade survives the change.
+    // — so it leaves the layout entirely when closed. JavaScript clamps its
+    // physical left edge to the visual viewport when it opens; using `left`
+    // here too avoids mixing a physical JS offset with a logical CSS inset.
+    // `display` transitions discretely so the open/close fade survives the
+    // change.
     .annotation-tooltip {
         display: none;
         opacity: 0;
         transform: translateY(4px);
         position: absolute;
-        inset-inline-start: 0;
+        left: 0;
         bottom: calc(100% + var(--space-2));
         transition:
             opacity var(--transition-fast),
@@ -94,12 +93,20 @@
             border-radius: var(--radius-md);
             box-shadow: var(--shadow-lg);
             font-size: var(--text-sm);
-            width: 300px;
-            max-width: calc(100vw - var(--space-8));
+            // 300px on roomy screens; one --space-4 gutter on each viewport
+            // edge on phones. The dv* declarations follow the visible mobile
+            // viewport as browser chrome expands/collapses; vw/vh are fallbacks.
+            width: min(300px, calc(100vw - var(--space-8)));
+            width: min(300px, calc(100dvw - var(--space-8)));
+            max-height: calc(100vh - var(--space-8));
+            max-height: calc(100dvh - var(--space-8));
+            overflow: auto;
+            overscroll-behavior: contain;
             padding: var(--space-4);
             // Isolate from any pre-line host (e.g. a long-form description) so
             // annotation rows always wrap normally.
             white-space: normal;
+            overflow-wrap: anywhere;
         }
 
         // Heading speaks in the metadata-label voice
@@ -146,6 +153,7 @@
         }
 
         dd {
+            min-width: 0;
             flex: 1 1 auto;
             font-size: var(--text-sm);
             color: var(--ink);
