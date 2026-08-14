@@ -32,8 +32,8 @@
     // ── Style tabs (Chicago / APA / MLA) ─────────────────────────────────
     // A thin uppercase strip closed by a hairline; the active tab gets the 2px
     // primary underline (the current-state device shared with the nav). These
-    // are <button>s, so the global button base (_buttons.scss) is reset to a
-    // flat tab — no pill radius, no glow, no hover-lift.
+    // are <button>s, so the base control style (_buttons.scss) is reset to a
+    // flat tab — no radius, no border box, no padding.
     &__styles {
         display: flex;
         flex-wrap: wrap;

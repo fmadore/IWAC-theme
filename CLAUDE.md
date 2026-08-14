@@ -37,16 +37,42 @@ that renders it — and "fixing" it by lowercasing `theme.ini` just moves the fa
 
 ### Design tokens are machine-checked — never hand-maintain a list
 
-`scripts/build-tokens.js` resolves every OKLCH token in `_colors.scss` to sRGB and writes
-`tokens.json` — the light/dark values **plus** `names`, the full token vocabulary — then
+`scripts/build-tokens.js` reads the four variable files and writes `tokens.json`, then
 syncs it into IwacSearch and IwacVisualizations, whose `check-theme-tokens` guards fail
-their builds on a drifted fallback or an unknown token name.
+their builds on anything that disagrees with it. It publishes four things:
+
+| Key | What |
+|---|---|
+| `light` / `dark` | every OKLCH colour token resolved to sRGB hex |
+| `values.light` / `values.dark` | every **other** token resolved to a literal CSS value — type steps, spacing, radii, control sizes, font stacks, shadows (collapsed to `rgba()`), transitions |
+| `names` | the full custom-property vocabulary |
+| `breakpoints` | the six media-query widths |
 
 - A wrong or invented token name is caught by `npm run check:tokens`. Run it; don't
   reason about it from memory.
-- **Adding a token is a cross-repo change**: `npm run build:tokens`, then rebuild both modules.
+- **Adding a token is a cross-repo change**: `npm run sync:tokens`, then rebuild both modules.
 - Never hand-edit `tokens.json` or the `<!-- BEGIN GENERATED -->` tables in
   [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md).
+
+`values` and `breakpoints` exist because the guards used to check colour and nothing
+else: the fallback assertion was a regex matching a hex literal in the fallback slot, so
+every non-colour fallback in three repos was unchecked, and roughly 290 of them had
+drifted — line-heights, control sizes, type steps, font stacks (one still naming the
+removed *Noto Serif*), shadows, transitions. **Drift here has never been a discipline
+problem; it is a coverage problem.** Every value the generator publishes and a guard
+compares has stayed correct across a major redesign. Every value left to prose moved.
+So: when you add a design decision, publish it and assert it — a comment saying
+`/* sm */` beside a `640px` media query is what "documented" looked like right up until
+it was wrong.
+
+### Type sizes and media widths are asserted too
+
+`npm run check:tokens` also fails on a `font-size` set to an absolute literal (px/rem/pt)
+anywhere in `asset/sass` — use a `--text-*` token; `--text-2xs` (11px) is the floor, and
+there is deliberately no 14px step. Relative units (`em`, `%`) stay legal. Both modules'
+guards enforce the same rule plus the breakpoint contract: `min-width` sits **on** a
+published breakpoint, `max-width` at **breakpoint − 1**, so the halves of a pair never
+both match.
 
 ### `asset/css/` is generated
 
@@ -68,12 +94,21 @@ keep the mixing perceptual.
 Use `> dl > .property > dd`. Value-annotation tooltips nest their own `<dl>` inside a
 `<dd>`, and a descendant selector leaks the 168px label-column layout into them.
 
-### Every `<button>` inherits the global base style
+### The `<button>` default is QUIET — the loud one opts in
 
-`_buttons.scss` gives all buttons a radius, `box-shadow: var(--glow-sm)`, and a hover
-lift + glow. A component that overrides only `background`/`color` keeps the rounded
-floating shape and the halo — reset `border-radius`, `box-shadow` and `transform`
-explicitly.
+Inverted in 2.10. A bare `<button>` is now an outlined flat control (ink text, hairline
+border, no shadow, no lift). The filled-primary treatment — brand fill, `--glow-sm`
+halo, hover lift — comes from `.btn--primary` or from being a **submit** control
+(`input[type=submit]` / `button[type=submit]`), which Omeka core and module forms render
+without any theme class to hook.
+
+Before this, the base selector painted *every* button filled-and-glowing, so sixteen
+component files reset `border-radius` / `box-shadow` / `transform` purely to escape the
+default, and a component overriding only `background`/`color` silently kept a rounded
+floating halo. Those resets are now redundant rather than load-bearing — harmless where
+they remain, and safe to drop when you're already editing the file. The thing to watch
+now is the reverse: **a control that needs to shout must say so**, or it will render
+quiet.
 
 ### Read a module's rendered HTML before styling it
 

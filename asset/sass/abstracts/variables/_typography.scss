@@ -37,6 +37,21 @@ $font__pre: $font__code;
   // where the visual gain at large viewports is real and the drift on
   // mid-sizes isn't distracting. Body & UI sizes hold steady so a 14px
   // facet label doesn't quietly become 14.6px between breakpoints.
+  // The UI tier is a 2px arithmetic progression: 11 · 13 · 15 · 17 · 19.
+  // --text-2xs is the FLOOR — nothing in the stack may set type smaller,
+  // and there is deliberately no 14px step. Both halves of that sentence
+  // are load-bearing:
+  //
+  //   * Before the floor existed, the scale stopped at 13px while dense
+  //     axis / chip / legend labels genuinely need less, so ~12 of them
+  //     were written as bare 0.6875rem literals here and in
+  //     IwacVisualizations, plus a 9px one. A step nothing can reach is
+  //     a step everyone reaches around.
+  //   * A 14px step would put three sizes inside 2px, which is a puddle,
+  //     not a scale. IwacVisualizations' 12/14/18px literals came from a
+  //     generic utility framework, not from a gap here: they migrate to
+  //     13 / 15 / 19 rather than the theme growing a step to match them.
+  --text-2xs:   0.6875rem;   // 11px — FLOOR: dense axis/legend/chip labels
   --text-xs:    0.8125rem;   // 13px — eyebrow labels, metadata dt
   --text-sm:    0.9375rem;   // 15px — secondary UI, captions
   --text-base:  1.0625rem;   // 17px — body copy

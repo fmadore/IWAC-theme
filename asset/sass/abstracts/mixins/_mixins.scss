@@ -52,21 +52,30 @@
         box-shadow var(--transition-fast);
 }
 
-@mixin primary-button {
-    @include button;
+// ==========================================================================
+// The LOUD button — filled primary, glow, hover lift.
+//
+// Appearance only (no padding / case / layout), so it can be laid over the
+// quiet base in _buttons.scss without re-deciding geometry. This is the
+// opt-in half of the base-style inversion: until v2.10 every <button> in the
+// document got this treatment by default and any quiet control had to reset
+// three properties to escape it. Restraint is the register; the shout opts in.
+// ==========================================================================
+@mixin button-filled {
     background: var(--primary);
-    border: none;
+    border: 1px solid transparent;
     color: var(--white);
     box-shadow: var(--glow-sm);
 
-    &:hover:not(.disabled) {
+    &:hover:not(:disabled):not(.disabled) {
         background: var(--primary-hover);
+        border-color: transparent;
         color: var(--white);
         transform: translateY(var(--lift-xxs));
         box-shadow: var(--glow-md);
     }
 
-    &:active:not(.disabled) {
+    &:active:not(:disabled):not(.disabled) {
         background: var(--primary-active);
         transform: translateY(0);
         box-shadow: var(--glow-xs);
@@ -74,8 +83,6 @@
 
     &:focus-visible {
         color: var(--white);
-        outline: 2px solid var(--primary);
-        outline-offset: 2px;
     }
 
     &:disabled,
@@ -89,6 +96,16 @@
 
     &:visited {
         color: var(--white);
+    }
+}
+
+@mixin primary-button {
+    @include button;
+    @include button-filled;
+
+    &:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
     }
 }
 
@@ -112,9 +129,11 @@
 // Focus ring
 // Consistent focus-visible outline for interactive elements
 // ==========================================================================
+// The default focus idiom. Use --ring-focus instead when an outline would be
+// clipped (inside overflow:hidden or a scroll container) — see _tokens.scss.
 @mixin focus-ring {
     &:focus-visible {
-        outline: 2px solid var(--focus-color);
+        outline: var(--focus-outline);
         outline-offset: 2px;
     }
 }

@@ -63,7 +63,7 @@
 
   // Semantic / state
   --focus-color: var(--primary);
-  --focus-ring:  color-mix(in oklab, var(--primary) 30%, transparent);
+  --focus-ring-color:  color-mix(in oklab, var(--primary) 30%, transparent);
   --selection-bg: color-mix(in oklab, var(--primary) 14%, transparent);
 
   // Status colors — OKLCH, calibrated for AA on light surfaces
@@ -157,7 +157,7 @@
   --border-strong: oklch(42% 0.016 70);
 
   --focus-color: var(--primary);
-  --focus-ring:  color-mix(in oklab, var(--primary) 35%, transparent);
+  --focus-ring-color:  color-mix(in oklab, var(--primary) 35%, transparent);
   --selection-bg: color-mix(in oklab, var(--primary) 22%, transparent);
 
   --success:    oklch(72% 0.14 152);

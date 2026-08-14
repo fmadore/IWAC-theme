@@ -243,7 +243,7 @@
         // Now one crisp 2px primary ring traces the form's clipped rounded
         // rectangle exactly (box-shadow spread follows the border-radius) and is
         // the ONLY orange edge — the border stays transparent, so nothing
-        // doubles. Solid --primary (not the faint --focus-ring token) is what
+        // doubles. Solid --primary (not the faint --focus-ring-color token) is what
         // makes it read over the busy hero plate, and matching the submit
         // segment's colour keeps the right edge continuous instead of clashing.
         // The ring is listed first so it paints on top of the resting elevation
@@ -287,8 +287,8 @@
             align-items: center;
             justify-content: center;
             border: none;
-            // Fill the right end flush. The global button rule (_buttons.scss)
-            // leaks border-radius: var(--radius-md), rounding ALL four corners
+            // Fill the right end flush. The base button rule (_buttons.scss)
+            // sets border-radius: var(--radius-md), rounding ALL four corners
             // so the orange floated inside the bar with a notch against the
             // input. Zero it out — the form's radius + overflow clip the outer
             // corners into a clean rounded end.
@@ -298,10 +298,12 @@
             color: var(--white);
             font-size: var(--text-lg);
             cursor: pointer;
-            // Neutralise the global button elevation: the base rule sets
-            // box-shadow: var(--glow-sm) and, on hover/active, grows it and adds
-            // a translateY lift — a stray orange halo and a bounce the hero
-            // never wanted. Same reset the masthead submit makes in _header.scss.
+            // Neutralise the filled-button elevation. This IS a submit, so it
+            // takes the loud opt-in in _buttons.scss: box-shadow: var(--glow-sm),
+            // growing on hover/active with a translateY lift — a stray orange
+            // halo and a bounce the hero never wanted. (The hero wants the fill,
+            // not the float.) Same reset the masthead submit makes in
+            // _header.scss.
             box-shadow: none;
             transition: background-color var(--transition-fast);
 
@@ -398,7 +400,7 @@
         font-feature-settings: "kern" 1, "liga" 1, "lnum" 1;
         color: var(--white);
 
-        @media (min-width: 400px) { font-size: var(--text-xl); }
+        @media (min-width: $xs) { font-size: var(--text-xl); }
         @media (min-width: $sm)   { font-size: var(--text-2xl); }
         @media (min-width: $md)   { font-size: var(--text-3xl); }
         @media (min-width: $lg)   { font-size: var(--text-4xl); }

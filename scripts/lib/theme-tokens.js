@@ -24,7 +24,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const DECL_RE = /(--[a-z0-9-]+)\s*:/gi;
+// A custom property DECLARATION only ever opens a statement: it follows `{`,
+// `;`, a quote (inline `style="--x:…"`), or nothing but whitespace on its line.
+// Requiring that excludes BEM modifiers in selectors — `.cell--type::before`
+// used to publish `--type` and `--date` as theme tokens, and a rule-comment
+// banner of hyphens published itself as a 70-character token name. Fictional
+// entries in `names` are worse than useless: they are exactly what the name
+// check exists to catch, so a module could reference them and pass.
+const DECL_RE = /(?:^|[{;'"]|\s)(--[a-z0-9][a-z0-9-]*)\s*:/gim;
 const SET_RE = /setProperty\(\s*['"](--[a-z0-9-]+)['"]/g;
 
 function* walk(dir, exts) {

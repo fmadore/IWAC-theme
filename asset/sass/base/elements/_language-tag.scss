@@ -14,7 +14,7 @@
     border-radius: var(--radius-sm);
     color: var(--muted);
     font-family: $font__body;
-    font-size: 0.6875rem; // 11px — quieter than the value text
+    font-size: var(--text-2xs); // 11px — quieter than the value text
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: var(--tracking-wide);

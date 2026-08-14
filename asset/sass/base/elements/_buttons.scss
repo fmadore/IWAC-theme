@@ -1,6 +1,22 @@
 // ==========================================================================
 // Buttons
-// Modern button styles with elevation and micro-interactions
+//
+// THE DEFAULT IS QUIET. A bare <button> is an outlined, flat control: ink
+// text, hairline border, no shadow, no lift. The filled primary treatment —
+// brand fill, --glow-sm halo, hover lift — is opt-in, via `.btn--primary` or
+// a submit control, which is the one button in a form that IS the loud action.
+//
+// This is inverted from v2.9 and earlier, where the base selector painted
+// every <button> in the document filled-and-glowing. That default was
+// backwards for a system whose stated register is restraint (see
+// docs/DESIGN-PHILOSOPHY.md §5, "Restraint with color"): the theme's own
+// markup renders almost no filled buttons — theme toggle, PWA install,
+// pagination, nav toggle, language switcher, citation copy, back-to-top,
+// annotation trigger are all quiet chrome — so sixteen component files had
+// to reset `border-radius` / `box-shadow` / `transform` just to opt OUT of
+// the default, and any new component that overrode only background+color
+// silently kept a rounded floating halo. Those resets are now redundant
+// rather than load-bearing; they are harmless where they remain.
 // ==========================================================================
 
 @use "../../abstracts/abstracts" as *;
@@ -14,29 +30,37 @@ input[type="submit"] {
     align-items: center;
     justify-content: center;
     padding: var(--space-sm) var(--space-lg);
+    font-family: inherit;
     font-size: var(--text-sm);
     font-weight: 500;
-    color: var(--white);
-    background: var(--primary);
-    border: none;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--border);
     border-radius: var(--radius-md);
+    box-shadow: none;
     cursor: pointer;
     transition:
         background-color var(--transition-fast),
-        transform var(--transition-fast),
-        box-shadow var(--transition-fast);
-    box-shadow: var(--glow-sm);
+        border-color var(--transition-fast),
+        color var(--transition-fast);
 
-    &:hover {
-        background: var(--primary-hover);
-        transform: translateY(var(--lift-xxs));
-        box-shadow: var(--glow-md);
+    &:hover:not(:disabled):not(.disabled) {
+        background: var(--surface-sunken);
+        border-color: var(--border-strong);
+        color: var(--ink-strong);
     }
 
-    &:active {
-        background: var(--primary-active);
-        transform: translateY(0);
-        box-shadow: var(--glow-xs);
+    &:active:not(:disabled):not(.disabled) {
+        background: var(--surface-sunken);
+        border-color: var(--border-strong);
+    }
+
+    &:disabled,
+    &[disabled],
+    &.disabled {
+        color: var(--muted);
+        cursor: not-allowed;
+        opacity: 0.7;
     }
 
     // Visible keyboard focus for every button variant. The nested
@@ -45,29 +69,17 @@ input[type="submit"] {
     // was previously missing, leaving those controls with no focus ring.
     @include focus-ring;
 
-    &.btn--secondary {
-        background: transparent;
-        color: var(--primary);
-        border: 1px solid var(--primary);
-        box-shadow: none;
-
-        &:hover {
-            background: var(--selection-bg);
-            box-shadow: none;
-        }
-    }
-
     &.link-style {
         background-color: transparent !important;
         color: var(--primary);
         padding-inline: 0;
+        border: none;
         text-transform: none;
         text-decoration: underline;
-        box-shadow: none;
 
         &:hover {
-            transform: none;
-            box-shadow: none;
+            background-color: transparent !important;
+            color: var(--primary-hover);
         }
     }
 
@@ -75,16 +87,17 @@ input[type="submit"] {
         padding: 0;
         background-color: transparent !important;
         color: var(--primary);
-        font-size: 1.7rem;
+        border: none;
+        // An icon glyph, not text — sized off the control scale rather than
+        // the type scale (was a bare 1.7rem ≈ 27px).
+        font-size: var(--size-control-xs);
         line-height: 1;
-        box-shadow: none;
 
         &:hover,
         &:active,
         &:focus {
+            background-color: transparent !important;
             color: var(--primary-hover);
-            transform: none;
-            box-shadow: none;
         }
 
         &:disabled,
@@ -92,6 +105,41 @@ input[type="submit"] {
         &.disabled {
             color: var(--muted);
         }
+    }
+}
+
+// ==========================================================================
+// The loud opt-in.
+//
+// `.btn--primary` is the explicit marker. Submit controls get it implicitly:
+// a submit IS a form's primary action, and Omeka core / module forms render
+// them without any theme class to hook. Declared AFTER the quiet base so it
+// wins at equal specificity, and it keeps that base's geometry.
+// ==========================================================================
+button.btn--primary,
+.button.btn--primary,
+input[type="submit"],
+button[type="submit"] {
+    @include button-filled;
+}
+
+// The outlined brand variant — quieter than filled, louder than the base.
+button.btn--secondary,
+.button.btn--secondary,
+input[type="submit"].btn--secondary,
+button[type="submit"].btn--secondary {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    box-shadow: none;
+    transform: none;
+
+    &:hover:not(:disabled):not(.disabled) {
+        background: var(--selection-bg);
+        border-color: var(--primary-hover);
+        color: var(--primary-hover);
+        box-shadow: none;
+        transform: none;
     }
 }
 
@@ -136,7 +184,7 @@ button.remove-value {
     // Show the icon via ::before
     &::before {
         text-indent: 0;
-        font-size: 0.875rem;
+        font-size: var(--text-xs);
     }
 
     // Expand the interactive hit area to the 44px WCAG 2.5.5 target

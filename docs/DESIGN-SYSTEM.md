@@ -76,11 +76,11 @@ value (see §3). Do **not** invent token names — undefined tokens fail silentl
 | **Surfaces** | `--surface`, `--surface-raised`, `--surface-sunken`, `--surface-overlay`, `--background` |
 | **Borders** | `--border-light`, `--border`, `--border-strong` |
 | **Status** | `--success`, `--warning`, `--error`, `--info` (+ matching `*-bg`) |
-| **Focus** | `--focus-color`, `--focus-ring`, `--ring-focus`, `--ring-focus-sm` |
-| **Typography** | `--font-headings`, `--font-serif-text`, `--font-body`, `--font-mono`; `--text-xs … --text-5xl`; `--line-height-normal`, `--line-height-relaxed`; `--tracking-display/tight/normal/wide/wider` |
+| **Focus** | `--focus-outline` (default), `--ring-focus`, `--ring-focus-sm`, `--focus-color`, `--focus-ring-color` |
+| **Typography** | `--font-headings`, `--font-serif-text`, `--font-body`, `--font-mono`; `--text-2xs … --text-5xl`; `--line-height-normal`, `--line-height-relaxed`; `--tracking-display/tight/normal/wide/wider` |
 | **Spacing** | `--space-1 … --space-40`; `--space-xs/sm/md/lg/xl/2xl/3xl` |
-| **Radius** | `--radius-sm/md/lg/xl/full` |
-| **Shadow / glow** | `--shadow-xs … --shadow-xl`; `--glow-xs/sm/md` |
+| **Radius** | `--radius-sm/md/lg/full` |
+| **Shadow / glow** | `--shadow-xs … --shadow-lg`; `--glow-xs/sm/md` |
 | **Panel** | `--panel-bg`, `--panel-border`, `--panel-radius`, `--panel-shadow` |
 | **Controls** | `--size-control-xs … --size-control-xl` |
 | **Measures** | `--measure-narrow/base/wide` |
@@ -90,6 +90,66 @@ value (see §3). Do **not** invent token names — undefined tokens fail silentl
 The full list lives in the generated `tokens.json` (`names` publishes the
 complete vocabulary). Rather than consulting a table of names to avoid, run
 `npm run check:tokens` — it fails on anything that doesn't resolve.
+
+### Type scale — the floor, and the step that deliberately isn't there
+
+The UI tier is a 2px arithmetic progression: **11 · 13 · 15 · 17 · 19**
+(`--text-2xs` … `--text-lg`), then 24 / 30 for headings and three `clamp()`ed
+display steps. Only `--text-3xl/4xl/5xl` are fluid; **every UI step is fixed on
+purpose**, so a 15px facet label doesn't quietly become 15.6px between
+breakpoints.
+
+- `--text-2xs` (11px) is the **floor**. Nothing in the stack may set type
+  smaller. It exists because the scale used to stop at 13px while dense axis,
+  legend and chip labels genuinely need less — so ~12 of them were written as
+  bare `0.6875rem` literals, plus one at 9px. A step nobody can reach is a step
+  everybody reaches around.
+- There is **no 14px step**, and adding one would put three sizes inside 2px.
+  IwacVisualizations' 12 / 14 / 18px literals came from a generic utility
+  framework, not from a gap here; they migrate to 13 / 15 / 19.
+
+Both modules' guards fail on a `font-size` set to an absolute literal. Relative
+units (`em`, `%`) stay legal — they scale *with* the token the cascade already
+set, so they don't fork the scale.
+
+### Focus — one decision, two idioms, and the rule for picking
+
+| Token | When |
+|---|---|
+| `--focus-outline` | **Default.** `outline: var(--focus-outline); outline-offset: 2px;` |
+| `--ring-focus` | When an outline would be clipped: inside `overflow: hidden`, inside a scroll container, or flush against a panel edge. `--ring-focus-sm` is the tighter 2px version for dense controls. |
+| `--focus-color` | The colour, when you're composing something custom. |
+| `--focus-ring-color` | The translucent tint `--ring-focus` is built from. Consuming it directly is almost always a mistake. |
+
+Before 2.10 there was no token for the *composed outline* — only for its
+colour — and the two ring names were one transposition apart
+(`--focus-ring` / `--ring-focus`). The result downstream was
+`outline: 2px solid var(--focus-color, var(--primary, #ce4115))` hand-copied
+44 times across IwacVisualizations' block stylesheets. The tint has been
+renamed `--focus-ring-color` so no two focus tokens are near-homographs.
+
+### Breakpoints
+
+`tokens.json` publishes them as `breakpoints`, and both modules' guards assert
+that every `@media` width is one of them:
+
+| | `xs` | `sm` | `md` | `lg` | `xl` | `xxl` |
+|---|---|---|---|---|---|---|
+| | 400px | 600px | 768px | 1024px | 1200px | 1460px |
+
+Media queries can't read custom properties, so modules necessarily restate
+these as literals — which is why they were the one part of the contract held
+together by a `/* sm */` comment rather than a check, and why that failed:
+`blocks/laicite.css` reflowed at 640px labelled `sm` while every other block on
+the same page reflowed at 600px.
+
+**`min-width` sits ON the breakpoint; `max-width` sits at breakpoint − 1** (or
+− 0.02), so the two halves of a pair never both match. `max-width: 600px`
+beside `min-width: 600px` means both rules fire in a 1px sliver, and the guard
+rejects it with the correction.
+
+`@container` queries are exempt — they measure their own container, not the
+viewport.
 
 ### `--secondary` — read this before using it
 
@@ -142,6 +202,32 @@ graceful degradation, and as living documentation of the contract. Because of
 the second reason, **a fallback must equal the theme's canonical default**.
 A stale fallback (old brand orange, cream surface) is a "competing variable"
 even if it never paints a pixel — fix it.
+
+Two corollaries, both now mechanical:
+
+**The rule is not about colour.** It applies to *every* token — type steps,
+spacing, radii, control sizes, line-heights, font stacks, shadows, transitions.
+`tokens.json` publishes `values.light` / `values.dark`: every non-colour token
+resolved to a literal CSS value, including shadows collapsed to `rgba()`. Both
+modules' guards compare against it. Until 2026-08 the assertion was a regex
+that matched a hex literal in the fallback slot and nothing else, so the
+contract was enforced for colour and unenforced everywhere else — which is
+precisely where three repositories had drifted apart: `--line-height-relaxed`
+fallback at 1.6 against a canonical 1.7, `--size-control-sm` at 2rem against
+2.25rem, `--text-sm` at 14px against 15px, `--transition-base` at `200ms ease`
+against `200ms var(--ease-out-quart)`, and a `--font-headings` fallback still
+naming the removed **Noto Serif** — in the one property whose quoting bug had
+already silently rendered ~30 declarations in the wrong face.
+
+**A fallback must be a flat literal — no nested `var()`.**
+`var(--ink-strong, var(--ink, #13161c))` renders exactly when the theme is
+absent, in which case `--ink` is absent too: the chain rescues nothing, and
+what it *does* do is assert that a headline ink degrades to a body ink — a
+substitution the type hierarchy would not survive if it ever fired. The one
+exception is a **module-owned** property, where the chain asks a scope question
+rather than a theme-absent one: `var(--iwac-vis-compare-color-a,
+var(--primary, #ce4115))` correctly means "outside a compare block, use the
+brand".
 
 ### Canonical fallback values
 
@@ -257,17 +343,41 @@ These were consumed by the modules historically and have been repointed:
 | `var(--accent, …)` | `var(--primary, …)` |
 | `var(--success-strong, …)` | `color-mix(in oklab, var(--success), black 18%)` |
 | `#c66` (old rose brand) | `#e64a19` (primary) / `#c0392b` (error) |
+| `var(--focus-ring, …)` | `--focus-ring-color` (tint) — but you almost certainly want `--focus-outline` |
+| `var(--radius-xl, …)` | `--radius-lg` (media) / `--radius-md` (chrome) |
+| `var(--shadow-xl, …)` | `--shadow-lg` |
+| `var(--iwac-vis-shadow-{subtle,soft,strong})` | `--shadow-color-subtle` / `--shadow-color` / `--shadow-color-strong` |
+| `var(--iwac-vis-icon-btn{,-sm})` | `--size-control-sm` / `--size-control-xs` |
+| `var(--iwac-vis-model-<release-id>)` | `--iwac-vis-model-1` … `-4` |
 
 ---
 
-## 4. Sanctioned exceptions — module-owned data colours
+## 4. Sanctioned exceptions — the module-owned namespace
 
-Data encoding needs more distinct, controlled colours than a UI theme should
-carry. These are the **only** colours a module is allowed to define itself.
-They live in the module, are prefixed `--iwac-vis-*` (or are JS palette
-constants), are documented here, and must **not** leak into UI chrome.
+A module may define a custom property only when the theme **should not** carry
+the value. That is two cases, and no others:
 
-All of them are owned by **IwacVisualizations**:
+1. **Data-encoding colours.** Data encoding needs more distinct, controlled
+   colours than a UI theme should carry.
+2. **Module-local layout constants with no theme equivalent** — a thumbnail
+   ramp, a toolbar reservation, a chart gutter. Values that describe *this
+   module's* composition, not a shared design decision.
+
+What the namespace is **not** is a legal home for a duplicate of a theme token.
+It had become one: `--iwac-vis-icon-btn-sm: 28px` was `--size-control-xs` to
+the pixel, and three shadow tints re-derived from `--ink` exactly what
+`--shadow-color`, `--shadow-color-subtle` and `--shadow-color-strong` already
+publish. Because the guard exempts the prefix, these were competing variables
+that passed every check — so the namespace is the one place worth watching.
+Both sets are gone as of module 1.48.
+
+The prefix is **`--iwac-vis-`** (IwacVisualizations) / **`--iwac-`** for
+IwacSearch's own scoped properties, and each module's guard exempts only its
+own. The looser `--iwac-` form had already let `--iwac-compare-color-a/b` and
+`--iwac-otd-axis-gap` drift out of the documented namespace.
+
+Module-owned colours must **not** leak into UI chrome. The data colours below
+are all owned by **IwacVisualizations**:
 
 1. **Categorical chart palette** — `iwac-theme.js` `buildPalette()`:
    `[--primary, --secondary, …PALETTE_REST]`. Slot 0 is the brand, slot 1 is
@@ -280,9 +390,14 @@ All of them are owned by **IwacVisualizations**:
 3. **Sequential ramps** (`--iwac-vis-cent-*`, `--iwac-vis-subj-*`,
    `--iwac-vis-heatmap-*`): built from `--primary` faded toward `--surface`, so
    they track the brand seed automatically.
-4. **AI-model accents** (`--iwac-vis-model-{gemini,chatgpt,mistral}`): three
-   distinct hues so the article-dashboard sentiment radar separates the three
-   models. Site-overridable.
+4. **AI-model accents** (`--iwac-vis-model-1` … `-4`): four distinct hues so
+   the sentiment panels separate the models. Site-overridable. Named by **role
+   slot, not by model**: the names used to be the pinned release ids
+   (`--iwac-vis-model-gpt-5-6-luna`, …), built at runtime from the Hugging Face
+   column prefix, so every model upgrade renamed a design token and orphaned
+   any rule referencing it. A version identifier is not a design decision. The
+   id → slot map lives in one place, `MODEL_SLOT` in
+   `charts/sentiment-atlas.js`.
 5. **Resource-type badge chrome** (`.iwac-vis-badge--*`): the dot / pill SHAPE
    is module-owned, but the category COLOUR now comes from the theme's
    single-source `--type-*` map (see §3) — the module no longer owns the
@@ -324,7 +439,11 @@ the theme as a token, or it is a bug.
 - **Build:** `npm run build` → `asset/dist/iwac-search{,-admin,-header}.{js,css}`.
   Run `npm run lint && npm run check` first. Edit `src/`, never `asset/dist/`.
 - The hand-written `asset/css/iwac-search.css` (layout container styles) is
-  *not* produced by Vite and is edited directly.
+  *not* produced by Vite and is edited directly. It is **inside** the guard's
+  walk as of 2026-08 — it was outside it before, and every colour fallback in
+  it had stayed on the pre-v2.6 blue-grey palette while `src/` was spotless.
+  A guard that skips a file is not a guard; it is a comment about the files it
+  does read.
 
 ### IwacVisualizations (vanilla JS + ECharts/MapLibre)
 

@@ -20,11 +20,17 @@
   --shadow-color-strong: color-mix(in oklab, oklch(15% 0.01 264) 18%, transparent);
   --shadow-color-subtle: color-mix(in oklab, oklch(20% 0.01 264) 6%,  transparent);
 
+  // Four steps, deliberately not five: shadows are reserved for true panels
+  // and overlays here — rows and tags are divided by rules instead — so an
+  // elevation scale long enough for a card-based grammar is a scale that
+  // gets used like one. --shadow-xl (the fifth) was removed in 2.10: it was
+  // referenced by nothing in any of the three repos.
+  //   xs — hairline lift on quiet chrome    sm — panels (--panel-shadow)
+  //   md — hover / raised panels            lg — overlays: drawer, modal
   --shadow-xs: 0 1px 2px 0  var(--shadow-color-subtle);
   --shadow-sm: 0 1px 3px 0  var(--shadow-color), 0 1px 2px -1px var(--shadow-color-subtle);
   --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
   --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
-  --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color-subtle);
 
   --panel-bg: var(--surface);
   // See the note in :root — re-declare so the inner var() resolves against
@@ -62,12 +68,20 @@
   // ========================================================================
   // Border Radius Scale
   // ========================================================================
-  --radius-sm: 0.375rem; // 6px
-  --radius-md: 0.5rem;   // 8px — tightened from 12px to feel more
-                         // institutional/instrument-like, less consumer
-  --radius-lg: 0.75rem;  // 12px
-  --radius-xl: 1rem;     // 16px
-  --radius-full: 9999px;
+  // Three non-pill steps, each with ONE job. A rules-not-boxes system that
+  // publishes four interchangeable radii invites four different answers to
+  // the same question — which is how maps ended up at 6px, cards at 8px and
+  // the compact search panel at 12px on the same page.
+  --radius-sm: 0.375rem; // 6px  — inline marks: chips, tags, map controls
+  --radius-md: 0.5rem;   // 8px  — DEFAULT for panels, controls, inputs.
+                         // Tightened from 12px to feel more
+                         // institutional/instrument-like, less consumer.
+  --radius-lg: 0.75rem;  // 12px — media only: figures, thumbnails, carousel
+                         // plates. A photograph reads as matted, not as a
+                         // card; nothing that is chrome may use this.
+  --radius-full: 9999px; // pills
+  // (--radius-xl, 16px, removed in 2.10 — declared, referenced by nothing in
+  //  any of the three repos, and one more way to disagree about a corner.)
 
   // ========================================================================
   // Accent Lines & Lift
@@ -103,9 +117,29 @@
   --measure-wide:   72.5rem;   // ~1160px — search results, wide lists
 
   // ========================================================================
-  // Focus Rings
+  // Focus — ONE decision, two idioms, and a rule for picking between them.
+  //
+  //   --focus-outline   DEFAULT. `outline` + `outline-offset: 2px`. Use it
+  //                     unless the element is clipped.
+  //   --ring-focus      The box-shadow ring, for when an outline would be
+  //                     clipped: inside `overflow: hidden`, inside a scroll
+  //                     container, or on an element flush against a panel
+  //                     edge. --ring-focus-sm is the tighter 2px version for
+  //                     dense controls.
+  //   --focus-color     the colour. --focus-ring-color is the translucent
+  //                     tint --ring-focus is built from; consuming it
+  //                     directly is almost always a mistake.
+  //
+  // The four names used to be --focus-color / --focus-ring / --ring-focus /
+  // --ring-focus-sm with nothing saying which applied when, and --focus-ring
+  // vs --ring-focus one transposition apart. The result downstream was
+  // `outline: 2px solid var(--focus-color, var(--primary, #ce4115))`
+  // hand-copied 44 times across IwacVisualizations' block stylesheets —
+  // because there was no token for the composed outline, only for its
+  // colour. --focus-outline is that token.
   // ========================================================================
-  --ring-focus:    0 0 0 3px var(--focus-ring);
+  --focus-outline: 2px solid var(--focus-color);
+  --ring-focus:    0 0 0 3px var(--focus-ring-color);
   --ring-focus-sm: 0 0 0 2px color-mix(in oklab, var(--primary) 22%, transparent);
 
   // ========================================================================
@@ -123,7 +157,11 @@
   --tracking-wider:  0.08em;
 
   // ========================================================================
-  // Glow Effects (primary-tinted shadows for buttons/accents)
+  // Glow (primary-tinted shadow) — ONE effect, three states.
+  //
+  // Not an elevation scale: xs/sm/md are the active / rest / hover states of
+  // the single filled button (see base/elements/_buttons.scss, which is the
+  // only sanctioned consumer). Nothing else in the system glows.
   // Derived from --primary so admin color overrides cascade through.
   // ========================================================================
   --glow-xs: 0 1px 3px 0  color-mix(in oklab, var(--primary) 20%, transparent);
@@ -184,7 +222,6 @@
   --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
   --shadow-md: 0 6px 16px -4px var(--shadow-color-strong), 0 4px 8px -4px var(--shadow-color-strong);
   --shadow-lg: 0 12px 28px -8px color-mix(in oklab, black 35%, transparent), 0 8px 16px -8px color-mix(in oklab, black 20%, transparent);
-  --shadow-xl: 0 20px 40px -12px color-mix(in oklab, black 45%, transparent), 0 12px 24px -8px var(--shadow-color-strong);
 
   --panel-bg: var(--surface-raised);
   // See comment in :root block — re-declare for dark cascade.

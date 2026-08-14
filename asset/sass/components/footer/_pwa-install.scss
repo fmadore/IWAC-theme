@@ -28,9 +28,9 @@
     font-family: var(--font-body);
     font-size: var(--text-xs);
     line-height: 1;
-    // Every <button> inherits the global base style (_buttons.scss): radius,
-    // --glow-sm and a hover lift. Reset the halo and the bounce so this reads
-    // as the flat outlined control its social-link neighbours are.
+    // The global base is quiet as of 2.10, so this no longer has to escape a
+    // glow — but keep the explicit `none` so the control's flatness is stated
+    // by the component rather than inherited from a default that could move.
     box-shadow: none;
     transition:
         border-color var(--transition-fast),
