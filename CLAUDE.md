@@ -81,6 +81,18 @@ Omeka modules ship their own markup and vendor CSS (tablesaw; RightsStatements i
 `height:4em`). Selectors written against assumed markup silently match nothing, and a
 vendor `max-width: 100%` beats your `min-width`.
 
+### The AI-sentiment properties are hidden by IwacVisualizations, not by the theme
+
+The `iwac:*Centralite` / `*Polarite` / `*SubjectiviteScore` terms and their
+`*Justification` siblings never reach the public value list: IwacVisualizations listens on
+`rep.resource.display_values` and strips every annotator family it knows about
+(`Module::SENTIMENT_MODEL_STEMS`), across both annotation generations. The theme has no
+part in it — no `excludeProperties` list, no `display:none` rule, no
+`components/sentiment/` partial. All three existed once and all three were dead by the
+time they were removed in 2.9.14; a hardcoded list here can only fall behind the next
+model rename. If a sentiment field shows up on an item page, the fix belongs in the
+module's stem list.
+
 ### Mirador only shows file-backed media — everything else needs its own block
 
 The live sites' resource-page stack uses the Mirador module's block in place of core's

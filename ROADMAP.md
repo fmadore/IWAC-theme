@@ -179,7 +179,7 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
 ## Phase 7 — Build, config & guardrails
 
 - [x] **C1** Align the Omeka version floor everywhere at `^4.2.0` (theme.ini already
-  enforces it; `values.phtml` relies on a 4.2-only `displayValues` option) —
+  enforces it, and its theme-provided `resource_page_block_layouts` are 4.2-only) —
   composer.json, README, CLAUDE.md, `style.scss` header.
 - [x] **C2** composer.json: drop the unresolvable `require: omeka/omeka-s`; align the
   SPDX license id with package.json (`GPL-3.0-or-later`).

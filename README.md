@@ -165,7 +165,7 @@ sass/
 │   ├── hierarchy, iframe-embed, linked-resources, local-contexts
 │   ├── mapping, metadata, mirador, navigation, pagination
 │   ├── resources/      # resource-grid, resource-list, browse-controls
-│   └── search-results, sentiment, uri-dereferencer, user-bar
+│   └── search-results, uri-dereferencer, user-bar
 ├── generic/            # Box-sizing, normalize
 └── utilities/          # Accessibility, alignments, clearfix, print
 ```
