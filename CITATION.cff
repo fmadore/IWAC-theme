@@ -3,8 +3,9 @@
 #
 # GitHub reads this file to render the "Cite this repository" button and to
 # generate APA and BibTeX strings. Keep `version` and `date-released` in step
-# with config/theme.ini and package.json — .github/workflows/release.yml fails
-# the release if the three disagree with the tag.
+# with config/theme.ini, package.json and asset/sass/style.scss —
+# .github/workflows/release.yml fails the release if the four disagree with the
+# tag.
 cff-version: 1.2.0
 message: "If you use this software, please cite it using the metadata below."
 title: "IWAC Theme: an Omeka S theme for the Islam West Africa Collection"
