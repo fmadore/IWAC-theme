@@ -343,19 +343,43 @@
     //   .banner__stats    — the four live breadth counts (lead figures)
     //   .banner__substats — six precomputed corpus-depth figures (smaller, quieter)
     //
-    // Both are CSS grids, not flex-wrap. The lead tier holds a single row of
-    // four at EVERY width — the numerals scale down on narrow screens instead
-    // of wrapping to a ragged 2×2 (which read as loose and unaligned). Each
-    // cell carries its own 2px rule, so the row reads as one continuous ruled
-    // strip. The featured figure (total items) gets the solid-white rule.
+    // Both are CSS grids, not flex-wrap. Each cell carries its own 2px rule, so
+    // a row reads as one continuous ruled strip. The featured figure (total
+    // items) gets the solid-white rule.
+    //
+    // The lead tier holds one row of four from $xs up, and splits 2×2 only at
+    // the layout floor. It used to claim four at EVERY width, on the grounds
+    // that the numerals scale down instead of wrapping to a ragged 2×2 — true
+    // of the numerals, false of the labels, which is what actually sets the
+    // floor. A quarter of a 320px viewport is a 60px cell; REFERENCES sets
+    // 91px there and RÉFÉRENCES the same, so the last label ran past the
+    // container and pushed the document 3-5px wider than the viewport (caught
+    // by the live smoke test's mobile overflow assertion, red 2026-08-17).
+    // Nothing rescues four-across at that width: even at the --text-2xs floor
+    // with the tracking closed the word is 72px, and only a zero gap — which
+    // would fuse the four rules into one line — opens the cell that far.
+    // Breaking the word gives REFERE / NCES (`hyphens: auto` is inert; Chrome
+    // ships no dictionary for either site's lang), which is worse than a second
+    // row. So the strip splits once, at the floor, and every label stays whole.
     &__stats {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        // Span the content column. The list is shrink-to-fit, and four across
+        // only ever filled it because four single-word labels out-measured the
+        // space available; at 2-up their max-content is 197px of a 288px
+        // column, which left the ruled strip stopping short of everything
+        // stacked above it. The rules have to reach the same right edge as the
+        // search box or the ledger reads as broken.
+        width: 100%;
         gap: var(--space-5) var(--space-4);
         margin-block-start: var(--space-8);
         margin-block-end: 0;
         padding: 0;
         list-style: none;
+
+        @media (min-width: $xs) {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
 
         @media (min-width: $md) {
             gap: var(--space-6) var(--space-6);
@@ -380,9 +404,9 @@
         display: block;
         font-family: $font__headings;
         // Scale the lead numerals across the breakpoints so four stay on one
-        // line down to ~320px. text-lg keeps "14 723" inside a quarter-viewport
-        // cell on the smallest phones; the figure grows to the full display
-        // size on desktop.
+        // line down to $xs, where the row splits 2×2. text-lg keeps "14 723"
+        // inside a quarter-viewport cell on small phones; the figure grows to
+        // the full display size on desktop.
         font-size: var(--text-lg);
         font-weight: 800;
         line-height: 1;
@@ -415,6 +439,16 @@
         text-transform: uppercase;
         letter-spacing: var(--tracking-wide);
         color: color-mix(in oklab, var(--white) 92%, transparent);
+
+        // Between $xs and $sm the row is four across in an 80px cell, which
+        // REFERENCES overruns at --text-xs (91px). Close the tracking and drop
+        // to the type floor for that band only — 72px, inside the cell — then
+        // take the full size back once the cell can hold it. The common phone
+        // widths (390, 393, 412, 414, 428) all land in here.
+        @media (min-width: $xs) and (max-width: #{$sm - 1px}) {
+            font-size: var(--text-2xs);
+            letter-spacing: normal;
+        }
     }
 
     // Secondary tier — corpus depth. Smaller numerals, half-weight rules, so it
@@ -474,6 +508,15 @@
         // Small uppercase labels over the composited plate need ≥92% white
         // for AA — the hierarchy vs the lead figures comes from size/weight.
         color: color-mix(in oklab, var(--white) 92%, transparent);
+
+        // Same trade as __stat-label, one tier down: six across from $md is a
+        // ~97px cell at 768, and the French AUDIOVISUELLES sets 117px there —
+        // 20px past its own rule, on the most common tablet width. English
+        // clears it, so this only ever showed on one site.
+        @media (min-width: $md) and (max-width: #{$lg - 1px}) {
+            font-size: var(--text-2xs);
+            letter-spacing: normal;
+        }
     }
 }
 
