@@ -46,13 +46,17 @@ msgstr ""
 msgid "An error occurred while processing your request. Please try again later."
 msgstr ""
 
+#: view/common/banner.phtml:28
+msgid "An open-access collection of newspapers, Islamic publications, archives, and audiovisual sources on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo."
+msgstr ""
+
 #: view/common/resource-page-block-layout/web-archive.phtml:76
 msgid "Archived web page"
 msgid_plural "Archived web pages"
 msgstr[0] ""
 msgstr[1] ""
 
-#: view/common/banner.phtml:143
+#: view/common/banner.phtml:187
 msgid "Audiovisual minutes"
 msgstr ""
 
@@ -88,7 +92,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: view/common/banner.phtml:172
+#: view/common/banner.phtml:216
 msgid "Collection at a glance"
 msgstr ""
 
@@ -104,11 +108,11 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: view/common/banner.phtml:183
+#: view/common/banner.phtml:232
 msgid "Corpus in depth"
 msgstr ""
 
-#: view/common/banner.phtml:130
+#: view/common/banner.phtml:174
 msgid "Countries"
 msgstr ""
 
@@ -128,7 +132,7 @@ msgstr ""
 msgid "Default"
 msgstr ""
 
-#: view/common/banner.phtml:142
+#: view/common/banner.phtml:186
 msgid "Document types"
 msgstr ""
 
@@ -184,7 +188,7 @@ msgstr ""
 msgid "How to install this app"
 msgstr ""
 
-#: view/common/banner.phtml:128
+#: view/common/banner.phtml:172
 msgid "Index"
 msgstr ""
 
@@ -208,11 +212,11 @@ msgstr ""
 msgid "Item: %s"
 msgstr ""
 
-#: view/common/banner.phtml:127 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
+#: view/common/banner.phtml:171 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
 msgid "Items"
 msgstr ""
 
-#: view/common/banner.phtml:144
+#: view/common/banner.phtml:188
 msgid "Languages"
 msgstr ""
 
@@ -320,7 +324,7 @@ msgstr ""
 msgid "Query"
 msgstr ""
 
-#: view/common/banner.phtml:129
+#: view/common/banner.phtml:173
 msgid "References"
 msgstr ""
 
@@ -412,11 +416,11 @@ msgstr ""
 msgid "Toggle submenu"
 msgstr ""
 
-#: view/common/banner.phtml:140
+#: view/common/banner.phtml:184
 msgid "Total pages"
 msgstr ""
 
-#: view/common/banner.phtml:139
+#: view/common/banner.phtml:183
 msgid "Total words"
 msgstr ""
 
@@ -424,7 +428,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: view/common/banner.phtml:141
+#: view/common/banner.phtml:185
 msgid "Unique sources"
 msgstr ""
 

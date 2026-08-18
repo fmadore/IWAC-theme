@@ -44,13 +44,17 @@ msgstr "Tout"
 msgid "An error occurred while processing your request. Please try again later."
 msgstr "Une erreur s’est produite lors du traitement de votre demande. Veuillez réessayer plus tard."
 
+#: view/common/banner.phtml:28
+msgid "An open-access collection of newspapers, Islamic publications, archives, and audiovisual sources on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo."
+msgstr "Une collection en libre accès de journaux, de publications islamiques, d’archives et de sources audiovisuelles sur l’islam et les musulmans au Bénin, au Burkina Faso, en Côte d’Ivoire, au Niger, au Nigéria et au Togo."
+
 #: view/common/resource-page-block-layout/web-archive.phtml:76
 msgid "Archived web page"
 msgid_plural "Archived web pages"
 msgstr[0] "Page web archivée"
 msgstr[1] "Pages web archivées"
 
-#: view/common/banner.phtml:143
+#: view/common/banner.phtml:187
 msgid "Audiovisual minutes"
 msgstr "Minutes audiovisuelles"
 
@@ -86,7 +90,7 @@ msgstr "Style de citation"
 msgid "Close"
 msgstr ""
 
-#: view/common/banner.phtml:172
+#: view/common/banner.phtml:216
 msgid "Collection at a glance"
 msgstr "La collection en un coup d’œil"
 
@@ -102,11 +106,11 @@ msgstr "Copié"
 msgid "Copy"
 msgstr "Copier"
 
-#: view/common/banner.phtml:183
+#: view/common/banner.phtml:232
 msgid "Corpus in depth"
 msgstr "Le corpus en détail"
 
-#: view/common/banner.phtml:130
+#: view/common/banner.phtml:174
 msgid "Countries"
 msgstr "Pays"
 
@@ -126,7 +130,7 @@ msgstr ""
 msgid "Default"
 msgstr "Par défaut"
 
-#: view/common/banner.phtml:142
+#: view/common/banner.phtml:186
 msgid "Document types"
 msgstr "Types de documents"
 
@@ -182,7 +186,7 @@ msgstr "Comment citer ce document"
 msgid "How to install this app"
 msgstr "Comment installer cette application"
 
-#: view/common/banner.phtml:128
+#: view/common/banner.phtml:172
 msgid "Index"
 msgstr "Index"
 
@@ -206,11 +210,11 @@ msgstr ""
 msgid "Item: %s"
 msgstr "Document : %s"
 
-#: view/common/banner.phtml:127 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
+#: view/common/banner.phtml:171 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
 msgid "Items"
 msgstr ""
 
-#: view/common/banner.phtml:144
+#: view/common/banner.phtml:188
 msgid "Languages"
 msgstr "Langues"
 
@@ -318,7 +322,7 @@ msgstr ""
 msgid "Query"
 msgstr ""
 
-#: view/common/banner.phtml:129
+#: view/common/banner.phtml:173
 msgid "References"
 msgstr "Références"
 
@@ -410,11 +414,11 @@ msgstr "Titre (Z-A)"
 msgid "Toggle submenu"
 msgstr "Afficher ou masquer le sous-menu"
 
-#: view/common/banner.phtml:140
+#: view/common/banner.phtml:184
 msgid "Total pages"
 msgstr "Pages totales"
 
-#: view/common/banner.phtml:139
+#: view/common/banner.phtml:183
 msgid "Total words"
 msgstr "Mots totaux"
 
@@ -422,7 +426,7 @@ msgstr "Mots totaux"
 msgid "Type"
 msgstr ""
 
-#: view/common/banner.phtml:141
+#: view/common/banner.phtml:185
 msgid "Unique sources"
 msgstr "Sources uniques"
 

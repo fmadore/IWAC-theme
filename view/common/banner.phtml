@@ -18,6 +18,15 @@ if (!in_array($bannerHorizontalPosition, ['left', 'center', 'right'], true)) {
 $bannerEyebrow = $this->themeSetting('banner_eyebrow');
 $bannerHeading = $this->themeSetting('banner_heading');
 $bannerDescription = $this->themeSetting('banner_description');
+// The banner_description setting is empty on both live sites, so the hero
+// proved the collection's scale without ever saying what the collection is —
+// the only one-sentence statement of scope sat in the footer. Fall back to it
+// here; an admin value still wins. Only the full hero renders the paragraph
+// (see the !$compact guard below), but the value is set before the
+// $bannerHeightProperty and .has-text decisions so both count the dek as text.
+if (!$bannerDescription) {
+    $bannerDescription = $translate('An open-access collection of newspapers, Islamic publications, archives, and audiovisual sources on Islam and Muslims in Benin, Burkina Faso, Côte d\'Ivoire, Niger, Nigeria, and Togo.');
+}
 $bannerContentPosition = $this->themeSetting('banner_content_position') ?? 'left';
 if (!in_array($bannerContentPosition, ['left', 'center', 'right'], true)) {
     $bannerContentPosition = 'left';
@@ -121,12 +130,47 @@ if ($compact) {
     // only maps the resulting values to translated presentation labels.
     $bannerStats = $this->BannerStats();
     $counts = $bannerStats['counts'];
+
+    // A painted figure that refuses to be a door is a dead end (P1). Three of
+    // the four lead counts have a destination page — but the slugs differ per
+    // site (the French site browses at /parcourir), so resolve them by slug
+    // lookup against THIS site's pages rather than composing a path. A site
+    // without the page — any non-IWAC install of the theme — keeps the plain
+    // figure. Countries has no page at all and stays a figure everywhere.
+    $statPageUrls = [];
+    try {
+        $currentSite = $this->currentSite();
+        if ($currentSite) {
+            $pagesBySlug = [];
+            foreach ($currentSite->pages() as $sitePage) {
+                $pagesBySlug[$sitePage->slug()] = $sitePage;
+            }
+            $statPageSlugs = [
+                'items' => ['browse', 'parcourir'],
+                'index' => ['index'],
+                'references' => ['references'],
+            ];
+            foreach ($statPageSlugs as $statKey => $slugs) {
+                foreach ($slugs as $slug) {
+                    if (isset($pagesBySlug[$slug])) {
+                        $statPageUrls[$statKey] = $pagesBySlug[$slug]->siteUrl();
+                        break;
+                    }
+                }
+            }
+        }
+    } catch (\Throwable $error) {
+        // The hero must render whatever the page API does. Unlinked figures
+        // are the degraded state, not a broken homepage.
+        $statPageUrls = [];
+    }
+
     $stats = null;
     if ($counts) {
         $stats = [
-            ['n' => $counts['items'], 'label' => $translate('Items'), 'featured' => true],
-            ['n' => $counts['index'], 'label' => $translate('Index')],
-            ['n' => $counts['references'], 'label' => $translate('References')],
+            ['n' => $counts['items'], 'label' => $translate('Items'), 'featured' => true, 'url' => $statPageUrls['items'] ?? null],
+            ['n' => $counts['index'], 'label' => $translate('Index'), 'url' => $statPageUrls['index'] ?? null],
+            ['n' => $counts['references'], 'label' => $translate('References'), 'url' => $statPageUrls['references'] ?? null],
             ['n' => $counts['countries'], 'label' => $translate('Countries')],
         ];
     }
@@ -172,8 +216,13 @@ if ($compact) {
         <ul class="banner__stats" aria-label="<?php echo $escAttr($translate('Collection at a glance')); ?>">
             <?php foreach ($stats as $stat): ?>
                 <li class="banner__stat<?php echo !empty($stat['featured']) ? ' banner__stat--featured' : ''; ?>">
+                    <?php // The visible figure + label IS the link's accessible name; a
+                          // per-link aria-label would only repeat it less precisely, and
+                          // the list already carries the group label. ?>
+                    <?php if (!empty($stat['url'])): ?><a class="banner__stat-link" href="<?php echo $escAttr($stat['url']); ?>"><?php endif; ?>
                     <span class="banner__stat-figure"><?php echo $escHtml(number_format((int) $stat['n'], 0, '.', $thin)); ?></span>
                     <span class="banner__stat-label"><?php echo $escHtml($stat['label']); ?></span>
+                    <?php if (!empty($stat['url'])): ?></a><?php endif; ?>
                 </li>
             <?php endforeach; ?>
         </ul>

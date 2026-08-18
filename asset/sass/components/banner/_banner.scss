@@ -400,6 +400,42 @@
         }
     }
 
+    // Three of the four lead figures are doors (Items / Index / References);
+    // Countries has no page and stays a bare figure. The link takes the whole
+    // cell, so the hit area is the figure the eye already reads as one unit —
+    // and at rest it is indistinguishable from the unlinked cell beside it.
+    // The generic link treatment (ink text, primary underline, primary on
+    // hover) is wrong over the duotone plate, where the cell's white type IS
+    // the figure, so hold the colour through every state and let the label
+    // carry the affordance. No lift, no fill, no new animation: an almanac
+    // figure is not a card.
+    &__stat-link {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+
+        &:visited,
+        &:hover,
+        &:focus-visible {
+            color: inherit;
+        }
+
+        &:hover .banner__stat-label {
+            text-decoration: underline;
+            text-underline-offset: 0.25em;
+        }
+
+        // White, not the primary --focus-outline used everywhere else: this
+        // strip sits ON the duotone primary plate, where a primary ring is
+        // effectively invisible against its own ground (a known audit
+        // finding). White clears AA here (≈4.8:1) and echoes the 2px rules
+        // above the figures.
+        &:focus-visible {
+            outline: 2px solid var(--white);
+            outline-offset: 2px;
+        }
+    }
+
     &__stat-figure {
         display: block;
         font-family: $font__headings;
