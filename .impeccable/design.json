@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-18T00:00:00Z",
+  "title": "Design System: IWAC Theme",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "IWAC Burnt Orange", "canonical": "color-mix(in oklab, var(--primary-base) 92%, black)", "dark": "#ec653f", "tonalRamp": ["#3c0000", "#630000", "#8a0000", "#b22300", "#db4d24", "#ff734c", "#ff9971", "#ffbe94"] },
+      "secondary": { "role": "secondary", "displayName": "Slate (data-only)", "canonical": "#394f68", "dark": "#708093", "tonalRamp": ["#000b1f", "#12263d", "#2e445c", "#4d647e", "#6e86a1", "#90a9c5", "#b4cdeb", "#d7f1ff"] },
+      "ink-strong": { "role": "neutral", "displayName": "Ink Strong", "canonical": "#05070c", "dark": "#f7f5f1", "tonalRamp": ["#080b11", "#22252c", "#3f4249", "#5e6269", "#7f838b", "#a2a6ae", "#c6cbd3", "#eaeff7"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#13161c", "dark": "#e7e4df", "tonalRamp": ["#080b11", "#22252c", "#3f4249", "#5e6269", "#7f838b", "#a2a6af", "#c6cbd3", "#eaeff7"] },
+      "ink-light": { "role": "neutral", "displayName": "Ink Light", "canonical": "#3f4349", "dark": "#b5b0aa", "tonalRamp": ["#080b10", "#22252b", "#3f4349", "#5e6269", "#7f838a", "#a2a6ae", "#c6cbd2", "#eaeff6"] },
+      "muted": { "role": "neutral", "displayName": "Muted", "canonical": "#66696e", "dark": "#8a8580", "tonalRamp": ["#090b0f", "#23252a", "#404247", "#5f6267", "#808388", "#a3a6ac", "#c7cbd0", "#ebeff4"] },
+      "surface": { "role": "neutral", "displayName": "Paper White", "canonical": "#fdfcfb", "dark": "#110c08", "tonalRamp": ["#0c0b0a", "#262524", "#434241", "#626261", "#848382", "#a7a6a5", "#cbcac9", "#efeeed"] },
+      "surface-raised": { "role": "neutral", "displayName": "Raised Paper", "canonical": "#faf8f6", "dark": "#1a1510", "tonalRamp": ["#0c0b0a", "#262523", "#444240", "#636160", "#848381", "#a8a6a4", "#cccac8", "#f0eeec"] },
+      "surface-sunken": { "role": "neutral", "displayName": "Sunken Paper", "canonical": "#f4f1ef", "dark": "#0b0704", "tonalRamp": ["#0d0b09", "#272523", "#444240", "#64615f", "#858281", "#a8a5a4", "#cdcac8", "#f1eeec"] },
+      "background": { "role": "neutral", "displayName": "Page Ground", "canonical": "#f7f5f3", "dark": "#080503", "tonalRamp": ["#0c0b0a", "#262523", "#444240", "#636160", "#848381", "#a8a6a4", "#cccac8", "#f0eeec"] },
+      "border-light": { "role": "neutral", "displayName": "Hairline", "canonical": "#e2e5e8", "dark": "#26211a", "tonalRamp": ["#090b0d", "#232528", "#404345", "#606265", "#818386", "#a4a6a9", "#c8cbce", "#eceff2"] },
+      "border": { "role": "neutral", "displayName": "Border", "canonical": "#ced1d6", "dark": "#352f28", "tonalRamp": ["#090b0e", "#232529", "#404247", "#5f6266", "#818388", "#a3a6ab", "#c8cbd0", "#eceff4"] },
+      "border-strong": { "role": "neutral", "displayName": "Border Strong", "canonical": "#aeb1b7", "dark": "#534c44", "tonalRamp": ["#090b0f", "#23252a", "#404247", "#5f6267", "#808389", "#a3a6ac", "#c7cbd1", "#ebeef5"] },
+      "success": { "role": "status", "displayName": "Success Green", "canonical": "#2e9052", "dark": "#56bd78", "tonalRamp": ["#001600", "#003400", "#005419", "#00763a", "#39995a", "#5fbd7c", "#85e3a0", "#a9ffc3"] },
+      "warning": { "role": "status", "displayName": "Warning Amber", "canonical": "#de7000", "dark": "#f99532", "tonalRamp": ["#340000", "#5a0000", "#7f1200", "#a53c00", "#cc6000", "#f4842b", "#ffa956", "#ffcd7c"] },
+      "error": { "role": "status", "displayName": "Error Red", "canonical": "#c9222b", "dark": "#ff645f", "tonalRamp": ["#3f0000", "#680000", "#900000", "#b9021c", "#e23f40", "#ff6763", "#ff8e86", "#ffb3a8"] },
+      "info": { "role": "status", "displayName": "Info Blue", "canonical": "#037ac0", "dark": "#4dacf6", "tonalRamp": ["#000041", "#002363", "#004486", "#0066ab", "#2389d1", "#4faef7", "#75d3ff", "#9af8ff"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display (Besley 800)", "purpose": "Masthead wordmark and homepage hero only." },
+      "headline": { "displayName": "Headline (Besley 600)", "purpose": "Page titles, opened by a 2px ink rule." },
+      "title": { "displayName": "Title (Besley 600)", "purpose": "Section heads and ledger-row item titles." },
+      "body": { "displayName": "Body (Public Sans)", "purpose": "UI prose, labels, navigation." },
+      "body-serif": { "displayName": "Long-form (Source Serif 4)", "purpose": "Article full text and ledes at 44-52.5rem measures, line-height 1.7." },
+      "label": { "displayName": "Label (Public Sans caps)", "purpose": "Datelines, metadata labels, chips, nav strip; 11px (--text-2xs) is the absolute floor." }
+    },
+    "shadows": [
+      { "name": "shadow-xs", "value": "0 1px 2px 0 rgba(20, 22, 27, 0.06)", "purpose": "Minimal ambient depth." },
+      { "name": "shadow-sm", "value": "0 1px 3px 0 rgba(9, 11, 15, 0.12), 0 1px 2px -1px rgba(20, 22, 27, 0.06)", "purpose": "Default panel shadow (= --panel-shadow)." },
+      { "name": "shadow-md", "value": "0 4px 6px -1px rgba(9, 11, 15, 0.12), 0 2px 4px -2px rgba(20, 22, 27, 0.06)", "purpose": "Dropdowns and floating panels." },
+      { "name": "shadow-lg", "value": "0 10px 15px -3px rgba(9, 11, 15, 0.12), 0 4px 6px -4px rgba(20, 22, 27, 0.06)", "purpose": "Modals; rare." },
+      { "name": "glow-sm", "value": "0 2px 6px -1px rgba(206, 65, 21, 0.25)", "purpose": "Filled-primary button at rest." },
+      { "name": "glow-md", "value": "0 4px 12px -2px rgba(206, 65, 21, 0.3)", "purpose": "Filled-primary button on hover." },
+      { "name": "ring-focus", "value": "0 0 0 3px rgba(206, 65, 21, 0.3)", "purpose": "Input focus ring (paired with primary border)." }
+    ],
+    "motion": [
+      { "name": "transition-fast", "value": "150ms cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Color/border state changes." },
+      { "name": "transition-base", "value": "200ms cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Default transitions." },
+      { "name": "transition-slow", "value": "300ms cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Larger reveals; ceiling. No bounce, no elastic." },
+      { "name": "ease-out-quart", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "The single easing curve." }
+    ],
+    "breakpoints": [
+      { "name": "xs", "value": "400px" },
+      { "name": "sm", "value": "600px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1200px" },
+      { "name": "xxl", "value": "1460px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "The default control: outlined, flat, ink-on-transparent. Loudness opts in elsewhere.",
+      "html": "<button class=\"ds-btn\">Browse the collection</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-sm, 0.5rem) var(--space-lg, 1.5rem); font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); font-weight: 500; color: var(--ink, #13161c); background: transparent; border: 1px solid var(--border, #ced1d6); border-radius: var(--radius-md, 0.5rem); box-shadow: none; cursor: pointer; transition: background-color 150ms cubic-bezier(0.25,1,0.5,1), border-color 150ms cubic-bezier(0.25,1,0.5,1), color 150ms cubic-bezier(0.25,1,0.5,1); } .ds-btn:hover { background: var(--surface-sunken, #f4f1ef); border-color: var(--border-strong, #aeb1b7); color: var(--ink-strong, #05070c); } .ds-btn:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 2px; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The opt-in loud action (.btn--primary or a submit control): brand fill, glow halo, hover lift.",
+      "html": "<button class=\"ds-btn-primary\" type=\"submit\">Search</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-sm, 0.5rem) var(--space-lg, 1.5rem); font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); font-weight: 500; color: var(--white, #ffffff); background: var(--primary, #ce4115); border: 1px solid transparent; border-radius: var(--radius-md, 0.5rem); box-shadow: var(--glow-sm, 0 2px 6px -1px rgba(206,65,21,0.25)); cursor: pointer; transition: background-color 150ms cubic-bezier(0.25,1,0.5,1), box-shadow 150ms cubic-bezier(0.25,1,0.5,1), transform 150ms cubic-bezier(0.25,1,0.5,1); } .ds-btn-primary:hover { background: var(--primary-hover, #b03710); transform: translateY(-0.0625rem); box-shadow: var(--glow-md, 0 4px 12px -2px rgba(206,65,21,0.3)); } .ds-btn-primary:active { background: var(--primary-active, #942c0c); transform: translateY(0); box-shadow: var(--glow-xs, 0 1px 3px 0 rgba(206,65,21,0.2)); } .ds-btn-primary:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 2px; }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Full-width field on paper white; focus swaps the border to primary and adds the 3px ring, no transform.",
+      "html": "<input class=\"ds-input\" type=\"search\" placeholder=\"Search the collection…\">",
+      "css": ".ds-input { display: block; width: 100%; padding: var(--space-sm, 0.5rem) var(--space-md, 1rem); font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-base, 1.0625rem); color: var(--ink, #13161c); background: var(--panel-bg, #fdfcfb); border: 1px solid var(--border, #ced1d6); border-radius: var(--panel-radius, 0.5rem); line-height: 1.4; transition: border-color 150ms cubic-bezier(0.25,1,0.5,1), box-shadow 150ms cubic-bezier(0.25,1,0.5,1); } .ds-input:focus-visible { outline: none; border-color: var(--primary, #ce4115); box-shadow: var(--ring-focus, 0 0 0 3px rgba(206,65,21,0.3)); } .ds-input::placeholder { color: var(--muted, #66696e); }"
+    },
+    {
+      "name": "Type Chip",
+      "kind": "chip",
+      "refersTo": "chip-tag",
+      "description": "Outlined uppercase pill with a categorical dot — category is a dot, never a fill.",
+      "html": "<span class=\"ds-chip\"><span class=\"ds-chip-dot\"></span>Article</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 0.375rem; background: transparent; border: 1px solid var(--border-strong, #aeb1b7); border-radius: var(--radius-full, 9999px); color: var(--ink-light, #3f4349); font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-xs, 0.8125rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wide, 0.04em); padding: 2px var(--space-3, 0.75rem); transition: color 150ms cubic-bezier(0.25,1,0.5,1), border-color 150ms cubic-bezier(0.25,1,0.5,1); } .ds-chip:hover { color: var(--ink-strong, #05070c); border-color: var(--ink-strong, #05070c); } .ds-chip-dot { width: 0.5em; height: 0.5em; border-radius: 50%; background: var(--type-article, #ce4115); flex-shrink: 0; }"
+    },
+    {
+      "name": "Dateline",
+      "kind": "custom",
+      "refersTo": "label",
+      "description": "The recurring identity device: TYPE · PUBLISHER · DATE in tracked uppercase with primary interpuncts.",
+      "html": "<p class=\"ds-dateline\">Article<span class=\"ds-dateline-sep\">·</span>Fraternité Matin<span class=\"ds-dateline-sep\">·</span>12 March 1974</p>",
+      "css": ".ds-dateline { display: inline-flex; align-items: baseline; gap: 0.5em; margin: 0; font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-2xs, 0.6875rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wider, 0.08em); color: var(--muted, #66696e); } .ds-dateline-sep { color: var(--primary, #ce4115); font-weight: 700; }"
+    },
+    {
+      "name": "Ledger Row",
+      "kind": "custom",
+      "refersTo": "title",
+      "description": "The result-list unit: hairline-ruled row with dateline eyebrow, Besley title, snippet. No box, no shadow, no lift.",
+      "html": "<article class=\"ds-ledger-row\"><p class=\"ds-ledger-eyebrow\">Article<span class=\"ds-ledger-sep\">·</span>La Croix du Bénin<span class=\"ds-ledger-sep\">·</span>4 June 1993</p><h3 class=\"ds-ledger-title\">Le pèlerinage à La Mecque des musulmans béninois</h3><p class=\"ds-ledger-snippet\">Les préparatifs du hajj mobilisent cette année plus de trois cents fidèles, encadrés par la communauté…</p></article>",
+      "css": ".ds-ledger-row { padding: 1rem 0; border-bottom: 1px solid var(--border-light, #e2e5e8); background: transparent; } .ds-ledger-eyebrow { margin: 0 0 0.375rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-2xs, 0.6875rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wider, 0.08em); color: var(--muted, #66696e); } .ds-ledger-sep { color: var(--primary, #ce4115); padding: 0 0.4em; } .ds-ledger-title { margin: 0 0 0.25rem; font-family: Besley, 'Source Serif 4', Georgia, serif; font-size: var(--text-xl, 1.5rem); font-weight: 600; letter-spacing: var(--tracking-display, -0.01em); color: var(--ink, #13161c); } .ds-ledger-snippet { margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: var(--text-sm, 0.9375rem); line-height: 1.5; color: var(--ink-light, #3f4349); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }"
+    },
+    {
+      "name": "Almanac Figure",
+      "kind": "custom",
+      "refersTo": "display",
+      "description": "KPI as an almanac entry: 2px ink rule, uppercase eyebrow, Besley numeral with lining figures. No card, no gradient.",
+      "html": "<div class=\"ds-almanac\"><p class=\"ds-almanac-label\">Items in the collection</p><p class=\"ds-almanac-figure\">14,208</p></div>",
+      "css": ".ds-almanac { border-top: 2px solid var(--ink-strong, #05070c); padding-top: 0.625rem; background: transparent; } .ds-almanac-label { margin: 0 0 0.25rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-2xs, 0.6875rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wider, 0.08em); color: var(--muted, #66696e); } .ds-almanac-figure { margin: 0; font-family: Besley, 'Source Serif 4', Georgia, serif; font-size: var(--text-2xl, 1.875rem); font-weight: 600; letter-spacing: var(--tracking-display, -0.01em); font-feature-settings: 'lnum'; color: var(--ink, #13161c); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Research Broadsheet",
+    "overview": "A 20th-century broadsheet operated as a scientific instrument. The site is a scholarly database — LLM sentiment models, LDA topics, embeddings, IIIF — that carries the visual grammar of the newspapers it preserves: masthead wordmark, uppercase section strip, thick 2px ink rules, datelines, ledger-style result rows, a duotone press-collage hero. The execution is a modern broadsheet's digital archive run by a university press: newspaper typographic conventions with Linear/Stripe-grade product polish. Density is a feature, not a compromise, and restraint is the resting state — the quiet control is the default and loudness opts in.",
+    "keyCharacteristics": [
+      "Newspaper grammar (rules, datelines, ledgers) executed with product-grade polish",
+      "Density over comfort; typography as architecture, rules as joinery",
+      "Near-white cool-neutral light mode; warm \"lamplit reading room\" dark mode",
+      "One brand accent used sparingly; category encoded as dots, never fills",
+      "AI-generated content visibly marked (computational honesty)"
+    ],
+    "rules": [
+      { "name": "The One Plate Rule", "body": "The duotone hero — a grayscale collage multiplied over a primary ground — is the one big color statement on the site. Everything else earns primary only as an accent.", "section": "colors" },
+      { "name": "The Dot-Not-Fill Rule", "body": "Category is a dot on an outlined chip, never a filled or pastel badge. Ten filled badges per screen is shouting; ten dots is an index.", "section": "colors" },
+      { "name": "The Data-Only Secondary Rule", "body": "#394f68 exists for charts. If it appears on a button, link, or focus ring, it is a bug.", "section": "colors" },
+      { "name": "The Slab Tracking Rule", "body": "Besley display sizes track at -0.01em, never the full -0.02em — slab serifs clog at tight tracking.", "section": "typography" },
+      { "name": "The Lining Zero Rule", "body": "Besley's tnum zero is broken (frozen at 55 units across weights); use font-feature-settings 'lnum' for aligned numerals, never tabular-nums with the display serif.", "section": "typography" },
+      { "name": "The No-14px Rule", "body": "The type scale deliberately skips 14px; 11px (--text-2xs) is the floor. Absolute font-size literals fail npm run check:tokens — use --text-* tokens.", "section": "typography" },
+      { "name": "The Glass Once Rule", "body": "Backdrop-filter belongs to the sticky header and nowhere else.", "section": "elevation" },
+      { "name": "The Rules-Not-Boxes Rule", "body": "Before adding a shadowed card, try a 2px ink rule or a hairline. Boxes are a last resort for true panels.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do open sections with 2px ink rules and divide rows with hairlines — typography is the architecture, rules are the joinery.",
+      "Do keep transitions 150–300ms on cubic-bezier(0.25, 1, 0.5, 1); real objects decelerate smoothly.",
+      "Do mark AI-generated fields with the EU \"AI GENERATED\" provenance treatment.",
+      "Do mix colors in oklab, derive primary variants from the seed, and run npm run check:tokens before trusting any token name.",
+      "Do test any new font against ḥ ṣ ḍ ṭ ẓ ʿ ā ī ū before adopting it.",
+      "Do give every interactive element a visible focus state and respect prefers-reduced-motion."
+    ],
+    "donts": [
+      "Don't use warm cream or parchment surfaces — wrong register (\"manuscript museum brochure\").",
+      "Don't add atmospheric gradients, gradient bars, glassmorphism (outside the sticky header), or colored side-stripes.",
+      "Don't fill category badges or color h2s in primary — category is a dot, primary is an accent.",
+      "Don't use cold blue-gray dark surfaces — dark mode is warm (\"lamplit\"), hue ~70–80.",
+      "Don't box result rows into cards or stack decorative effects on one component.",
+      "Don't use bouncing/elastic easing or hover-triggered hero animations (the one-time Ken Burns settle is the sanctioned exception).",
+      "Don't pair Besley with tabular-nums (broken tnum zero) or track it tighter than -0.01em."
+    ]
+  }
+}

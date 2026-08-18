@@ -12,6 +12,12 @@ Live: [EN](https://islam.zmo.de/s/westafrica/) · [FR](https://islam.zmo.de/s/af
 The register is specific — "press archive", not museum, not dashboard — and easy to
 violate by accident.
 
+The Impeccable design skill reads its own artifact layer: `PRODUCT.md` (product truth),
+root `DESIGN.md` + `.impeccable/design.json` (machine-readable design system, North Star
+"The Research Broadsheet"). `DESIGN.md`'s frontmatter mirrors `tokens.json` **light**
+values — `tokens.json` stays normative; when tokens change, refresh `DESIGN.md` via
+`/impeccable document` rather than letting the two drift.
+
 ## Build
 
 ```bash

@@ -4,7 +4,9 @@ The visual stance for IWAC-theme. Read this before any change that affects how t
 site *looks* — the register is specific and easy to violate by accident.
 
 For the token contract shared with IwacSearch and IwacVisualizations, see
-[DESIGN-SYSTEM.md](DESIGN-SYSTEM.md).
+[DESIGN-SYSTEM.md](DESIGN-SYSTEM.md). The machine-readable companion for design
+tooling (Impeccable skill) is the root [DESIGN.md](../DESIGN.md) with its
+`.impeccable/design.json` sidecar — derived from this file plus `tokens.json`.
 
 ---
 
