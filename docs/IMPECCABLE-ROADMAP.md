@@ -55,6 +55,16 @@ approximation (real verification lands with the release); admin-configured block
 can't be changed from the rig; and evaluation traffic hits the production server, so
 keep screenshot batches reasonable.
 
+Viewport limits learned in the first Phase-1 run (2026-08-18): headless Chrome clamps
+the window to ~500px wide, so sub-500 `shot.ps1` captures are ~482px layouts **cropped**
+to the requested width — they fabricate off-canvas "bugs" that do not exist at real
+phone widths. Any narrow-viewport claim must be reproduced with Playwright emulation
+(`@playwright/test` is a devDependency; `viewport: {width: 375}` + `isMobile` against
+the proxy gives true layouts, screenshots, and `evaluate`). Also: `__scroll > 0`
+headless captures can render blank (use a tall `-Height` window instead), and the
+in-app browser pane reports a 0×0 hidden viewport, making in-page layout metrics from
+it meaningless.
+
 **Every visual claim in an Impeccable pass must be grounded in this rig — both themes
 (light + dark), and at minimum the 1440px and 375px viewports.**
 
