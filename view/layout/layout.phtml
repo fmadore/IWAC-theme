@@ -182,7 +182,14 @@ if ($userBar) {
 		<?php if ($pwaEnabled): ?>
 		<?php // PWA: icons, status-bar theming, and the manifest data island.
 		      // js/pwa-install.js (loaded at body end) turns the island into a
-		      // same-origin blob: manifest and wires the masthead install button. ?>
+		      // same-origin blob: manifest and wires the masthead install button.
+		      //
+		      // The two theme-color values are --surface, one per scheme. A
+		      // <meta> can't read a custom property, so these are copies — but
+		      // they are ASSERTED copies: scripts/check-token-usage.js (the
+		      // `npm run check:tokens` gate) parses them out of this file and
+		      // fails on any disagreement with tokens.json. Change --surface and
+		      // the gate tells you to change these too. ?>
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fdfcfb">
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#110c08">
 		<meta name="mobile-web-app-capable" content="yes">

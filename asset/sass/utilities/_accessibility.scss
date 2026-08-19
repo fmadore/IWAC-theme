@@ -9,9 +9,10 @@
     position: absolute;
     inset-block-start: -100%;
     inset-inline-start: var(--space-md);
-    // --primary-active (28% darkened) keeps white text comfortably past AA
-    // even when an admin seeds a lighter primary; raw --primary sits at
-    // ~4.5:1 with the default seed and dips below it with lighter ones.
+    // Light theme (dark theme overridden at the foot of this file): in light,
+    // --primary-active (28% darkened) keeps white text comfortably past AA —
+    // 8.00:1 with the default seed — even when an admin seeds a lighter
+    // primary; raw --primary sits at 4.78:1 and dips below AA with lighter ones.
     background: var(--primary-active);
     color: var(--white);
     padding: var(--space-sm) var(--space-md);
@@ -24,6 +25,37 @@
     &:focus {
         inset-block-start: var(--space-md);
     }
+}
+
+// Dark theme: the plate inverts its ink instead of its colour.
+//
+// The pair above is a light-theme calculation. Dark mode LIGHTENS the brand
+// ramp — `--primary-active` is seed + black 4% there, not seed + black 28% —
+// so the same white-on-active pair lands at 4.31:1 and misses AA (1.4.3) in
+// dark only. Rather than reach for a neutral slab and lose the accent, take
+// the treatment the palette already names for a bright plate: `--ink-on-pastel`
+// ("dark text over tinted chips") on resting `--primary`, which measures
+// 6.10:1 (#0f0a05 on #ec653f) — more headroom than ink-on-active's 4.57:1, and
+// it IMPROVES under a lighter admin seed, since dark `--primary` is seed +
+// white 12%. Geometry, elevation and the no-glow register are untouched; only
+// the two colours swap.
+@mixin iwac-skipnav-dark {
+    #skipnav {
+        background: var(--primary);
+        color: var(--ink-on-pastel);
+    }
+}
+
+// data-theme lives on <body> (set pre-paint by the layout head script), so the
+// :not() guard must sit on body too — mirrors _banner.scss.
+@media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+        @include iwac-skipnav-dark;
+    }
+}
+
+body[data-theme="dark"] {
+    @include iwac-skipnav-dark;
 }
 
 // Screen reader only - hidden but accessible

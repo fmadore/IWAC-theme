@@ -38,6 +38,11 @@
 	document.addEventListener("DOMContentLoaded", function() {
 		let collection, menu;
 
+		// Runs before the early returns below (so it still lands on pages with
+		// no hamburger) and before the drawer clone is taken (so the clone
+		// inherits the attribute for free).
+		markCurrentNavItems();
+
 		// collect the menus for mobile
 		collection = document.querySelectorAll( '.main-navigation' );
 
@@ -228,6 +233,39 @@
 			closeMenuDrawer();
 		} );
 	} );
+
+	// Progressive enhancement: announce the active section.
+	//
+	// Both nav regions are rendered by Laminas renderMenu with
+	// addClassToListItem, which marks the active branch with `li.active` and
+	// offers no hook for emitting aria-current — so "you are here" was carried
+	// by the 2px primary tab in CSS and by nothing a screen reader can reach.
+	//
+	// Laminas marks EVERY li in the active branch, ancestors included, and only
+	// one of them is the page you are on. So compare paths and reserve
+	// aria-current="page" for that link; an ancestor section takes the weaker
+	// aria-current="true" ("current item in a set") instead of claiming to be
+	// the page. A path that cannot match — the site root rendering a page whose
+	// nav href is /page/home, say — degrades to "true", not to silence.
+	function normaliseNavPath(path) {
+		return path.length > 1 ? path.replace(/\/+$/, '') : path;
+	}
+
+	function markCurrentNavItems() {
+		const here = normaliseNavPath(window.location.pathname);
+		document.querySelectorAll('.main-navigation li.active, .section-tabs li.active').forEach(item => {
+			const link = item.querySelector(':scope > a[href]');
+			if (!link) return;
+			let path = null;
+			try {
+				path = normaliseNavPath(new URL(link.href, window.location.href).pathname);
+			} catch (e) {
+				// A malformed href is the renderer's problem, not a reason to
+				// leave the item unannounced.
+			}
+			link.setAttribute('aria-current', path !== null && path === here ? 'page' : 'true');
+		});
+	}
 
 	// Trap focus. The drawer lives OUTSIDE <header> (backdrop-filter containing
 	// block). While open it behaves as a modal navigation surface, so focus is

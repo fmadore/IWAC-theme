@@ -47,7 +47,7 @@ msgid "An error occurred while processing your request. Please try again later."
 msgstr ""
 
 #: view/common/banner.phtml:28
-msgid "An open-access collection of newspapers, Islamic publications, archives, and audiovisual sources on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo."
+msgid "An open-access collection of newspapers, Islamic publications, archives, audiovisual sources, and academic references on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo."
 msgstr ""
 
 #: view/common/resource-page-block-layout/web-archive.phtml:76
@@ -64,7 +64,7 @@ msgstr ""
 msgid "Available languages"
 msgstr ""
 
-#: view/layout/layout.phtml:233
+#: view/layout/layout.phtml:240
 msgid "Back to top"
 msgstr ""
 
@@ -364,7 +364,7 @@ msgstr ""
 msgid "Site pages"
 msgstr ""
 
-#: view/layout/layout.phtml:214
+#: view/layout/layout.phtml:221
 msgid "Skip to main content"
 msgstr ""
 

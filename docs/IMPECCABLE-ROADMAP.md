@@ -77,7 +77,7 @@ proxy, prefix with `http://localhost:5179`.
 | Surface / component | URL (path) | What it exercises |
 |---|---|---|
 | Homepage | `/s/westafrica/page/home` | Duotone hero + Ken Burns, masthead search + typeahead, two-tier stat strip, collection-overview block |
-| Newspaper article | `/s/westafrica/item/67700` | Dateline, metadata ledger, AI lede + EU "AI GENERATED" mark, Mirador, citation panel, linked resources |
+| Newspaper article | `/s/westafrica/item/74601` | Dateline, metadata ledger, AI lede + EU "AI GENERATED" mark, Mirador viewer (file-backed scans), citation panel, linked resources |
 | Islamic publication | `/s/westafrica/item/24073` | Template 21: structured AI table of contents (`ai-toc`), Mirador multi-page |
 | Fileless audiovisual | `/s/westafrica/item/108353` | `videoEmbeds` block (YouTube ingest — Mirador renders nothing here by design) |
 | Index entry (person) | `/s/westafrica/item/1023` | Authority-record layout, linked resources, mentions sparkline (241 occurrences) |

@@ -302,6 +302,16 @@ const freedomScripts = () => {
         const toggleBtn = languageSwitcher.querySelector('.language-switcher__toggle');
         
         if (toggleBtn) {
+            // Claim the component: the CSS reveals the panel on :focus-within
+            // only while this class is absent. That fallback exists for the
+            // no-JS case, and without the marker it fought this handler — the
+            // panel opened on mere keyboard focus with aria-expanded still
+            // "false", and Escape could not dismiss it, because closing
+            // returns focus to a toggle that sits inside the component.
+            // Added before the listeners so no frame renders the JS path with
+            // the focus fallback still live.
+            languageSwitcher.classList.add('js-enhanced');
+
             // Toggle dropdown on button click
             toggleBtn.addEventListener('click', (e) => {
                 e.stopPropagation();

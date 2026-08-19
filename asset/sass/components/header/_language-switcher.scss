@@ -90,9 +90,23 @@
             visibility var(--transition-fast);
     }
 
-    // Show dropdown when toggle is expanded
-    &[data-language-switcher].is-open &__list,
-    &:focus-within &__list {
+    // Show dropdown when toggle is expanded.
+    &[data-language-switcher].is-open &__list {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    // No-JS fallback ONLY. Focus alone used to reveal the panel unconditionally,
+    // which fought the JS path in two ways: the panel appeared the moment the
+    // toggle took keyboard focus while aria-expanded still said "false" (a
+    // state lie, WCAG 4.1.2), and Escape could not dismiss it — the handler
+    // returns focus to the toggle, which is INSIDE the component, so
+    // :focus-within immediately re-revealed what the class had just hidden.
+    // script.js stamps .js-enhanced on the root at init, so when JS runs
+    // .is-open is the only reveal; without JS the dropdown still opens on
+    // focus and the links stay reachable.
+    &:not(.js-enhanced):focus-within &__list {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);

@@ -240,16 +240,25 @@
         // in a flush primary submit segment; together they read as a second,
         // offset orange outline (worst around the button and the bottom edge).
         //
-        // Now one crisp 2px primary ring traces the form's clipped rounded
-        // rectangle exactly (box-shadow spread follows the border-radius) and is
-        // the ONLY orange edge — the border stays transparent, so nothing
-        // doubles. Solid --primary (not the faint --focus-ring-color token) is what
-        // makes it read over the busy hero plate, and matching the submit
-        // segment's colour keeps the right edge continuous instead of clashing.
-        // The ring is listed first so it paints on top of the resting elevation
-        // and stays sharp.
+        // Now the focus state is ONE indicator, still the only orange edge (the
+        // border stays transparent, so nothing doubles) — but drawn as a double
+        // ring rather than a single band. A lone 2px --primary ring sat
+        // primary-on-primary: its inner edge met the flush primary submit
+        // segment and its outer edge met the duotone plate, which is itself a
+        // banked-down mix of --primary-base, so the indicator had no boundary of
+        // its own on either side and all but vanished at the right of the field.
+        //
+        // The inner 2px of --surface continues the field's own plate outward, so
+        // the orange band always has a contrasting edge inboard; the orange then
+        // reads against the hero plate outboard. Order matters: rings first so
+        // they paint over the resting elevation and stay sharp, --surface before
+        // --primary so the neutral sits inside. Both spreads follow the clipped
+        // border-radius, so the pair traces the rounded rectangle exactly.
         form:focus-within {
-            box-shadow: 0 0 0 2px var(--primary), var(--shadow-md);
+            box-shadow:
+                0 0 0 2px var(--surface),
+                0 0 0 4px var(--primary),
+                var(--shadow-md);
         }
 
         input {

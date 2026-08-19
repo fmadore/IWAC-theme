@@ -45,8 +45,8 @@ msgid "An error occurred while processing your request. Please try again later."
 msgstr "Une erreur s’est produite lors du traitement de votre demande. Veuillez réessayer plus tard."
 
 #: view/common/banner.phtml:28
-msgid "An open-access collection of newspapers, Islamic publications, archives, and audiovisual sources on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo."
-msgstr "Une collection en libre accès de journaux, de publications islamiques, d’archives et de sources audiovisuelles sur l’islam et les musulmans au Bénin, au Burkina Faso, en Côte d’Ivoire, au Niger, au Nigéria et au Togo."
+msgid "An open-access collection of newspapers, Islamic publications, archives, audiovisual sources, and academic references on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo."
+msgstr "Une collection en libre accès de journaux, de publications islamiques, d’archives, de sources audiovisuelles et de références scientifiques sur l’islam et les musulmans au Bénin, au Burkina Faso, en Côte d’Ivoire, au Niger, au Nigéria et au Togo."
 
 #: view/common/resource-page-block-layout/web-archive.phtml:76
 msgid "Archived web page"
@@ -62,7 +62,7 @@ msgstr "Minutes audiovisuelles"
 msgid "Available languages"
 msgstr "Langues disponibles"
 
-#: view/layout/layout.phtml:233
+#: view/layout/layout.phtml:240
 msgid "Back to top"
 msgstr "Haut de page"
 
@@ -362,7 +362,7 @@ msgstr "Menu du site"
 msgid "Site pages"
 msgstr ""
 
-#: view/layout/layout.phtml:214
+#: view/layout/layout.phtml:221
 msgid "Skip to main content"
 msgstr "Aller au contenu principal"
 

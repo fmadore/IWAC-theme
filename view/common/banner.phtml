@@ -25,7 +25,7 @@ $bannerDescription = $this->themeSetting('banner_description');
 // (see the !$compact guard below), but the value is set before the
 // $bannerHeightProperty and .has-text decisions so both count the dek as text.
 if (!$bannerDescription) {
-    $bannerDescription = $translate('An open-access collection of newspapers, Islamic publications, archives, and audiovisual sources on Islam and Muslims in Benin, Burkina Faso, Côte d\'Ivoire, Niger, Nigeria, and Togo.');
+    $bannerDescription = $translate('An open-access collection of newspapers, Islamic publications, archives, audiovisual sources, and academic references on Islam and Muslims in Benin, Burkina Faso, Côte d\'Ivoire, Niger, Nigeria, and Togo.');
 }
 $bannerContentPosition = $this->themeSetting('banner_content_position') ?? 'left';
 if (!in_array($bannerContentPosition, ['left', 'center', 'right'], true)) {

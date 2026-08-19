@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * check-token-usage.js — two mechanical rules over asset/sass/.
+ * check-token-usage.js — three mechanical rules over the theme's sources.
  *
  * 1. NAMES. Fail when any var(--token) doesn't resolve to a defined custom
  *    property. CLAUDE.md rule: "Never invent CSS custom property names —
@@ -19,6 +19,14 @@
  *    its own scale twice, the consumers will reach around it a hundred times"
  *    (design review 2026-08, F3). Relative units (em, %, unitless) stay legal:
  *    they scale WITH the token their parent set, so they don't fork the scale.
+ *
+ * 3. PWA THEME-COLOR. The two <meta name="theme-color"> values in
+ *    view/layout/layout.phtml are hand-written copies of --surface, one per
+ *    colour scheme. A <meta> cannot read a custom property, so the copy is
+ *    unavoidable — but an unasserted copy is exactly the shape of drift this
+ *    repo has been bitten by before ("drift here has never been a discipline
+ *    problem; it is a coverage problem"). Compare them against the published
+ *    tokens.json and fail on disagreement.
  */
 'use strict';
 
@@ -68,9 +76,84 @@ for (const file of walk(path.join(ROOT, 'asset/sass'), ['.scss'])) {
     });
 }
 
-if (failures.length) {
-    console.error('✗ Design-token violations in asset/sass:');
-    failures.forEach((f) => console.error('  ' + f));
+// ---------------------------------------------------------------------------
+// 3. PWA theme-color metas must equal --surface for their scheme.
+//
+// Compared against tokens.json, the artifact both sibling repos already treat
+// as normative. NOTE the ordering inside `npm run build`: check:tokens runs
+// BEFORE build:tokens, so on the very build that changes --surface this reads
+// the previous tokens.json. That's why the failure message names both sides and
+// says which command refreshes the artifact — the guard is exact in steady
+// state, and drift can survive at most one build.
+// ---------------------------------------------------------------------------
+const LAYOUT_PHTML = path.join('view', 'layout', 'layout.phtml');
+const TOKENS_JSON = path.join(ROOT, 'tokens.json');
+// Attribute order is fixed by the template, but don't depend on it: find any
+// theme-color meta, read the scheme out of its media query and the value out of
+// its content attribute.
+const THEME_COLOR_RE = /<meta\s+[^>]*name="theme-color"[^>]*>/gi;
+const SCHEME_RE = /prefers-color-scheme:\s*(light|dark)\s*\)/i;
+const CONTENT_RE = /content="\s*(#[0-9a-f]{3,8})\s*"/i;
+
+// tokens.json publishes 6-digit lowercase; accept shorthand in the template.
+function normalizeHex(hex) {
+    const h = hex.trim().toLowerCase();
+    return h.length === 4
+        ? '#' + h[1] + h[1] + h[2] + h[2] + h[3] + h[3]
+        : h;
+}
+
+const themeColorFailures = [];
+let tokens = null;
+try {
+    tokens = JSON.parse(fs.readFileSync(TOKENS_JSON, 'utf8'));
+} catch (e) {
+    themeColorFailures.push(`tokens.json is unreadable (${e.message}) — run \`npm run build:tokens\``);
+}
+
+if (tokens) {
+    const layoutSrc = fs.readFileSync(path.join(ROOT, LAYOUT_PHTML), 'utf8');
+    const found = new Map();
+    for (const match of layoutSrc.matchAll(THEME_COLOR_RE)) {
+        const tag = match[0];
+        const scheme = SCHEME_RE.exec(tag);
+        const content = CONTENT_RE.exec(tag);
+        if (!scheme || !content) {
+            themeColorFailures.push(
+                `${LAYOUT_PHTML}  theme-color meta with no readable colour scheme or content: ${tag.trim()}`
+            );
+            continue;
+        }
+        found.set(scheme[1].toLowerCase(), normalizeHex(content[1]));
+    }
+
+    for (const scheme of ['light', 'dark']) {
+        const expected = tokens[scheme] && tokens[scheme]['--surface'];
+        const actual = found.get(scheme);
+        if (!expected) {
+            themeColorFailures.push(`tokens.json has no ${scheme}['--surface'] — run \`npm run build:tokens\``);
+        } else if (!actual) {
+            themeColorFailures.push(
+                `${LAYOUT_PHTML}  missing <meta name="theme-color" media="(prefers-color-scheme: ${scheme})"> — the PWA status bar must state --surface (${expected})`
+            );
+        } else if (actual !== normalizeHex(expected)) {
+            themeColorFailures.push(
+                `${LAYOUT_PHTML}  theme-color (${scheme}) is ${actual} but tokens.json ${scheme}['--surface'] is ${normalizeHex(expected)} — update the meta, or run \`npm run build:tokens\` first if you just changed --surface`
+            );
+        }
+    }
+}
+
+if (failures.length || themeColorFailures.length) {
+    if (failures.length) {
+        console.error('✗ Design-token violations in asset/sass:');
+        failures.forEach((f) => console.error('  ' + f));
+    }
+    if (themeColorFailures.length) {
+        console.error('✗ PWA theme-color metas disagree with --surface:');
+        themeColorFailures.forEach((f) => console.error('  ' + f));
+    }
     process.exit(1);
 }
 console.log(`✓ token usage: every var(--…) resolves and every font-size comes from the scale (${defined.size} tokens defined)`);
+console.log('✓ PWA theme-color metas match tokens.json --surface (light + dark)');

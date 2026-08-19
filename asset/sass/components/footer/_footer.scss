@@ -246,7 +246,14 @@
                             a {
                                 font-size: var(--text-xs);
                                 color: var(--footer-text-muted);
-                                padding: calc(var(--space-xs) / 2) 0;
+                                // Full --space-xs, not half of it. These are
+                                // stacked block links with no gap between them,
+                                // so the padding IS the target: 13px text on a
+                                // half-step measured ~23.5px tall and sat under
+                                // the 24px floor (WCAG 2.2 §2.5.8, and the
+                                // adjacent rows offer no spacing exception).
+                                // The full step clears it at ~27.5px.
+                                padding: var(--space-xs) 0;
 
                                 &:hover { color: var(--primary); }
                             }
