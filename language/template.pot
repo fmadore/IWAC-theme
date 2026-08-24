@@ -72,6 +72,10 @@ msgstr ""
 msgid "Berlin Senate Department"
 msgstr ""
 
+#: view/common/breadcrumbs.phtml:80
+msgid "Breadcrumb"
+msgstr ""
+
 #: helper/PwaManifest.php:55 view/error/404.phtml:27
 msgid "Browse items"
 msgstr ""
@@ -178,6 +182,10 @@ msgstr ""
 
 #: view/common/browse-toggle.phtml:15
 msgid "Grid"
+msgstr ""
+
+#: view/common/breadcrumbs.phtml:38
+msgid "Home"
 msgstr ""
 
 #: view/common/citation.phtml:38
@@ -300,7 +308,7 @@ msgstr ""
 msgid "Pagination"
 msgstr ""
 
-#: view/omeka/site/media/show.phtml:23
+#: view/omeka/site/media/show.phtml:31
 msgid "Part of %s"
 msgstr ""
 

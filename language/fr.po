@@ -70,6 +70,10 @@ msgstr "Haut de page"
 msgid "Berlin Senate Department"
 msgstr ""
 
+#: view/common/breadcrumbs.phtml:80
+msgid "Breadcrumb"
+msgstr "Fil d’Ariane"
+
 #: helper/PwaManifest.php:55 view/error/404.phtml:27
 msgid "Browse items"
 msgstr "Parcourir les documents"
@@ -177,6 +181,10 @@ msgstr "Aller à la page d’accueil"
 #: view/common/browse-toggle.phtml:15
 msgid "Grid"
 msgstr ""
+
+#: view/common/breadcrumbs.phtml:38
+msgid "Home"
+msgstr "Accueil"
 
 #: view/common/citation.phtml:38
 msgid "How to cite this item"
@@ -298,7 +306,7 @@ msgstr ""
 msgid "Pagination"
 msgstr "Pagination"
 
-#: view/omeka/site/media/show.phtml:23
+#: view/omeka/site/media/show.phtml:31
 msgid "Part of %s"
 msgstr "Fait partie de %s"
 

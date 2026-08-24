@@ -10,6 +10,14 @@ $lang = $this->lang();
 $valueLang = $filterLocale ? [$lang, ''] : null;
 ?>
 
+<?php // Same trail as the item page, with the parent item as its own crumb: a
+      // media page is one level deeper, and "Part of %s" at the foot of the
+      // page is too late to answer "where am I". ?>
+<?php echo $this->partial('common/breadcrumbs', [
+    'resource' => $media,
+    'valueLang' => $valueLang,
+    'trail' => [['label' => $item->displayTitle(null, $valueLang), 'url' => $item->siteUrl()]],
+]); ?>
 <?php // Same identity device as the item page — dateline from the parent
       // item (the media inherits its press context), not resource-tag pills. ?>
 <?php echo $this->partial('common/item-dateline', ['resource' => $item, 'valueLang' => $valueLang]); ?>

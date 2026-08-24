@@ -19,6 +19,11 @@ $lang = $this->lang();
 $valueLang = $filterLocale ? [$lang, ''] : null;
 ?>
 
+<?php // Wayfinding first, then identity: the trail says where this record sits,
+      // the dateline says what it is. Above the dateline, not below it, because
+      // a reader arriving from a search engine asks "where am I" before "what
+      // is this". ?>
+<?php echo $this->partial('common/breadcrumbs', ['resource' => $item, 'valueLang' => $valueLang]); ?>
 <?php echo $this->partial('common/item-dateline', ['resource' => $item, 'valueLang' => $valueLang]); ?>
 <?php echo $this->pageTitle($item->displayTitle(null, $valueLang), 1); ?>
 

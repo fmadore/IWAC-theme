@@ -3,7 +3,14 @@
 // Plain crumb line in the label voice — no chip box. The trail is wayfinding,
 // not a component to decorate.
 .breadcrumbs {
-    display: inline-flex;
+    // Block-level flex, NOT inline-flex — load-bearing. An inline-flex box is
+    // shrink-to-fit, so its width comes from its widest unbreakable item; the
+    // current-page crumb is `white-space: nowrap`, so the trail sized itself to
+    // the untruncated title (479px inside a 343px column) and pushed the whole
+    // document sideways at 375. Block-level gives the container a definite
+    // width to lay its crumbs out against, so the shrinkable ones can actually
+    // give way. Measured: 494px doc scroll width before, 390px after.
+    display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: var(--space-2);
@@ -21,6 +28,15 @@
         text-decoration: none;
         border-radius: var(--radius-sm);
         transition: color var(--transition-fast);
+
+        // Deliberately NOT truncated. A link crumb can carry a resource title
+        // (a media page's trail names its parent item), and ellipsing it was
+        // tried and reverted: `white-space: nowrap` makes the crumb
+        // unshrinkable, so its flex item can no longer give way, and the trail
+        // pushed the document sideways at 375 (482px scroll width in a 390px
+        // viewport) while wrapping to two lines at 1440. A long link crumb
+        // wraps its own text instead — taller, but it never overflows and its
+        // focus ring stays unclipped.
 
         &:hover {
             color: var(--primary);
@@ -41,10 +57,29 @@
     }
 
     // Current page - with accent marker
+    //
+    // inline-block, not inline-flex: the last crumb is a resource TITLE, whose
+    // length nothing controls, and a flex box can't ellipse its own text (the
+    // text becomes an anonymous flex item, which text-overflow never reaches).
+    // As a plain inline-block the dot and the title are ordinary inline content
+    // and the cap below can clip them together. Truncation is deliberately
+    // confined to this crumb: the link crumbs must NOT be `overflow: hidden`,
+    // or an ancestor clip would eat their focus ring.
     span:last-child {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--space-2);
+        display: inline-block;
+        // `flex-basis: 0` keeps the trail on ONE line at every width. Left to
+        // size itself from its content the crumb wraps to its own line at
+        // phone widths, which strands the previous crumb's "/" at the end of
+        // line one — a separator separating nothing. Shrinking instead is also
+        // the honest trade: the crumb's job is "you are here", and the full
+        // title is right below it in 60px Besley, so nothing is lost by
+        // ellipsing it. The cap stops it running the whole measure on desktop.
+        flex: 1 1 0;
+        max-width: var(--measure-narrow);
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         color: var(--ink);
         font-weight: 600;
 
@@ -54,9 +89,10 @@
             display: inline-block;
             width: var(--space-1);
             height: var(--space-1);
+            margin-inline-end: var(--space-2);
+            vertical-align: middle;
             background: var(--primary);
             border-radius: var(--radius-full);
-            flex-shrink: 0;
         }
     }
 }

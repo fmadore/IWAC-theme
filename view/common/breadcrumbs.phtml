@@ -1,0 +1,83 @@
+<?php
+/**
+ * Breadcrumb trail — HOME / BROWSE / <current title>.
+ *
+ * Most readers reach a resource page from a search engine, not from the
+ * homepage, and until now the page gave them nothing: no trail, no way back
+ * into the collection (Phase-1 critique, P1 "the reader has no idea where they
+ * are and no way out"). The device is the one DESIGN.md already documents —
+ * "a plain uppercase crumb line, current page marked with a primary dot" — and
+ * components/breadcrumbs has styled it since the Press Archive pass; this is
+ * simply the first template to render it.
+ *
+ * The home crumb reads HOME, not the site title: the masthead wordmark
+ * directly above IS the home link, so reprinting "Islam West Africa
+ * Collection" one line below it duplicates the link rather than orienting the
+ * reader — and at 375px the full title would consume the whole crumb line.
+ *
+ * Expected variables:
+ * - $resource:  the resource whose title closes the trail
+ * - $valueLang: locale filter for displayTitle(), or null
+ * - $trail:     optional crumbs between BROWSE and the current page, each
+ *               ['label' => string, 'url' => string] (media passes its item)
+ */
+$translate = $this->plugin('translate');
+$escape = $this->plugin('escapeHtml');
+$escapeAttr = $this->plugin('escapeHtmlAttr');
+
+$valueLang = isset($valueLang) ? $valueLang : null;
+$crumbs = [];
+
+try {
+    $currentSite = $this->currentSite();
+} catch (\Throwable $error) {
+    $currentSite = null;
+}
+
+if ($currentSite) {
+    $crumbs[] = ['label' => $translate('Home'), 'url' => $currentSite->url()];
+
+    // The browse page's slug differs per site (the French site browses at
+    // /parcourir), so resolve it by slug lookup against THIS site's pages
+    // rather than composing a path — the same pattern and the same slugs as
+    // banner.phtml's stat links. A site without the page — any non-IWAC
+    // install of the theme — keeps the two-crumb trail: an omitted crumb
+    // beats a 404.
+    try {
+        $pagesBySlug = [];
+        foreach ($currentSite->pages() as $sitePage) {
+            $pagesBySlug[$sitePage->slug()] = $sitePage;
+        }
+        foreach (['browse', 'parcourir'] as $slug) {
+            if (isset($pagesBySlug[$slug])) {
+                // The page's own title is already in the site's language
+                // ("Browse" / "Parcourir") and matches the section strip, so
+                // the crumb needs no msgid of its own.
+                $crumbs[] = [
+                    'label' => $pagesBySlug[$slug]->title(),
+                    'url' => $pagesBySlug[$slug]->siteUrl(),
+                ];
+                break;
+            }
+        }
+    } catch (\Throwable $error) {
+        // The page API is the only thing that can fail here; a shorter trail
+        // is the degraded state, not a broken resource page.
+    }
+}
+
+if (isset($trail) && is_array($trail)) {
+    foreach ($trail as $extraCrumb) {
+        if (!empty($extraCrumb['label']) && !empty($extraCrumb['url'])) {
+            $crumbs[] = $extraCrumb;
+        }
+    }
+}
+?>
+<?php // A lone current-page crumb is decoration, not wayfinding — render the
+      // trail only when it actually leads somewhere. ?>
+<?php if ($crumbs): ?>
+<nav class="breadcrumbs" aria-label="<?php echo $escapeAttr($translate('Breadcrumb')); ?>">
+    <?php foreach ($crumbs as $crumb): ?><span><a href="<?php echo $escapeAttr($crumb['url']); ?>"><?php echo $escape($crumb['label']); ?></a></span><?php endforeach; ?><span aria-current="page"><?php echo $escape($resource->displayTitle(null, $valueLang)); ?></span>
+</nav>
+<?php endif; ?>
