@@ -11,16 +11,34 @@
 // ==========================================================================
 
 .resources-linked {
+    margin-block-start: var(--space-10);
 
+    // Opens on the same 2px ink rule as every other section on the page
+    // (h1.title, the AI lede, the citation panel, the footer) — "rules, not
+    // boxes". Before this the block just began, with nothing marking it as a
+    // section of its own.
     &__header {
         display: flex;
         align-items: baseline;
         gap: var(--space-4);
         margin-block-end: var(--space-4);
+        padding-block-start: var(--space-4);
+        border-block-start: 2px solid var(--ink-strong);
     }
 
+    // Weight is set here, not by the tag. The markup is an <h2> because that
+    // is the correct outline level for a top-level item-page section; a raw
+    // h2 renders at --text-3xl, which would shout over the record it lists.
+    // Sized to match .citation__title so the page's two block section heads
+    // are one voice.
     &__heading {
         margin: 0;
+        font-family: $font__headings;
+        font-size: var(--text-lg);
+        font-weight: 700;
+        letter-spacing: var(--tracking-display);
+        line-height: $font__headings-line-height;
+        color: var(--ink-strong);
     }
 
     .resource-tag {
@@ -34,15 +52,20 @@
 
 .linked-resources {
 
+    // A filter bar, not a panel. The raised, rounded, bordered box was the one
+    // card left on a page built out of rules; the register reserves boxes for
+    // true panels (charts, the sentiment scales). A hairline underneath does
+    // the same grouping work and yields to the ledger below it.
     .linked-resources__controls {
         display: flex;
         flex-direction: column;
         gap: var(--space-3);
         margin-block-end: var(--space-4);
-        padding: var(--space-4);
-        background-color: var(--surface-raised);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius-md);
+        padding-block: 0 var(--space-4);
+        background-color: transparent;
+        border: none;
+        border-block-end: 1px solid var(--border-light);
+        border-radius: 0;
 
         @media (min-width: $md) {
             flex-direction: row;
@@ -192,8 +215,19 @@
 
     // Active = primary border + wash + primary text — never a filled pill
     // (see CLAUDE.md facet/chip rules).
+    //
+    // The label is `--primary-hover`, one step down the published ramp, not
+    // `--primary`. `--primary` reads 4.67:1 on bare `--surface` but only
+    // 4.10:1 once the 10% wash lifts the ground under it — an AA failure for
+    // a 13px/600 label, measured on item/1023. One step restores it in both
+    // themes (5.30:1 light #b03710-on-#fbeae5, 5.77:1 dark #f17857) because
+    // the ramp moves *away* from the ground in each: darker on light, lighter
+    // on dark. The wash and the border are untouched; this is a text-colour
+    // fix, not a weaker active state. Hover keeps the same label colour and
+    // only deepens the wash — `--primary-active` is the pressed step and goes
+    // darker in dark mode, which would undo the gain there (3.46:1).
     &.is-active {
-        color: var(--primary);
+        color: var(--primary-hover);
         background-color: color-mix(in oklab, var(--primary) 10%, var(--surface));
         border-color: var(--primary);
 
@@ -218,11 +252,20 @@
     border-radius: var(--radius-full);
     line-height: 1.5;
 
-    .linked-resources__facet.is-active & {
-        color: var(--primary);
-        background-color: color-mix(in oklab, var(--primary) 12%, var(--surface));
-        font-variant-numeric: tabular-nums;
-    }
+}
+
+// Active-state count. Written flat, not nested under the rule above: `&` there
+// stood for the whole compiled selector, so the nested form emitted
+// `.linked-resources__facet.is-active .linked-resources .linked-resources__facet-count`
+// — a `.linked-resources` inside the chip, which no markup has ever produced.
+// The active count has been rendering in the resting muted-on-raised treatment
+// the whole time; DESIGN's "active counts as primary tabular text" only takes
+// effect now. Same one-step ramp correction as the label (the count sits on a
+// lighter 12% wash, where `--primary` measured worse than on the chip itself).
+.linked-resources .linked-resources__facet.is-active .linked-resources__facet-count {
+    color: var(--primary-hover);
+    background-color: color-mix(in oklab, var(--primary) 12%, var(--surface));
+    font-variant-numeric: tabular-nums;
 }
 
 // ==========================================================================
@@ -353,6 +396,12 @@
         min-width: 0;
     }
 
+    // Besley, like every other resource title in the system (the item h1, the
+    // browse ledger row, the item-set section head). This column is the one
+    // piece of editorial content in the table and it was set in the UI
+    // sans-serif at label size, which is what made the whole block read as a
+    // foreign grammar. A step up to --text-base gives the row its focal point;
+    // the 3-line clamp keeps the density.
     .linked-resources-table__title-link {
         @include title-link;
         display: -webkit-box;
@@ -361,9 +410,12 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         max-width: 64ch;
-        font-size: var(--text-sm);
+        font-family: $font__headings;
+        font-size: var(--text-base);
         font-weight: 600;
+        letter-spacing: var(--tracking-display);
         line-height: var(--line-height-normal);
+        color: var(--ink-strong);
         overflow-wrap: break-word;
 
         @include focus-ring;

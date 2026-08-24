@@ -11,8 +11,15 @@ $subjectValues = $resource->displaySubjectValues($options);
 ?>
 <?php if ($subjectValues): ?>
 <div id="resources-linked" class="resources-linked">
+    <?php // h2, not h3. This is a top-level section of the item page, a sibling of
+          // "How to cite" (h2) — and on records that carry no citation block (the
+          // authority records, e.g. item/1023) the hard-coded h3 was the only
+          // heading under the h1, outlining the page h1 → h3. Every block hard-codes
+          // its own level, so a stack permutation can always skip one; this is the
+          // level that is right in every permutation the sites actually ship.
+          // The visual weight is set by .resources-linked__heading, not by the tag. ?>
     <div class="resources-linked__header">
-        <h3 class="resources-linked__heading"><?php echo $this->translate('Linked resources'); ?></h3>
+        <h2 class="resources-linked__heading"><?php echo $this->translate('Linked resources'); ?></h2>
     </div>
     <?php echo $subjectValues; ?>
 </div>

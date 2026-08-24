@@ -49,32 +49,50 @@ $escapeAttr = $this->plugin('escapeHtmlAttr');
                 $resourceUrl = $resource->url();
 
                 // Prefer dcterms:date, fall back to record created date.
+                //
+                // asHtml() hands the value to NumericDataTypes, which renders it
+                // in the site locale — the same formatter the dateline uses, so
+                // the page stops printing a third date format ("2022-11-16"
+                // under "28 DÉCEMBRE 2017"). The raw value stays on data-date,
+                // where linked-resources.js sorts it lexicographically and ISO
+                // is exactly what that wants.
                 $displayDate = '';
                 $sortDate = '';
                 $dctermsDate = $resource->value('dcterms:date', ['default' => null]);
                 if ($dctermsDate) {
-                    $displayDate = (string) $dctermsDate;
-                    $sortDate = $displayDate;
+                    $displayDate = $dctermsDate->asHtml();
+                    $sortDate = (string) $dctermsDate;
                 } elseif ($resource->created()) {
                     $sortDate = $resource->created()->format('c');
                 }
+
+                // '' when the resource has no thumbnail. Rendering the link
+                // anyway left a 40px raised square standing empty on every
+                // thumbnail-less row; a blank cell in a fixed column is quieter
+                // and the ledger doesn't shift.
+                $thumbnail = $this->thumbnail($resource, 'square', ['alt' => '', 'loading' => 'lazy', 'decoding' => 'async']);
                 ?>
                 <tr class="linked-resources-table__row"
                     data-title="<?php echo $escapeAttr($resourceTitle); ?>"
                     data-date="<?php echo $escapeAttr($sortDate); ?>">
                     <td class="linked-resources-table__cell linked-resources-table__cell--thumb">
+                        <?php if ($thumbnail): ?>
                         <a href="<?php echo $escapeAttr($resourceUrl); ?>"
                            class="linked-resources-table__thumb-link"
                            tabindex="-1"
                            aria-hidden="true">
-                            <?php echo $this->thumbnail($resource, 'square', ['alt' => '', 'loading' => 'lazy', 'decoding' => 'async']); ?>
+                            <?php echo $thumbnail; ?>
                         </a>
+                        <?php endif; ?>
                     </td>
                     <td class="linked-resources-table__cell linked-resources-table__cell--title"
                         data-label="<?php echo $escapeAttr($translate('Title')); ?>">
+                        <?php // FrenchSpacing on the rendered text only — data-title above
+                              // stays raw so the client title filter still matches what a
+                              // reader types with an ordinary space. ?>
                         <a href="<?php echo $escapeAttr($resourceUrl); ?>"
                            class="linked-resources-table__title-link">
-                            <?php echo $escape($resourceTitle); ?>
+                            <?php echo $escape($this->FrenchSpacing($resourceTitle)); ?>
                         </a>
                     </td>
                     <?php if ($showRelation): ?>
