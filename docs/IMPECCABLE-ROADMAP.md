@@ -75,10 +75,13 @@ a false finding:
   dashboards mount on IntersectionObserver; a "spinner never resolves" claim is only
   valid after a Playwright probe has genuinely scrolled the block into view and waited
   (a refuted item-page P1 resolved in 5s once scrolled).
-- **The CLI detector silently skips `.phtml`** — its scannable set ends at
-  `.blade.php`. Scan theme templates by mirroring each to a byte-identical
-  `<name>.blade.php` copy, and prove the detector fires by seeding one bad line before
-  trusting a clean result. URL mode needs puppeteer (not installed).
+- **The CLI detector's directory walker skips `.phtml` — but explicitly-passed files
+  scan fine.** Pass templates as explicit file arguments (amended 2026-08-24: do NOT
+  mirror them to `.blade.php` in a scratch dir — files outside the repo root load no
+  design system, so the four `design-system-*` rules silently switch off). Seed-verify
+  one bad line before trusting a clean result. Two residual limits: PHP `//` comments
+  are scanned as markup (phantom hits), and page-level analyzers never run on
+  `.phtml`. URL mode needs puppeteer (not installed).
 - **Contrast is measured from rendered sRGB readback**, not token-hex math — Chrome
   serializes computed colours as `oklch()`.
 
@@ -89,6 +92,15 @@ And from the browse run (2026-08-24):
   keypresses in a Playwright probe. Related: Chromium resumes sequential focus
   traversal from the last focused element after `blur()`, so naive tab-count
   probes undercount.
+
+And from the dashboard run (2026-08-24):
+
+- **WebGL canvases (MapLibre) have no `getImageData` readback** — "pixels identical"
+  proves nothing about theming; use network evidence (basemap `style.json` swaps).
+  ECharts tooltips render into `<body>`, not the panel; canvas corner-sampling
+  misreads charts with empty corners as unpainted (histogram opaque pixels instead);
+  and the AX tree comes via CDP now that `page.accessibility` is gone from
+  Playwright.
 
 **Every visual claim in an Impeccable pass must be grounded in this rig — both themes
 (light + dark), and at minimum the 1440px and 375px viewports.**
