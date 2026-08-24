@@ -28,8 +28,8 @@ authors:
     given-names: Frédérick
     orcid: "https://orcid.org/0000-0003-0959-2092"
     affiliation: "University of Bayreuth"
-version: "2.12.0"
-date-released: "2026-08-20"
+version: "2.13.0"
+date-released: "2026-08-24"
 license: GPL-3.0-or-later
 repository-code: "https://github.com/fmadore/IWAC-theme"
 url: "https://islam.zmo.de/s/westafrica/"
