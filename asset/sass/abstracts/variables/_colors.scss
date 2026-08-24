@@ -82,8 +82,10 @@
   // so the mapping lives once, here; the modules consume `var(--type-*,
   // <hex>)` and never re-encode it (the old hand-copied map had already
   // drifted — the `document` fallback was #e89c4a in one repo, #ea580c in
-  // the other). References the semantic tokens, which flip in dark mode, so
-  // this block is defined once in :root. See docs/DESIGN-SYSTEM.md §3.
+  // the other). Each entry references a semantic token — and the SAME nine
+  // entries are redeclared in the dark block, because an alias substitutes
+  // against the referent on the element that declares it, not on the element
+  // that reads it (see the note there). See docs/DESIGN-SYSTEM.md §3.
   --type-article:              var(--primary);
   --type-publication:          var(--secondary);
   --type-audiovisual:          var(--info);
@@ -93,6 +95,40 @@
   --type-entity-personnes:     var(--info);
   --type-entity-lieux:         var(--success);
   --type-entity-organisations: var(--warning);
+
+  // Categorical SERIES palette — the ordered qualitative scale charts cycle
+  // through. Theme-owned since 2.13: it lived as a 19-hex array literal in
+  // IwacVisualizations' iwac-theme.js, published nowhere and asserted by
+  // nothing, with slot 0 a hardcoded twin of --secondary that had to be
+  // sliced back off at runtime. `--series-N` is palette index N-1;
+  // `tokens.json` publishes the whole ordered scale as `series`.
+  //
+  // Slots 1-2 are the two theme-driven leads: they track the admin-tunable
+  // brand seeds, so a site's charts stay on-brand without a rebuild. Slots
+  // 3-20 are fixed qualitative hues, chosen to stay distinguishable in both
+  // themes and under colour-vision deficiency. Declared again — per slot —
+  // in the dark block, which is what makes a divergent dark scale a token
+  // edit rather than a contract change.
+  --series-1:  var(--primary);
+  --series-2:  var(--secondary);
+  --series-3:  #4a8c6f;
+  --series-4:  #c5504d;
+  --series-5:  #7c5295;
+  --series-6:  #d4a574;
+  --series-7:  #2c5f7c;
+  --series-8:  #8b6f47;
+  --series-9:  #5ba3a0;
+  --series-10: #cc8963;
+  --series-11: #4a8aab;
+  --series-12: #a68e6d;
+  --series-13: #d49b6a;
+  --series-14: #6fb08e;
+  --series-15: #9e7bb8;
+  --series-16: #e0a88a;
+  --series-17: #8e7cb8;
+  --series-18: #d87e7a;
+  --series-19: #6b5b95;
+  --series-20: #4db6ac;
 
   // Blockquote
   --blockquote-bg:     color-mix(in oklab, var(--surface-raised) 88%, var(--primary) 12%);
@@ -168,6 +204,55 @@
   --error-bg:   color-mix(in oklab, oklch(50% 0.18 25) 22%, transparent);
   --info:       oklch(72% 0.14 245);
   --info-bg:    color-mix(in oklab, oklch(50% 0.14 245) 22%, transparent);
+
+  // Categorical type-colour map — REDECLARED here, not inherited.
+  //
+  // The light block declares these on :root, where `var(--secondary)` is
+  // substituted against :root's OWN --secondary. The manual toggle applies
+  // this mixin to <body>, so before 2.13 the dark page inherited nine
+  // already-substituted LIGHT hues — and layout.phtml's pre-paint script
+  // writes data-theme on <body> for system-dark too, so that was every dark
+  // session with JS. The browse publication dot measured 2.41:1 on the dark
+  // ground (Phase-1 critique, P1): light slate #394f68, never flipped.
+  // Declaring the map in both blocks makes the substitution happen where the
+  // referents are, and is also the seam for a divergent dark mapping.
+  // Contrast as dots, dark: 4.5-9.1:1 on every surface (>= 3:1 floor).
+  --type-article:              var(--primary);
+  --type-publication:          var(--secondary);
+  --type-audiovisual:          var(--info);
+  --type-document:             var(--warning);
+  --type-reference:            var(--muted);
+  --type-photograph:           var(--success);
+  --type-entity-personnes:     var(--info);
+  --type-entity-lieux:         var(--success);
+  --type-entity-organisations: var(--warning);
+
+  // Categorical SERIES palette — see the light block. Slots 1-2 track the
+  // brand seeds and so already differ here; slots 3-20 are deliberately at
+  // parity with light for contract v1 (the scale was module-owned and
+  // theme-blind until now, so publishing it unchanged separates "moving the
+  // palette into the contract" from "redesigning the palette"). Per-slot
+  // divergence is a value edit in this block — no consumer change.
+  --series-1:  var(--primary);
+  --series-2:  var(--secondary);
+  --series-3:  #4a8c6f;
+  --series-4:  #c5504d;
+  --series-5:  #7c5295;
+  --series-6:  #d4a574;
+  --series-7:  #2c5f7c;
+  --series-8:  #8b6f47;
+  --series-9:  #5ba3a0;
+  --series-10: #cc8963;
+  --series-11: #4a8aab;
+  --series-12: #a68e6d;
+  --series-13: #d49b6a;
+  --series-14: #6fb08e;
+  --series-15: #9e7bb8;
+  --series-16: #e0a88a;
+  --series-17: #8e7cb8;
+  --series-18: #d87e7a;
+  --series-19: #6b5b95;
+  --series-20: #4db6ac;
 
   --blockquote-bg:     color-mix(in oklab, var(--surface-raised) 76%, var(--primary) 24%);
   --blockquote-border: color-mix(in oklab, var(--primary) 68%, var(--ink) 32%);

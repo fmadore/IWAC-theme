@@ -76,6 +76,7 @@ value (see §3). Do **not** invent token names — undefined tokens fail silentl
 | **Surfaces** | `--surface`, `--surface-raised`, `--surface-sunken`, `--surface-overlay`, `--background` |
 | **Borders** | `--border-light`, `--border`, `--border-strong` |
 | **Status** | `--success`, `--warning`, `--error`, `--info` (+ matching `*-bg`) |
+| **Categorical** | `--type-*` (nine resource / entity types); `--series-1 … --series-20` (the ordered chart palette) |
 | **Focus** | `--focus-outline` (default), `--ring-focus`, `--ring-focus-sm`, `--focus-color`, `--focus-ring-color` |
 | **Typography** | `--font-headings`, `--font-serif-text`, `--font-body`, `--font-mono`; `--text-2xs … --text-5xl`; `--line-height-normal`, `--line-height-relaxed`; `--tracking-display/tight/normal/wide/wider` |
 | **Spacing** | `--space-1 … --space-40`; `--space-xs/sm/md/lg/xl/2xl/3xl` |
@@ -156,7 +157,8 @@ viewport.
 `--secondary` (slate `#394f68`) is a **second categorical / data-series
 colour**, not a second brand accent. It exists for data visualisation:
 
-- chart series 2 (IwacVisualizations palette slot 1),
+- the second slot of the categorical chart palette (`--series-2`, palette
+  index 1),
 - the "corpus B" colour in the Compare-Newspapers block.
 
 It is **never** used for chrome — no buttons, links, focus rings, or headings.
@@ -274,9 +276,9 @@ column. The OKLCH source for each value lives in `_colors.scss`.
 
 ### Categorical type-colour map (`--type-*`)
 
-The resource-type → colour mapping is **theme-owned**, defined once in
+The resource-type → colour mapping is **theme-owned**, defined in
 `abstracts/variables/_colors.scss` as `--type-*` custom properties that
-reference the semantic tokens (so they flip with light/dark automatically).
+reference the semantic tokens — **in both the light and the dark block**.
 Both modules consume `var(--type-*, <hex>)` and **must not re-encode the
 mapping** — this is the fix for the map that previously drifted across the
 three repos (the `document` badge fallback was `#e89c4a` in IwacSearch but
@@ -285,15 +287,15 @@ three repos (the `document` badge fallback was `#e89c4a` in IwacSearch but
 <!-- BEGIN GENERATED:TYPE-TABLE -->
 | `--type-*` token | → semantic token | Light | Dark |
 |---|---|---|---|
-| `--type-article` | `--primary` | `#ce4115` | `—` |
-| `--type-publication` | `--secondary` | `#394f68` | `—` |
-| `--type-audiovisual` | `--info` | `#037ac0` | `—` |
-| `--type-document` | `--warning` | `#de7000` | `—` |
-| `--type-reference` | `--muted` | `#66696e` | `—` |
-| `--type-photograph` | `--success` | `#2e9052` | `—` |
-| `--type-entity-personnes` | `--info` | `#037ac0` | `—` |
-| `--type-entity-lieux` | `--success` | `#2e9052` | `—` |
-| `--type-entity-organisations` | `--warning` | `#de7000` | `—` |
+| `--type-article` | `--primary` | `#ce4115` | `#ec653f` |
+| `--type-publication` | `--secondary` | `#394f68` | `#708093` |
+| `--type-audiovisual` | `--info` | `#037ac0` | `#4dacf6` |
+| `--type-document` | `--warning` | `#de7000` | `#f99532` |
+| `--type-reference` | `--muted` | `#66696e` | `#8a8580` |
+| `--type-photograph` | `--success` | `#2e9052` | `#56bd78` |
+| `--type-entity-personnes` | `--info` | `#037ac0` | `#4dacf6` |
+| `--type-entity-lieux` | `--success` | `#2e9052` | `#56bd78` |
+| `--type-entity-organisations` | `--warning` | `#de7000` | `#f99532` |
 <!-- END GENERATED:TYPE-TABLE -->
 
 Each `--type-*` resolves to its semantic token, so the fallback hex equals
@@ -302,6 +304,84 @@ that token's value above (e.g. `--type-document` = `--warning`).
 Consumers: `IwacSearch/src/svelte/components/ResultItem.svelte`
 (`.iwac-card__type[data-type=…]` / `[data-entity-type=…]`) and
 `IwacVisualizations/asset/css/iwac-core.css` (`.iwac-vis-badge--…`).
+
+> **An alias flips only where it is declared** (fixed in 2.13; the dark
+> column above was `—` before). `--type-publication: var(--secondary)` is
+> substituted against the `--secondary` **on the element that declares it**,
+> and the light block declares the map on `:root` while the manual toggle
+> applies the dark block to `<body>`. Descendants then inherit nine
+> already-substituted *light* hues. Since `layout/layout.phtml`'s pre-paint
+> script writes `data-theme` on `<body>` for system-dark too, that was every
+> dark session with JS enabled — the browse publication dot measured
+> **2.41:1** on the dark ground (Phase-1 critique, P1). The system-preference
+> `@media` block hid it in review, because there the override lands on
+> `:root` and the map does flip. Declaring the map in both blocks is the fix
+> — and it makes a *divergent* dark mapping a value edit rather than a
+> contract change. A theme-relative alias is not automatically theme-aware:
+> check which element carries the referent.
+
+### Categorical series palette (`--series-*`)
+
+The ordered qualitative scale charts cycle through. **Theme-owned and
+published** since 2.13 — `tokens.json` carries it as `series`, so it is
+guard-assertable like every other token. Before that it was a 19-entry hex
+array in `IwacVisualizations/asset/js/iwac-theme.js` (`PALETTE_REST`): no
+name to check, no value to compare, and slot 0 a hand-kept twin of
+`--secondary` that the module sliced back off at runtime.
+
+```jsonc
+"series": {
+  "leadSlots": 2,                          // slots that alias a theme token
+  "leads": ["--primary", "--secondary"],   // …and which token each aliases
+  "tokens": ["--series-1", …, "--series-20"],
+  "light":  ["#ce4115", …],                // series.light[i] === --series-{i+1}
+  "dark":   ["#ec653f", …]
+}
+```
+
+Two views of one resolution pass: `light["--series-7"]` for a CSS consumer,
+`series.light[6]` for a JS palette array. They cannot disagree.
+
+- **Lead slots are read live, not baked.** `--primary` and `--secondary` come
+  from the admin-tunable seeds, so a runtime consumer must resolve them from
+  CSS (as `iwac-theme.js` already does); the published hexes are the canonical
+  *default*, which is what fallbacks assert against. `leadSlots` is derived
+  from the SCSS — however many leading slots are written as `var(--token)` —
+  so moving the boundary is a token edit, not an edit plus a constant plus a
+  number in this file.
+- **Slots past the lead are fixed** and must be reproduced exactly.
+- **Light and dark are independent per slot.** Contract v1 publishes the two
+  at parity from slot 3 on: the scale was theme-blind until now, so moving it
+  into the contract is deliberately separate from redesigning it. Diverging a
+  slot in dark is a value edit in `_colors.scss`, invisible to consumers.
+- The generator **fails the build** on a hole in the numbering, a slot missing
+  from either theme, or a lead that is an alias in one theme and a literal in
+  the other.
+
+<!-- BEGIN GENERATED:SERIES-TABLE -->
+| Palette index | Token | Source | Light | Dark |
+|---|---|---|---|---|
+| 0 | `--series-1` | `--primary` | `#ce4115` | `#ec653f` |
+| 1 | `--series-2` | `--secondary` | `#394f68` | `#708093` |
+| 2 | `--series-3` | fixed | `#4a8c6f` | `#4a8c6f` |
+| 3 | `--series-4` | fixed | `#c5504d` | `#c5504d` |
+| 4 | `--series-5` | fixed | `#7c5295` | `#7c5295` |
+| 5 | `--series-6` | fixed | `#d4a574` | `#d4a574` |
+| 6 | `--series-7` | fixed | `#2c5f7c` | `#2c5f7c` |
+| 7 | `--series-8` | fixed | `#8b6f47` | `#8b6f47` |
+| 8 | `--series-9` | fixed | `#5ba3a0` | `#5ba3a0` |
+| 9 | `--series-10` | fixed | `#cc8963` | `#cc8963` |
+| 10 | `--series-11` | fixed | `#4a8aab` | `#4a8aab` |
+| 11 | `--series-12` | fixed | `#a68e6d` | `#a68e6d` |
+| 12 | `--series-13` | fixed | `#d49b6a` | `#d49b6a` |
+| 13 | `--series-14` | fixed | `#6fb08e` | `#6fb08e` |
+| 14 | `--series-15` | fixed | `#9e7bb8` | `#9e7bb8` |
+| 15 | `--series-16` | fixed | `#e0a88a` | `#e0a88a` |
+| 16 | `--series-17` | fixed | `#8e7cb8` | `#8e7cb8` |
+| 17 | `--series-18` | fixed | `#d87e7a` | `#d87e7a` |
+| 18 | `--series-19` | fixed | `#6b5b95` | `#6b5b95` |
+| 19 | `--series-20` | fixed | `#4db6ac` | `#4db6ac` |
+<!-- END GENERATED:SERIES-TABLE -->
 
 ### Font tokens
 
@@ -358,7 +438,10 @@ A module may define a custom property only when the theme **should not** carry
 the value. That is two cases, and no others:
 
 1. **Data-encoding colours.** Data encoding needs more distinct, controlled
-   colours than a UI theme should carry.
+   colours than a UI theme should carry. Note the limit of this: it licenses
+   the module to *decide* a scale, never to leave one unpublished — the
+   categorical series was owned here for exactly that reason and moved into
+   the theme's published contract in 2.13.
 2. **Module-local layout constants with no theme equivalent** — a thumbnail
    ramp, a toolbar reservation, a chart gutter. Values that describe *this
    module's* composition, not a shared design decision.
@@ -377,13 +460,25 @@ own. The looser `--iwac-` form had already let `--iwac-compare-color-a/b` and
 `--iwac-otd-axis-gap` drift out of the documented namespace.
 
 Module-owned colours must **not** leak into UI chrome. The data colours below
-are all owned by **IwacVisualizations**:
+are owned by **IwacVisualizations** — except the first, which is now the
+theme's:
 
-1. **Categorical chart palette** — `iwac-theme.js` `buildPalette()`:
-   `[--primary, --secondary, …PALETTE_REST]`. Slot 0 is the brand, slot 1 is
-   the shared slate, and the remaining hand-picked hues (`PALETTE_REST`) are
-   chosen to read in both themes and to stay distinguishable for colour-vision
-   deficiencies. **New series colours go here, never into the theme.**
+1. ~~**Categorical chart palette**~~ — **no longer an exception.** The
+   ordered series moved into the theme in 2.13 and is published as
+   `tokens.json` → `series` (see §3). `buildPalette()` still assembles the
+   runtime array — the two lead slots must be read live so admin brand
+   changes cascade — but it no longer *owns* any of the values, and **a new
+   series colour is a theme token edit, not a module edit.**
+
+   It was the last data colour the contract could not see, and the reason is
+   worth keeping: the exception was written for colours a UI theme *should
+   not* carry, and a 20-step qualitative scale genuinely is that. But
+   "the theme shouldn't own the decision" was silently doing duty for
+   "the theme shouldn't publish the value", and the gap showed — slot 0 was a
+   hand-maintained duplicate of `--secondary` (`#394f68` twice, sliced apart
+   at runtime), the scale had no dark-mode story at all, and nothing could
+   assert any of it. **Sanctioned module ownership is about who decides, and
+   it is not a reason to leave a value unpublished.**
 2. **Sentiment divergent scale** (`--iwac-vis-sent-*`, `iwac-core.css`):
    positive → neutral → negative, mapped to `--success` / `--muted` /
    `--warning` / `--error`; "strong positive" is a darkened `--success`.

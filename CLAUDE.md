@@ -45,7 +45,7 @@ that renders it — and "fixing" it by lowercasing `theme.ini` just moves the fa
 
 `scripts/build-tokens.js` reads the four variable files and writes `tokens.json`, then
 syncs it into IwacSearch and IwacVisualizations, whose `check-theme-tokens` guards fail
-their builds on anything that disagrees with it. It publishes four things:
+their builds on anything that disagrees with it. It publishes five things:
 
 | Key | What |
 |---|---|
@@ -53,6 +53,7 @@ their builds on anything that disagrees with it. It publishes four things:
 | `values.light` / `values.dark` | every **other** token resolved to a literal CSS value — type steps, spacing, radii, control sizes, font stacks, shadows (collapsed to `rgba()`), transitions |
 | `names` | the full custom-property vocabulary |
 | `breakpoints` | the six media-query widths |
+| `series` | the ordered categorical chart palette (`--series-1 … --series-20`), light + dark, with the theme-driven lead slots marked |
 
 - A wrong or invented token name is caught by `npm run check:tokens`. Run it; don't
   reason about it from memory.
