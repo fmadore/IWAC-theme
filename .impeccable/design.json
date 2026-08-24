@@ -1,58 +1,704 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-18T00:00:00Z",
+  "generatedAt": "2026-08-24T00:00:00Z",
   "title": "Design System: IWAC Theme",
   "extensions": {
     "colorMeta": {
-      "primary": { "role": "primary", "displayName": "IWAC Burnt Orange", "canonical": "color-mix(in oklab, var(--primary-base) 92%, black)", "dark": "#ec653f", "tonalRamp": ["#3c0000", "#630000", "#8a0000", "#b22300", "#db4d24", "#ff734c", "#ff9971", "#ffbe94"] },
-      "secondary": { "role": "secondary", "displayName": "Slate (data-only)", "canonical": "#394f68", "dark": "#708093", "tonalRamp": ["#000b1f", "#12263d", "#2e445c", "#4d647e", "#6e86a1", "#90a9c5", "#b4cdeb", "#d7f1ff"] },
-      "ink-strong": { "role": "neutral", "displayName": "Ink Strong", "canonical": "#05070c", "dark": "#f7f5f1", "tonalRamp": ["#080b11", "#22252c", "#3f4249", "#5e6269", "#7f838b", "#a2a6ae", "#c6cbd3", "#eaeff7"] },
-      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#13161c", "dark": "#e7e4df", "tonalRamp": ["#080b11", "#22252c", "#3f4249", "#5e6269", "#7f838b", "#a2a6af", "#c6cbd3", "#eaeff7"] },
-      "ink-light": { "role": "neutral", "displayName": "Ink Light", "canonical": "#3f4349", "dark": "#b5b0aa", "tonalRamp": ["#080b10", "#22252b", "#3f4349", "#5e6269", "#7f838a", "#a2a6ae", "#c6cbd2", "#eaeff6"] },
-      "muted": { "role": "neutral", "displayName": "Muted", "canonical": "#66696e", "dark": "#8a8580", "tonalRamp": ["#090b0f", "#23252a", "#404247", "#5f6267", "#808388", "#a3a6ac", "#c7cbd0", "#ebeff4"] },
-      "surface": { "role": "neutral", "displayName": "Paper White", "canonical": "#fdfcfb", "dark": "#110c08", "tonalRamp": ["#0c0b0a", "#262524", "#434241", "#626261", "#848382", "#a7a6a5", "#cbcac9", "#efeeed"] },
-      "surface-raised": { "role": "neutral", "displayName": "Raised Paper", "canonical": "#faf8f6", "dark": "#1a1510", "tonalRamp": ["#0c0b0a", "#262523", "#444240", "#636160", "#848381", "#a8a6a4", "#cccac8", "#f0eeec"] },
-      "surface-sunken": { "role": "neutral", "displayName": "Sunken Paper", "canonical": "#f4f1ef", "dark": "#0b0704", "tonalRamp": ["#0d0b09", "#272523", "#444240", "#64615f", "#858281", "#a8a5a4", "#cdcac8", "#f1eeec"] },
-      "background": { "role": "neutral", "displayName": "Page Ground", "canonical": "#f7f5f3", "dark": "#080503", "tonalRamp": ["#0c0b0a", "#262523", "#444240", "#636160", "#848381", "#a8a6a4", "#cccac8", "#f0eeec"] },
-      "border-light": { "role": "neutral", "displayName": "Hairline", "canonical": "#e2e5e8", "dark": "#26211a", "tonalRamp": ["#090b0d", "#232528", "#404345", "#606265", "#818386", "#a4a6a9", "#c8cbce", "#eceff2"] },
-      "border": { "role": "neutral", "displayName": "Border", "canonical": "#ced1d6", "dark": "#352f28", "tonalRamp": ["#090b0e", "#232529", "#404247", "#5f6266", "#818388", "#a3a6ab", "#c8cbd0", "#eceff4"] },
-      "border-strong": { "role": "neutral", "displayName": "Border Strong", "canonical": "#aeb1b7", "dark": "#534c44", "tonalRamp": ["#090b0f", "#23252a", "#404247", "#5f6267", "#808389", "#a3a6ac", "#c7cbd1", "#ebeef5"] },
-      "success": { "role": "status", "displayName": "Success Green", "canonical": "#2e9052", "dark": "#56bd78", "tonalRamp": ["#001600", "#003400", "#005419", "#00763a", "#39995a", "#5fbd7c", "#85e3a0", "#a9ffc3"] },
-      "warning": { "role": "status", "displayName": "Warning Amber", "canonical": "#de7000", "dark": "#f99532", "tonalRamp": ["#340000", "#5a0000", "#7f1200", "#a53c00", "#cc6000", "#f4842b", "#ffa956", "#ffcd7c"] },
-      "error": { "role": "status", "displayName": "Error Red", "canonical": "#c9222b", "dark": "#ff645f", "tonalRamp": ["#3f0000", "#680000", "#900000", "#b9021c", "#e23f40", "#ff6763", "#ff8e86", "#ffb3a8"] },
-      "info": { "role": "status", "displayName": "Info Blue", "canonical": "#037ac0", "dark": "#4dacf6", "tonalRamp": ["#000041", "#002363", "#004486", "#0066ab", "#2389d1", "#4faef7", "#75d3ff", "#9af8ff"] }
+      "primary": {
+        "role": "primary",
+        "displayName": "IWAC Burnt Orange",
+        "canonical": "color-mix(in oklab, var(--primary-base) 92%, black)",
+        "dark": "#ec653f",
+        "tonalRamp": [
+          "#3c0000",
+          "#630000",
+          "#8a0000",
+          "#b22300",
+          "#db4d24",
+          "#ff734c",
+          "#ff9971",
+          "#ffbe94"
+        ]
+      },
+      "secondary": {
+        "role": "secondary",
+        "displayName": "Slate (data-only)",
+        "canonical": "#394f68",
+        "dark": "#708093",
+        "tonalRamp": [
+          "#000b1f",
+          "#12263d",
+          "#2e445c",
+          "#4d647e",
+          "#6e86a1",
+          "#90a9c5",
+          "#b4cdeb",
+          "#d7f1ff"
+        ]
+      },
+      "ink-strong": {
+        "role": "neutral",
+        "displayName": "Ink Strong",
+        "canonical": "#05070c",
+        "dark": "#f7f5f1",
+        "tonalRamp": [
+          "#080b11",
+          "#22252c",
+          "#3f4249",
+          "#5e6269",
+          "#7f838b",
+          "#a2a6ae",
+          "#c6cbd3",
+          "#eaeff7"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#13161c",
+        "dark": "#e7e4df",
+        "tonalRamp": [
+          "#080b11",
+          "#22252c",
+          "#3f4249",
+          "#5e6269",
+          "#7f838b",
+          "#a2a6af",
+          "#c6cbd3",
+          "#eaeff7"
+        ]
+      },
+      "ink-light": {
+        "role": "neutral",
+        "displayName": "Ink Light",
+        "canonical": "#3f4349",
+        "dark": "#b5b0aa",
+        "tonalRamp": [
+          "#080b10",
+          "#22252b",
+          "#3f4349",
+          "#5e6269",
+          "#7f838a",
+          "#a2a6ae",
+          "#c6cbd2",
+          "#eaeff6"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#66696e",
+        "dark": "#8a8580",
+        "tonalRamp": [
+          "#090b0f",
+          "#23252a",
+          "#404247",
+          "#5f6267",
+          "#808388",
+          "#a3a6ac",
+          "#c7cbd0",
+          "#ebeff4"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Paper White",
+        "canonical": "#fdfcfb",
+        "dark": "#110c08",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#262524",
+          "#434241",
+          "#626261",
+          "#848382",
+          "#a7a6a5",
+          "#cbcac9",
+          "#efeeed"
+        ]
+      },
+      "surface-raised": {
+        "role": "neutral",
+        "displayName": "Raised Paper",
+        "canonical": "#faf8f6",
+        "dark": "#1a1510",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#262523",
+          "#444240",
+          "#636160",
+          "#848381",
+          "#a8a6a4",
+          "#cccac8",
+          "#f0eeec"
+        ]
+      },
+      "surface-sunken": {
+        "role": "neutral",
+        "displayName": "Sunken Paper",
+        "canonical": "#f4f1ef",
+        "dark": "#0b0704",
+        "tonalRamp": [
+          "#0d0b09",
+          "#272523",
+          "#444240",
+          "#64615f",
+          "#858281",
+          "#a8a5a4",
+          "#cdcac8",
+          "#f1eeec"
+        ]
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "Page Ground",
+        "canonical": "#f7f5f3",
+        "dark": "#080503",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#262523",
+          "#444240",
+          "#636160",
+          "#848381",
+          "#a8a6a4",
+          "#cccac8",
+          "#f0eeec"
+        ]
+      },
+      "border-light": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#e2e5e8",
+        "dark": "#26211a",
+        "tonalRamp": [
+          "#090b0d",
+          "#232528",
+          "#404345",
+          "#606265",
+          "#818386",
+          "#a4a6a9",
+          "#c8cbce",
+          "#eceff2"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Border",
+        "canonical": "#ced1d6",
+        "dark": "#352f28",
+        "tonalRamp": [
+          "#090b0e",
+          "#232529",
+          "#404247",
+          "#5f6266",
+          "#818388",
+          "#a3a6ab",
+          "#c8cbd0",
+          "#eceff4"
+        ]
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "Border Strong",
+        "canonical": "#aeb1b7",
+        "dark": "#534c44",
+        "tonalRamp": [
+          "#090b0f",
+          "#23252a",
+          "#404247",
+          "#5f6267",
+          "#808389",
+          "#a3a6ac",
+          "#c7cbd1",
+          "#ebeef5"
+        ]
+      },
+      "success": {
+        "role": "status",
+        "displayName": "Success Green",
+        "canonical": "#2e9052",
+        "dark": "#56bd78",
+        "tonalRamp": [
+          "#001600",
+          "#003400",
+          "#005419",
+          "#00763a",
+          "#39995a",
+          "#5fbd7c",
+          "#85e3a0",
+          "#a9ffc3"
+        ]
+      },
+      "warning": {
+        "role": "status",
+        "displayName": "Warning Amber",
+        "canonical": "#de7000",
+        "dark": "#f99532",
+        "tonalRamp": [
+          "#340000",
+          "#5a0000",
+          "#7f1200",
+          "#a53c00",
+          "#cc6000",
+          "#f4842b",
+          "#ffa956",
+          "#ffcd7c"
+        ]
+      },
+      "error": {
+        "role": "status",
+        "displayName": "Error Red",
+        "canonical": "#c9222b",
+        "dark": "#ff645f",
+        "tonalRamp": [
+          "#3f0000",
+          "#680000",
+          "#900000",
+          "#b9021c",
+          "#e23f40",
+          "#ff6763",
+          "#ff8e86",
+          "#ffb3a8"
+        ]
+      },
+      "info": {
+        "role": "status",
+        "displayName": "Info Blue",
+        "canonical": "#037ac0",
+        "dark": "#4dacf6",
+        "tonalRamp": [
+          "#000041",
+          "#002363",
+          "#004486",
+          "#0066ab",
+          "#2389d1",
+          "#4faef7",
+          "#75d3ff",
+          "#9af8ff"
+        ]
+      },
+      "ink-subtle": {
+        "role": "neutral",
+        "displayName": "Subtle Ink",
+        "canonical": "#5a5e63",
+        "dark": "#99948f",
+        "purpose": "Third-tier text: quiet chrome and secondary metadata.",
+        "tonalRamp": [
+          "#080b0f",
+          "#23272b",
+          "#42454a",
+          "#62666c",
+          "#858a8f",
+          "#a7abb1",
+          "#caced4",
+          "#eaeff5"
+        ]
+      },
+      "ink-on-pastel": {
+        "role": "neutral",
+        "displayName": "Ink On Pastel",
+        "canonical": "#0d121b",
+        "dark": "#0f0a05",
+        "purpose": "The one text ink used on tinted status grounds.",
+        "tonalRamp": [
+          "#070b14",
+          "#212731",
+          "#3f4550",
+          "#606672",
+          "#838996",
+          "#a4abb8",
+          "#c7cedb",
+          "#e7effd"
+        ]
+      },
+      "success-bg": {
+        "role": "neutral",
+        "displayName": "Success Ground",
+        "canonical": "#dffae5",
+        "purpose": "Light: flat pastel at oklch(96% 0.04 152). Dark: 22% in-oklab mix of oklch(50% 0.13 152).",
+        "tonalRamp": [
+          "#001004",
+          "#172c1d",
+          "#354b3b",
+          "#556d5b",
+          "#78907e",
+          "#99b29f",
+          "#bbd6c1",
+          "#dcf7e2"
+        ],
+        "dark": "rgba(5, 119, 59, 0.22)"
+      },
+      "warning-bg": {
+        "role": "neutral",
+        "displayName": "Warning Ground",
+        "canonical": "#ffebd1",
+        "purpose": "Light: flat pastel at oklch(96% 0.05 60). Dark: 22% in-oklab mix of oklch(55% 0.16 60) — a darker, more saturated base than the foreground hue, struck so the lamplit plate does not wash out.",
+        "tonalRamp": [
+          "#150800",
+          "#32230e",
+          "#52422c",
+          "#74634c",
+          "#98866e",
+          "#baa88f",
+          "#decab1",
+          "#ffebd1"
+        ],
+        "dark": "rgba(178, 84, 0, 0.22)"
+      },
+      "error-bg": {
+        "role": "neutral",
+        "displayName": "Error Ground",
+        "canonical": "#ffe8e4",
+        "purpose": "Light: flat pastel at oklch(96% 0.04 25). Dark: 22% in-oklab mix of oklch(50% 0.18 25) — same reasoning as the warning ground.",
+        "tonalRamp": [
+          "#150705",
+          "#32221f",
+          "#52403d",
+          "#74615e",
+          "#988480",
+          "#bba5a1",
+          "#dec8c4",
+          "#ffe9e5"
+        ],
+        "dark": "rgba(179, 34, 40, 0.22)"
+      },
+      "info-bg": {
+        "role": "neutral",
+        "displayName": "Info Ground",
+        "canonical": "#e2f5ff",
+        "purpose": "Light: flat pastel at oklch(96% 0.03 245). Dark: 22% in-oklab mix of oklch(50% 0.14 245).",
+        "tonalRamp": [
+          "#020d13",
+          "#1a2930",
+          "#384850",
+          "#586972",
+          "#7b8c95",
+          "#9caeb7",
+          "#bfd1db",
+          "#dff2fc"
+        ],
+        "dark": "rgba(0, 104, 173, 0.22)"
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display (Besley 800)", "purpose": "Masthead wordmark and homepage hero only." },
-      "headline": { "displayName": "Headline (Besley 600)", "purpose": "Page titles, opened by a 2px ink rule." },
-      "title": { "displayName": "Title (Besley 600)", "purpose": "Section heads and ledger-row item titles." },
-      "body": { "displayName": "Body (Public Sans)", "purpose": "UI prose, labels, navigation." },
-      "body-serif": { "displayName": "Long-form (Source Serif 4)", "purpose": "Article full text and ledes at 44-52.5rem measures, line-height 1.7." },
-      "label": { "displayName": "Label (Public Sans caps)", "purpose": "Datelines, metadata labels, chips, nav strip; 11px (--text-2xs) is the absolute floor." }
+      "display": {
+        "displayName": "Display (Besley 800)",
+        "purpose": "Masthead wordmark and homepage hero only."
+      },
+      "headline": {
+        "displayName": "Headline (Besley 600)",
+        "purpose": "Page titles (h1), opened by a 2px ink rule; steps down to the --text-3xl clamp below 768px."
+      },
+      "subhead": {
+        "displayName": "Subhead (Besley 600)",
+        "purpose": "Section headings (h2); 1.875rem below 768px. Never painted in primary."
+      },
+      "title": {
+        "displayName": "Title (Besley 600)",
+        "purpose": "h3 and ledger-row item titles; 1.875rem at >=768px. In-record block heads drop to 1.1875rem at weight 700."
+      },
+      "body": {
+        "displayName": "Body (Public Sans)",
+        "purpose": "UI prose, labels, navigation."
+      },
+      "body-serif": {
+        "displayName": "Long-form (Source Serif 4)",
+        "purpose": "Article full text and ledes at 44-52.5rem measures, line-height 1.7."
+      },
+      "label": {
+        "displayName": "Label (Public Sans caps)",
+        "purpose": "Datelines, metadata labels, chips, disclosure toggles, nav strip; 11px (--text-2xs) is the absolute floor."
+      }
     },
     "shadows": [
-      { "name": "shadow-xs", "value": "0 1px 2px 0 rgba(20, 22, 27, 0.06)", "purpose": "Minimal ambient depth." },
-      { "name": "shadow-sm", "value": "0 1px 3px 0 rgba(9, 11, 15, 0.12), 0 1px 2px -1px rgba(20, 22, 27, 0.06)", "purpose": "Default panel shadow (= --panel-shadow)." },
-      { "name": "shadow-md", "value": "0 4px 6px -1px rgba(9, 11, 15, 0.12), 0 2px 4px -2px rgba(20, 22, 27, 0.06)", "purpose": "Dropdowns and floating panels." },
-      { "name": "shadow-lg", "value": "0 10px 15px -3px rgba(9, 11, 15, 0.12), 0 4px 6px -4px rgba(20, 22, 27, 0.06)", "purpose": "Modals; rare." },
-      { "name": "glow-sm", "value": "0 2px 6px -1px rgba(206, 65, 21, 0.25)", "purpose": "Filled-primary button at rest." },
-      { "name": "glow-md", "value": "0 4px 12px -2px rgba(206, 65, 21, 0.3)", "purpose": "Filled-primary button on hover." },
-      { "name": "ring-focus", "value": "0 0 0 3px rgba(206, 65, 21, 0.3)", "purpose": "Input focus ring (paired with primary border)." }
+      {
+        "name": "shadow-xs",
+        "value": "0 1px 2px 0 rgba(20, 22, 27, 0.06)",
+        "dark": "0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px -1px rgba(0, 0, 0, 0.1)",
+        "purpose": "Minimal ambient depth."
+      },
+      {
+        "name": "shadow-sm",
+        "value": "0 1px 3px 0 rgba(9, 11, 15, 0.12), 0 1px 2px -1px rgba(20, 22, 27, 0.06)",
+        "dark": "0 2px 6px -1px rgba(0, 0, 0, 0.18), 0 2px 4px -2px rgba(0, 0, 0, 0.12)",
+        "purpose": "Default panel shadow (= --panel-shadow)."
+      },
+      {
+        "name": "shadow-md",
+        "value": "0 4px 6px -1px rgba(9, 11, 15, 0.12), 0 2px 4px -2px rgba(20, 22, 27, 0.06)",
+        "dark": "0 6px 16px -4px rgba(0, 0, 0, 0.25), 0 4px 8px -4px rgba(0, 0, 0, 0.25)",
+        "purpose": "Dropdowns and floating panels."
+      },
+      {
+        "name": "shadow-lg",
+        "value": "0 10px 15px -3px rgba(9, 11, 15, 0.12), 0 4px 6px -4px rgba(20, 22, 27, 0.06)",
+        "dark": "0 12px 28px -8px rgba(0, 0, 0, 0.35), 0 8px 16px -8px rgba(0, 0, 0, 0.2)",
+        "purpose": "Modals; rare. Dark is struck from pure black at higher alpha and greater spread — a neutral-ink shadow is invisible on a lamplit ground."
+      },
+      {
+        "name": "glow-xs",
+        "value": "0 1px 3px 0 rgba(206, 65, 21, 0.2)",
+        "dark": "0 1px 3px 0 rgba(236, 101, 63, 0.2)",
+        "purpose": "Filled-primary button, active/pressed."
+      },
+      {
+        "name": "glow-sm",
+        "value": "0 2px 6px -1px rgba(206, 65, 21, 0.25)",
+        "dark": "0 2px 6px -1px rgba(236, 101, 63, 0.25)",
+        "purpose": "Filled-primary button at rest."
+      },
+      {
+        "name": "glow-md",
+        "value": "0 4px 12px -2px rgba(206, 65, 21, 0.3)",
+        "dark": "0 4px 12px -2px rgba(236, 101, 63, 0.3)",
+        "purpose": "Filled-primary button on hover."
+      },
+      {
+        "name": "focus-outline",
+        "value": "2px solid #ce4115",
+        "dark": "2px solid #ec653f",
+        "purpose": "THE default focus indicator, paired with outline-offset: 2px."
+      },
+      {
+        "name": "ring-focus",
+        "value": "0 0 0 3px rgba(206, 65, 21, 0.3)",
+        "dark": "0 0 0 3px rgba(236, 101, 63, 0.35)",
+        "purpose": "Box-shadow focus ring — the exception, for controls an outline would be clipped on. Also the input focus ring, paired with a primary border."
+      },
+      {
+        "name": "ring-focus-sm",
+        "value": "0 0 0 2px rgba(206, 65, 21, 0.22)",
+        "dark": "0 0 0 2px rgba(236, 101, 63, 0.22)",
+        "purpose": "Tighter 2px ring for dense controls."
+      }
     ],
     "motion": [
-      { "name": "transition-fast", "value": "150ms cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Color/border state changes." },
-      { "name": "transition-base", "value": "200ms cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Default transitions." },
-      { "name": "transition-slow", "value": "300ms cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Larger reveals; ceiling. No bounce, no elastic." },
-      { "name": "ease-out-quart", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "The single easing curve." }
+      {
+        "name": "transition-fast",
+        "value": "150ms cubic-bezier(0.25, 1, 0.5, 1)",
+        "purpose": "Color/border state changes."
+      },
+      {
+        "name": "transition-base",
+        "value": "200ms cubic-bezier(0.25, 1, 0.5, 1)",
+        "purpose": "Default transitions."
+      },
+      {
+        "name": "transition-slow",
+        "value": "300ms cubic-bezier(0.25, 1, 0.5, 1)",
+        "purpose": "Larger reveals; ceiling. No bounce, no elastic."
+      },
+      {
+        "name": "ease-out-quart",
+        "value": "cubic-bezier(0.25, 1, 0.5, 1)",
+        "purpose": "The single easing curve."
+      }
     ],
     "breakpoints": [
-      { "name": "xs", "value": "400px" },
-      { "name": "sm", "value": "600px" },
-      { "name": "md", "value": "768px" },
-      { "name": "lg", "value": "1024px" },
-      { "name": "xl", "value": "1200px" },
-      { "name": "xxl", "value": "1460px" }
-    ]
+      {
+        "name": "xs",
+        "value": "400px"
+      },
+      {
+        "name": "sm",
+        "value": "600px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1200px"
+      },
+      {
+        "name": "xxl",
+        "value": "1460px"
+      }
+    ],
+    "typeMap": {
+      "purpose": "Fixed semantic map for resource types and entities, rendered as dots on outlined chips. Declared in BOTH theme blocks: as :root-only aliases they inherited already-substituted light hues under the data-theme toggle.",
+      "slots": [
+        {
+          "name": "--type-article",
+          "light": "#ce4115",
+          "dark": "#ec653f"
+        },
+        {
+          "name": "--type-publication",
+          "light": "#394f68",
+          "dark": "#708093"
+        },
+        {
+          "name": "--type-audiovisual",
+          "light": "#037ac0",
+          "dark": "#4dacf6"
+        },
+        {
+          "name": "--type-document",
+          "light": "#de7000",
+          "dark": "#f99532"
+        },
+        {
+          "name": "--type-reference",
+          "light": "#66696e",
+          "dark": "#8a8580"
+        },
+        {
+          "name": "--type-photograph",
+          "light": "#2e9052",
+          "dark": "#56bd78"
+        },
+        {
+          "name": "--type-entity-personnes",
+          "light": "#037ac0",
+          "dark": "#4dacf6"
+        },
+        {
+          "name": "--type-entity-lieux",
+          "light": "#2e9052",
+          "dark": "#56bd78"
+        },
+        {
+          "name": "--type-entity-organisations",
+          "light": "#de7000",
+          "dark": "#f99532"
+        }
+      ]
+    },
+    "categoricalSeries": {
+      "purpose": "The theme-owned categorical chart palette, consumed by IwacVisualizations. Slots 1-2 alias --primary/--secondary and flip with the theme; slots 3-20 are literals held at parity across themes. Slots 4 and 8 were lifted out of the crossover band so knocked-out labels stay legible.",
+      "leadSlots": 2,
+      "leads": [
+        "--primary",
+        "--secondary"
+      ],
+      "slots": [
+        {
+          "name": "--series-1",
+          "light": "#ce4115",
+          "dark": "#ec653f",
+          "lead": true
+        },
+        {
+          "name": "--series-2",
+          "light": "#394f68",
+          "dark": "#708093",
+          "lead": true
+        },
+        {
+          "name": "--series-3",
+          "light": "#4a8c6f",
+          "dark": "#4a8c6f",
+          "lead": false
+        },
+        {
+          "name": "--series-4",
+          "light": "#bb4c49",
+          "dark": "#bb4c49",
+          "lead": false
+        },
+        {
+          "name": "--series-5",
+          "light": "#7c5295",
+          "dark": "#7c5295",
+          "lead": false
+        },
+        {
+          "name": "--series-6",
+          "light": "#d4a574",
+          "dark": "#d4a574",
+          "lead": false
+        },
+        {
+          "name": "--series-7",
+          "light": "#2c5f7c",
+          "dark": "#2c5f7c",
+          "lead": false
+        },
+        {
+          "name": "--series-8",
+          "light": "#876c45",
+          "dark": "#876c45",
+          "lead": false
+        },
+        {
+          "name": "--series-9",
+          "light": "#5ba3a0",
+          "dark": "#5ba3a0",
+          "lead": false
+        },
+        {
+          "name": "--series-10",
+          "light": "#cc8963",
+          "dark": "#cc8963",
+          "lead": false
+        },
+        {
+          "name": "--series-11",
+          "light": "#4a8aab",
+          "dark": "#4a8aab",
+          "lead": false
+        },
+        {
+          "name": "--series-12",
+          "light": "#a68e6d",
+          "dark": "#a68e6d",
+          "lead": false
+        },
+        {
+          "name": "--series-13",
+          "light": "#d49b6a",
+          "dark": "#d49b6a",
+          "lead": false
+        },
+        {
+          "name": "--series-14",
+          "light": "#6fb08e",
+          "dark": "#6fb08e",
+          "lead": false
+        },
+        {
+          "name": "--series-15",
+          "light": "#9e7bb8",
+          "dark": "#9e7bb8",
+          "lead": false
+        },
+        {
+          "name": "--series-16",
+          "light": "#e0a88a",
+          "dark": "#e0a88a",
+          "lead": false
+        },
+        {
+          "name": "--series-17",
+          "light": "#8e7cb8",
+          "dark": "#8e7cb8",
+          "lead": false
+        },
+        {
+          "name": "--series-18",
+          "light": "#d87e7a",
+          "dark": "#d87e7a",
+          "lead": false
+        },
+        {
+          "name": "--series-19",
+          "light": "#6b5b95",
+          "dark": "#6b5b95",
+          "lead": false
+        },
+        {
+          "name": "--series-20",
+          "light": "#4db6ac",
+          "dark": "#4db6ac",
+          "lead": false
+        }
+      ]
+    }
   },
   "components": [
     {
@@ -91,9 +737,9 @@
       "name": "Dateline",
       "kind": "custom",
       "refersTo": "label",
-      "description": "The recurring identity device: TYPE · PUBLISHER · DATE in tracked uppercase with primary interpuncts.",
-      "html": "<p class=\"ds-dateline\">Article<span class=\"ds-dateline-sep\">·</span>Fraternité Matin<span class=\"ds-dateline-sep\">·</span>12 March 1974</p>",
-      "css": ".ds-dateline { display: inline-flex; align-items: baseline; gap: 0.5em; margin: 0; font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-2xs, 0.6875rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wider, 0.08em); color: var(--muted, #66696e); } .ds-dateline-sep { color: var(--primary, #ce4115); font-weight: 700; }"
+      "description": "TYPE · PUBLISHER · DATE in tracked uppercase with primary interpuncts. Its right edge carries a quiet CITE jump to the citation panel anchor.",
+      "html": "<p class=\"ds-dateline\">Article<span class=\"ds-dateline-sep\">·</span>La Croix du Bénin<span class=\"ds-dateline-sep\">·</span>4 June 1993<a class=\"ds-dateline-cite\" href=\"#how-to-cite\">” Cite</a></p>",
+      "css": ".ds-dateline { display: flex; flex-wrap: wrap; align-items: baseline; margin: 0; font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-xs, 0.8125rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wide, 0.04em); color: var(--ink-light, #3f4349); } .ds-dateline-sep { color: var(--primary, #ce4115); padding: 0 0.5em; } .ds-dateline-cite { margin-inline-start: auto; color: var(--muted, #66696e); text-decoration: none; border-bottom: 1px solid var(--border, #ced1d6); transition: color 150ms cubic-bezier(0.25, 1, 0.5, 1), border-color 150ms cubic-bezier(0.25, 1, 0.5, 1); } .ds-dateline-cite:hover { color: var(--primary, #ce4115); border-bottom-color: var(--primary, #ce4115); } .ds-dateline-cite:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 2px; }"
     },
     {
       "name": "Ledger Row",
@@ -110,44 +756,121 @@
       "description": "KPI as an almanac entry: 2px ink rule, uppercase eyebrow, Besley numeral with lining figures. No card, no gradient.",
       "html": "<div class=\"ds-almanac\"><p class=\"ds-almanac-label\">Items in the collection</p><p class=\"ds-almanac-figure\">14,208</p></div>",
       "css": ".ds-almanac { border-top: 2px solid var(--ink-strong, #05070c); padding-top: 0.625rem; background: transparent; } .ds-almanac-label { margin: 0 0 0.25rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-2xs, 0.6875rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wider, 0.08em); color: var(--muted, #66696e); } .ds-almanac-figure { margin: 0; font-family: Besley, 'Source Serif 4', Georgia, serif; font-size: var(--text-2xl, 1.875rem); font-weight: 600; letter-spacing: var(--tracking-display, -0.01em); font-feature-settings: 'lnum'; color: var(--ink, #13161c); }"
+    },
+    {
+      "name": "Transcript Disclosure",
+      "kind": "custom",
+      "refersTo": "disclosure-toggle",
+      "description": "Progressive disclosure for an over-long OCR body: an opening extract, then a native <details> whose summary is drawn as a press \"continued\" rule.",
+      "html": "<div class=\"ds-transcript\"><p class=\"ds-transcript-extract\">Le Conseil supérieur des imams a tenu son assemblée générale annuelle…</p><details class=\"ds-transcript-rest\"><summary class=\"ds-transcript-toggle\"><span class=\"ds-transcript-more\">Read the full transcript</span><span class=\"ds-transcript-less\">Show less</span></summary><p class=\"ds-transcript-extract\">… le reste du texte numérisé.</p></details></div>",
+      "css": ".ds-transcript-extract { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-size: var(--text-lg, 1.1875rem); line-height: var(--line-height-relaxed, 1.7); color: var(--ink, #13161c); max-width: var(--measure-narrow, 44rem); } .ds-transcript-rest { margin-top: 1.25rem; } .ds-transcript-toggle { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 0; border-top: 1px solid var(--border, #ced1d6); font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-xs, 0.8125rem); font-weight: 600; letter-spacing: var(--tracking-wider, 0.08em); text-transform: uppercase; color: var(--ink-light, #3f4349); cursor: pointer; list-style: none; transition: color 150ms cubic-bezier(0.25, 1, 0.5, 1), border-color 150ms cubic-bezier(0.25, 1, 0.5, 1); } .ds-transcript-toggle::-webkit-details-marker { display: none; } .ds-transcript-toggle::after { content: \"\"; width: 0.85em; height: 0.85em; flex: none; background-color: currentColor; -webkit-mask: center / contain no-repeat url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E\"); mask: center / contain no-repeat url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E\"); transition: transform 150ms cubic-bezier(0.25, 1, 0.5, 1); } .ds-transcript-toggle:hover { color: var(--primary, #ce4115); border-top-color: var(--primary, #ce4115); } .ds-transcript-toggle:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 2px; } .ds-transcript-less { display: none; } .ds-transcript-rest[open] .ds-transcript-more { display: none; } .ds-transcript-rest[open] .ds-transcript-less { display: inline; } .ds-transcript-rest[open] .ds-transcript-toggle::after { transform: rotate(180deg); }"
+    },
+    {
+      "name": "Breadcrumb Trail",
+      "kind": "nav",
+      "refersTo": "label",
+      "description": "Plain uppercase crumb line — wayfinding, not a component to decorate. Current page marked with a primary dot; link crumbs wrap rather than truncate.",
+      "html": "<nav class=\"ds-crumbs\" aria-label=\"Breadcrumb\"><a href=\"#\">Home</a><span class=\"ds-crumbs-sep\">/</span><a href=\"#\">Items</a><span class=\"ds-crumbs-sep\">/</span><span class=\"ds-crumbs-current\">Le pèlerinage à La Mecque</span></nav>",
+      "css": ".ds-crumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-xs, 0.8125rem); text-transform: uppercase; letter-spacing: var(--tracking-wide, 0.04em); } .ds-crumbs a { color: var(--muted, #66696e); text-decoration: none; border-radius: var(--radius-sm, 0.375rem); transition: color 150ms cubic-bezier(0.25, 1, 0.5, 1); } .ds-crumbs a:hover { color: var(--primary, #ce4115); } .ds-crumbs a:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 1px; } .ds-crumbs-sep { color: var(--border-strong, #aeb1b7); } .ds-crumbs-current { display: inline-flex; align-items: center; gap: 0.4em; color: var(--ink-light, #3f4349); font-weight: 600; } .ds-crumbs-current::before { content: \"\"; width: 0.4em; height: 0.4em; border-radius: 9999px; background: var(--primary, #ce4115); }"
     }
   ],
   "narrative": {
     "northStar": "The Research Broadsheet",
-    "overview": "A 20th-century broadsheet operated as a scientific instrument. The site is a scholarly database — LLM sentiment models, LDA topics, embeddings, IIIF — that carries the visual grammar of the newspapers it preserves: masthead wordmark, uppercase section strip, thick 2px ink rules, datelines, ledger-style result rows, a duotone press-collage hero. The execution is a modern broadsheet's digital archive run by a university press: newspaper typographic conventions with Linear/Stripe-grade product polish. Density is a feature, not a compromise, and restraint is the resting state — the quiet control is the default and loudness opts in.",
+    "overview": "A 20th-century broadsheet operated as a scientific instrument. The site is a scholarly database — LLM sentiment models, LDA topics, embeddings, IIIF — that carries the visual grammar of the newspapers it preserves: masthead wordmark, uppercase section strip, thick 2px ink rules, datelines, ledger-style result rows, a duotone press-collage hero. The execution is a modern broadsheet's digital archive run by a university press: newspaper typographic conventions with Linear/Stripe-grade product polish.\n\nDensity is a feature, not a compromise: researchers want more items per screen, flat ledger rows over boxed cards, metadata flowing inline with interpunct separators. Restraint is the resting state — the quiet control is the default and loudness opts in. Confirmed anti-references: not a small museum's website, not a warm editorial magazine, not a generic dashboard; no cream or parchment, no pastiche of aged paper.\n\nThe system is enforced, not merely written down. Every value the token generator publishes is compared by a guard in this repo and in both consumer modules; a rule that lives only in prose is a rule that has already drifted. That doctrine — publish it and assert it — is why the palette below includes the twenty categorical chart slots and the nine resource-type hues that once lived as loose hex in a sibling repo.",
     "keyCharacteristics": [
       "Newspaper grammar (rules, datelines, ledgers) executed with product-grade polish",
       "Density over comfort; typography as architecture, rules as joinery",
       "Near-white cool-neutral light mode; warm \"lamplit reading room\" dark mode",
       "One brand accent used sparingly; category encoded as dots, never fills",
+      "Two themes declared in full — dark is a redeclaration, never an inherited substitution",
       "AI-generated content visibly marked (computational honesty)"
     ],
     "rules": [
-      { "name": "The One Plate Rule", "body": "The duotone hero — a grayscale collage multiplied over a primary ground — is the one big color statement on the site. Everything else earns primary only as an accent.", "section": "colors" },
-      { "name": "The Dot-Not-Fill Rule", "body": "Category is a dot on an outlined chip, never a filled or pastel badge. Ten filled badges per screen is shouting; ten dots is an index.", "section": "colors" },
-      { "name": "The Data-Only Secondary Rule", "body": "#394f68 exists for charts. If it appears on a button, link, or focus ring, it is a bug.", "section": "colors" },
-      { "name": "The Slab Tracking Rule", "body": "Besley display sizes track at -0.01em, never the full -0.02em — slab serifs clog at tight tracking.", "section": "typography" },
-      { "name": "The Lining Zero Rule", "body": "Besley's tnum zero is broken (frozen at 55 units across weights); use font-feature-settings 'lnum' for aligned numerals, never tabular-nums with the display serif.", "section": "typography" },
-      { "name": "The No-14px Rule", "body": "The type scale deliberately skips 14px; 11px (--text-2xs) is the floor. Absolute font-size literals fail npm run check:tokens — use --text-* tokens.", "section": "typography" },
-      { "name": "The Glass Once Rule", "body": "Backdrop-filter belongs to the sticky header and nowhere else.", "section": "elevation" },
-      { "name": "The Rules-Not-Boxes Rule", "body": "Before adding a shadowed card, try a 2px ink rule or a hairline. Boxes are a last resort for true panels.", "section": "elevation" }
+      {
+        "name": "The One Plate Rule",
+        "body": "The duotone hero — a grayscale collage multiplied over a primary ground — is the one big color statement on the site. Everything else earns primary only as an accent.",
+        "section": "colors"
+      },
+      {
+        "name": "The Dot-Not-Fill Rule",
+        "body": "Category is a dot on an outlined chip, never a filled or pastel badge. Ten filled badges per screen is shouting; ten dots is an index.",
+        "section": "colors"
+      },
+      {
+        "name": "The Data-Only Secondary Rule",
+        "body": "#394f68 exists for data. If it appears on a button, link, or focus ring, it is a bug.",
+        "section": "colors"
+      },
+      {
+        "name": "The Redeclare-In-Dark Rule",
+        "body": "A token whose value contains `var(…)` must be declared in the dark block too. Declared once on `:root`, it is substituted against light referents and inherited frozen by every dark descendant — a whole-theme failure that looks like nothing until a contrast probe finds it.",
+        "section": "colors"
+      },
+      {
+        "name": "The Published Scale Rule",
+        "body": "A color that encodes data belongs in `tokens.json` with a name, a light value and a dark value. Owning a scale means deciding it, never leaving it unpublished in a consumer's source.",
+        "section": "colors"
+      },
+      {
+        "name": "The Slab Tracking Rule",
+        "body": "Besley display sizes track at -0.01em, never the full -0.02em — slab serifs clog at tight tracking.",
+        "section": "typography"
+      },
+      {
+        "name": "The Lining Zero Rule",
+        "body": "Besley's `tnum` zero is broken (frozen at 55 units across weights); use `font-feature-settings: \"lnum\"` for aligned numerals, never `tabular-nums` with the display serif. All headings set `\"kern\" \"liga\" \"dlig\" \"lnum\"`.",
+        "section": "typography"
+      },
+      {
+        "name": "The No-14px Rule",
+        "body": "The type scale deliberately skips 14px; 11px (`--text-2xs`) is the floor. Absolute `font-size` literals fail `npm run check:tokens` — use `--text-*` tokens.",
+        "section": "typography"
+      },
+      {
+        "name": "The Bound Punctuation Rule",
+        "body": "French sets a space before `: ; ! ?` and `»` and after `«`. Rendered as an ordinary space it is a legal line-break opportunity, and a headline can open a line with an orphaned colon that reads as a bullet. Titles pass through the `FrenchSpacing` helper, which rewrites those spaces to U+202F NARROW NO-BREAK SPACE — same gap, no break.",
+        "section": "typography"
+      },
+      {
+        "name": "The Separator-Ends-The-Line Rule",
+        "body": "An inline separator between repeated values is drawn with `::after` on the preceding value, never `::before` on the following one. Each value is an atomic wrap unit, so a leading separator opens whichever line its box starts — an interpunct that reads as a bullet.",
+        "section": "layout"
+      },
+      {
+        "name": "The Glass Once Rule",
+        "body": "Backdrop-filter belongs to the sticky header and nowhere else.",
+        "section": "elevation-and-depth"
+      },
+      {
+        "name": "The Rules-Not-Boxes Rule",
+        "body": "Before adding a shadowed card, try a 2px ink rule or a hairline. Boxes are a last resort for true panels. The AI lede, the linked-resources filter bar, and the transcript disclosure were all boxes once and are all rules now.",
+        "section": "elevation-and-depth"
+      },
+      {
+        "name": "The Outline-First Focus Rule",
+        "body": "`--focus-outline` at 2px offset is the focus indicator. The `--ring-focus` halo is the exception for clipped or oddly-shaped controls, never the default — it is the weaker indicator, and reaching for it by habit is how a surface ends up with no visible focus at all.",
+        "section": "elevation-and-depth"
+      }
     ],
     "dos": [
-      "Do open sections with 2px ink rules and divide rows with hairlines — typography is the architecture, rules are the joinery.",
-      "Do keep transitions 150–300ms on cubic-bezier(0.25, 1, 0.5, 1); real objects decelerate smoothly.",
-      "Do mark AI-generated fields with the EU \"AI GENERATED\" provenance treatment.",
-      "Do mix colors in oklab, derive primary variants from the seed, and run npm run check:tokens before trusting any token name.",
-      "Do test any new font against ḥ ṣ ḍ ṭ ẓ ʿ ā ī ū before adopting it.",
-      "Do give every interactive element a visible focus state and respect prefers-reduced-motion."
+      "**Do** open sections with 2px ink rules and divide rows with hairlines — typography is the architecture, rules are the joinery.",
+      "**Do** declare every composed or aliased token in the dark block as well as the light one, so dark pages compose against dark referents.",
+      "**Do** publish any color that encodes data as a named light/dark pair in `tokens.json`, and let the guards compare it.",
+      "**Do** keep transitions 150–300ms on `cubic-bezier(0.25, 1, 0.5, 1)`; real objects decelerate smoothly.",
+      "**Do** mark AI-generated fields with the EU \"AI GENERATED\" provenance treatment on the label, and open the lede on an ink rule.",
+      "**Do** mix colors `in oklab`, derive primary variants from the seed, and run `npm run check:tokens` before trusting any token name.",
+      "**Do** test any new font against `ḥ ṣ ḍ ṭ ẓ ʿ ā ī ū` before adopting it.",
+      "**Do** give every interactive element a visible focus state — `--focus-outline` first — and respect `prefers-reduced-motion`."
     ],
     "donts": [
-      "Don't use warm cream or parchment surfaces — wrong register (\"manuscript museum brochure\").",
-      "Don't add atmospheric gradients, gradient bars, glassmorphism (outside the sticky header), or colored side-stripes.",
-      "Don't fill category badges or color h2s in primary — category is a dot, primary is an accent.",
-      "Don't use cold blue-gray dark surfaces — dark mode is warm (\"lamplit\"), hue ~70–80.",
-      "Don't box result rows into cards or stack decorative effects on one component.",
-      "Don't use bouncing/elastic easing or hover-triggered hero animations (the one-time Ken Burns settle is the sanctioned exception).",
-      "Don't pair Besley with tabular-nums (broken tnum zero) or track it tighter than -0.01em."
+      "**Don't** use warm cream or parchment surfaces — wrong register (\"manuscript museum brochure\").",
+      "**Don't** add atmospheric gradients, gradient bars, glassmorphism (outside the sticky header), or colored side-stripes.",
+      "**Don't** fill category badges or color `h2`s in primary — category is a dot, primary is an accent.",
+      "**Don't** use cold blue-gray dark surfaces — dark mode is warm (\"lamplit\"), hue ~70–80.",
+      "**Don't** box result rows, filter bars, linked-resource lists, or the AI lede into cards.",
+      "**Don't** replace an outline focus indicator with the `--ring-focus` halo for convenience, and never with `outline: none` alone.",
+      "**Don't** use bouncing/elastic easing or hover-triggered hero animations (the one-time Ken Burns settle is the sanctioned exception).",
+      "**Don't** pair Besley with `tabular-nums` (broken tnum zero) or track it tighter than -0.01em."
     ]
   }
 }
