@@ -65,6 +65,23 @@ headless captures can render blank (use a tall `-Height` window instead), and th
 in-app browser pane reports a 0×0 hidden viewport, making in-page layout metrics from
 it meaningless.
 
+Rules added in the item-show run (2026-08-24), each having produced or nearly produced
+a false finding:
+
+- **Tall `-Height` captures inflate viewport-relative blocks** (the Mirador frame read
+  ~2,700px in a 4000px window; it is 630px at a real 900px viewport). Density/size
+  claims need a real-height viewport.
+- **Lazy-on-view blocks show their placeholder forever in unscrolled probes.** The
+  dashboards mount on IntersectionObserver; a "spinner never resolves" claim is only
+  valid after a Playwright probe has genuinely scrolled the block into view and waited
+  (a refuted item-page P1 resolved in 5s once scrolled).
+- **The CLI detector silently skips `.phtml`** — its scannable set ends at
+  `.blade.php`. Scan theme templates by mirroring each to a byte-identical
+  `<name>.blade.php` copy, and prove the detector fires by seeding one bad line before
+  trusting a clean result. URL mode needs puppeteer (not installed).
+- **Contrast is measured from rendered sRGB readback**, not token-hex math — Chrome
+  serializes computed colours as `oklch()`.
+
 **Every visual claim in an Impeccable pass must be grounded in this rig — both themes
 (light + dark), and at minimum the 1440px and 375px viewports.**
 
@@ -78,7 +95,7 @@ proxy, prefix with `http://localhost:5179`.
 |---|---|---|
 | Homepage | `/s/westafrica/page/home` | Duotone hero + Ken Burns, masthead search + typeahead, two-tier stat strip, collection-overview block |
 | Newspaper article | `/s/westafrica/item/74601` | Dateline, metadata ledger, AI lede + EU "AI GENERATED" mark, Mirador viewer (file-backed scans), citation panel, linked resources |
-| Islamic publication | `/s/westafrica/item/24073` | Template 21: structured AI table of contents (`ai-toc`), Mirador multi-page |
+| Islamic publication | `/s/westafrica/item/24073` | Template 21, Mirador multi-page — **carries no `dcterms:tableOfContents` as of 2026-08-24, so `ai-toc` is unexercised; find a ToC-bearing exemplar to evaluate it** |
 | Fileless audiovisual | `/s/westafrica/item/108353` | `videoEmbeds` block (YouTube ingest — Mirador renders nothing here by design) |
 | Index entry (person) | `/s/westafrica/item/1023` | Authority-record layout, linked resources, mentions sparkline (241 occurrences) |
 | Academic reference | `/s/westafrica/item/5235` | Reference metadata layout, external links |
