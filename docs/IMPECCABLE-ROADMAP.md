@@ -82,6 +82,14 @@ a false finding:
 - **Contrast is measured from rendered sRGB readback**, not token-hex math — Chrome
   serializes computed colours as `oklch()`.
 
+And from the browse run (2026-08-24):
+
+- **`__focus` is programmatic focus and does not trigger `:focus-visible`** — its
+  stills are illustrative only; focus-ring evidence must come from real Tab
+  keypresses in a Playwright probe. Related: Chromium resumes sequential focus
+  traversal from the last focused element after `blur()`, so naive tab-count
+  probes undercount.
+
 **Every visual claim in an Impeccable pass must be grounded in this rig — both themes
 (light + dark), and at minimum the 1440px and 375px viewports.**
 
