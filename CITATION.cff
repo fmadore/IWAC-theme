@@ -28,7 +28,7 @@ authors:
     given-names: Frédérick
     orcid: "https://orcid.org/0000-0003-0959-2092"
     affiliation: "University of Bayreuth"
-version: "2.11.0"
+version: "2.12.0"
 date-released: "2026-08-20"
 license: GPL-3.0-or-later
 repository-code: "https://github.com/fmadore/IWAC-theme"
