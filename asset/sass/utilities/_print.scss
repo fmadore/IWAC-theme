@@ -55,6 +55,24 @@
         display: none !important;
     }
 
+    // A collapsed transcript is a screen affordance, not an editorial cut:
+    // paper gets the whole document body. `::details-content` covers the
+    // engines that hide the content through that pseudo-element; the child
+    // rule covers the older `display: none` on slotted children. Whichever a
+    // browser doesn't understand it simply drops.
+    .transcript__rest::details-content {
+        content-visibility: visible;
+        block-size: auto;
+    }
+
+    .transcript__rest > :not(summary) {
+        display: block;
+    }
+
+    .transcript__toggle {
+        display: none;
+    }
+
     body {
         background: var(--white);
         color: var(--black);

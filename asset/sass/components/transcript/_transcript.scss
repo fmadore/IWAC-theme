@@ -1,0 +1,98 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Transcript — progressive disclosure for a long `bibo:content` body
+//
+// Built by view/common/resource-values.phtml when a digitised document's OCR
+// runs past the collapse threshold. A twelve-page issue (item/24073) measured
+// 41,881 characters and 23,256px of unbroken text — 85% of the page — which
+// left the reader no way past it and pushed the citation panel 27 viewports
+// down. The device: an opening extract, then a native <details> holding the
+// remainder.
+//
+// No JS and no animation beyond the caret. The disclosure line is drawn as a
+// press "continued" rule — a hairline across the reading measure with a
+// tracked uppercase label on it — not a button box; the surrounding ledger
+// already speaks in rules.
+//
+// Both halves inherit the row's bibo:content typography (reading serif,
+// --text-lg, --measure-narrow) from `_resource-show.scss`; nothing about the
+// text is restated here.
+// ==========================================================================
+
+.transcript {
+
+    &__rest {
+        margin-block-start: var(--space-5);
+    }
+
+    &__toggle {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding-block: var(--space-3);
+        border-block-start: 1px solid var(--border);
+        font-family: $font__body;
+        font-size: var(--text-xs);
+        font-weight: 600;
+        letter-spacing: var(--tracking-wider);
+        text-transform: uppercase;
+        color: var(--ink-light);
+        cursor: pointer;
+        // Kill the UA disclosure triangle in both engines; the caret below is
+        // the theme's own (Bootstrap Icons mask, per the icon-system stance).
+        list-style: none;
+        transition:
+            color var(--transition-fast),
+            border-color var(--transition-fast);
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &::after {
+            @include icon-mask("../img/chevron-down.svg");
+            content: "";
+            width: 0.85em;
+            height: 0.85em;
+            flex: none;
+            transition: transform var(--transition-fast);
+        }
+
+        &:hover {
+            color: var(--primary);
+            border-block-start-color: var(--primary);
+        }
+
+        @include focus-ring;
+    }
+
+    // Label swap. `display: none` (not visually-hidden) so the closed and open
+    // wordings never both reach the accessible name of the summary.
+    &__toggle-label--less {
+        display: none;
+    }
+
+    &__rest[open] &__toggle-label--more {
+        display: none;
+    }
+
+    &__rest[open] &__toggle-label--less {
+        display: inline;
+    }
+
+    &__rest[open] &__toggle::after {
+        transform: rotate(180deg);
+    }
+
+    &__body {
+        margin-block-start: var(--space-4);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        &__toggle,
+        &__toggle::after {
+            transition: none;
+        }
+    }
+}

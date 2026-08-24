@@ -67,6 +67,10 @@
 --------------------------------------------- */
 @forward "resource-show/resource-show";
 
+/* Transcript — progressive disclosure for long bibo:content bodies
+--------------------------------------------- */
+@forward "transcript/transcript";
+
 /* Blocks
 --------------------------------------------- */
 @forward "blocks/blocks";
