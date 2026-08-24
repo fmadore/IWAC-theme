@@ -364,11 +364,11 @@ Two views of one resolution pass: `light["--series-7"]` for a CSS consumer,
 | 0 | `--series-1` | `--primary` | `#ce4115` | `#ec653f` |
 | 1 | `--series-2` | `--secondary` | `#394f68` | `#708093` |
 | 2 | `--series-3` | fixed | `#4a8c6f` | `#4a8c6f` |
-| 3 | `--series-4` | fixed | `#c5504d` | `#c5504d` |
+| 3 | `--series-4` | fixed | `#bb4c49` | `#bb4c49` |
 | 4 | `--series-5` | fixed | `#7c5295` | `#7c5295` |
 | 5 | `--series-6` | fixed | `#d4a574` | `#d4a574` |
 | 6 | `--series-7` | fixed | `#2c5f7c` | `#2c5f7c` |
-| 7 | `--series-8` | fixed | `#8b6f47` | `#8b6f47` |
+| 7 | `--series-8` | fixed | `#876c45` | `#876c45` |
 | 8 | `--series-9` | fixed | `#5ba3a0` | `#5ba3a0` |
 | 9 | `--series-10` | fixed | `#cc8963` | `#cc8963` |
 | 10 | `--series-11` | fixed | `#4a8aab` | `#4a8aab` |

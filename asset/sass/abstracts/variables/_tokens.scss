@@ -138,6 +138,9 @@
   // because there was no token for the composed outline, only for its
   // colour. --focus-outline is that token.
   // ========================================================================
+  // These compositions substitute against :root's LIGHT referents; the dark
+  // mixin (_colors.scss) redeclares all three so dark pages don't inherit
+  // light-composed rings.
   --focus-outline: 2px solid var(--focus-color);
   --ring-focus:    0 0 0 3px var(--focus-ring-color);
   --ring-focus-sm: 0 0 0 2px color-mix(in oklab, var(--primary) 22%, transparent);

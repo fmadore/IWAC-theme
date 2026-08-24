@@ -108,15 +108,19 @@
   // 3-20 are fixed qualitative hues, chosen to stay distinguishable in both
   // themes and under colour-vision deficiency. Declared again — per slot —
   // in the dark block, which is what makes a divergent dark scale a token
-  // edit rather than a contract change.
+  // edit rather than a contract change. Slots 4 and 8 additionally carry
+  // knocked-out TEXT (the word cloud paints words in slot colours on the
+  // surface), so they must clear 4.5:1 in BOTH themes; the both-theme pass
+  // band excludes luma 0.1667-0.1953, which is where their original values
+  // sat (4.29-4.44:1).
   --series-1:  var(--primary);
   --series-2:  var(--secondary);
   --series-3:  #4a8c6f;
-  --series-4:  #c5504d;
+  --series-4:  #bb4c49;
   --series-5:  #7c5295;
   --series-6:  #d4a574;
   --series-7:  #2c5f7c;
-  --series-8:  #8b6f47;
+  --series-8:  #876c45;
   --series-9:  #5ba3a0;
   --series-10: #cc8963;
   --series-11: #4a8aab;
@@ -196,6 +200,17 @@
   --focus-ring-color:  color-mix(in oklab, var(--primary) 35%, transparent);
   --selection-bg: color-mix(in oklab, var(--primary) 22%, transparent);
 
+  // Composed focus tokens — REDECLARED here for the same substitution-scope
+  // reason as the --type-* map below: their _tokens.scss declarations sit on
+  // :root and compose the LIGHT --focus-color / --focus-ring-color /
+  // --primary, so every dark-mode focus ring painted the light primary
+  // (tokens.json published the dark composition; the browser delivered the
+  // light one). Redeclaring the compositions where the referents flip makes
+  // publication and reality agree.
+  --focus-outline: 2px solid var(--focus-color);
+  --ring-focus:    0 0 0 3px var(--focus-ring-color);
+  --ring-focus-sm: 0 0 0 2px color-mix(in oklab, var(--primary) 22%, transparent);
+
   --success:    oklch(72% 0.14 152);
   --success-bg: color-mix(in oklab, oklch(50% 0.13 152) 22%, transparent);
   --warning:    oklch(76% 0.16 60);
@@ -236,11 +251,11 @@
   --series-1:  var(--primary);
   --series-2:  var(--secondary);
   --series-3:  #4a8c6f;
-  --series-4:  #c5504d;
+  --series-4:  #bb4c49;
   --series-5:  #7c5295;
   --series-6:  #d4a574;
   --series-7:  #2c5f7c;
-  --series-8:  #8b6f47;
+  --series-8:  #876c45;
   --series-9:  #5ba3a0;
   --series-10: #cc8963;
   --series-11: #4a8aab;
