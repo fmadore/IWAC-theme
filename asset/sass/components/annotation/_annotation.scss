@@ -139,6 +139,12 @@
             }
         }
 
+        // No `float: none` / `width: auto !important` / `margin: 0 !important`
+        // here any more. Those three existed only to shove the host ledger's
+        // 144px floated label column back out of this nested list; since
+        // components/metadata child-scopes its chain (`> dl > .property >
+        // dt/dd`), the column never reaches in and the tooltip owns its own
+        // layout outright.
         dt {
             flex: 0 0 auto;
             font-size: var(--text-xs);
@@ -148,8 +154,6 @@
             letter-spacing: 0.025em;
             margin: 0;
             padding: 0;
-            float: none;
-            width: auto !important;
         }
 
         dd {
@@ -157,7 +161,7 @@
             flex: 1 1 auto;
             font-size: var(--text-sm);
             color: var(--ink);
-            margin: 0 !important;
+            margin: 0;
 
             a {
                 color: var(--primary);

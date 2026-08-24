@@ -17,11 +17,34 @@
         margin-block-end: var(--space-8);
     }
 
+    // A resource with no file-backed media gets an EMPTY Mirador block (the
+    // module renders the wrapper regardless), which the rule above then spaces
+    // by 32px — dead margin on every authority record, reference and
+    // fileless-AV item. `:empty` does not match it: the wrapper contains
+    // whitespace text nodes, and Chrome still holds `:empty` to the strict
+    // definition. `:not(:has(*))` is the test that actually answers "no element
+    // children". Measured on item/1023: 0px tall, 32px of margin.
+    // The theme's own blocks return early instead (video-embeds.phtml); this is
+    // the CSS equivalent for a block the theme does not own.
+    >.block-mirador:not(:has(*)) {
+        display: none;
+    }
+
     .media-render>* {
         max-width: 100%;
     }
 
-    dl {
+    // Child-scoped from `.metadata` down (`> dl > .property > dt/dd`), not
+    // descendant-scoped: a value-annotation tooltip nests a second
+    // `<dl><div class="property"><dt>/<dd>` of its own inside a `<dd>`, and a
+    // descendant chain reached straight into it — floating the tooltip's own
+    // label and indenting its values by the 144px ledger column. The three
+    // `!important` resets in components/annotation used to hold that leak
+    // shut; the combinators do it properly. This is the rule CLAUDE.md states
+    // and the file it is about. (Verified on item/74601's live annotation:
+    // `.metadata > dl > … > .annotation-tooltip__wrapper > dl` is six levels
+    // deep, so `> dl` cannot reach it.)
+    >dl {
         margin-block: 0 var(--space-8);
 
         &:last-child {
@@ -50,7 +73,7 @@
                 clear: both;
             }
 
-            dt {
+            >dt {
                 color: var(--muted);
                 font-size: var(--text-xs);
                 font-weight: 600;
@@ -73,7 +96,7 @@
                 }
             }
 
-            dd {
+            >dd {
                 display: flex;
                 flex-wrap: wrap;
                 gap: var(--space-1);
@@ -123,15 +146,19 @@
     }
 
     .media-list {
-        dd {
+        // Child-scoped for the same reason as the ledger above — and because
+        // `.metadata .media-list > .property > dd` (three classes) outranks
+        // `.metadata > dl > .property > dd` (two) on its own, the two
+        // `!important` margin overrides that used to break that tie are gone.
+        >.property>dd {
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            margin-block-end: var(--space-4) !important;
+            margin-block-end: var(--space-4);
             overflow: hidden;
             transition: border-color var(--transition-fast);
 
             &:last-child {
-                margin-block-end: 0 !important;
+                margin-block-end: 0;
             }
 
             &:hover {
