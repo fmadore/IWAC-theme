@@ -30,7 +30,7 @@ $bodyTruncate = $this->themeSetting('truncate_body_property');
 
 <?php if ($itemSetShow): ?>
     <?php echo $this->ResourceTags($itemSet); ?>
-    <?php echo $this->pageTitle($itemSet->displayTitle(null, ($valueLang)), 1); ?>
+    <?php echo $this->pageTitle($this->FrenchSpacing($itemSet->displayTitle(null, ($valueLang))), 1); ?>
 
     <?php echo $this->partial('common/resource-regions', ['resource' => $itemSet]); ?>
 

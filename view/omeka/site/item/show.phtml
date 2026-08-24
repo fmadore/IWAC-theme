@@ -24,8 +24,12 @@ $valueLang = $filterLocale ? [$lang, ''] : null;
       // a reader arriving from a search engine asks "where am I" before "what
       // is this". ?>
 <?php echo $this->partial('common/breadcrumbs', ['resource' => $item, 'valueLang' => $valueLang]); ?>
-<?php echo $this->partial('common/item-dateline', ['resource' => $item, 'valueLang' => $valueLang]); ?>
-<?php echo $this->pageTitle($item->displayTitle(null, $valueLang), 1); ?>
+<?php echo $this->partial('common/item-dateline', ['resource' => $item, 'valueLang' => $valueLang, 'citeJump' => true]); ?>
+<?php // FrenchSpacing: the headline is the one place a French spaced colon has
+      // room to strand itself at a line start (five-line wrap at 375px). See
+      // helper/FrenchSpacing.php. Helper names are case-sensitive on the server
+      // — this must match config/theme.ini's helpers[] spelling exactly. ?>
+<?php echo $this->pageTitle($this->FrenchSpacing($item->displayTitle(null, $valueLang)), 1); ?>
 
 <?php $this->trigger('view.show.before'); ?>
 

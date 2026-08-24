@@ -69,6 +69,48 @@ body.item-set {
             color: var(--primary);
             font-weight: 700;
         }
+
+        // A jump to the "How to cite" panel, parked at the end of the dateline
+        // row. That panel's position is set by the admin-configured block
+        // stack — on a twelve-page issue it lands 27 viewports down the
+        // transcript — so naming it up here is the move the theme actually
+        // owns. It reads as an action rather than another dateline segment
+        // (quote mark, hairline underline) but inherits the row's uppercase,
+        // tracking and size, so the identity device stays intact. Ships
+        // `hidden`; citation.js unhides it only where a panel exists.
+        .item-dateline__cite {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            margin-inline-start: auto;
+            color: var(--ink-light);
+            text-decoration: none;
+            border-block-end: 1px solid var(--border);
+            transition:
+                color var(--transition-fast),
+                border-color var(--transition-fast);
+
+            &::before {
+                @include icon-mask("../img/quote.svg");
+                content: "";
+                width: 1em;
+                height: 1em;
+                flex: none;
+            }
+
+            &:hover {
+                color: var(--primary);
+                border-block-end-color: var(--primary);
+            }
+
+            @include focus-ring;
+
+            // `display: inline-flex` above would otherwise beat the UA's
+            // [hidden] rule and paint a link to a panel that isn't there.
+            &[hidden] {
+                display: none;
+            }
+        }
     }
 
     // ----------------------------------------------------------------------
@@ -210,13 +252,29 @@ body.item-set {
                 }
             }
 
-            // The interpunct lives INSIDE the following value's box, so a
-            // wrap never strands a dot at a line end.
-            > dd + dd::before {
+            // The interpunct rides in the PRECEDING value's box. Each dd is an
+            // atomic inline-block wrap unit, so a separator drawn with
+            // ::before on the *following* value always sat at the head of its
+            // box — and wherever that box opened a line, the dot opened the
+            // line too and read as a bullet. Measured at a real 375px on
+            // item/74601: four leading dots across the SUBJECT and SPATIAL
+            // rows. Bound to the value it follows, the separator can only end
+            // a line, which is where a separator conventionally goes.
+            > dd:not(:last-child)::after {
                 content: "·";
+                // base/elements/_lists.scss clearfixes every dd, which lands
+                // `display: table; clear: both` on `dd::after` — so a separator
+                // drawn here inherits a BLOCK box and drops onto a line of its
+                // own under each value. (The old ::before never met that rule,
+                // which is why it flowed.) Both resets are load-bearing; these
+                // rows hold inline content only, so the clearfix they give up
+                // has nothing to clear — the floated label is still cleared by
+                // `.property::after` on the row itself.
+                display: inline;
+                clear: none;
                 color: var(--primary);
                 font-weight: 700;
-                padding-inline-end: var(--space-2);
+                padding-inline-start: var(--space-2);
             }
         }
 

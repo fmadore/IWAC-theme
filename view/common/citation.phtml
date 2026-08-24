@@ -34,7 +34,11 @@ $downloads  = $citation['downloads'] ?? [];
 $zoteroRdf  = $citation['zoteroRdf'] ?? null;
 $multiStyle = count($styles) > 1;
 ?>
-<section class="citation" aria-labelledby="citation-heading-<?php echo $recordId; ?>">
+<?php // `id="how-to-cite"` is a stable, term-independent anchor: it makes the panel
+      // linkable from anywhere on the page (the dateline's CITE jump uses it) and
+      // shareable as a deep link. The block sits wherever the admin-configured
+      // resource-page stack puts it, so the theme cannot move it — it can name it. ?>
+<section id="how-to-cite" class="citation" aria-labelledby="citation-heading-<?php echo $recordId; ?>">
     <h2 id="citation-heading-<?php echo $recordId; ?>" class="citation__title"><?php echo $escape($translate('How to cite this item')); ?></h2>
 
     <?php if ($multiStyle): ?>

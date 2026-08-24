@@ -8,6 +8,10 @@
  * Expected variables:
  * - $resource: the item (on media pages, pass the parent item)
  * - $valueLang: locale filter, or null
+ * - $citeJump: optional bool — render the CITE jump to the "How to cite"
+ *   panel. Rendered `hidden`; asset/js/citation.js unhides it only on pages
+ *   that actually carry the panel, because whether the block is in the stack
+ *   is an admin decision this template cannot see. No JS, no dangling link.
  */
 $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
@@ -38,7 +42,13 @@ if ($dateValue && !$dateValue->valueResource()) {
     // asHtml() lets NumericDataTypes render the localized date.
     $datelineParts[] = $dateValue->asHtml();
 }
+
+$citeJump = isset($citeJump) ? (bool) $citeJump : false;
 ?>
-<?php if ($datelineParts): ?>
-<p class="item-dateline"><?php echo implode(' <span class="item-dateline__sep" aria-hidden="true">·</span> ', $datelineParts); ?></p>
+<?php if ($datelineParts || $citeJump): ?>
+<p class="item-dateline"><?php echo implode(' <span class="item-dateline__sep" aria-hidden="true">·</span> ', $datelineParts); ?>
+    <?php if ($citeJump): ?>
+    <a class="item-dateline__cite" href="#how-to-cite" data-cite-jump hidden><?php echo $escape($translate('Cite')); ?></a>
+    <?php endif; ?>
+</p>
 <?php endif; ?>

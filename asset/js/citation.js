@@ -135,6 +135,18 @@
     }
 
     onReady(function () {
-        Array.prototype.forEach.call(document.querySelectorAll('.citation'), initPanel);
+        var panels = document.querySelectorAll('.citation');
+        Array.prototype.forEach.call(panels, initPanel);
+
+        // The dateline's CITE jump ships hidden: the "How to cite" block is
+        // placed through the admin's resource-page stack, so item/show.phtml
+        // cannot know whether this page has one. Reveal it only when a panel
+        // is actually present — without JS the reader simply never sees a
+        // link that would go nowhere.
+        if (panels.length) {
+            Array.prototype.forEach.call(document.querySelectorAll('[data-cite-jump]'), function (jump) {
+                jump.removeAttribute('hidden');
+            });
+        }
     });
 })();

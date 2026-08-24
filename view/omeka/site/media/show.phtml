@@ -21,7 +21,7 @@ $valueLang = $filterLocale ? [$lang, ''] : null;
 <?php // Same identity device as the item page — dateline from the parent
       // item (the media inherits its press context), not resource-tag pills. ?>
 <?php echo $this->partial('common/item-dateline', ['resource' => $item, 'valueLang' => $valueLang]); ?>
-<?php echo $this->pageTitle($media->displayTitle(null, $valueLang), 1); ?>
+<?php echo $this->pageTitle($this->FrenchSpacing($media->displayTitle(null, $valueLang)), 1); ?>
 
 <?php $this->trigger('view.show.before'); ?>
 
