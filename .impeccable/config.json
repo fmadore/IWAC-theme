@@ -1,0 +1,18 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-color",
+        "value": "oklch(55% 0.16 60)",
+        "createdAt": "2026-08-25T04:56:31.081Z"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "oklch(50% 0.18 25)",
+        "createdAt": "2026-08-25T04:56:31.229Z"
+      }
+    ]
+  }
+}

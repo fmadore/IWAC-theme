@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-24T00:00:00Z",
+  "generatedAt": "2026-08-25T00:00:00Z",
   "title": "Design System: IWAC Theme",
   "extensions": {
     "colorMeta": {
@@ -231,7 +231,7 @@
       "warning": {
         "role": "status",
         "displayName": "Warning Amber",
-        "canonical": "#de7000",
+        "canonical": "#d66800",
         "dark": "#f99532",
         "tonalRamp": [
           "#340000",
@@ -242,7 +242,8 @@
           "#f4842b",
           "#ffa956",
           "#ffcd7c"
-        ]
+        ],
+        "purpose": "oklch(63.5% 0.18 60), darkened from 66% in 2.14. Also --type-document and --type-entity-organisations, which render as solid dots, so it is calibrated as a non-text mark: 3:1 on all four light surfaces (3.51 / 3.40 / 3.31 / 3.20). Chroma holds at 0.18, keeping the amber identity and ~16 degrees of hue separation from --primary. Not a text colour at any lightness that stays amber. Dark unchanged."
       },
       "error": {
         "role": "status",
@@ -414,61 +415,61 @@
         "name": "shadow-xs",
         "value": "0 1px 2px 0 rgba(20, 22, 27, 0.06)",
         "dark": "0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px -1px rgba(0, 0, 0, 0.1)",
-        "purpose": "Minimal ambient depth."
+        "purpose": "Minimal ambient depth. Declared in BOTH theme mixins, not composed once on :root."
       },
       {
         "name": "shadow-sm",
         "value": "0 1px 3px 0 rgba(9, 11, 15, 0.12), 0 1px 2px -1px rgba(20, 22, 27, 0.06)",
         "dark": "0 2px 6px -1px rgba(0, 0, 0, 0.18), 0 2px 4px -2px rgba(0, 0, 0, 0.12)",
-        "purpose": "Default panel shadow (= --panel-shadow)."
+        "purpose": "Default panel shadow (= --panel-shadow). Declared in BOTH theme mixins, not composed once on :root."
       },
       {
         "name": "shadow-md",
         "value": "0 4px 6px -1px rgba(9, 11, 15, 0.12), 0 2px 4px -2px rgba(20, 22, 27, 0.06)",
         "dark": "0 6px 16px -4px rgba(0, 0, 0, 0.25), 0 4px 8px -4px rgba(0, 0, 0, 0.25)",
-        "purpose": "Dropdowns and floating panels."
+        "purpose": "Dropdowns and floating panels. Declared in BOTH theme mixins, not composed once on :root."
       },
       {
         "name": "shadow-lg",
         "value": "0 10px 15px -3px rgba(9, 11, 15, 0.12), 0 4px 6px -4px rgba(20, 22, 27, 0.06)",
         "dark": "0 12px 28px -8px rgba(0, 0, 0, 0.35), 0 8px 16px -8px rgba(0, 0, 0, 0.2)",
-        "purpose": "Modals; rare. Dark is struck from pure black at higher alpha and greater spread — a neutral-ink shadow is invisible on a lamplit ground."
+        "purpose": "Modals; rare. Dark is struck from pure black at higher alpha and greater spread — a neutral-ink shadow is invisible on a lamplit ground. Declared in BOTH theme mixins, not composed once on :root."
       },
       {
         "name": "glow-xs",
         "value": "0 1px 3px 0 rgba(206, 65, 21, 0.2)",
         "dark": "0 1px 3px 0 rgba(236, 101, 63, 0.2)",
-        "purpose": "Filled-primary button, active/pressed."
+        "purpose": "Filled-primary button, active/pressed. Declared in BOTH theme mixins, not composed once on :root."
       },
       {
         "name": "glow-sm",
         "value": "0 2px 6px -1px rgba(206, 65, 21, 0.25)",
         "dark": "0 2px 6px -1px rgba(236, 101, 63, 0.25)",
-        "purpose": "Filled-primary button at rest."
+        "purpose": "Filled-primary button at rest. Declared in BOTH theme mixins, not composed once on :root."
       },
       {
         "name": "glow-md",
         "value": "0 4px 12px -2px rgba(206, 65, 21, 0.3)",
         "dark": "0 4px 12px -2px rgba(236, 101, 63, 0.3)",
-        "purpose": "Filled-primary button on hover."
+        "purpose": "Filled-primary button on hover. Declared in BOTH theme mixins, not composed once on :root."
       },
       {
         "name": "focus-outline",
         "value": "2px solid #ce4115",
         "dark": "2px solid #ec653f",
-        "purpose": "THE default focus indicator, paired with outline-offset: 2px."
+        "purpose": "THE default focus indicator, paired with outline-offset: 2px. Declared in BOTH theme mixins, not composed once on :root."
       },
       {
         "name": "ring-focus",
         "value": "0 0 0 3px rgba(206, 65, 21, 0.3)",
         "dark": "0 0 0 3px rgba(236, 101, 63, 0.35)",
-        "purpose": "Box-shadow focus ring — the exception, for controls an outline would be clipped on. Also the input focus ring, paired with a primary border."
+        "purpose": "Box-shadow focus ring — the exception, for controls an outline would be clipped on. Also the input focus ring, paired with a primary border. Declared in BOTH theme mixins, not composed once on :root."
       },
       {
         "name": "ring-focus-sm",
         "value": "0 0 0 2px rgba(206, 65, 21, 0.22)",
         "dark": "0 0 0 2px rgba(236, 101, 63, 0.22)",
-        "purpose": "Tighter 2px ring for dense controls."
+        "purpose": "Tighter 2px ring for dense controls. Declared in BOTH theme mixins, not composed once on :root."
       }
     ],
     "motion": [
@@ -539,7 +540,7 @@
         },
         {
           "name": "--type-document",
-          "light": "#de7000",
+          "light": "#d66800",
           "dark": "#f99532"
         },
         {
@@ -564,7 +565,7 @@
         },
         {
           "name": "--type-entity-organisations",
-          "light": "#de7000",
+          "light": "#d66800",
           "dark": "#f99532"
         }
       ]
@@ -782,7 +783,7 @@
       "Density over comfort; typography as architecture, rules as joinery",
       "Near-white cool-neutral light mode; warm \"lamplit reading room\" dark mode",
       "One brand accent used sparingly; category encoded as dots, never fills",
-      "Two themes declared in full — dark is a redeclaration, never an inherited substitution",
+      "Two themes declared in full as a mixin pair — dark is a redeclaration, never an inherited substitution, and light is never a gap",
       "AI-generated content visibly marked (computational honesty)"
     ],
     "rules": [
@@ -797,13 +798,18 @@
         "section": "colors"
       },
       {
+        "name": "The Accent-Not-Text Rule",
+        "body": "`--primary` is an accent, never running body text. As text it measures 4.67 / 4.51 / 4.40 / 4.25:1 on surface / raised / background / sunken — it clears AA on the two lightest surfaces and misses on the other two, so the same declaration passes or fails depending on which panel it lands in. Sanctioned: links, controls and their states, current/active state, large display text (the 404 numeral, KPI figures), pseudo-element marks (interpuncts, `::marker`, chevrons, dots), and every non-text use. Not sanctioned: paragraph, list-item or table-cell copy, ledes, abstracts, anything set from `--font-serif-text`. Darkening the token is not the fix — the brand seed is admin-configurable, so scoping the use is the durable answer.",
+        "section": "colors"
+      },
+      {
         "name": "The Data-Only Secondary Rule",
         "body": "#394f68 exists for data. If it appears on a button, link, or focus ring, it is a bug.",
         "section": "colors"
       },
       {
-        "name": "The Redeclare-In-Dark Rule",
-        "body": "A token whose value contains `var(…)` must be declared in the dark block too. Declared once on `:root`, it is substituted against light referents and inherited frozen by every dark descendant — a whole-theme failure that looks like nothing until a contrast probe finds it.",
+        "name": "The Mirror-Both-Blocks Rule",
+        "body": "A custom property is substituted at computed-value time on the element that *declares* it, so a token whose value contains `var(…)` must be declared in BOTH theme blocks, and the rule runs both directions. A light-only composition is substituted against light referents and inherited frozen by every dark descendant. A dark-only declaration is worse-hidden still: with no light counterpart, `body[data-theme=\"light\"]` cannot win back on a dark-OS machine. Since 2.14 the light and dark token blocks are a mixin pair carrying the same names — shadows, panel tokens, glows and the three composed focus tokens are declared twice by construction.",
         "section": "colors"
       },
       {
@@ -823,7 +829,7 @@
       },
       {
         "name": "The No-14px Rule",
-        "body": "The type scale deliberately skips 14px; 11px (`--text-2xs`) is the floor. Absolute `font-size` literals fail `npm run check:tokens` — use `--text-*` tokens.",
+        "body": "The type scale deliberately skips 14px; 11px (`--text-2xs`) is the floor. Absolute `font-size` literals fail `npm run check:tokens` — use `--text-*` tokens. The check reads the whole value, not just its first token, so `clamp()`, `min()` and `max()` are not an escape hatch: a fluid size composes `--text-*` steps (or `calc()` on them).",
         "section": "typography"
       },
       {
@@ -850,11 +856,16 @@
         "name": "The Outline-First Focus Rule",
         "body": "`--focus-outline` at 2px offset is the focus indicator. The `--ring-focus` halo is the exception for clipped or oddly-shaped controls, never the default — it is the weaker indicator, and reaching for it by habit is how a surface ends up with no visible focus at all.",
         "section": "elevation-and-depth"
+      },
+      {
+        "name": "The One-Spelling Breakpoint Rule",
+        "body": "`min-width` sits ON a published breakpoint and `max-width` at breakpoint − 1px — one spelling, not two. Bootstrap's − 0.02px was tolerated until 2.14 and the theme carried both idioms in files that reflow the same header; neither is wrong alone, carrying both is. Guards in this repo and in both consumer modules assert it. `@container` queries are exempt.",
+        "section": "layout"
       }
     ],
     "dos": [
       "**Do** open sections with 2px ink rules and divide rows with hairlines — typography is the architecture, rules are the joinery.",
-      "**Do** declare every composed or aliased token in the dark block as well as the light one, so dark pages compose against dark referents.",
+      "**Do** declare every composed or aliased token in **both** theme blocks — dark pages must compose against dark referents, and a manual light choice on a dark OS must be able to win back.",
       "**Do** publish any color that encodes data as a named light/dark pair in `tokens.json`, and let the guards compare it.",
       "**Do** keep transitions 150–300ms on `cubic-bezier(0.25, 1, 0.5, 1)`; real objects decelerate smoothly.",
       "**Do** mark AI-generated fields with the EU \"AI GENERATED\" provenance treatment on the label, and open the lede on an ink rule.",
@@ -865,12 +876,13 @@
     "donts": [
       "**Don't** use warm cream or parchment surfaces — wrong register (\"manuscript museum brochure\").",
       "**Don't** add atmospheric gradients, gradient bars, glassmorphism (outside the sticky header), or colored side-stripes.",
-      "**Don't** fill category badges or color `h2`s in primary — category is a dot, primary is an accent.",
+      "**Don't** fill category badges, color `h2`s, or set running prose in primary — category is a dot, primary is an accent (4.25:1 on sunken as text).",
       "**Don't** use cold blue-gray dark surfaces — dark mode is warm (\"lamplit\"), hue ~70–80.",
       "**Don't** box result rows, filter bars, linked-resource lists, or the AI lede into cards.",
       "**Don't** replace an outline focus indicator with the `--ring-focus` halo for convenience, and never with `outline: none` alone.",
       "**Don't** use bouncing/elastic easing or hover-triggered hero animations (the one-time Ken Burns settle is the sanctioned exception).",
-      "**Don't** pair Besley with `tabular-nums` (broken tnum zero) or track it tighter than -0.01em."
+      "**Don't** pair Besley with `tabular-nums` (broken tnum zero) or track it tighter than -0.01em.",
+      "**Don't** write an absolute `font-size` literal, inside `clamp()` included, or spell the \"below\" half of a breakpoint pair any way but breakpoint − 1px."
     ]
   }
 }
