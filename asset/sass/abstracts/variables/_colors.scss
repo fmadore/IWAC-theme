@@ -200,16 +200,11 @@
   --focus-ring-color:  color-mix(in oklab, var(--primary) 35%, transparent);
   --selection-bg: color-mix(in oklab, var(--primary) 22%, transparent);
 
-  // Composed focus tokens — REDECLARED here for the same substitution-scope
-  // reason as the --type-* map below: their _tokens.scss declarations sit on
-  // :root and compose the LIGHT --focus-color / --focus-ring-color /
-  // --primary, so every dark-mode focus ring painted the light primary
-  // (tokens.json published the dark composition; the browser delivered the
-  // light one). Redeclaring the compositions where the referents flip makes
-  // publication and reality agree.
-  --focus-outline: 2px solid var(--focus-color);
-  --ring-focus:    0 0 0 3px var(--focus-ring-color);
-  --ring-focus-sm: 0 0 0 2px color-mix(in oklab, var(--primary) 22%, transparent);
+  // (The composed focus tokens — --focus-outline / --ring-focus /
+  // --ring-focus-sm — were redeclared here in 2.13 to fix dark rings painting
+  // the light primary. They moved to the iwac-light-tokens / iwac-dark-tokens
+  // mixin PAIR in _tokens.scss in 2.14: declaring them in the dark block only
+  // fixed one direction. See the note there.)
 
   --success:    oklch(72% 0.14 152);
   --success-bg: color-mix(in oklab, oklch(50% 0.13 152) 22%, transparent);

@@ -36,6 +36,28 @@
   // See the note in :root — re-declare so the inner var() resolves against
   // the --border active in this cascade block.
   --panel-border: 1px solid var(--border);
+  // Composed from --shadow-sm, which this mixin redeclares — so it has to be
+  // redeclared here too, or it freezes at whichever theme's shadow was in
+  // scope on :root. See the substitution-scope note in :root below.
+  --panel-shadow: var(--shadow-sm);
+
+  // Glow — the primary-tinted halo, ONE effect in three states (active /
+  // rest / hover) on the single filled button. Not an elevation scale;
+  // base/elements/_buttons.scss is the only sanctioned consumer.
+  //
+  // Lives in the theme mixins rather than in :root because it composes
+  // --primary, which flips per theme. See :root below.
+  --glow-xs: 0 1px 3px 0  color-mix(in oklab, var(--primary) 20%, transparent);
+  --glow-sm: 0 2px 6px -1px color-mix(in oklab, var(--primary) 25%, transparent);
+  --glow-md: 0 4px 12px -2px color-mix(in oklab, var(--primary) 30%, transparent);
+
+  // Composed focus tokens — see the :root note below for the naming and the
+  // rule for picking between the outline and the ring. They live in the mixin
+  // PAIR because all three compose --focus-color / --focus-ring-color /
+  // --primary, every one of which flips per theme.
+  --focus-outline: 2px solid var(--focus-color);
+  --ring-focus:    0 0 0 3px var(--focus-ring-color);
+  --ring-focus-sm: 0 0 0 2px color-mix(in oklab, var(--primary) 22%, transparent);
 }
 
 :root {
@@ -137,13 +159,16 @@
   // hand-copied 44 times across IwacVisualizations' block stylesheets —
   // because there was no token for the composed outline, only for its
   // colour. --focus-outline is that token.
+  //
+  // The three COMPOSED tokens are declared in the iwac-*-tokens mixin pair at
+  // the top and bottom of this file, not here — all three compose referents
+  // that flip per theme, so both blocks have to state them. 2.13 added them to
+  // the dark block only, which fixed light-OS-plus-manual-dark and left the
+  // mirror case broken: on a dark OS, `body[data-theme="light"]` had no
+  // declaration to win back with, so a manually-lightened page kept the DARK
+  // focus colour. Redeclaring in one direction is half a fix; the guard's
+  // symmetry rule is what makes that hard to repeat.
   // ========================================================================
-  // These compositions substitute against :root's LIGHT referents; the dark
-  // mixin (_colors.scss) redeclares all three so dark pages don't inherit
-  // light-composed rings.
-  --focus-outline: 2px solid var(--focus-color);
-  --ring-focus:    0 0 0 3px var(--focus-ring-color);
-  --ring-focus-sm: 0 0 0 2px color-mix(in oklab, var(--primary) 22%, transparent);
 
   // ========================================================================
   // Letter Spacing
@@ -160,34 +185,39 @@
   --tracking-wider:  0.08em;
 
   // ========================================================================
-  // Glow (primary-tinted shadow) — ONE effect, three states.
-  //
-  // Not an elevation scale: xs/sm/md are the active / rest / hover states of
-  // the single filled button (see base/elements/_buttons.scss, which is the
-  // only sanctioned consumer). Nothing else in the system glows.
-  // Derived from --primary so admin color overrides cascade through.
-  // ========================================================================
-  --glow-xs: 0 1px 3px 0  color-mix(in oklab, var(--primary) 20%, transparent);
-  --glow-sm: 0 2px 6px -1px color-mix(in oklab, var(--primary) 25%, transparent);
-  --glow-md: 0 4px 12px -2px color-mix(in oklab, var(--primary) 30%, transparent);
-
-  // ========================================================================
-  // Shadow / panel values — neutral cool, no warm tint.
+  // Shadow / panel / glow values — neutral cool, no warm tint.
   // (Old recipe used hsl(30, 20%, 15%) which carried a warm cast that
   // reinforced the "cream / parchment" register we're now dropping.)
   //
-  // IMPORTANT: --panel-border must be re-declared in every theme override
-  // block (light / dark manual + @media dark). Custom properties inherit
-  // their COMPUTED value; the inner var(--border) substitution is frozen
-  // at the cascade block where --panel-border is declared. Re-declaring
-  // it lets the inner var() pick up the active --border in each block.
-  // That is why these live in a mixin — see iwac-light-tokens above.
+  // SUBSTITUTION SCOPE — the rule that governs which side of this @include a
+  // token belongs on, and the one `npm run check:tokens` now enforces:
+  //
+  //   A custom property is substituted at computed-value time on the element
+  //   that DECLARES it. So a token whose value references a token that flips
+  //   per theme must itself be redeclared in the dark block — otherwise the
+  //   dark page inherits the light composition, permanently.
+  //
+  // It is not hypothetical and it is not rare. The manual toggle applies the
+  // dark blocks to <body> while :root keeps the light ones, and
+  // layout/layout.phtml's pre-paint script writes data-theme on <body> for
+  // system-dark too — so this is every dark session with JS enabled. It has
+  // now bitten this repo three times: the --type-* map (browse dots at 2.41:1
+  // on dark, fixed 2.13), the composed focus tokens (every dark focus ring
+  // painted the LIGHT primary, fixed 2.13), and --panel-shadow + the three
+  // --glow-* halos (fixed 2.14 — they moved into the mixins above).
+  //
+  // Each time, tokens.json published the correct dark composition and the
+  // browser delivered the light one, because the generator resolves the dark
+  // block in isolation and the cascade does not. A guard, not a comment, is
+  // what closes that gap: check-token-usage.js rule 5, in both directions —
+  // the light→dark composition rule and the dark ⊆ light symmetry rule.
+  //
+  // Below this @include belong only theme-INDEPENDENT compositions.
   // ========================================================================
   @include iwac-light-tokens;
 
-  // Theme-independent panel geometry.
+  // Theme-independent panel geometry. --radius-md does not flip per theme.
   --panel-radius: var(--radius-md);
-  --panel-shadow: var(--shadow-sm);
 
   // ========================================================================
   // Easing & Transitions
@@ -213,8 +243,7 @@
 }
 
 // ==========================================================================
-// Dark Theme — shadow tuning + panel re-declaration
-// (Glow tokens already derive from --primary so they auto-update.)
+// Dark Theme — shadow tuning, plus every composition whose referent flips.
 // ==========================================================================
 @mixin iwac-dark-tokens {
   --shadow-color:        color-mix(in oklab, black 18%, transparent);
@@ -227,8 +256,25 @@
   --shadow-lg: 0 12px 28px -8px color-mix(in oklab, black 35%, transparent), 0 8px 16px -8px color-mix(in oklab, black 20%, transparent);
 
   --panel-bg: var(--surface-raised);
-  // See comment in :root block — re-declare for dark cascade.
+  // See the substitution-scope note in the :root block — re-declare for the
+  // dark cascade, or these freeze at the light composition on <body>.
   --panel-border: 1px solid var(--border);
+  --panel-shadow: var(--shadow-sm);
+
+  // Glow — same recipe as light; it is the REFERENT (--primary) that flips,
+  // which is exactly why the declaration has to be repeated here. The old
+  // comment on this block said the glows "already derive from --primary so
+  // they auto-update", and that was true of the @media dark block (where the
+  // dark values land on :root) and false of the manual toggle (where they land
+  // on <body> and --glow-* stays computed from :root's light primary).
+  --glow-xs: 0 1px 3px 0  color-mix(in oklab, var(--primary) 20%, transparent);
+  --glow-sm: 0 2px 6px -1px color-mix(in oklab, var(--primary) 25%, transparent);
+  --glow-md: 0 4px 12px -2px color-mix(in oklab, var(--primary) 30%, transparent);
+
+  // Composed focus tokens — same recipe as light, different referents.
+  --focus-outline: 2px solid var(--focus-color);
+  --ring-focus:    0 0 0 3px var(--focus-ring-color);
+  --ring-focus-sm: 0 0 0 2px color-mix(in oklab, var(--primary) 22%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
