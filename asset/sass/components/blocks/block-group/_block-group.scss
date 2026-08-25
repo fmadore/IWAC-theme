@@ -171,9 +171,12 @@
         line-height: var(--line-height-relaxed);
         color: var(--ink);
 
-        // Slightly larger on wider screens where there's more room
+        // Slightly larger on wider screens where there's more room. Both ends
+        // AND the fluid middle come from the scale — a bare `1rem` in the
+        // preferred term is a fork of --text-base by 1px, which is how a scale
+        // stops being one.
         @media (min-width: $lg) {
-            font-size: clamp(var(--text-base), 1rem + 0.1vw, var(--text-lg));
+            font-size: clamp(var(--text-base), calc(var(--text-base) + 0.1vw), var(--text-lg));
         }
     }
 

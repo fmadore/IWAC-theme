@@ -20,7 +20,11 @@
 
 .error-page__code {
     display: block;
-    font-size: clamp(4rem, 15vw, 8rem);
+    // The display tier's top step. It was clamp(4rem, 15vw, 8rem) — 64-128px,
+    // a private scale invented for one decorative watermark and invisible to
+    // the type guard because the literals sat inside a clamp(). --text-5xl is
+    // itself fluid (52-76px), which is what the 15vw term was reaching for.
+    font-size: var(--text-5xl);
     font-weight: 700;
     line-height: 1;
     color: var(--primary);
