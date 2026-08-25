@@ -74,12 +74,38 @@ it was wrong.
 
 ### Type sizes and media widths are asserted too
 
-`npm run check:tokens` also fails on a `font-size` set to an absolute literal (px/rem/pt)
-anywhere in `asset/sass` — use a `--text-*` token; `--text-2xs` (11px) is the floor, and
-there is deliberately no 14px step. Relative units (`em`, `%`) stay legal. Both modules'
-guards enforce the same rule plus the breakpoint contract: `min-width` sits **on** a
-published breakpoint, `max-width` at **breakpoint − 1**, so the halves of a pair never
-both match.
+`npm run check:tokens` also fails on a `font-size` carrying an absolute literal
+(px/rem/pt) anywhere in `asset/sass` — including **inside a `clamp()`/`min()`/`max()`**,
+which was the blind spot until 2.14 (`clamp(4rem, 15vw, 8rem)` was a private 64–128px
+scale the guard could not see). Use a `--text-*` token; `--text-2xs` (11px) is the floor,
+and there is deliberately no 14px step. Relative units (`em`, `%`, `vw`) stay legal.
+
+The breakpoint contract is enforced here too as of 2.14 (it was enforced only in the two
+modules before): `min-width` sits **on** a published breakpoint, `max-width` at
+**breakpoint − 1**, so the halves of a pair never both match. `#{$md - 1px}` is now the
+only legal spelling of the "below" half — the `- 0.02px` variant is gone.
+
+### A composed token must be redeclared wherever its referent flips
+
+A custom property is substituted **on the element that declares it**. So a light-scope
+token whose value references a token the dark block redeclares must itself be redeclared
+in the dark block, or dark pages inherit the light composition forever — and neither
+`tokens.json` nor any value-comparing guard can see it, because the generator resolves
+the dark block in isolation and the cascade does not.
+
+This has bitten the repo three times: the `--type-*` map (2.13, browse dots at 2.41:1 on
+dark), the composed focus tokens (2.13, every dark focus ring in the *light* primary),
+and `--panel-shadow` + `--glow-xs/sm/md` (2.14 — the file carried a comment asserting the
+glows "auto-update", which was true of the `@media` path and false of the manual toggle).
+`npm run check:tokens` now asserts it statically. Practical rule: if a new token's value
+contains a `var()`, put it in the light/dark **mixin pair**, not in `:root`, unless the
+referent is theme-independent.
+
+### `DESIGN.md` frontmatter is checked against `tokens.json`
+
+Do not hand-edit it. On a token change the guard will fail until
+`/impeccable document` regenerates it — that failure is the artifact telling you it is
+stale. Release order: edit tokens → `npm run build` → documenter → green.
 
 ### `asset/css/` is generated
 

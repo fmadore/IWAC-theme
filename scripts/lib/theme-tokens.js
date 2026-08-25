@@ -72,4 +72,66 @@ function collectDefinedTokenNames(themeRoot) {
     return defined;
 }
 
-module.exports = { collectDefinedTokenNames, walk };
+/* -------------------------------------------------------------------------
+ * SCSS block extraction.
+ *
+ * Shared for the same reason as the vocabulary above: build-tokens.js resolves
+ * the light and dark cascade blocks to publish tokens.json, and
+ * check-token-usage.js reads the SAME blocks to assert that no light
+ * composition references a token the dark block redeclares. Two readers, one
+ * parse — a guard that disagreed with the generator about where the dark block
+ * starts would be checking a different file than the one that ships.
+ * ---------------------------------------------------------------------- */
+
+/** Extract the body of `@mixin <name> { … }` by balancing braces. */
+function extractMixinBody(scss, name) {
+    const start = scss.indexOf(`@mixin ${name}`);
+    if (start === -1) throw new Error(`mixin ${name} not found`);
+    const open = scss.indexOf('{', start);
+    let depth = 0, i = open;
+    for (; i < scss.length; i++) {
+        if (scss[i] === '{') depth++;
+        else if (scss[i] === '}') { depth--; if (depth === 0) break; }
+    }
+    return scss.slice(open + 1, i);
+}
+
+/**
+ * Extract the body of the first top-level `:root { … }` block.
+ *
+ * Anchored on a line start, NOT `indexOf(':root')` — every one of these files
+ * mentions `:root` in prose above the block it describes, and a naive search
+ * lands on the comment and then balances braces from the NEXT `{` it finds,
+ * which is a different block entirely.
+ */
+function extractRootBody(scss) {
+    const m = /(^|\n)\s*:root\s*\{/.exec(scss);
+    if (!m) return '';
+    const open = scss.indexOf('{', m.index);
+    let depth = 0, i = open;
+    for (; i < scss.length; i++) {
+        if (scss[i] === '{') depth++;
+        else if (scss[i] === '}') { depth--; if (depth === 0) break; }
+    }
+    return scss.slice(open + 1, i);
+}
+
+/** Parse `--name: value;` declarations from a block body, in source order. */
+function parseDecls(body) {
+    // Strip block + line comments first so they never leak into values.
+    const clean = body.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+    const decls = [];
+    for (const stmt of clean.split(';')) {
+        const m = stmt.match(/(--[\w-]+)\s*:\s*([\s\S]+)/);
+        if (m) decls.push({ name: m[1].trim(), value: m[2].trim() });
+    }
+    return decls;
+}
+
+module.exports = {
+    collectDefinedTokenNames,
+    walk,
+    extractMixinBody,
+    extractRootBody,
+    parseDecls,
+};

@@ -129,6 +129,52 @@ colour — and the two ring names were one transposition apart
 44 times across IwacVisualizations' block stylesheets. The tint has been
 renamed `--focus-ring-color` so no two focus tokens are near-homographs.
 
+### `--primary` is an accent, not a text colour
+
+**Normative.** `--primary` (`#ce4115`) as text, measured on each light surface:
+
+| on `--surface` | on `--surface-raised` | on `--background` | on `--surface-sunken` |
+|---|---|---|---|
+| 4.67:1 ✅ | 4.51:1 ✅ | **4.40:1** ❌ | **4.25:1** ❌ |
+
+It clears AA for normal text on the two lightest surfaces and misses on the
+other two — which is worse than a clean fail, because it means the same
+declaration passes or fails depending on which panel it lands in, and a
+component does not know that. All four clear the 3:1 bar for large text
+(≥ 24px, or ≥ 19px bold) and for non-text marks. The decision is therefore a
+scoping rule, not a new token:
+
+| Sanctioned | Not sanctioned |
+|---|---|
+| Links and link hover | Running body text on any surface |
+| Buttons, controls, and their states | Paragraph, list-item or table-cell copy |
+| Current / active state (nav tab, active facet, active count) | Long-form prose blocks, ledes, abstracts |
+| Large display text (the 404 numeral, KPI figures) | Anything set from `--font-serif-text` |
+| Pseudo-element marks: interpuncts, `::marker`, chevrons, dots | |
+| Non-text: borders, fills, focus rings, the duotone plate | |
+
+A darker primary was considered and rejected: the brand seed is
+admin-configurable, so no fixed token value can guarantee 4.5:1 for a site that
+sets its own — and `--primary` is already darkened 8% from the raw hex for
+exactly this reason. Scoping the use is the durable answer; darkening the
+colour would only move the failure to the next admin who changes it.
+
+`npm run check:tokens` enforces the rule mechanically over the theme's Sass —
+narrowly, and it says so in the script: it flags `color: var(--primary…)` only
+where the same block *also* declares itself long-form reading
+(`--font-serif-text`, `--line-height-relaxed`, a `--measure-*`), or where the
+selector's leaf is a bare prose element (`p`, `li`, `dd`, `blockquote`, …) with
+no link, control, state or pseudo-element in the chain. A prose container named
+only by a class, carrying none of those markers, is invisible to it. The rule
+is a floor under the policy, not a proof of it.
+
+> **Why it is phrased positively.** Every one of the theme's ~60 current
+> `color: var(--primary…)` sites is sanctioned. A rule phrased as "flag unless
+> it looks interactive" would therefore have been an exemption list seeded with
+> sixty entries and growing — a check that gets weaker with every component. A
+> rule phrased as "flag what positively looks like prose" starts at zero and
+> gets *stronger* as the prose vocabulary grows.
+
 ### Breakpoints
 
 `tokens.json` publishes them as `breakpoints`, and both modules' guards assert
@@ -144,10 +190,25 @@ together by a `/* sm */` comment rather than a check, and why that failed:
 `blocks/laicite.css` reflowed at 640px labelled `sm` while every other block on
 the same page reflowed at 600px.
 
-**`min-width` sits ON the breakpoint; `max-width` sits at breakpoint − 1** (or
-− 0.02), so the two halves of a pair never both match. `max-width: 600px`
-beside `min-width: 600px` means both rules fire in a 1px sliver, and the guard
-rejects it with the correction.
+**`min-width` sits ON the breakpoint; `max-width` sits at breakpoint − 1**, so
+the two halves of a pair never both match. `max-width: 600px` beside
+`min-width: 600px` means both rules fire in a 1px sliver, and the guard rejects
+it with the correction.
+
+**One spelling of the "below" half.** `− 0.02px` (Bootstrap's) was tolerated
+here until 2.14, and the theme carried both — ten queries one way, five the
+other, in files that reflow the same header. Neither is wrong alone; carrying
+both is, for the reason the `/* sm */` comment failed: two answers to one
+question and nothing asserting either.
+
+Until 2.14 the contract was enforced only *downstream* — both modules'
+`check-theme-tokens.js` checked their CSS, and the source of truth checked
+nothing. `npm run check:tokens` now enforces it on `asset/sass` too. Note the
+trap it has to avoid, if you ever port this rule: `@media (max-width: #{$md -
+1px})` carries a `{` **inside** the condition, so the obvious
+`@media([^{]*)\{` stops at the interpolation, hands back a condition with no
+closing paren, and silently checks nothing — while the `min-width` half, which
+has no interpolation, passes and looks like coverage.
 
 `@container` queries are exempt — they measure their own container, not the
 viewport.
@@ -508,6 +569,62 @@ the theme as a token, or it is a bug.
 - The **theme** owns light/dark, three ways: `:root` (light default),
   `@media (prefers-color-scheme: dark)`, and `body[data-theme="dark"|"light"]`
   (manual toggle, persisted in `localStorage` key `iwac-theme-preference`).
+
+### Substitution scope — the rule that decides where a composed token lives
+
+**A custom property is substituted at computed-value time on the element that
+DECLARES it.** So a token declared in the light scope whose value references a
+token the dark block redeclares must **itself** be redeclared in the dark
+block. Otherwise the dark page inherits the light composition — permanently,
+and invisibly to every generator and every guard that resolves the dark block
+in isolation.
+
+It is not an edge case here. The manual toggle applies the dark blocks to
+`<body>` while `:root` keeps the light ones, and `layout/layout.phtml`'s
+pre-paint script writes `data-theme` on `<body>` for *system* dark too — so
+this is every dark session with JS enabled. The `@media` path hides it, because
+there the override lands on `:root` and the composition does flip.
+
+It has now bitten this repo three times:
+
+| Fixed in | Token(s) | What dark actually painted |
+|---|---|---|
+| 2.13 | the nine `--type-*` | light hues; the browse publication dot at **2.41:1** |
+| 2.13 | `--focus-outline`, `--ring-focus`, `--ring-focus-sm` | every dark focus ring in the **light** primary |
+| 2.14 | `--panel-shadow`, `--glow-xs/sm/md` | light panel shadow; button halos from the light primary |
+
+Every time, `tokens.json` published the correct dark value and the browser
+delivered the light one. Three occurrences with the same shape is a missing
+check, so `npm run check:tokens` now asserts it statically across the four
+variable files: for each light-scope declaration, if its value references a
+token the dark block redeclares, the declaration must be redeclared there too.
+The fix is always the same — move the pair into the light/dark mixin pair.
+
+**Corollary for a token you are adding:** if its value contains a `var()`, ask
+which side of the theme boundary the referent lives on. Theme-independent
+compositions (`--panel-radius: var(--radius-md)`) stay in `:root`; everything
+else belongs in both mixins.
+
+### `DESIGN.md` frontmatter is generated, and asserted
+
+The root `DESIGN.md` (the Impeccable skill's machine-readable artifact) carries
+a YAML frontmatter that restates the **light** palette plus the radius and
+spacing scales. `tokens.json` is normative; the frontmatter is produced by
+`/impeccable document` from the shipped tree — **never hand-edited**.
+
+`npm run check:tokens` compares the three sections whose keys map 1:1 onto
+token names — `colors:` → `light['--<key>']`, `rounded:` → `--radius-*`,
+`spacing:` → `--space-*` — and fails on disagreement, naming the documenter as
+the fix. The `typography:` and `components:` sections are editorial groupings
+(a shortened font stack, a role name like "headline" chosen for the tooling)
+with no token name to compare against, so they stay the documenter's to own;
+nor is the reverse asserted — the frontmatter lists a curated subset and it is
+not a bug for it to omit `--black` or the `--footer-*` family.
+
+**Release order after a token change:** edit the variable files → `npm run
+build` → `/impeccable document` → guard green. Between the second and third
+step the guard is *expected* to fail; that is the artifact telling you it is
+stale, which is the whole point of asserting it.
 - Tokens flip values across these blocks; **modules must not branch on the
   theme** in their own CSS. Consume the token and dark mode follows for free.
   (The Compare-Newspapers corpus colours, for example, dropped their manual

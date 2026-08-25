@@ -30,8 +30,15 @@ const fs = require('fs');
 const path = require('path');
 
 // Shared with check-token-usage.js so the theme and the modules can never
-// disagree about which token names exist.
-const { collectDefinedTokenNames } = require('./lib/theme-tokens');
+// disagree about which token names exist — nor about where the light and dark
+// cascade blocks begin and end (the guard's substitution-scope rule reads the
+// same blocks this generator resolves).
+const {
+    collectDefinedTokenNames,
+    extractMixinBody,
+    extractRootBody,
+    parseDecls,
+} = require('./lib/theme-tokens');
 
 const THEME_ROOT = path.join(__dirname, '..');
 const VARS_DIR = path.join(THEME_ROOT, 'asset', 'sass', 'abstracts', 'variables');
@@ -295,32 +302,6 @@ function readSeed(scss, name) {
     return m ? normalizeHex(m[1]) : null;
 }
 
-/** Extract the body of `@mixin <name> { … }` by balancing braces. */
-function extractMixinBody(scss, name) {
-    const start = scss.indexOf(`@mixin ${name}`);
-    if (start === -1) throw new Error(`mixin ${name} not found`);
-    const open = scss.indexOf('{', start);
-    let depth = 0, i = open;
-    for (; i < scss.length; i++) {
-        if (scss[i] === '{') depth++;
-        else if (scss[i] === '}') { depth--; if (depth === 0) break; }
-    }
-    return scss.slice(open + 1, i);
-}
-
-/** Extract the body of the first top-level `:root { … }` block. */
-function extractRootBody(scss) {
-    const m = /(^|\n)\s*:root\s*\{/.exec(scss);
-    if (!m) return '';
-    const open = scss.indexOf('{', m.index);
-    let depth = 0, i = open;
-    for (; i < scss.length; i++) {
-        if (scss[i] === '{') depth++;
-        else if (scss[i] === '}') { depth--; if (depth === 0) break; }
-    }
-    return scss.slice(open + 1, i);
-}
-
 /** Parse `$name: value;` Sass scalars so `#{$var}` interpolation resolves. */
 function parseSassVars(scss) {
     const out = {};
@@ -341,18 +322,6 @@ function parseSassVars(scss) {
 function expandInterpolation(value, sassVars) {
     return value.replace(/#\{\s*(?:meta\.inspect\(\s*)?(\$[\w-]+)\s*\)?\s*\}/g, (m, name) =>
         sassVars[name] !== undefined ? sassVars[name] : m);
-}
-
-/** Parse `--name: value;` declarations from a mixin body, in order. */
-function parseDecls(body) {
-    // Strip block + line comments first so they never leak into values.
-    const clean = body.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
-    const decls = [];
-    for (const stmt of clean.split(';')) {
-        const m = stmt.match(/(--[\w-]+)\s*:\s*([\s\S]+)/);
-        if (m) decls.push({ name: m[1].trim(), value: m[2].trim() });
-    }
-    return decls;
 }
 
 /** Resolve every declaration in order; return { '--name': '#hex' } (opaque only). */
