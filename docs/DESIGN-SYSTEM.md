@@ -325,7 +325,7 @@ column. The OKLCH source for each value lives in `_colors.scss`.
 | `--border` | `#ced1d6` | `#352f28` |
 | `--border-strong` | `#aeb1b7` | `#534c44` |
 | `--success` | `#2e9052` | `#56bd78` |
-| `--warning` | `#de7000` | `#f99532` |
+| `--warning` | `#d66800` | `#f99532` |
 | `--error` | `#c9222b` | `#ff645f` |
 | `--info` | `#037ac0` | `#4dacf6` |
 | `--white` | `#ffffff` | `—` |
@@ -351,12 +351,12 @@ three repos (the `document` badge fallback was `#e89c4a` in IwacSearch but
 | `--type-article` | `--primary` | `#ce4115` | `#ec653f` |
 | `--type-publication` | `--secondary` | `#394f68` | `#708093` |
 | `--type-audiovisual` | `--info` | `#037ac0` | `#4dacf6` |
-| `--type-document` | `--warning` | `#de7000` | `#f99532` |
+| `--type-document` | `--warning` | `#d66800` | `#f99532` |
 | `--type-reference` | `--muted` | `#66696e` | `#8a8580` |
 | `--type-photograph` | `--success` | `#2e9052` | `#56bd78` |
 | `--type-entity-personnes` | `--info` | `#037ac0` | `#4dacf6` |
 | `--type-entity-lieux` | `--success` | `#2e9052` | `#56bd78` |
-| `--type-entity-organisations` | `--warning` | `#de7000` | `#f99532` |
+| `--type-entity-organisations` | `--warning` | `#d66800` | `#f99532` |
 <!-- END GENERATED:TYPE-TABLE -->
 
 Each `--type-*` resolves to its semantic token, so the fallback hex equals
