@@ -44,7 +44,7 @@
         padding-block: var(--space-3);
         min-height: 3.5rem;
 
-        @media (max-width: #{$sm - 0.02px}) {
+        @media (max-width: #{$sm - 1px}) {
             gap: var(--space-2);
         }
     }
@@ -53,7 +53,7 @@
         flex: 0 1 auto;
         min-width: 7ch; // keep a readable stub of the wordmark before the tools start giving up width
 
-        @media (max-width: #{$sm - 0.02px}) {
+        @media (max-width: #{$sm - 1px}) {
             min-width: 5ch;
 
             // Once the wordmark is down to a four-letter acronym it has
@@ -84,7 +84,7 @@
             display: none;
         }
 
-        @media (max-width: #{$sm - 0.02px}) {
+        @media (max-width: #{$sm - 1px}) {
             .main-header__site-title-full {
                 position: absolute;
                 width: 1px;
@@ -153,7 +153,7 @@
             flex-shrink: 0;
         }
 
-        @media (max-width: #{$sm - 0.02px}) {
+        @media (max-width: #{$sm - 1px}) {
             gap: var(--space-1);
         }
 
@@ -161,7 +161,7 @@
         // the cluster grow so the search box can breathe into that space.
         // flex-end keeps the icons flush right once the search hits its cap,
         // leaving any remainder as a natural gap after the wordmark.
-        @media (max-width: #{$md - 0.02px}) {
+        @media (max-width: #{$md - 1px}) {
             flex-grow: 1;
             justify-content: flex-end;
         }
@@ -186,12 +186,12 @@
 
         // Mobile: grow with the tools cluster (see __tools) up to a cap that
         // keeps the box proportionate to the wordmark.
-        @media (max-width: #{$md - 0.02px}) {
+        @media (max-width: #{$md - 1px}) {
             flex-grow: 1;
             max-width: 22rem;
         }
 
-        @media (max-width: #{$sm - 0.02px}) {
+        @media (max-width: #{$sm - 1px}) {
             min-width: 4.5rem;
         }
 

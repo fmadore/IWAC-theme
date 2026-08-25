@@ -85,7 +85,7 @@
 }
 
 // Responsive adjustments
-@media (max-width: #{$md - 0.02px}) {
+@media (max-width: #{$md - 1px}) {
     .iframe-embed {
         margin-bottom: var(--space-4);
     }

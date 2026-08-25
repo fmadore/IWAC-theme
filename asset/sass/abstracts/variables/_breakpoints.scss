@@ -6,8 +6,25 @@
 // laicite block reflowed at 640px labelled "sm" while every other block on
 // the same page reflowed at 600px.
 //
-// Six steps. Use `max-width: #{$x - 1px}` (or `- 0.02px`) for the "below"
-// half of a pair so the two never overlap.
+// Six steps. ONE idiom for the "below" half of a pair: `max-width: #{$x - 1px}`,
+// so `min-width` sits ON the breakpoint and `max-width` at breakpoint − 1 and
+// the two halves never both match.
+//
+// `- 0.02px` (Bootstrap's spelling) used to be legal here too, and the theme
+// carried both — ten queries one way, five the other, in files that reflow the
+// same header. Neither is wrong on its own; carrying both is, for the reason
+// the `/* sm */` comment failed: two answers to one question and nothing
+// asserting either. The published contract in tokens.json says breakpoint − 1,
+// both modules' check-theme-tokens.js already enforce exactly that on their own
+// CSS, and `npm run check:tokens` now enforces it here. The source of truth
+// does not get to spell the rule two ways.
+//
+// (The two are not identical — `- 0.02px` leaves a 0.02px dead zone below the
+// breakpoint where neither half matches, `- 1px` leaves a 1px one. Both are
+// sub-CSS-pixel-integer widths that only a zoomed or fractional-DPR viewport
+// can land on, and no rule in this theme is load-bearing across that sliver.
+// If one ever is, fix it by making the pair's fallthrough harmless, not by
+// re-forking the idiom.)
 $xs: 400px;   // narrow phones — hero headline step only
 $sm: 600px;
 $md: 768px;

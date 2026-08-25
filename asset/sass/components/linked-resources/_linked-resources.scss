@@ -305,7 +305,7 @@
 
     // --------- Headers ----------
     thead {
-        @media (max-width: #{$md - 0.02px}) {
+        @media (max-width: #{$md - 1px}) {
             @include visually-hidden;
         }
     }
@@ -474,7 +474,7 @@
     // Responsive: stack as cards below $md
     // ==========================================================================
 
-    @media (max-width: #{$md - 0.02px}) {
+    @media (max-width: #{$md - 1px}) {
 
         &, thead, tbody, tr, th, td {
             display: block;
