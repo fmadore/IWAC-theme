@@ -12,8 +12,13 @@
  * It then:
  *   1. writes tokens.json at the theme root,
  *   2. optionally syncs a copy into each sibling module repo when invoked
- *      with `--sync-siblings`, and
- *   3. regenerates the fallback tables in docs/DESIGN-SYSTEM.md between
+ *      with `--sync-siblings`,
+ *   3. publishes the resolved palette into each of those siblings'
+ *      `.impeccable/design.json` under `extensions.colorMeta` — the shape the
+ *      Impeccable design detector reads — so a consumer repo's correct
+ *      `var(--token, #hex)` fallbacks stop reading as unknown colours while a
+ *      genuinely drifted hex still does (see syncSidecarPalette), and
+ *   4. regenerates the fallback tables in docs/DESIGN-SYSTEM.md between
  *      `<!-- BEGIN GENERATED:* -->` / `<!-- END GENERATED:* -->` markers, so
  *      the docs can't silently drift from the SCSS.
  *
@@ -532,6 +537,102 @@ function seriesTable(series) {
 /*  Run                                                               */
 /* ------------------------------------------------------------------ */
 
+/* ------------------------------------------------------------------ */
+/*  Sibling artifact layer — publish the palette to each module's       */
+/*  Impeccable sidecar so its design detector can see the theme.        */
+/* ------------------------------------------------------------------ */
+
+// Generated entries are namespaced so they can be rewritten wholesale on
+// every run while a module's OWN colours (IwacVisualizations' `model-*` data
+// slots) are never touched. Deleting the prefix before rewriting is what
+// makes an upstream token REMOVAL propagate — a merge-only sync would leave
+// retired colours whitelisted downstream forever.
+const SIDECAR_REL = path.join('.impeccable', 'design.json');
+const GENERATED_KEY_PREFIX = 'theme/';
+
+/**
+ * Merge the resolved theme palette into `<sibling>/.impeccable/design.json`
+ * under `extensions.colorMeta`, the shape the Impeccable detector reads when
+ * deciding whether a colour literal belongs to the design system.
+ *
+ * WHY this exists. A consumer module writes every colour as
+ * `var(--ink-light, #3f4349)`, where the literal is the theme's own value,
+ * used only when the theme's CSS is absent (embed routes, a foreign Omeka
+ * theme). Those literals are correct BY CONSTRUCTION and each module's
+ * check-theme-tokens.js already asserts them against tokens.json. But the
+ * detector compares against the module's DESIGN.md palette, and a consumer
+ * repo deliberately declares almost none — IwacVisualizations records only
+ * its four owned model accents, because mirroring the theme by hand would
+ * stand up a second authority in a repo whose whole contract is that it has
+ * none. So every correct fallback read as an unknown colour: 152 findings in
+ * one stylesheet, none of them real, which is exactly the volume that trains
+ * a reader to stop looking.
+ *
+ * Publishing the palette from HERE keeps the no-second-authority rule intact:
+ * this is a generated artifact written by the same script that writes
+ * tokens.json, from the same SCSS, in the same run. It cannot drift from the
+ * theme, and it cannot go stale by hand the way a transcribed copy does.
+ *
+ * Both light and dark values ship. The fallback contract pins light, but a
+ * module's degraded-mode tables (iwac-theme.js) legitimately carry the dark
+ * hexes too, and a palette that admitted only light would flag those instead.
+ *
+ * @returns {{written: boolean, count: number} | null} null when the sibling
+ *   has no Impeccable artifact layer to publish into.
+ */
+function syncSidecarPalette(siblingDir, tokens) {
+    const sidecarPath = path.join(siblingDir, SIDECAR_REL);
+    if (!fs.existsSync(sidecarPath)) return null;
+
+    let sidecar;
+    try {
+        sidecar = JSON.parse(fs.readFileSync(sidecarPath, 'utf8'));
+    } catch (err) {
+        console.warn('  ! sidecar unreadable, palette NOT synced: ' + sidecarPath
+            + ' (' + err.message + ')');
+        return { written: false, count: 0 };
+    }
+
+    const before = JSON.stringify(sidecar);
+
+    sidecar.extensions = sidecar.extensions || {};
+    const meta = (sidecar.extensions.colorMeta && typeof sidecar.extensions.colorMeta === 'object')
+        ? sidecar.extensions.colorMeta
+        : {};
+
+    for (const key of Object.keys(meta)) {
+        if (key.startsWith(GENERATED_KEY_PREFIX)) delete meta[key];
+    }
+
+    // Module-owned entries keep their insertion order at the top; generated
+    // ones append below, so a hand-read diff stays legible.
+    let count = 0;
+    for (const [token, hex] of Object.entries(tokens.light)) {
+        const darkHex = tokens.dark[token];
+        const entry = {
+            role: 'theme-token',
+            token,
+            canonical: hex,
+            generated: true,
+            source: 'IWAC-theme/scripts/build-tokens.js',
+        };
+        // tonalRamp is the detector's second allow-list channel; the dark
+        // value rides there rather than inventing a second canonical.
+        if (darkHex && darkHex !== hex) entry.tonalRamp = [darkHex];
+        meta[GENERATED_KEY_PREFIX + token.replace(/^--/, '')] = entry;
+        count++;
+    }
+
+    sidecar.extensions.colorMeta = meta;
+
+    const after = JSON.stringify(sidecar, null, 2) + '\n';
+    if (before === JSON.stringify(JSON.parse(after))) {
+        return { written: false, count };
+    }
+    fs.writeFileSync(sidecarPath, after);
+    return { written: true, count };
+}
+
 function main() {
     const scss = (() => {
         if (!fs.existsSync(COLORS_SCSS)) {
@@ -593,11 +694,13 @@ function main() {
     // 1. Theme root. Cross-repository writes are opt-in so a normal build is
     // hermetic and succeeds in CI, containers, and read-only sibling clones.
     const targets = [TOKENS_OUT];
+    const sidecarSyncs = [];
     if (SYNC_SIBLINGS) {
         for (const sib of SIBLINGS) {
             const dir = path.join(THEME_ROOT, '..', sib);
             if (fs.existsSync(dir)) {
                 targets.push(path.join(dir, 'tokens.json'));
+                sidecarSyncs.push([sib, dir]);
             } else {
                 console.warn('  ! sibling repo not found — tokens.json NOT synced: ../' + sib);
             }
@@ -606,6 +709,20 @@ function main() {
     for (const t of targets) {
         fs.writeFileSync(t, json);
         console.log('  wrote ' + path.relative(path.join(THEME_ROOT, '..'), t));
+    }
+
+    // 2. Sibling Impeccable sidecars — the palette the design detector reads.
+    for (const [sib, dir] of sidecarSyncs) {
+        const result = syncSidecarPalette(dir, tokens);
+        if (!result) {
+            console.log('  ' + sib + ': no .impeccable/design.json — palette not synced');
+        } else if (result.written) {
+            console.log('  wrote ' + path.join(sib, SIDECAR_REL)
+                + ' (' + result.count + ' theme colours)');
+        } else {
+            console.log('  ' + sib + ': sidecar palette already current ('
+                + result.count + ' theme colours)');
+        }
     }
 
     // 3. docs

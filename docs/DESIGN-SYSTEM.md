@@ -625,6 +625,46 @@ not a bug for it to omit `--black` or the `--footer-*` family.
 build` → `/impeccable document` → guard green. Between the second and third
 step the guard is *expected* to fail; that is the artifact telling you it is
 stale, which is the whole point of asserting it.
+
+### A consumer's palette is published to it, not transcribed by it
+
+The rule above is the theme's own. A **consumer** repo does the opposite: its
+`DESIGN.md` deliberately records only the colours that repo genuinely owns
+(IwacVisualizations lists its four AI-model data slots and nothing else),
+because mirroring this palette by hand would stand up a second authority in a
+repo whose whole contract is that it has none — and it would go stale exactly
+the way every hand-kept copy in this project has.
+
+That left the Impeccable design detector with almost no palette to check
+against downstream, so every correct `var(--ink-light, #3f4349)` fallback read
+as an unknown colour: **152 findings in `iwac-core.css` alone, none of them
+real.** That volume is worse than no check, because it trains a reader to
+dismiss the rule — and the one finding that eventually matters goes with it.
+
+So `npm run sync:tokens` now publishes the resolved palette into each
+sibling's `.impeccable/design.json` under `extensions.colorMeta`, keyed
+`theme/<token>` with the light value as `canonical` and the dark value as its
+`tonalRamp`. Properties of the arrangement:
+
+- **Generated, not transcribed.** Written by `build-tokens.js` in the same run,
+  from the same SCSS, as `tokens.json`. It cannot drift from the theme.
+- **Non-destructive.** Only `theme/`-prefixed keys are rewritten; a module's
+  own entries are untouched. The prefix is deleted before rewriting, so an
+  upstream token *removal* propagates instead of leaving a retired colour
+  whitelisted downstream forever.
+- **Still a real check.** Verified by injecting a non-theme hex into a block
+  stylesheet: it is still flagged. Consumer CSS went 152 findings → 0 without
+  losing the ability to catch a genuinely drifted value.
+- **Idempotent**, so it is safe in any build order and produces no diff churn.
+
+A consumer with no `.impeccable/` directory (IwacSearch today) is skipped with
+a line, not an error.
+
+This does **not** replace each module's own `check-theme-tokens.js`, which is
+strictly stronger: it asserts that every hex sits in a fallback slot, that the
+fallback equals the canonical light value, and that the token name is one this
+theme actually publishes. The sidecar sync makes the *design* detector agree
+with that guard rather than duplicating it badly.
 - Tokens flip values across these blocks; **modules must not branch on the
   theme** in their own CSS. Consume the token and dark mode follows for free.
   (The Compare-Newspapers corpus colours, for example, dropped their manual
