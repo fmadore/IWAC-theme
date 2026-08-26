@@ -21,3 +21,9 @@ nul
 # Claude Design review artifacts (local reference, not theme code)
 /IWAC Theme Review.html
 /_review.txt
+
+# Impeccable live-session runtime state: the pid, port and session token of a
+# running live server. Machine-local by definition, and a token has no business
+# in a public repo. The rest of .impeccable/ (config.json, design.json,
+# critique/) is the tracked artifact layer — ignore only this directory.
+/.impeccable/live/
