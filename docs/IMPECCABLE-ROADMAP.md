@@ -197,5 +197,5 @@ any use needs an explicit brief first.
   config edits, not theme CSS.
 - Definition of done, theme-side: `npm run check:tokens` + `npm run build` clean,
   `npm run test` (Playwright) green, rig screenshots in both themes, and — since the
-  live site installs release ZIPs — a `v*` release with all four version declarations
+  live site installs release ZIPs — a `v*` release with every version declaration
   bumped. A merged PR alone ships nothing.

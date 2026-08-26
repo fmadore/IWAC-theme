@@ -24,6 +24,7 @@ values — `tokens.json` stays normative; when tokens change, refresh `DESIGN.md
 npm run check:tokens   # fast gate: fails if any var(--…) in asset/sass doesn't resolve
 npm run build          # check:tokens → build:tokens → build:i18n → compile CSS
 npm run start          # compile once, then watch .scss
+npm run bump -- patch  # write every version declaration (patch|minor|major|X.Y.Z)
 ```
 
 Match the command to the change. `npm run build` regenerates `tokens.json` **and** the
@@ -40,6 +41,29 @@ case-sensitive on the Linux server; only the class name is not. So `helpers[] =
 "BrowseLayout"` must be called `$this->BrowseLayout()`. A case mismatch 500s every page
 that renders it — and "fixing" it by lowercasing `theme.ini` just moves the failure to a
 `require_once` fatal that is invisible on a case-insensitive dev filesystem.
+
+### The version lives in six places — `npm run bump` is the only writer
+
+`config/theme.ini`, `package.json`, `package-lock.json` (**twice** — root and
+`packages[""]`), `CITATION.cff` and the `asset/sass/style.scss` banner. Editing them by
+hand is how the same failure keeps recurring: `style.scss` drifted from 2.9.0 across
+thirteen releases, and the lockfile's two copies sat at 2.10.1 across four more — both
+times because the release gate asserted its own inline list of the files a human
+remembered, and the writer was a human.
+
+So the list is now data, in [scripts/lib/versions.js](scripts/lib/versions.js), read by
+both sides:
+
+- `npm run bump -- <patch|minor|major|X.Y.Z>` writes all six and stamps `date-released`.
+  `package.json` + `package-lock.json` are delegated to `npm version`, which does the
+  semver arithmetic and keeps the lockfile's two copies in step; the increment keywords
+  work without this repo parsing semver at all.
+- `npm run check:versions` asserts they agree — on every push (Quality), and against the
+  tag in `release.yml`. Adding a seventh site means one entry in that file, and both the
+  writer and the guard pick it up.
+
+The release itself is still `git tag vX.Y.Z && git push origin vX.Y.Z`: pushing to
+`master` deploys nothing, because the live sites install the release ZIP.
 
 ### Design tokens are machine-checked — never hand-maintain a list
 

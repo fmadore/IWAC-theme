@@ -26,6 +26,12 @@ jobs:
 
       - run: npm ci
       - run: npm run check:js
+
+      # Catches a version declaration drifting on the commit that drifts it,
+      # rather than at the next release — or, as with package-lock.json's two
+      # copies, four releases later.
+      - run: npm run check:versions
+
       - run: npm test
       - run: npm run build
       - run: npm audit --audit-level=high

@@ -38,22 +38,16 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
-      # Four files carry the version; a tag that disagrees with any of them
+      # Several files carry the version; a tag that disagrees with any of them
       # ships a theme whose admin screen, stylesheet header or citation record
-      # lies about itself. style.scss joined the gate in 2.9.14, having drifted
-      # unnoticed from 2.9.0 across thirteen releases while it went unchecked.
-      - name: Version must match theme.ini, package.json, CITATION.cff and style.scss
-        run: |
-          WANT="${{ steps.v.outputs.version }}"
-          INI=$(sed -n 's/^version *= *"\(.*\)"/\1/p' config/theme.ini)
-          PKG=$(node -p "require('./package.json').version")
-          CFF=$(sed -n 's/^version: *"\?\([^"]*\)"\?/\1/p' CITATION.cff)
-          SCSS=$(sed -n 's/^Version: *\(.*\)/\1/p' asset/sass/style.scss | tr -d '\r')
-          echo "tag=$WANT  theme.ini=$INI  package.json=$PKG  CITATION.cff=$CFF  style.scss=$SCSS"
-          test "$INI" = "$WANT" || { echo "::error::config/theme.ini says $INI"; exit 1; }
-          test "$PKG" = "$WANT" || { echo "::error::package.json says $PKG"; exit 1; }
-          test "$CFF" = "$WANT" || { echo "::error::CITATION.cff says $CFF"; exit 1; }
-          test "$SCSS" = "$WANT" || { echo "::error::asset/sass/style.scss says $SCSS"; exit 1; }
+      # lies about itself. The list of declarations lives in
+      # scripts/lib/versions.js — the same list `npm run bump` writes — so this
+      # gate cannot fall behind the writer the way the old inline copy did:
+      # style.scss joined it in 2.9.14 after drifting from 2.9.0 across
+      # thirteen unchecked releases, and package-lock.json's two copies had
+      # drifted from 2.10.1 across four more before the list was shared.
+      - name: Every version declaration must match the tag
+        run: node scripts/check-versions.js "${{ steps.v.outputs.version }}"
 
       - run: npm ci
 
