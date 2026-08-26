@@ -78,7 +78,7 @@ jobs:
           done
 
           # Nothing that only exists to develop it.
-          if grep -nEi 'IWAC-theme/(package(-lock)?\.json|gulpfile\.js|playwright\.config\.js|\.nvmrc|\.editorconfig|scripts/|test/|test-support/|e2e/|CLAUDE\.md|\.impeccable\.md|\.agents/|\.claude/|ROADMAP\.md|\.github/|language/.*\.pot?$)' /tmp/list; then
+          if grep -nEi 'IWAC-theme/(package(-lock)?\.json|gulpfile\.js|playwright\.config\.js|\.nvmrc|\.editorconfig|scripts/|test/|test-support/|e2e/|CLAUDE\.md|\.impeccable(\.md|/)|\.agents/|\.claude/|ROADMAP\.md|\.github/|language/.*\.pot?$)' /tmp/list; then
             echo "::error::development files leaked into the release archive — check .gitattributes export-ignore"
             exit 1
           fi

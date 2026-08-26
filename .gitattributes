@@ -32,6 +32,7 @@
 # Agent and contributor working notes
 /CLAUDE.md      export-ignore
 /.impeccable.md export-ignore
+/.impeccable/   export-ignore
 /.agents/       export-ignore
 /.claude/       export-ignore
 /ROADMAP.md     export-ignore
