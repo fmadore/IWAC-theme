@@ -175,6 +175,31 @@ rendered twice. A new fileless ingester needs the same treatment — plus a line
 `config/theme.ini` and an admin visit to Themes → Configure resource pages, since a site
 whose stack is already customised does not pick up new theme defaults.
 
+### Mirador's "Maximize window" is workspace-scoped — the full-page lift is the theme's
+
+Mirador maximizes a window inside its own workspace (`position: absolute; inset: 0` against
+`.mirador-workspace-viewport`), and the module sizes that workspace as a card
+(`.mirador { height: 70vh; min-height: 600px }`). So the control did exactly what Mirador
+intends and still read as broken: the window grew by the width of the workspace rail and
+stopped. Mirador's actual full-page path is the *separate* "Full screen" button — an
+unlabelled icon in that rail, and absent on iOS, where element fullscreen doesn't exist.
+
+The theme now lifts the container instead: `mirador-theme-sync.js` subscribes to each
+viewer's store, mirrors `state.windows[*].maximized` onto `.mirador.viewer` as
+`.is-maximized`, and the stylesheet takes that container `position: fixed; inset: 0`.
+Two things are load-bearing and easy to drop:
+
+- **`.block-mirador`'s `z-index: 1` has to be lifted with it.** That containment is what
+  keeps MUI's 1300-range z-indexes below the sticky header — but a fixed child resolves
+  its z-index *inside* that stacking context, so the overlay paints under the header
+  unless the block goes to `--z-modal` too.
+- **The block gets an inline `min-height` placeholder while maximized.** The container
+  leaves the flow; letting the page collapse behind the overlay clamps `scrollTop` and
+  the reader lands somewhere else on the way out.
+
+`state.windows` and the `mirador/MINIMIZE_WINDOW` action are the same
+undocumented-but-stable store surface the dark-mode sync already rides on.
+
 ## Cross-repo contract
 
 This theme is the single source of truth for design tokens. Two sibling modules consume

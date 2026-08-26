@@ -107,3 +107,46 @@
         }
     }
 }
+
+// ==========================================================================
+// Full-Page Maximize
+// Mirador's own "Maximize window" fills the *workspace*, and the workspace
+// here is the module's card (`.mirador { height: 70vh; min-height: 600px }`),
+// so the control looks broken: the window grows by the width of the workspace
+// rail and stops. The full-page path Mirador does ship is the separate
+// "Full screen" button, which is an unlabelled icon in that rail and does not
+// exist at all on iOS, where element fullscreen is unsupported.
+//
+// So the theme lifts the container instead: mirador-theme-sync.js mirrors the
+// window's `maximized` state onto `.mirador.viewer` as `.is-maximized`, and
+// these rules take that container to the viewport. Maximize then means what
+// it looks like it means, and Mirador's own inset-0 window fills it for free.
+// ==========================================================================
+
+// The z-index:1 containment above has to be lifted with it: inside that
+// stacking context the overlay would paint under the sticky header (200).
+.block-mirador:has(.mirador.viewer.is-maximized) {
+    z-index: var(--z-modal);
+}
+
+.mirador.viewer.is-maximized {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    width: 100%;
+    // `inset` alone loses to the module's own height/min-height, so both are
+    // restated. dvh follows the drawer's pattern for mobile address bars.
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+// Reduce to a single scroll bar while the viewer owns the viewport
+body {
+    &.mirador-maximized {
+        overflow-y: hidden;
+    }
+}
