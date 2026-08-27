@@ -2,7 +2,16 @@
 
 // ==========================================================================
 // Icons
-// Custom icon overrides using Font Awesome
+//
+// These `o-icon-*` rules are the unification mechanism: Omeka core and its
+// modules emit FontAwesome-classed markup, and each rule here re-renders one
+// of those classes as a Lucide SVG mask so the public pages never show a
+// FontAwesome glyph. (Core still loads iconfonts.css asynchronously for the
+// glyphs no rule here covers.)
+//
+// The mask files keep their original Bootstrap-Icon FILENAMES from before the
+// Jan-2026 switch to Lucide — `list-ul.svg` holds Lucide's *list*. Read the
+// file, not the name; see PRODUCT.md.
 // ==========================================================================
 
 .o-icon-list::before {

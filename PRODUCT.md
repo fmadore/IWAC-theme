@@ -81,8 +81,20 @@ the press register grounded in the collection's own material.
   never UI chrome.
 - **Three-font system:** Besley (Clarendon display), Source Serif 4 (long-form text),
   Public Sans (UI) — all verified for Arabic-transliteration diacritics.
-- **Icons:** Bootstrap Icons (SVG via the theme's icon-mask pattern) only; FontAwesome,
-  flag-icon, and Lucide are intentionally absent.
+- **Icons:** **Lucide** — 24×24, `stroke-width: 2`, round caps — as SVG masks in
+  `asset/img/` via the `icon-mask()` mixin. The switch was deliberate (commit `8d1bd28`,
+  "Change to Lucide Icons", Jan 2026): it converted the set **in place and kept the old
+  Bootstrap-Icon filenames**, so `list-ul.svg` holds Lucide's *list* and `grid-fill.svg`
+  its *layout-grid*. A filename here is not evidence of provenance — open the file and
+  read the `class="lucide …"` attribute. Eleven older masks are still Bootstrap-drawn
+  from before the switch (quote, clipboard, check2, book, bookmark, camera, newspaper,
+  file-earmark-text, box-arrow-up-right, arrow-up, arrow-down); converging them is open.
+  Separately, a few icons are inlined in templates instead of masked, and those are
+  Bootstrap: the theme toggle and language switcher (`header.phtml`,
+  `language-switcher.phtml`), and the footer's seven brand marks (`footer.phtml`) —
+  brand marks stay each platform's own official logo, not a system glyph. FontAwesome
+  and flag-icon are intentionally absent from the theme (Omeka core still injects
+  FontAwesome asynchronously for other modules' glyphs).
 - **AI provenance:** AI-generated fields carry the official EU "AI GENERATED" mark.
 - **Register:** the press-archive stance in `docs/DESIGN-PHILOSOPHY.md` is binding,
   including its anti-cliché guardrail (no warm pastiche, no cream/parchment).
