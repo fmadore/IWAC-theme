@@ -9,12 +9,18 @@ use Throwable;
 final class BannerStats extends AbstractHelper
 {
     private const RESOURCE_CLASSES = [
-        'items' => [36, 60, 38, 49],
+        // "Items" is every record a visitor can open as an item page: press
+        // articles (36), Islamic publications (60), audiovisual (38),
+        // documents (49), photographs (58), and the nine bibliographic
+        // reference classes. Authority records (the index) are the one
+        // deliberate exclusion — they describe the items, they are not items.
+        'items' => [36, 60, 38, 49, 58, 35, 43, 88, 40, 82, 178, 52, 77, 305],
         'index' => [94, 9, 96, 54, 244],
-        'references' => [35, 43, 88, 40, 82, 178, 52, 77, 305],
     ];
 
     private const SUMMARY_KEYS = [
+        'newspapers',
+        'references_count',
         'total_words',
         'total_pages',
         'unique_sources',

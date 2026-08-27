@@ -56,7 +56,11 @@ msgid_plural "Archived web pages"
 msgstr[0] ""
 msgstr[1] ""
 
-#: view/common/banner.phtml:187
+#: view/common/banner.phtml:202
+msgid "Archives consulted"
+msgstr ""
+
+#: view/common/banner.phtml:204
 msgid "Audiovisual minutes"
 msgstr ""
 
@@ -108,7 +112,7 @@ msgstr ""
 msgid "Collapse the full text"
 msgstr ""
 
-#: view/common/banner.phtml:216
+#: view/common/banner.phtml:233
 msgid "Collection at a glance"
 msgstr ""
 
@@ -124,11 +128,11 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: view/common/banner.phtml:232
+#: view/common/banner.phtml:249
 msgid "Corpus in depth"
 msgstr ""
 
-#: view/common/banner.phtml:174
+#: view/common/banner.phtml:186
 msgid "Countries"
 msgstr ""
 
@@ -148,7 +152,7 @@ msgstr ""
 msgid "Default"
 msgstr ""
 
-#: view/common/banner.phtml:186
+#: view/common/banner.phtml:203
 msgid "Document types"
 msgstr ""
 
@@ -220,7 +224,7 @@ msgstr ""
 msgid "Image viewer"
 msgstr ""
 
-#: view/common/banner.phtml:172
+#: view/common/banner.phtml:177
 msgid "Index"
 msgstr ""
 
@@ -244,11 +248,11 @@ msgstr ""
 msgid "Item: %s"
 msgstr ""
 
-#: view/common/banner.phtml:171 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
+#: view/common/banner.phtml:176 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
 msgid "Items"
 msgstr ""
 
-#: view/common/banner.phtml:188
+#: view/common/banner.phtml:205
 msgid "Languages"
 msgstr ""
 
@@ -286,6 +290,10 @@ msgstr ""
 
 #: view/common/linked-resources.phtml:49
 msgid "Newest first"
+msgstr ""
+
+#: view/common/banner.phtml:184
+msgid "Newspapers"
 msgstr ""
 
 #: view/common/pagination.phtml:41
@@ -368,7 +376,7 @@ msgstr ""
 msgid "Read the full text — %s more words"
 msgstr ""
 
-#: view/common/banner.phtml:173
+#: view/common/banner.phtml:198
 msgid "References"
 msgstr ""
 
@@ -464,20 +472,16 @@ msgstr ""
 msgid "Toggle submenu"
 msgstr ""
 
-#: view/common/banner.phtml:184
+#: view/common/banner.phtml:194
 msgid "Total pages"
 msgstr ""
 
-#: view/common/banner.phtml:183
+#: view/common/banner.phtml:193
 msgid "Total words"
 msgstr ""
 
 #: view/common/linked-resources-table.phtml:105 view/common/linked-resources-table.phtml:37
 msgid "Type"
-msgstr ""
-
-#: view/common/banner.phtml:185
-msgid "Unique sources"
 msgstr ""
 
 #: view/common/resource-values.phtml:280

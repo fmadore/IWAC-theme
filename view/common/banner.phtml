@@ -148,7 +148,10 @@ if ($compact) {
             $statPageSlugs = [
                 'items' => ['browse', 'parcourir'],
                 'index' => ['index'],
-                'references' => ['references'],
+                // The newspapers figure opens the collection-overview
+                // dashboard: its newspaper-coverage panel lists exactly the
+                // titles the figure counts.
+                'newspapers' => ['collection-overview', 'vue-d-ensemble'],
             ];
             foreach ($statPageSlugs as $statKey => $slugs) {
                 foreach ($slugs as $slug) {
@@ -165,24 +168,38 @@ if ($compact) {
         $statPageUrls = [];
     }
 
+    $summary = $bannerStats['summary'];
+
     $stats = null;
     if ($counts) {
         $stats = [
             ['n' => $counts['items'], 'label' => $translate('Items'), 'featured' => true, 'url' => $statPageUrls['items'] ?? null],
             ['n' => $counts['index'], 'label' => $translate('Index'), 'url' => $statPageUrls['index'] ?? null],
-            ['n' => $counts['references'], 'label' => $translate('References'), 'url' => $statPageUrls['references'] ?? null],
-            ['n' => $counts['countries'], 'label' => $translate('Countries')],
         ];
+        // Distinct press titles across articles and Islamic publications.
+        // This one rides the data snapshot rather than the live API — a
+        // distinct-values aggregate the core Omeka API cannot count in one
+        // query. Without a snapshot the row simply degrades to three figures.
+        if (isset($summary['newspapers'])) {
+            $stats[] = ['n' => $summary['newspapers'], 'label' => $translate('Newspapers'), 'url' => $statPageUrls['newspapers'] ?? null];
+        }
+        $stats[] = ['n' => $counts['countries'], 'label' => $translate('Countries')];
     }
     $thin = "\xE2\x80\xAF"; // U+202F narrow no-break space — locale-neutral digit grouping
 
-    $summary = $bannerStats['summary'];
     $substats = null;
     if ($summary) {
         $depthFields = [
             'total_words' => $translate('Total words'),
             'total_pages' => $translate('Total pages'),
-            'unique_sources' => $translate('Unique sources'),
+            // Counted inside the Items figure above; surfaced on its own
+            // because a curated bibliography of this field is rare enough
+            // to be worth naming.
+            'references_count' => $translate('References'),
+            // dcterms:source — the archives, libraries and personal
+            // collections the material was gathered from. Labelled to keep
+            // it from reading as a second, smaller newspapers count.
+            'unique_sources' => $translate('Archives consulted'),
             'document_types' => $translate('Document types'),
             'audiovisual_minutes' => $translate('Audiovisual minutes'),
             'languages' => $translate('Languages'),
