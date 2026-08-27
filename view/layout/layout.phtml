@@ -249,6 +249,7 @@ if ($userBar) {
 			$this->inlineScript()->prependFile($this->assetUrl('js/pwa-install.js'));
 		}
 		echo $this->inlineScript()
+			->prependFile($this->assetUrl('js/plate-viewer.js'))
 			->prependFile($this->assetUrl('js/mirador-theme-sync.js'))
 			->prependFile($this->assetUrl('js/pagination-scroll.js'))
 			->prependFile($this->assetUrl('js/theme-toggle.js'))

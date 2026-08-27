@@ -1,0 +1,456 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Plate viewer
+//
+// Full-screen reading for Asset-block images. An Omeka *asset* has no
+// derivatives, so the page is always laying out a full-resolution original — a
+// 1877px screenshot — inside whatever column it landed in: 320px in a
+// standalone Asset block, the viewport on a phone, a grid column in a block
+// group. The viewer is how the pixels that are already there become readable.
+//
+// A DARKROOM IN BOTH THEMES. Every colour below is deliberately theme-
+// INDEPENDENT. A light table darkens the room whatever the lamps are doing:
+// re-basing the scrim on --ink-strong would flip it to near-white on a dark
+// page, and re-basing the text on --ink would flip it to near-black on the
+// scrim. So the palette is struck from the dark theme's own family (warm
+// neutrals, hue ~72-78) once, here, and inherits into both halves of the
+// component — the thumbnail's hover chip and the overlay speak the same room.
+//
+// The one value that still follows the site is the accent, because
+// --primary-base is admin-configurable: it is mixed the way iwac-dark-theme
+// mixes it (white 12%), which is the same statement — this surface is dark, so
+// the brand lightens for it — and it clears 5.6:1 on the scrim where the light
+// theme's --primary would sit at 3.4:1.
+// ==========================================================================
+
+.plate-trigger,
+.plate-viewer {
+    // Opaque, not a 94% wash. At 0.94 a white page behind resolves to rgb(31)
+    // against the scrim's own rgb(17) — four L* units, which is nothing on
+    // paper and plainly legible as ghost text at the dark end of the ramp. The
+    // masthead strip read straight through the room.
+    --plate-scrim:     oklch(9% 0.012 75);
+    --plate-ink:       oklch(95% 0.007 78);
+    --plate-ink-quiet: oklch(72% 0.010 75);
+    --plate-chip:      oklch(20% 0.013 72 / 0.82);
+    --plate-hairline:  oklch(100% 0 0 / 0.16);
+    --plate-accent:    color-mix(in oklab, var(--primary-base), white 12%);
+    // The outline idiom, re-based for a surface the token system does not
+    // model. --focus-outline is the default everywhere else and stays so; it
+    // just resolves to the LIGHT primary on a light page, which is 3.4:1
+    // against this scrim — a focus indicator that is worst exactly where the
+    // room is darkest.
+    --plate-focus: 2px solid var(--plate-accent);
+}
+
+// --------------------------------------------------------------------------
+// The thumbnail control
+//
+// Wrapped around the existing image element by plate-viewer.js, so no-JS
+// readers keep the plain image they have today and no template has to render a
+// control that would do nothing.
+// --------------------------------------------------------------------------
+.plate-trigger {
+    display: block;
+    position: relative;
+    inline-size: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    background: none;
+    cursor: zoom-in;
+
+    img {
+        display: block;
+        inline-size: 100%;
+        block-size: auto;
+    }
+
+    // The base <button> paints a hover fill and border; this control is a
+    // window, not a chip. Its feedback is the hint below.
+    &:hover,
+    &:active {
+        background: none;
+        border-color: transparent;
+    }
+
+    // .asset carries overflow: hidden for its radius, which clips an offset
+    // outline AND a box-shadow ring alike — so the indicator is drawn inside
+    // the box rather than swapped for a halo that would be clipped too.
+    &:focus-visible {
+        outline: var(--plate-focus);
+        outline-offset: -3px;
+    }
+
+    &__hint {
+        position: absolute;
+        inset-block-start: var(--space-2);
+        inset-inline-end: var(--space-2);
+        display: grid;
+        place-items: center;
+        inline-size: var(--size-control-sm);
+        block-size: var(--size-control-sm);
+        border-radius: var(--radius-full);
+        background: var(--plate-chip);
+        color: var(--plate-ink);
+        opacity: 0;
+        transform: translateY(var(--lift-xs));
+        transition:
+            opacity var(--transition-fast),
+            transform var(--transition-fast);
+
+        &::before {
+            content: "";
+            inline-size: 1rem;
+            block-size: 1rem;
+            @include icon-mask("../img/maximize.svg");
+        }
+    }
+
+    &:hover &__hint,
+    &:focus-visible &__hint {
+        opacity: 1;
+        transform: none;
+    }
+
+    // Hover is not a thing a phone can do, so the affordance has to be
+    // standing there. Quieter than the hover state, but present.
+    @media (hover: none) {
+        &__hint {
+            opacity: 0.85;
+            transform: none;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        &__hint {
+            transform: none;
+            transition: opacity var(--transition-fast);
+        }
+    }
+}
+
+// --------------------------------------------------------------------------
+// The overlay
+//
+// <dialog> + showModal(), so the viewer lives in the browser's top layer: above
+// the sticky masthead without joining the z-index conversation, with the focus
+// trap, Escape and background inerting handled by the UA.
+// --------------------------------------------------------------------------
+.plate-viewer {
+    position: fixed;
+    inset: 0;
+    inline-size: 100%;
+    max-inline-size: none;
+    block-size: 100%;
+    max-block-size: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: hidden;
+    color: var(--plate-ink);
+
+    // The scrim is a real element instead of ::backdrop: ::backdrop only
+    // inherits custom properties from its originating element in browsers
+    // newer than this theme's floor (Safari 16.2), and a var() that fails to
+    // resolve there is a transparent overlay over a live page.
+    &::backdrop {
+        background: transparent;
+    }
+
+    &__scrim {
+        position: absolute;
+        inset: 0;
+        background: var(--plate-scrim);
+    }
+
+    &__stage {
+        --plate-rail: var(--size-control-lg);
+
+        position: relative;
+        block-size: 100%;
+        display: grid;
+        grid-template-columns: var(--plate-rail) minmax(0, 1fr) var(--plate-rail);
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        // Phone: the plate keeps the full width and the step controls flank the
+        // caption on the bottom line, where a thumb already is.
+        grid-template-areas:
+            "bar   bar   bar"
+            "frame frame frame"
+            "prev  cap   next";
+        gap: var(--space-3);
+        padding: var(--space-3);
+
+        @media (min-width: $md) {
+            --plate-rail: var(--size-control-xl);
+
+            // Desktop: the steps take their own rails beside the plate — the
+            // conventional place, and it keeps them off the image, which on a
+            // screenshot carries content right to its edges.
+            grid-template-areas:
+                "bar   bar   bar"
+                "prev  frame next"
+                "cap   cap   cap";
+            gap: var(--space-4);
+            padding: var(--space-4);
+        }
+    }
+
+    // ----- Top bar: position, then tools -----------------------------------
+    &__bar {
+        grid-area: bar;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        min-block-size: var(--size-control-lg);
+    }
+
+    &__counter {
+        margin: 0;
+        font-family: var(--font-body);
+        font-size: var(--text-2xs);
+        font-weight: 600;
+        letter-spacing: var(--tracking-wider);
+        text-transform: uppercase;
+        color: var(--plate-ink);
+    }
+
+    // The dateline's separator grammar, doing the one job it can do silently.
+    // The counter is aria-hidden; the status region says "Image 3 of 6".
+    &__counter-all {
+        color: var(--plate-ink-quiet);
+
+        &::before {
+            content: "/";
+            margin-inline: 0.4em;
+            color: var(--plate-accent);
+        }
+    }
+
+    &__tools {
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+        margin-inline-start: auto;
+    }
+
+    // ----- Controls --------------------------------------------------------
+    &__tool,
+    &__step {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: var(--size-control-lg);
+        block-size: var(--size-control-lg);
+        padding: 0;
+        border: 1px solid transparent;
+        border-radius: var(--radius-full);
+        background: transparent;
+        color: var(--plate-ink);
+        transition:
+            background-color var(--transition-fast),
+            border-color var(--transition-fast),
+            opacity var(--transition-fast);
+
+        &::before {
+            content: "";
+            inline-size: 1.25rem;
+            block-size: 1.25rem;
+        }
+
+        &:hover:not(:disabled) {
+            background: var(--plate-chip);
+            border-color: var(--plate-hairline);
+            color: var(--plate-ink);
+        }
+
+        &:active:not(:disabled) {
+            background: var(--plate-chip);
+            border-color: var(--plate-hairline);
+        }
+
+        &:focus-visible {
+            outline: var(--plate-focus);
+            outline-offset: 2px;
+        }
+
+        &:disabled {
+            color: var(--plate-ink);
+            opacity: 0.25;
+            cursor: default;
+        }
+
+        &[hidden] {
+            display: none;
+        }
+    }
+
+    &__tool--zoom {
+        &::before {
+            @include icon-mask("../img/zoom-in.svg");
+        }
+
+        // The one control here with a state to hold. Filled means the plate is
+        // currently zoomed — which is also the only honest thing a resting fill
+        // could mean, so it is not spent on making the glyph louder.
+        &[aria-pressed="true"] {
+            background: var(--plate-chip);
+            border-color: var(--plate-hairline);
+        }
+    }
+
+    &__tool--close::before {
+        @include icon-mask("../img/x-close.svg");
+    }
+
+    &.is-zoomed &__tool--zoom::before {
+        @include icon-mask("../img/zoom-out.svg");
+    }
+
+    &__step {
+        align-self: center;
+        justify-self: center;
+
+        &::before {
+            inline-size: 1.5rem;
+            block-size: 1.5rem;
+        }
+    }
+
+    &__step--prev {
+        grid-area: prev;
+
+        &::before {
+            @include icon-mask("../img/chevron-left.svg");
+        }
+    }
+
+    &__step--next {
+        grid-area: next;
+
+        &::before {
+            @include icon-mask("../img/chevron-right.svg");
+        }
+    }
+
+    // ----- The plate -------------------------------------------------------
+    &__frame {
+        grid-area: frame;
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-inline-size: 0;
+        min-block-size: 0;
+        overflow: hidden;
+        overscroll-behavior: contain;
+    }
+
+    &__plate {
+        display: block;
+        max-inline-size: 100%;
+        max-block-size: 100%;
+        inline-size: auto;
+        block-size: auto;
+        border-radius: var(--radius-md);
+        // A hairline, not a halo: it defines the plate's edge where a dark
+        // screenshot meets a dark room, and it must not perturb the layout the
+        // open transition measures.
+        box-shadow: 0 0 0 1px var(--plate-hairline);
+        cursor: zoom-in;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-user-drag: none;
+        touch-action: manipulation;
+    }
+
+    // Zoomed: the frame becomes the scroll container. Block flow rather than
+    // centred grid on purpose — `place-items: center` puts the start edge of an
+    // oversized child out of scroll reach, while `margin-inline: auto`
+    // collapses to 0 the moment the plate overflows.
+    &.is-zoomed &__frame {
+        display: block;
+        overflow: auto;
+    }
+
+    &.is-zoomed &__plate {
+        max-inline-size: none;
+        max-block-size: none;
+        margin-inline: auto;
+        cursor: zoom-out;
+    }
+
+    // Coarse pointers only: a mouse already says "zoom-in" with the cursor,
+    // and a hint that repeats what the cursor is doing is noise.
+    &__hint {
+        display: none;
+        position: absolute;
+        inset-block-end: var(--space-2);
+        inset-inline: 0;
+        margin: 0;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        text-align: center;
+        font-size: var(--text-2xs);
+        font-weight: 600;
+        letter-spacing: var(--tracking-wider);
+        text-transform: uppercase;
+        color: var(--plate-ink-quiet);
+        pointer-events: none;
+
+        // The bar's glyph, repeated: it marks this line as the chrome's, not
+        // as a second caption stacked on the real one.
+        &::before {
+            content: "";
+            inline-size: 0.875rem;
+            block-size: 0.875rem;
+            @include icon-mask("../img/zoom-in.svg");
+        }
+    }
+
+    @media (hover: none) {
+        &__hint:not([hidden]) {
+            display: flex;
+        }
+    }
+
+    // ----- Caption ---------------------------------------------------------
+    &__caption {
+        grid-area: cap;
+        margin: 0;
+        margin-inline: auto;
+        max-inline-size: var(--measure-narrow);
+        font-size: var(--text-sm);
+        font-style: italic;
+        line-height: var(--line-height-normal);
+        text-align: center;
+        text-wrap: pretty;
+        color: var(--plate-ink-quiet);
+
+        &[hidden] {
+            display: none;
+        }
+    }
+
+    // ----- One plate: no series, no rails ----------------------------------
+    &--single &__stage {
+        --plate-rail: 0px;
+    }
+
+    &--single &__step,
+    &--single &__counter {
+        display: none;
+    }
+}
+
+// The masthead is position: sticky, so it is in flow and this padding holds it
+// still along with everything else — nothing jumps sideways when the scrollbar
+// is taken away, or when it comes back under a still-opaque scrim on the way
+// out. --plate-gutter is measured and set by plate-viewer.js.
+html.has-plate-viewer {
+    overflow: hidden;
+    padding-inline-end: var(--plate-gutter, 0px);
+}

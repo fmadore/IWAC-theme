@@ -6,7 +6,7 @@
   "scripts": {
     "start": "gulp",
     "build": "npm run check:tokens && npm run build:tokens && npm run build:i18n && gulp css",
-    "test": "node --test --test-concurrency=1 test/navigation.test.js test/linked-resources.test.js test/interactions.test.js test/i18n.test.js",
+    "test": "node --test --test-concurrency=1 test/navigation.test.js test/linked-resources.test.js test/interactions.test.js test/plate-viewer.test.js test/i18n.test.js",
     "test:live": "playwright test",
     "bump": "node scripts/bump-version.js",
     "check:js": "node scripts/check-js-syntax.js",

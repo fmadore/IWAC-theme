@@ -1,9 +1,33 @@
 <?php
 $escape = $this->plugin('escapeHtml');
+$escapeAttr = $this->plugin('escapeHtmlAttr');
+$translate = $this->plugin('translate');
 $decoration = $this->themeSetting('image_decoration');
+
+// Translated strings for the plate viewer (asset/js/plate-viewer.js), which
+// enhances every unlinked image below into a full-screen control. They ride on
+// the container rather than on a layout-level island so the script never
+// depends on a second template being deployed in step with this one: it reads
+// the first `.assets[data-plate-open]` on the page and falls back to English
+// when there is none. Repeating them per block costs nothing after gzip.
+//
+// %s is the image's own caption or alt text; %1 / %2 are the current image's
+// number and the page's total.
+$plateStrings = [
+    'plate-open'        => $translate('View full screen'),
+    'plate-open-named'  => $translate('View full screen: %s'),
+    'plate-viewer'      => $translate('Image viewer'),
+    'plate-close'       => $translate('Close viewer'),
+    'plate-previous'    => $translate('Previous image'),
+    'plate-next'        => $translate('Next image'),
+    'plate-zoom-in'     => $translate('Zoom in'),
+    'plate-zoom-out'    => $translate('Fit to screen'),
+    'plate-tap'         => $translate('Tap to enlarge'),
+    'plate-position'    => $translate('Image %1 of %2'),
+];
 ?>
 
-<div class="assets">
+<div class="assets"<?php foreach ($plateStrings as $key => $value): ?> data-<?php echo $key; ?>="<?php echo $escapeAttr($value); ?>"<?php endforeach; ?>>
   <?php foreach ($attachments as $attachment): ?>
     <?php $asset = $attachment['asset']; ?>
     <div class="asset <?php echo is_array($decoration) && in_array('asset', $decoration) ? 'decoration' : ''; ?>">
