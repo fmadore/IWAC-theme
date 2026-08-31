@@ -18,6 +18,8 @@ rather than leave a bare download glyph to be guessed at.
 | Per-site web-app manifest (built at runtime) | `view/layout/layout.phtml` (JSON island) + `asset/js/pwa-install.js` |
 | Install button + iOS hint | `view/common/footer.phtml`, `asset/sass/components/footer/_pwa-install.scss` |
 | Icons (app / maskable / monochrome / Apple / favicons) | `asset/img/pwa/*.png` |
+| Scheme-aware favicon (generated — do not hand-edit) | `asset/img/pwa/favicon.svg` |
+| Icon master (ZMO signet, vector) | `asset/img/zmo-mark.svg` |
 | Icon generator | `scripts/gen-pwa-icons.js` (`npm run build:icons`) |
 | Enable/disable toggle | `config/theme.ini` → **General Settings → Enable PWA** (default on) |
 
@@ -57,18 +59,79 @@ installability** (Chrome 108 mobile / 112 desktop), so the manifest alone makes
 the site installable. If offline caching is ever wanted, it belongs at the
 server level (a root-scoped SW), not in the theme.
 
-## Regenerating the icons
+## The icon is the ZMO signet
 
-The icons are the masthead "newspaper" glyph in white on the brand burnt-orange
-tile (the same color statement as the duotone hero). They're committed PNGs —
-there's no runtime image pipeline. After changing the brand color or glyph in
-`scripts/gen-pwa-icons.js`:
+Every icon in the set — app, maskable, monochrome, Apple, both favicons — is the
+Z / M / O grid of the Leibniz-Zentrum Moderner Orient logo on the theme's paper
+ground (`--surface`, read from `tokens.json`). The geometry is the institute's
+own vector logo, cropped to the signet and committed as
+[`asset/img/zmo-mark.svg`](../asset/img/zmo-mark.svg); the generator only
+recolours and scales it.
+
+Three things this settles, and they are the reasons not to redesign it away:
+
+- **One site, one icon.** Omeka serves the ZMO logo as the site favicon from
+  **Admin → Settings → Favicon**, and core emits that `<link rel="icon">` through
+  `headLink()` — *next to* the theme's own sized favicon links. Until 2.17.0 the
+  two disagreed (ZMO logo vs. a white newspaper glyph on a burnt-orange tile) and
+  which one a given surface showed — tab, bookmark, link preview — was down to
+  each browser's icon-picking heuristics. They now agree, so the answer no longer
+  matters. Keep it that way: an icon change here needs the admin asset changed
+  too, or the disagreement comes back.
+- **The wordmark is deliberately dropped.** "LEIBNIZ ZENTRUM MODERNER ORIENT" is
+  four lines of type; it is unreadable at 192px and a grey smear at 32. The
+  signet is the part of the logo that scales.
+- **The two favicons are optically hinted, not just scaled down.** The logo's
+  1.417-unit box stroke resolves to under half a pixel on a 32px tile, which
+  renders as pale orange mush, so `minStroke` floors the *rendered* stroke at
+  ~1px there (the large tiles keep the mark's true proportions — the floor is
+  inert). At 16px a letter is about four pixels tall and turns into three grey
+  smudges, so `letters: false` drops them and keeps the boxes: the silhouette is
+  what still reads at that size. Both are deliberate; a "fix" that scales one
+  master to every size brings the mush back.
+
+### The favicon follows the browser's colour scheme; the rest doesn't
+
+`favicon.svg` is listed **first** in `<head>` and carries both schemes in one
+file, through its own `@media (prefers-color-scheme: dark)` rule. Engines that
+support SVG icons take it and follow the browser's theme; Safari and older
+engines ignore an `image/svg+xml` icon and fall through to the PNGs, which stay
+light. That is the whole reason for the belt-and-braces pair — a dark PNG behind
+a `media` attribute would depend on far shakier support.
+
+Three constraints are baked into the generated file, and each one has already
+bitten:
+
+- **Light in attributes, dark in CSS — never the reverse.** A CSS rule beats a
+  presentation attribute, so a renderer that supports neither `<style>` nor media
+  queries still paints the correct light icon. Written the other way round, that
+  renderer paints an unstyled black square. Same reason there is no `var()`.
+- **Only the type goes white.** The institute's own negative artwork
+  (`ZMO_Logo_08-18_Schrift_weiss_gross_RGB.png`) holds exactly two colours,
+  `#FFFFFF` and `#EB8241`: on a dark ground the boxes keep their orange. Do not
+  "complete" the inversion.
+- **An XML comment cannot contain a double hyphen.** The generated header comment
+  therefore can't name the custom property it reads. A malformed favicon fails
+  *silently* — every browser just shows the fallback — so the generator
+  rasterises the markup before writing it and refuses to emit a file that does
+  not parse.
+
+`npm run check:tokens` asserts the two tile colours against `tokens.json`
+(light and dark). The PNGs hold the same colour in pixels where nothing can
+compare it, so when the SVG is stale the whole set is.
+
+### Regenerating
+
+They're committed files — there's no runtime image pipeline. After changing the
+mark or the tile ground:
 
 ```bash
 npm run build:icons
 ```
 
-> Note: the PNGs are static, so an admin override of **Primary Color** does not
-> re-tint them. Re-run the script if you want the icon to match a custom brand
-> color. A `screenshots` manifest member (for the richer desktop install
-> dialog) is intentionally omitted — add per-site screenshots later if desired.
+> Note: the outputs are static, so neither an admin override of **Primary Color**
+> (which no longer tints them at all) nor a token change re-renders them — re-run
+> the script. Note too that `npm run build` does **not** call it: the guard above
+> is what tells you the set has drifted. A `screenshots` manifest member (for the
+> richer desktop install dialog) is intentionally omitted — add per-site
+> screenshots later if desired.

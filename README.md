@@ -20,7 +20,8 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 - Only visible when module is installed and page has translations
 
 ### Installable PWA
-- Each site is installable as an app ("Add to Home Screen" / desktop "Install") with a brand icon
+- Each site is installable as an app ("Add to Home Screen" / desktop "Install") under the ZMO signet, the same mark Omeka serves as the site favicon
+- The favicon ships as an SVG that follows the browser's light/dark setting, with the PNG set as fallback
 - Quiet install button in the footer bottom bar — **no auto-popup**; it only appears when the browser can install
 - iOS Safari gets a click-only "Share → Add to Home Screen" hint
 - Per-site web-app manifest (name, icons, theme color, Browse/Search shortcuts) built at runtime

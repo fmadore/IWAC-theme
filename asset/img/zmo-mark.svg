@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ZMO signet — the Z / M / O grid of the Leibniz-Zentrum Moderner Orient logo,
+  without the four-line wordmark. Geometry and colours are lifted verbatim from
+  the institute's own vector logo (zmo_logo_normal_orange_blau.svg, viewBox
+  0 0 100.1 86.8); this file only crops to the signet and tightens the viewBox
+  to the stroked bounding box, so nothing is redrawn by hand.
+
+  Source of truth for the PWA / favicon set — scripts/gen-pwa-icons.js recolours
+  the two groups by their presentation attributes (see `restyle()` there), so the
+  `stroke="#EB8241"`, `stroke-width="1.417"` and `fill="#143C73"` spellings below
+  are load-bearing: the generator asserts each one is present and fails loudly if
+  this file is re-exported with them inlined per shape or renamed to CSS classes.
+
+  The wordmark is deliberately absent: at 16–32px it is four lines of illegible
+  grey, and at 192px it is still unreadable. The signet is the part that scales.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="6.8915 5.9915 86.417 58.117" width="86.417" height="58.117" role="img" aria-label="Leibniz-Zentrum Moderner Orient">
+	<g fill="none" stroke="#EB8241" stroke-width="1.417">
+		<rect x="7.6" y="35" width="28.4" height="28.4"/>
+		<rect x="35.9" y="6.7" width="28.4" height="28.4"/>
+		<rect x="64.3" y="6.7" width="28.3" height="28.4"/>
+	</g>
+	<g fill="#143C73">
+		<polygon points="57.5,11.5 50.1,22.4 42.8,11.5 41,11.5 41,30.1 42.7,30.1 42.7,14 50.1,25.1 57.5,14 57.5,30.1 59.2,30.1 59.2,11.5"/>
+		<path d="M78.5,28.9c-4.6,0-7.7-3.6-7.7-8.2c0-4.6,3.2-8.2,7.7-8.2c4.6,0,7.7,3.6,7.7,8.2C86.1,25.3,83,28.9,78.5,28.9 M78.5,30.6c5.4,0,9.3-4.4,9.3-9.8s-3.9-9.8-9.3-9.8c-5.4,0-9.3,4.4-9.3,9.8S73,30.6,78.5,30.6"/>
+		<polygon points="17.1,56.9 28.3,40.7 28.3,39.8 15,39.8 15,41.3 26,41.3 14.7,57.6 14.7,58.4 28.8,58.4 28.8,56.9"/>
+	</g>
+</svg>

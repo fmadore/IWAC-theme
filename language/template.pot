@@ -68,7 +68,7 @@ msgstr ""
 msgid "Available languages"
 msgstr ""
 
-#: view/layout/layout.phtml:242
+#: view/layout/layout.phtml:248
 msgid "Back to top"
 msgstr ""
 
@@ -416,7 +416,7 @@ msgstr ""
 msgid "Site pages"
 msgstr ""
 
-#: view/layout/layout.phtml:223
+#: view/layout/layout.phtml:229
 msgid "Skip to main content"
 msgstr ""
 
