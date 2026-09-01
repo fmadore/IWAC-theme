@@ -78,7 +78,7 @@ msgstr ""
 msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
 
-#: helper/PwaManifest.php:55 view/error/404.phtml:27
+#: helper/PwaManifest.php:81 view/error/404.phtml:27
 msgid "Browse items"
 msgstr "Parcourir les documents"
 
@@ -290,6 +290,10 @@ msgstr "Média : %s"
 msgid "Newest first"
 msgstr "Plus récents d’abord"
 
+#: helper/PwaManifest.php:31
+msgid "Newspaper covers and archival documents from the collection"
+msgstr "Unes de journaux et documents d’archives de la collection"
+
 #: view/common/banner.phtml:184
 msgid "Newspapers"
 msgstr "Journaux"
@@ -386,7 +390,7 @@ msgstr "Relation"
 msgid "Reset"
 msgstr ""
 
-#: helper/PwaManifest.php:60 view/common/search-form.phtml:52 view/common/search-form.phtml:57 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:45
+#: helper/PwaManifest.php:86 view/common/search-form.phtml:52 view/common/search-form.phtml:57 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:45
 msgid "Search"
 msgstr ""
 

@@ -23,23 +23,32 @@
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
+const { mixOklab } = require('./lib/oklab');
+const DUOTONE = require('./lib/hero-duotone');
 
 const ROOT = path.join(__dirname, '..');
 const OUT_DIR = path.join(ROOT, 'asset', 'img', 'pwa');
 const MARK_FILE = path.join(ROOT, 'asset', 'img', 'zmo-mark.svg');
+const BANNER_FILE = path.join(ROOT, 'asset', 'img', 'banner.webp');
 
-// Tile ground: the theme's LIGHT `--surface`, read from the generated
-// tokens.json so the icon's paper is the site's paper and moves with it.
-// Every icon uses it, in both colour schemes — see faviconSvg().
-// The outputs are static: re-run this script after a token change.
-const TILE_BG = (() => {
+// Colours come from the generated tokens.json, never from a literal here, so
+// the icons' paper is the site's paper and the screenshot's ground is the
+// hero's ground. The outputs are static: re-run this script after a token
+// change — `npm run check:tokens` is what tells you they have drifted.
+const [TILE_BG, PRIMARY] = (() => {
     const tokens = JSON.parse(fs.readFileSync(path.join(ROOT, 'tokens.json'), 'utf8'));
-    const surface = tokens.light && tokens.light['--surface'];
-    if (!surface) {
-        throw new Error('tokens.json carries no light --surface — run `npm run build:tokens` first.');
-    }
-    return surface;
+    return ['--surface', '--primary'].map((name) => {
+        const value = tokens.light && tokens.light[name];
+        if (!value) {
+            throw new Error(`tokens.json carries no light ${name} — run \`npm run build:tokens\` first.`);
+        }
+        return value;
+    });
 })();
+
+// The hero's ground: `color-mix(in oklab, var(--primary) 90%, black 10%)`,
+// performed here exactly as the browser performs it in _banner.scss.
+const BANNER_GROUND = mixOklab(PRIMARY, '#000000', DUOTONE.GROUND.primaryPct);
 
 // The ZMO brand values, spelled exactly as they appear in zmo-mark.svg.
 const BOX_STROKE = '#EB8241';
@@ -208,6 +217,70 @@ async function render(size, svg, file) {
 }
 
 /**
+ * Render one manifest screenshot: the hero collage, duotoned offline exactly
+ * as the browser duotones it on the homepage.
+ *
+ * The install dialog should show the site as it looks, and the banner master is
+ * a plain colour photograph — the orange is applied by CSS. So the composite is
+ * redone here from the recipe in lib/hero-duotone.js:
+ *
+ *   grayscale(1) → contrast(1.04) → brightness(1.22), multiplied over the
+ *   ground, the whole plate at 90% opacity. Which collapses, per channel, to
+ *   `ground × (0.9 · plate + 0.1)`.
+ *
+ * The luma matrix and the two filter steps run on sRGB values, not linear
+ * light, because that is what CSS filter functions do — matching the browser
+ * matters more here than being colorimetrically pure.
+ *
+ * @param {object} crop   sharp extract region of asset/img/banner.webp
+ * @param {number} width  output width
+ * @param {number} height output height
+ */
+async function screenshot(crop, width, height, file) {
+    const { LUMA, FILTER, PLATE_OPACITY } = DUOTONE;
+    const ground = [1, 3, 5].map((i) => parseInt(BANNER_GROUND.slice(i, i + 2), 16));
+
+    const { data, info } = await sharp(BANNER_FILE)
+        .extract(crop)
+        .resize(width, height, { fit: 'cover' })
+        .removeAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+
+    const out = Buffer.alloc(info.width * info.height * 3);
+    for (let i = 0, p = 0; i < out.length; i += 3, p += info.channels) {
+        let g = (LUMA.r * data[p] + LUMA.g * data[p + 1] + LUMA.b * data[p + 2]) / 255;
+        g = (g - 0.5) * FILTER.contrast + 0.5;      // contrast()
+        g = g * FILTER.brightness;                  // brightness()
+        g = Math.max(0, Math.min(1, g));
+        const k = PLATE_OPACITY * g + (1 - PLATE_OPACITY); // multiply, then plate opacity
+        out[i] = Math.round(ground[0] * k);
+        out[i + 1] = Math.round(ground[1] * k);
+        out[i + 2] = Math.round(ground[2] * k);
+    }
+
+    const dest = path.join(OUT_DIR, file);
+    await sharp(out, { raw: { width: info.width, height: info.height, channels: 3 } })
+        .webp({ quality: 72, effort: 6 })
+        .toFile(dest);
+
+    // The manifest states these dimensions in a `sizes` string it cannot
+    // measure (the helper runs per request; opening the image there would be
+    // waste). So the writer asserts the reader: change a size here without
+    // changing the helper and the build stops, rather than shipping a manifest
+    // that describes files it doesn't have.
+    const helper = fs.readFileSync(path.join(ROOT, 'helper', 'PwaManifest.php'), 'utf8');
+    if (!helper.includes(`'sizes' => '${width}x${height}'`)) {
+        throw new Error(
+            `helper/PwaManifest.php does not declare '${width}x${height}' for ${file} — update its screenshots entry.`,
+        );
+    }
+
+    const kib = (fs.statSync(dest).size / 1024).toFixed(1);
+    console.log('  ✓', path.relative(path.join(__dirname, '..'), dest), `(${width}×${height}, ${kib} KiB)`);
+}
+
+/**
  * Rasterise the favicon markup and throw if it does not parse.
  *
  * The PNGs are proof-read by the eye; the SVG is the one output that ships as
@@ -261,6 +334,14 @@ async function main() {
     await assertParses(svg);
     fs.writeFileSync(svgOut, svg + '\n', 'utf8');
     console.log('  ✓', path.relative(path.join(__dirname, '..'), svgOut), '(scalable, one look in both schemes)');
+
+    // Manifest `screenshots`: what turns Chrome's terse install bar into the
+    // richer dialog. Chrome wants every screenshot of one form factor to share
+    // an aspect ratio, each side within 320–3840px and no more than 2.3× the
+    // other. The master is 1400×787 (≈16:9), so `wide` is the whole frame and
+    // `narrow` a 9:16 slice of it — the collage crops without losing its sense.
+    await screenshot({ left: 0, top: 0, width: 1400, height: 787 }, 1280, 720, 'screenshot-wide.webp');
+    await screenshot({ left: 430, top: 0, width: 443, height: 787 }, 540, 960, 'screenshot-narrow.webp');
 
     console.log('Done.');
 }

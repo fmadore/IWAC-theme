@@ -80,6 +80,12 @@
 		if (Array.isArray(data.icons)) {
 			data.icons.forEach(function (icon) { if (icon.src) { icon.src = abs(icon.src); } });
 		}
+		if (Array.isArray(data.screenshots)) {
+			// A blob: URL has no base to resolve against, so a relative src here
+			// is simply dropped and the richer install dialog quietly reverts to
+			// the plain one. Every URL-bearing member has to be listed.
+			data.screenshots.forEach(function (shot) { if (shot.src) { shot.src = abs(shot.src); } });
+		}
 		if (Array.isArray(data.shortcuts)) {
 			data.shortcuts.forEach(function (sc) {
 				if (sc.url) { sc.url = abs(sc.url); }

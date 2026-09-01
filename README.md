@@ -24,7 +24,7 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 - The favicon ships as an SVG (crisp at every size) with the PNG set as fallback — one light look in both colour schemes
 - Quiet install button in the footer bottom bar — **no auto-popup**; it only appears when the browser can install
 - iOS Safari gets a click-only "Share → Add to Home Screen" hint
-- Per-site web-app manifest (name, icons, theme color, Browse/Search shortcuts) built at runtime
+- Per-site web-app manifest (name, icons, screenshots, theme color, Browse/Search shortcuts) built at runtime
 - Toggle off via **General Settings → Enable PWA**. See [`docs/PWA.md`](docs/PWA.md)
 
 ### Modern Design System

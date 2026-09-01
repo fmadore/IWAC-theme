@@ -19,6 +19,7 @@ rather than leave a bare download glyph to be guessed at.
 | Install button + iOS hint | `view/common/footer.phtml`, `asset/sass/components/footer/_pwa-install.scss` |
 | Icons (app / maskable / monochrome / Apple / favicons) | `asset/img/pwa/*.png` |
 | Scalable favicon (generated — do not hand-edit) | `asset/img/pwa/favicon.svg` |
+| Install-dialog screenshots (generated) | `asset/img/pwa/screenshot-{wide,narrow}.webp` |
 | Icon master (ZMO signet, vector) | `asset/img/zmo-mark.svg` |
 | Icon generator | `scripts/gen-pwa-icons.js` (`npm run build:icons`) |
 | Enable/disable toggle | `config/theme.ini` → **General Settings → Enable PWA** (default on) |
@@ -34,8 +35,8 @@ rather than leave a bare download glyph to be guessed at.
   dead control.
 
 The manifest carries the per-site `name`/`short_name` (site title + masthead
-acronym), `start_url`, `scope`, `theme_color`, icons, categories, and Browse /
-Search shortcuts. `lang`/`dir` follow the current locale.
+acronym), `start_url`, `scope`, `theme_color`, icons, screenshots, categories,
+and Browse / Search shortcuts. `lang`/`dir` follow the current locale.
 
 ## Two design decisions worth knowing
 
@@ -127,16 +128,49 @@ it, so when the SVG is stale the whole set is.
 
 ### Regenerating
 
+### The screenshots are the hero, duotoned offline
+
+`screenshots` is what turns Chrome's terse install bar into the richer dialog —
+a `wide` one for desktop, a `narrow` one for Android. It is also the one place
+in the PWA where the collection's own material can show: the icon has to be a
+mark, but a screenshot is allowed to be a picture.
+
+Both are the homepage banner. The catch is that `asset/img/banner.webp` is a
+plain colour photograph — the orange duotone is applied by CSS at render time
+(`_banner.scss`: a grayscale plate multiplied over `color-mix(in oklab,
+var(--primary) 90%, black 10%)`, the plate at 90% opacity). So
+`gen-pwa-icons.js` replays that composite offline, per pixel, and the numbers it
+replays live in [`scripts/lib/hero-duotone.js`](../scripts/lib/hero-duotone.js)
+— read by the generator *and* by `npm run check:tokens`, which fails when the
+stylesheet stops spelling them. Change the hero's duotone and the guard tells
+you the screenshots are stale.
+
+Two more things hold it together:
+
+- **The ground is derived, never typed.** It is `--primary` from `tokens.json`,
+  mixed in Oklab by [`scripts/lib/oklab.js`](../scripts/lib/oklab.js) — the same
+  maths `build-tokens.js` uses, moved there rather than pasted so an
+  admin-configured brand colour can't leave the screenshot behind.
+- **The generator asserts the manifest.** `helper/PwaManifest.php` states each
+  file's `sizes` in a string it cannot measure (it runs per request). So the
+  writer checks the reader: change an output size without changing the helper
+  and `npm run build:icons` stops.
+
+Chrome's constraints, for whoever changes the crops: every screenshot of one
+form factor must share an aspect ratio, each side must be 320–3840px, and
+neither side may exceed 2.3× the other. The master is 1400×787 (≈16:9), so
+`wide` is the whole frame at 1280×720 and `narrow` a 9:16 slice at 540×960.
+
+### Regenerating
+
 They're committed files — there's no runtime image pipeline. After changing the
-mark or the tile ground:
+mark, the tile ground, the banner or the hero duotone:
 
 ```bash
 npm run build:icons
 ```
 
 > Note: the outputs are static, so neither an admin override of **Primary Color**
-> (which no longer tints them at all) nor a token change re-renders them — re-run
-> the script. Note too that `npm run build` does **not** call it: the guard above
-> is what tells you the set has drifted. A `screenshots` manifest member (for the
-> richer desktop install dialog) is intentionally omitted — add per-site
-> screenshots later if desired.
+> nor a token change re-renders them — re-run the script. Note too that
+> `npm run build` does **not** call it: the guards above are what tell you the
+> set has drifted.
