@@ -18,7 +18,7 @@ rather than leave a bare download glyph to be guessed at.
 | Per-site web-app manifest (built at runtime) | `view/layout/layout.phtml` (JSON island) + `asset/js/pwa-install.js` |
 | Install button + iOS hint | `view/common/footer.phtml`, `asset/sass/components/footer/_pwa-install.scss` |
 | Icons (app / maskable / monochrome / Apple / favicons) | `asset/img/pwa/*.png` |
-| Scheme-aware favicon (generated — do not hand-edit) | `asset/img/pwa/favicon.svg` |
+| Scalable favicon (generated — do not hand-edit) | `asset/img/pwa/favicon.svg` |
 | Icon master (ZMO signet, vector) | `asset/img/zmo-mark.svg` |
 | Icon generator | `scripts/gen-pwa-icons.js` (`npm run build:icons`) |
 | Enable/disable toggle | `config/theme.ini` → **General Settings → Enable PWA** (default on) |
@@ -63,7 +63,7 @@ server level (a root-scoped SW), not in the theme.
 
 Every icon in the set — app, maskable, monochrome, Apple, both favicons — is the
 Z / M / O grid of the Leibniz-Zentrum Moderner Orient logo on the theme's paper
-ground (`--surface`, read from `tokens.json`). The geometry is the institute's
+ground (the light `--surface`, read from `tokens.json`). The geometry is the institute's
 own vector logo, cropped to the signet and committed as
 [`asset/img/zmo-mark.svg`](../asset/img/zmo-mark.svg); the generator only
 recolours and scales it.
@@ -90,35 +90,40 @@ Three things this settles, and they are the reasons not to redesign it away:
   what still reads at that size. Both are deliberate; a "fix" that scales one
   master to every size brings the mush back.
 
-### The favicon follows the browser's colour scheme; the rest doesn't
+### One look in both colour schemes — the dark variant was tried and dropped
 
-`favicon.svg` is listed **first** in `<head>` and carries both schemes in one
-file, through its own `@media (prefers-color-scheme: dark)` rule. Engines that
-support SVG icons take it and follow the browser's theme; Safari and older
-engines ignore an `image/svg+xml` icon and fall through to the PNGs, which stay
-light. That is the whole reason for the belt-and-braces pair — a dark PNG behind
-a `media` attribute would depend on far shakier support.
+`favicon.svg` is listed **first** in `<head>` and is the same light icon
+whatever the browser's theme. It is there for sharpness, not for theming:
+engines that support SVG icons rasterise it at whatever size they need, and
+Safari and older engines ignore an `image/svg+xml` icon and fall through to the
+PNGs, which look the same.
 
-Three constraints are baked into the generated file, and each one has already
-bitten:
+**2.17.0 shipped a `@media (prefers-color-scheme: dark)` rule in this file and
+2.17.1 removed it.** The variant was faithful — ZMO's own negative keeps the
+boxes orange and turns only the type white — and it still read badly at icon
+size: against dark browser chrome the dark ground disappeared, leaving orange
+hairlines floating with white letters running into them. A poster negative does
+not survive being scaled to 32px. A white tile on a dark tab strip is the
+ordinary, legible thing, and the logo belongs on its paper.
 
-- **Light in attributes, dark in CSS — never the reverse.** A CSS rule beats a
-  presentation attribute, so a renderer that supports neither `<style>` nor media
-  queries still paints the correct light icon. Written the other way round, that
-  renderer paints an unstyled black square. Same reason there is no `var()`.
-- **Only the type goes white.** The institute's own negative artwork
-  (`ZMO_Logo_08-18_Schrift_weiss_gross_RGB.png`) holds exactly two colours,
-  `#FFFFFF` and `#EB8241`: on a dark ground the boxes keep their orange. Do not
-  "complete" the inversion.
-- **An XML comment cannot contain a double hyphen.** The generated header comment
-  therefore can't name the custom property it reads. A malformed favicon fails
-  *silently* — every browser just shows the fallback — so the generator
+So `npm run check:tokens` now fails on a `prefers-color-scheme` string anywhere
+in the generated favicon: re-adding one is a regression, not an upgrade. It
+would take a signet ZMO drew *for* small dark surfaces to change that.
+
+Two constraints stay baked into the generated file, both learned the hard way:
+
+- **The tile colour is a presentation attribute, not CSS.** A renderer with no
+  stylesheet support still paints the right icon rather than an unstyled black
+  square. Same reason there is no `var()` in there.
+- **An XML comment cannot contain a double hyphen.** The generated header
+  comment therefore can't name the custom property it reads. A malformed favicon
+  fails *silently* — every browser just shows the fallback — so the generator
   rasterises the markup before writing it and refuses to emit a file that does
   not parse.
 
-`npm run check:tokens` asserts the two tile colours against `tokens.json`
-(light and dark). The PNGs hold the same colour in pixels where nothing can
-compare it, so when the SVG is stale the whole set is.
+`npm run check:tokens` asserts the tile colour against `tokens.json` light
+`--surface`. The PNGs hold the same colour in pixels where nothing can compare
+it, so when the SVG is stale the whole set is.
 
 ### Regenerating
 

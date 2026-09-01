@@ -198,11 +198,11 @@ if ($userBar) {
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="default">
 		<meta name="apple-mobile-web-app-title" content="<?php echo $this->escapeHtmlAttr($pwaManifest['short_name']); ?>">
-		<?php // The SVG favicon carries both colour schemes in one file (its own
-		      // prefers-color-scheme rule) and is the only icon that follows the
-		      // browser's theme. It is listed FIRST because engines that support
-		      // it should take it; Safari and older engines ignore an
-		      // image/svg+xml icon and fall through to the PNGs below, in light. ?>
+		<?php // The scalable favicon, listed FIRST so engines that support SVG
+		      // icons take it; Safari and older engines ignore an image/svg+xml
+		      // icon and fall through to the PNGs below, which look the same.
+		      // The whole set stays light in both colour schemes — see
+		      // faviconSvg() in scripts/gen-pwa-icons.js for why. ?>
 		<link rel="icon" type="image/svg+xml" sizes="any" href="<?php echo $this->escapeHtmlAttr($this->assetUrl('img/pwa/favicon.svg')); ?>">
 		<link rel="icon" type="image/png" sizes="32x32" href="<?php echo $this->escapeHtmlAttr($this->assetUrl('img/pwa/favicon-32.png')); ?>">
 		<link rel="icon" type="image/png" sizes="16x16" href="<?php echo $this->escapeHtmlAttr($this->assetUrl('img/pwa/favicon-16.png')); ?>">
