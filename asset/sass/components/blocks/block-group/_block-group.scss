@@ -48,6 +48,17 @@
             .asset {
                 border-radius: var(--radius-md);
                 overflow: hidden;
+                // An Omeka asset has no derivatives, so the src is the stored
+                // original and `width: 100%` rendered it at whatever the card
+                // is — 1330px on a desktop page. A UI screenshot at that size
+                // is taller than the viewport: the AI-access walkthrough showed
+                // one form field per screen and the reader scrolled a step at a
+                // time. Capped at the content measure the same capture reads as
+                // a figure inside its step, and the detail is a click away in
+                // the plate viewer (asset/js/plate-viewer.js), which is what
+                // that viewer is for.
+                max-inline-size: var(--measure-base);
+                margin-inline: auto;
 
                 img {
                     width: 100%;

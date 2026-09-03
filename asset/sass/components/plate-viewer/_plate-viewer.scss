@@ -341,6 +341,18 @@
         grid-area: frame;
         position: relative;
         display: grid;
+        // The single track has to be DECLARED, not implicit. An implicit row is
+        // sized from its own content, which makes the plate's `max-block-size:
+        // 100%` below a cyclic percentage — and the way a browser breaks that
+        // cycle is to treat the percentage as `none`. So every plate taller than
+        // the frame was laid out at full height and then clipped by the overflow
+        // rule here: on a 1440x900 screen four of the six AI-access screenshots
+        // lost their bottom edge, which on a walkthrough capture is where the
+        // button being described usually sits. `minmax(0, 1fr)` is definite --
+        // the stage's frame row already is -- so the percentage resolves and the
+        // plate fits. (`display: block` and flex centring both fix it too, for
+        // the same reason: their containing block is the frame's content box.)
+        grid-template: minmax(0, 1fr) / minmax(0, 1fr);
         place-items: center;
         min-inline-size: 0;
         min-block-size: 0;
