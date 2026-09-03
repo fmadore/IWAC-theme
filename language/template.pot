@@ -56,11 +56,11 @@ msgid_plural "Archived web pages"
 msgstr[0] ""
 msgstr[1] ""
 
-#: view/common/banner.phtml:202
+#: view/common/banner.phtml:222
 msgid "Archives consulted"
 msgstr ""
 
-#: view/common/banner.phtml:204
+#: view/common/banner.phtml:224
 msgid "Audiovisual minutes"
 msgstr ""
 
@@ -68,7 +68,7 @@ msgstr ""
 msgid "Available languages"
 msgstr ""
 
-#: view/layout/layout.phtml:248
+#: view/layout/layout.phtml:339
 msgid "Back to top"
 msgstr ""
 
@@ -112,7 +112,7 @@ msgstr ""
 msgid "Collapse the full text"
 msgstr ""
 
-#: view/common/banner.phtml:233
+#: view/common/banner.phtml:253
 msgid "Collection at a glance"
 msgstr ""
 
@@ -128,11 +128,11 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: view/common/banner.phtml:249
+#: view/common/banner.phtml:269
 msgid "Corpus in depth"
 msgstr ""
 
-#: view/common/banner.phtml:186
+#: view/common/banner.phtml:206
 msgid "Countries"
 msgstr ""
 
@@ -152,7 +152,7 @@ msgstr ""
 msgid "Default"
 msgstr ""
 
-#: view/common/banner.phtml:203
+#: view/common/banner.phtml:223
 msgid "Document types"
 msgstr ""
 
@@ -224,7 +224,7 @@ msgstr ""
 msgid "Image viewer"
 msgstr ""
 
-#: view/common/banner.phtml:177
+#: view/common/banner.phtml:197
 msgid "Index"
 msgstr ""
 
@@ -248,11 +248,11 @@ msgstr ""
 msgid "Item: %s"
 msgstr ""
 
-#: view/common/banner.phtml:176 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
+#: view/common/banner.phtml:196 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
 msgid "Items"
 msgstr ""
 
-#: view/common/banner.phtml:205
+#: view/common/banner.phtml:225
 msgid "Languages"
 msgstr ""
 
@@ -296,7 +296,7 @@ msgstr ""
 msgid "Newspaper covers and archival documents from the collection"
 msgstr ""
 
-#: view/common/banner.phtml:184
+#: view/common/banner.phtml:204
 msgid "Newspapers"
 msgstr ""
 
@@ -380,7 +380,7 @@ msgstr ""
 msgid "Read the full text — %s more words"
 msgstr ""
 
-#: view/common/banner.phtml:198
+#: view/common/banner.phtml:218
 msgid "References"
 msgstr ""
 
@@ -420,7 +420,7 @@ msgstr ""
 msgid "Site pages"
 msgstr ""
 
-#: view/layout/layout.phtml:229
+#: view/layout/layout.phtml:315
 msgid "Skip to main content"
 msgstr ""
 
@@ -476,11 +476,11 @@ msgstr ""
 msgid "Toggle submenu"
 msgstr ""
 
-#: view/common/banner.phtml:194
+#: view/common/banner.phtml:214
 msgid "Total pages"
 msgstr ""
 
-#: view/common/banner.phtml:193
+#: view/common/banner.phtml:213
 msgid "Total words"
 msgstr ""
 

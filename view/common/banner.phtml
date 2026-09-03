@@ -32,11 +32,16 @@ if (!in_array($bannerContentPosition, ['left', 'center', 'right'], true)) {
     $bannerContentPosition = 'left';
 }
 
-// Default banner image path (included with theme)
-$defaultBannerUrl = $this->assetUrl('img/banner.webp');
+// Default banner image path (included with theme). The served top-width
+// derivative, not the colour master — see layout.phtml / gen-banner-images.js.
+$defaultBannerUrl = $this->assetUrl('img/banner-1400.webp');
 // Width-descriptor srcset for the default hero, computed in layout.phtml so the
 // LCP preload and this image element stay in sync. Empty for a custom banner.
 $bannerSrcset = isset($srcset) ? $srcset : '';
+// Pre-cropped centre band for the inner-page strip, also computed in
+// layout.phtml so the preload and this element request the same candidate.
+$stripSrc = isset($stripSrc) ? $stripSrc : $this->assetUrl('img/banner-strip-768.webp');
+$stripSrcset = isset($stripSrcset) ? $stripSrcset : '';
 $hasCustomBanner = (bool) $banner;
 
 $bannerHeightProperty = ($bannerEyebrow || $bannerHeading || $bannerDescription) ? 'min-height' : 'height';
@@ -84,9 +89,17 @@ if ($compact) {
 <div class="<?php echo $escAttr(implode(' ', $class)); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>">
 
     <?php
-    // The homepage hero is the LCP candidate; the compact inner-page band is
-    // decorative and must not compete with content fetches.
-    $imageFetchPriority = $compact ? 'low' : 'high';
+    // Both are LCP candidates. The hero obviously so; the compact band because
+    // it paints a full-bleed 72-112px strip at the top of the viewport, which on
+    // a phone outranks any item title shorter than ~2.5 lines. The band carried
+    // fetchpriority=low on the reasoning that a decorative image should not
+    // compete with content fetches — but the browser was painting it above the
+    // fold regardless, so the only effect was to hold an LCP element in flight
+    // for ~3s. Measured on a throttled Moto G4 against the live site: the strip
+    // completed at 3.5-4.9s and WAS the LCP (3.5s) on short-titled items;
+    // unthrottled priority plus the small band assets bring it in by ~0.6s.
+    // "Decorative" is not a property the LCP algorithm can read.
+    $imageFetchPriority = 'high';
     ?>
     <?php
     // The image lives in its own clipping layer so the Ken Burns zoom is
@@ -99,17 +112,24 @@ if ($compact) {
     <?php if ($hasCustomBanner): ?>
         <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true', 'fetchpriority' => $imageFetchPriority]); ?>
     <?php elseif ($compact): ?>
-        <?php // The compact band is a ~100px-tall decorative strip cropped by
-              // object-fit: cover — a fixed mid-size candidate is plenty and
-              // saves ~60-120 KB per inner-page navigation vs the hero srcset. ?>
-        <img src="<?php echo $escAttr($this->assetUrl('img/banner-768.webp')); ?>"
-             width="768"
-             height="432"
+        <?php // The band has its own pre-cropped ~6.25:1 assets rather than a
+              // 16:9 hero derivative: at 768x123 it carries the same texture in
+              // 14 KiB instead of 57 KiB, because object-fit:cover is no longer
+              // discarding most of the file. ?>
+        <?php // sizes=50vw, not 100vw: the band is an aria-hidden duotone texture
+              // cropped to a 72px strip, so half-density sampling is invisible —
+              // and it keeps a DPR-3 phone on the 768w candidate (14 KiB) instead
+              // of pulling the 1400w one (36 KiB) it would otherwise demand. ?>
+        <img src="<?php echo $escAttr($stripSrc); ?>"
+             <?php if ($stripSrcset): ?>srcset="<?php echo $escAttr($stripSrcset); ?>"
+             sizes="50vw"
+             <?php endif; ?>width="768"
+             height="123"
              style="<?php echo $escAttr($imageInlineStyles); ?>"
              role="presentation"
              aria-hidden="true"
              alt=""
-             fetchpriority="low">
+             fetchpriority="high">
     <?php else: ?>
         <img src="<?php echo $escAttr($defaultBannerUrl); ?>"
              <?php if ($bannerSrcset): ?>srcset="<?php echo $escAttr($bannerSrcset); ?>"

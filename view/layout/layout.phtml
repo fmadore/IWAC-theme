@@ -50,17 +50,28 @@ $pwaManifest = $pwaEnabled ? $this->PwaManifest($site) : null;
 $layoutHomepage = method_exists($site, 'homepage') ? $site->homepage() : null;
 $layoutIsHomepage = $layoutHomepage && $this->params()->fromRoute('page-slug') === $layoutHomepage->slug();
 
-// For LCP: preload default banner image when no custom banner is set
+// For LCP: preload default banner image when no custom banner is set.
+// banner-1400.webp, not banner.webp: the master is the colour source of truth
+// (and gen-pwa-icons.js's input) and is never served — every served derivative
+// is grayscale, because _banner.scss paints the plate through
+// `filter: grayscale(1)`. See scripts/gen-banner-images.js.
 $customBannerAsset = $this->themeSettingAsset('banner');
-$defaultBannerUrl = $this->assetUrl('img/banner.webp');
+$defaultBannerUrl = $this->assetUrl('img/banner-1400.webp');
 // Responsive variants (regenerate with `npm run build:images`) so phones fetch a
-// right-sized hero instead of the full 1400w master. Width-descriptor srcset;
+// right-sized hero instead of the full 1400w plate. Width-descriptor srcset;
 // the <img> and the preload below both declare sizes=100vw (full-bleed banner).
 $defaultBannerSrcset = $this->assetUrl('img/banner-480.webp') . ' 480w, '
     . $this->assetUrl('img/banner-768.webp') . ' 768w, '
     . $this->assetUrl('img/banner-1024.webp') . ' 1024w, '
     . $this->assetUrl('img/banner-1280.webp') . ' 1280w, '
     . $defaultBannerUrl . ' 1400w';
+// Inner pages render the same plate as a slim full-bleed strip
+// (.banner--compact, 72-112px tall). It has its own pre-cropped band assets --
+// reusing the hero's 768w derivative meant shipping 57 KiB for a box that paints
+// 375x72 CSS px. Regenerate with `npm run build:images`.
+$compactStripUrl = $this->assetUrl('img/banner-strip-768.webp');
+$compactStripSrcset = $compactStripUrl . ' 768w, '
+    . $this->assetUrl('img/banner-strip-1400.webp') . ' 1400w';
 
 $this->htmlElement('html')->setAttribute('lang', $this->lang());
 $this->headMeta()->setCharset('utf-8');
@@ -88,15 +99,52 @@ $iconfontsUrl = $this->assetUrl('css/iconfonts.css', 'Omeka');
 // Besley (Clarendon) carries the masthead + headlines; three static faces
 // keep the request small. Source Serif 4 stays for long-form reading.
 $this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=besley:500,600,800|public-sans:ital,wght@0,400..700;1,400|source-serif-4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap');
-// jQuery + Omeka's global.js load render-blocking in the <head> ON PURPOSE.
-// Omeka core and modules emit *inline* <script>s — the jsTranslate block,
-// resource forms, etc. — that reference the `Omeka` global and `$` at parse
-// time. Deferring these (tried in v2.6.14) leaves those globals undefined when
-// the inline scripts run ("Omeka is not defined" on the homepage), so they must
-// execute before parsing continues. The theme's OWN scripts are vanilla and stay
-// loaded at the body end (see inlineScript below).
-$this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'));
-$this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'));
+// jQuery + Omeka's global.js are DEFERRED, with a namespace bridge around them.
+//
+// They loaded render-blocking until 2.19, because deferring them (tried in
+// v2.6.14) threw "Omeka is not defined": core emits an *inline* jsTranslate
+// block that assigns `Omeka.jsTranslate = …` while the parser is still running,
+// so the `Omeka` global has to exist by then. That much was correct. What was
+// never checked is how wide the problem actually is — and measured across all
+// twelve live page types (homepage, item, browse, item-set, index, the two
+// dashboard pages, both languages), that inline jsTranslate assignment is the
+// ONLY parse-time reference to `Omeka` or `$` anywhere on the public site. No
+// inline script calls `$(…)` at all.
+//
+// So it is one problem, and the theme owns it: the theme is what calls
+// jsTranslate(). The bridge below is three tiny inline blocks:
+//
+//   1. before  — create the namespace so the inline assignment cannot throw;
+//   2. after   — keep a reference to whatever got attached to it;
+//   3. module  — re-attach those members once global.js has run.
+//
+// Step 3 is needed because global.js opens with `var Omeka = {…}`, a top-level
+// assignment that REPLACES the object rather than extending it, so anything the
+// parse-time blocks hung on it would otherwise be silently dropped. It merges
+// members instead of naming jsTranslate, so an inline block from some future
+// module survives the same way without another edit here.
+//
+// Blocks 2 and 3 are emitted as literal markup after `echo $this->headScript()`
+// (see <head> below) rather than through appendScript: that puts block 2 after
+// EVERY inline block any module contributed, so it captures their additions too,
+// and it pins block 3's `type="module"` instead of trusting the helper to render
+// an unusual type. The re-attach is an inline module rather than a file because
+// inline modules are deferred and execute in document order among the deferred
+// classic scripts — so it lands after global.js without costing a request.
+//
+// Ordering is safe on the other side too. global.js has exactly two top-level
+// statements, `var Omeka = {…}` and `$(document).ready(…)`; defer preserves
+// document order so jQuery is always there first, and ready callbacks fire on
+// DOMContentLoaded, which is after every deferred script has run.
+//
+// Worth ~400ms of FCP on mobile: jquery.min.js alone is 31 KB of the ~68 KB of
+// render-blocking bytes, and it was finishing at 1075ms on a throttled Moto G4,
+// holding the theme's own stylesheet behind it.
+$deferAttr = ['defer' => 'defer'];
+$this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'), 'text/javascript', $deferAttr);
+$this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'), 'text/javascript', $deferAttr);
+// (1) Namespace must exist before core's inline jsTranslate block runs.
+$this->headScript()->appendScript('window.Omeka=window.Omeka||{};');
 $this->jsTranslate();
 $this->trigger('view.layout');
 
@@ -124,6 +172,29 @@ try {
     }
 } catch (\Throwable $e) {
     // Non-fatal: if the placeholder shape changes upstream, keep the stylesheets.
+}
+
+// citation.js is the "How to cite" panel's progressive enhancement — a style
+// switcher and a copy button over markup that already renders and already works
+// without it (the downloads are real links). It is enqueued by IWAC-SEO as a
+// plain <script src> in the <head>, so it blocked first paint on every resource
+// page to wire a control below the fold. It is vanilla (IWACUtils.onReady, no
+// jQuery), so deferring it changes nothing but when it runs.
+//
+// Done here rather than at the enqueue site because the module owns that; this
+// is the same "the theme knows what its own <head> needs" pass as the dead-CSS
+// filter above.
+try {
+    foreach ($this->headScript()->getContainer() as $scriptItem) {
+        if (empty($scriptItem->attributes['src'])) {
+            continue;
+        }
+        if (strpos((string) $scriptItem->attributes['src'], 'js/citation.js') !== false) {
+            $scriptItem->attributes['defer'] = 'defer';
+        }
+    }
+} catch (\Throwable $e) {
+    // Non-fatal: a blocking citation.js is slower, not broken.
 }
 
 if ($userBar) {
@@ -154,10 +225,25 @@ if ($userBar) {
 		<link rel="preload" as="image" fetchpriority="high"
 		      href="<?php echo $this->escapeHtmlAttr($customBannerAsset->assetUrl()); ?>">
 		<?php endif; ?>
+		<?php // NOTE: the inner-page compact strip is deliberately NOT preloaded,
+		      // though it is an LCP candidate (see common/banner.phtml). A preload
+		      // here is emitted before the stylesheet link, so it competes with the
+		      // render-blocking CSS on every inner page — measurably delaying FCP,
+		      // and with it the text LCP of any page whose title is the largest
+		      // paint. The strip is a plain <img src> near the top of <body>, so
+		      // the preload scanner already starts it at ~350ms; it only ever
+		      // needed to stop being fetchpriority=low. With the small band assets
+		      // it now completes around 600ms unaided. ?>
 		<?php echo $this->headTitle(); ?>
 		<?php echo $this->headLink(); ?>
 		<?php echo $this->headStyle(); ?>
 		<?php echo $this->headScript(); ?>
+		<?php // (2) and (3) of the Omeka namespace bridge — see the note beside the
+		      // headScript() calls above. (2) runs at parse time, after every inline
+		      // block in the <head>; (3) is a module, so it runs after the deferred
+		      // jQuery and global.js, whose `var Omeka = {…}` replaced the object. ?>
+		<script>window.__iwacOmekaEarly=window.Omeka;</script>
+		<script type="module">var e=window.__iwacOmekaEarly,o=window.Omeka;if(e&&o&&e!==o){for(var k in e){if(!(k in o)){o[k]=e[k];}}}</script>
 
 		<?php // Font Awesome (Omeka iconfonts.css) loaded async so the icon font never blocks first paint. ?>
 		<link rel="preload" as="style" href="<?php echo $this->escapeHtmlAttr($iconfontsUrl); ?>" onload="this.onload=null;this.rel='stylesheet'">
@@ -236,7 +322,12 @@ if ($userBar) {
 		// open on bare whitespace between the section strip and the title.
 		// Only the homepage hero is LCP-preloaded (see <head>); the compact
 		// band asks for the image at low priority.
-		echo $this->partial('common/banner', ['compact' => !$layoutIsHomepage, 'srcset' => $defaultBannerSrcset]);
+		echo $this->partial('common/banner', [
+			'compact' => !$layoutIsHomepage,
+			'srcset' => $defaultBannerSrcset,
+			'stripSrc' => $compactStripUrl,
+			'stripSrcset' => $compactStripSrcset,
+		]);
 		?>
 
 		<main id="content" class="container" tabindex="-1">
