@@ -59,6 +59,17 @@
 /language/*.po  text eol=lf
 /language/*.pot text eol=lf
 
+# Same for everything the build writes. These are the files the Quality
+# workflow asserts with `git diff --exit-code`, and their writers emit LF on
+# every platform. Without this a Windows checkout gets CRLF (core.autocrlf),
+# the next `npm run build` rewrites them as LF, and `git status` reports three
+# modified files whose content is byte-identical. Harmless in CI, which only
+# ever runs on Linux — but it trains you to ignore a dirty generated file,
+# which is exactly the signal that step exists to give you.
+/asset/css/style.css   text eol=lf
+/tokens.json           text eol=lf
+/docs/DESIGN-SYSTEM.md text eol=lf
+
 # Never newline-translate binaries, whatever core.autocrlf is set to locally.
 *.mo   binary
 *.jpg  binary
