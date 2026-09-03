@@ -37,16 +37,16 @@
   },
   "homepage": "https://github.com/fmadore/IWAC-theme#readme",
   "devDependencies": {
-    "@axe-core/playwright": "^4.12.1",
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.62.1",
     "autoprefixer": "^10.5.4",
-    "cssnano": "^8.0.2",
+    "cssnano": "^9.0.1",
     "gulp": "^5.0.1",
     "gulp-postcss": "^10.0.0",
     "gulp-sass": "^6.0.1",
     "jsdom": "^30.0.1",
-    "sass": "^1.102.0",
-    "sharp": "^0.35.3"
+    "sass": "^1.103.1",
+    "sharp": "^0.35.4"
   },
   "browserslist": [
     "last 2 versions",
