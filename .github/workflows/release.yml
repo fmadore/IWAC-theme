@@ -78,8 +78,59 @@ jobs:
           done
 
           # Nothing that only exists to develop it.
-          if grep -nEi 'IWAC-theme/(package(-lock)?\.json|gulpfile\.js|playwright\.config\.js|\.nvmrc|\.editorconfig|scripts/|test/|test-support/|e2e/|CLAUDE\.md|\.impeccable(\.md|/)|\.agents/|\.claude/|ROADMAP\.md|\.github/|language/.*\.pot?$)' /tmp/list; then
+          #
+          # The exclusions are DERIVED from .gitattributes rather than restated
+          # here. This used to be a hand-kept regex, and it drifted the way
+          # every hand-kept list in this repo has drifted: it named
+          # `.impeccable(\.md|/)` and `ROADMAP\.md`, so it passed while
+          # DESIGN.md, PRODUCT.md and docs/IMPECCABLE-ROADMAP.md shipped to the
+          # live server in ten consecutive releases. Same lesson as
+          # scripts/lib/versions.js — make the list data and have both sides
+          # read it.
+          mapfile -t IGNORED < <(sed -n 's|^/\([^[:space:]]*\)[[:space:]]\{1,\}export-ignore.*|\1|p' .gitattributes)
+          if [ "${#IGNORED[@]}" -eq 0 ]; then
+            echo "::error::parsed no export-ignore rules from .gitattributes — this guard would pass vacuously"
+            exit 1
+          fi
+          echo "checking ${#IGNORED[@]} export-ignore rules against $(wc -l < /tmp/list) archived files"
+
+          leaked=0
+          while IFS= read -r entry; do
+            # `unzip -Z1` lists directory entries too (IWAC-theme/, docs/…);
+            # they carry no content and would match nothing useful.
+            case "$entry" in */) continue ;; esac
+            rel="${entry#IWAC-theme/}"
+            [ "$rel" = "$entry" ] && continue
+            for pat in "${IGNORED[@]}"; do
+              case "$pat" in
+                */) [ "${rel##"$pat"}" != "$rel" ] && { echo "::error::$entry leaked (export-ignore /$pat)"; leaked=1; } ;;
+                # Unquoted RHS: .gitattributes carries globs (/language/*.pot).
+                *)  [[ "$rel" == $pat ]] && { echo "::error::$entry leaked (export-ignore /$pat)"; leaked=1; } ;;
+              esac
+            done
+          done < /tmp/list
+          if [ "$leaked" -ne 0 ]; then
             echo "::error::development files leaked into the release archive — check .gitattributes export-ignore"
+            exit 1
+          fi
+
+          # ...and nothing nobody has classified yet.
+          #
+          # A denylist can only catch a rule that stopped matching; it cannot
+          # catch a file for which no rule was ever written, and that is the
+          # failure above. So the archive's ROOT is an allowlist: a new
+          # top-level file has to be declared ship-or-strip here or the release
+          # fails. Subdirectories stay open — templates, helpers, assets and
+          # docs are added freely — but the root is where tooling artifacts
+          # land, which is why both offenders were sitting there.
+          if [ -n "$(comm -23 \
+                <(sed -n 's|^IWAC-theme/\([^/][^/]*\)$|\1|p' /tmp/list | sort -u) \
+                <(printf '%s\n' CITATION.cff LICENSE README.md composer.json theme.jpg tokens.json | sort))" ]; then
+            echo "::error::unclassified file(s) at the archive root:"
+            comm -23 \
+              <(sed -n 's|^IWAC-theme/\([^/][^/]*\)$|\1|p' /tmp/list | sort -u) \
+              <(printf '%s\n' CITATION.cff LICENSE README.md composer.json theme.jpg tokens.json | sort)
+            echo "::error::either export-ignore it in .gitattributes or add it to this allowlist"
             exit 1
           fi
 
