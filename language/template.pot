@@ -248,7 +248,7 @@ msgstr ""
 msgid "Item: %s"
 msgstr ""
 
-#: view/common/banner.phtml:196 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
+#: view/common/banner.phtml:196 view/common/block-layout/item-carousel.phtml:177 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
 msgid "Items"
 msgstr ""
 
@@ -306,6 +306,10 @@ msgstr ""
 
 #: view/common/block-layout/asset.phtml:22
 msgid "Next image"
+msgstr ""
+
+#: view/common/block-layout/item-carousel.phtml:164
+msgid "Next slide"
 msgstr ""
 
 #: view/omeka/site/page/browse.phtml:14
@@ -368,6 +372,10 @@ msgstr ""
 msgid "Previous image"
 msgstr ""
 
+#: view/common/block-layout/item-carousel.phtml:161
+msgid "Previous slide"
+msgstr ""
+
 #: view/common/resource-values.phtml:263 view/hierarchy/common/block-layout/hierarchy-public.phtml:253
 msgid "Private"
 msgstr ""
@@ -424,12 +432,24 @@ msgstr ""
 msgid "Skip to main content"
 msgstr ""
 
+#: view/common/block-layout/item-carousel.phtml:152
+msgid "Slide %1$s of %2$s"
+msgstr ""
+
 #: view/error/index.phtml:20
 msgid "Something went wrong"
 msgstr ""
 
 #: view/common/linked-resources.phtml:112
 msgid "Sort by"
+msgstr ""
+
+#: view/common/block-layout/item-carousel.phtml:155
+msgid "Start automatic slideshow"
+msgstr ""
+
+#: view/common/block-layout/item-carousel.phtml:156 view/common/block-layout/item-carousel.phtml:157
+msgid "Stop automatic slideshow"
 msgstr ""
 
 #: view/common/search-form.phtml:58

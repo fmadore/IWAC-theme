@@ -1,0 +1,223 @@
+<?php
+/**
+ * Item Carousel — the theme's own rendering of ItemCarouselBlock's page block.
+ *
+ * WHY THIS OVERRIDE EXISTS. The module's template enqueues accessible-slick
+ * from jsDelivr (two stylesheets and a script) and drives it with an inline
+ * `$(document).ready(…)`. Two problems, one of them fatal:
+ *
+ *  1. It is a jQuery plugin loaded render-blocking, and since 2.19 the theme
+ *     defers jQuery (see layout.phtml). slick.min.js therefore executed before
+ *     jQuery existed — "ReferenceError: jQuery is not defined" — slick never
+ *     registered, the inline init threw "$ is not defined", and the block fell
+ *     back to its raw markup: twelve full-size slides stacked vertically, 3512px
+ *     tall. Restoring the old order would mean un-deferring jQuery and giving
+ *     back ~400ms of mobile FCP across the whole site for one block on one page.
+ *  2. Three render-blocking requests to a third-party CDN on any page carrying
+ *     a carousel. IWAC is hosted at ZMO Berlin and already moved its webfonts
+ *     off Google to Bunny for exactly this reason; a CDN that sees every
+ *     reader's IP is the same exposure.
+ *
+ * Because `Carousel::render()` calls `partial('common/block-layout/item-carousel')`
+ * and the theme's template path stack outranks the module's, replacing the file
+ * drops all four assets — the CDN pair, slick, and the module's item-carousel.css
+ * — without touching the module. Nothing here needs jQuery.
+ *
+ * WHAT REPLACES IT. A native CSS scroll-snap run, styled as a press plate
+ * spread. The track is a plain overflow-x scroller: touch swipe, momentum,
+ * keyboard scrolling and the reader's own trackpad all work with no script at
+ * all, so the block is fully usable before — and without — carousel.js. That
+ * script only adds the chrome that needs measurement: the arrows, the position
+ * counter and the progress rule, which ship `hidden` and are unhidden only once
+ * it confirms the track actually overflows.
+ *
+ * ADMIN OPTIONS. Honoured: items per slide (as the >=1024px column count — the
+ * two narrower steps are the theme's, replacing slick's single JS breakpoint),
+ * thumbnail type, title source, caption, text align, "fill entire slide"
+ * (-> object-fit: cover; the other stretch modes keep the plate uncropped), and
+ * auto-slide duration. Deliberately not honoured: "Overlay title/caption", which
+ * needs a scrim over the image and the register bans atmospheric gradients — the
+ * caption stays below the plate; and "Infinite loop", which a scroll-snap track
+ * cannot do without cloned slides — the counter and progress rule report extent
+ * instead, which is what a reader working through an archive actually wants.
+ */
+
+$escape = $this->plugin('escapeHtml');
+$escapeAttr = $this->plugin('escapeHtmlAttr');
+$translate = $this->plugin('translate');
+
+$filterLocale = (bool) $this->siteSetting('filter_locale_values');
+$valueLang = $filterLocale ? [$this->lang(), ''] : null;
+
+$thumbnailType = isset($thumbnailType) ? $thumbnailType : 'large';
+$showTitleOption = isset($showTitleOption) ? $showTitleOption : 'item_title';
+$showCaption = (isset($showCaption) ? $showCaption : 'false') === 'true';
+
+// Build the slides first: the control bar's markup depends on how many there
+// actually are, and an attachment whose item has been deleted yields none.
+$slides = [];
+foreach ($attachments as $attachment) {
+    $item = $attachment->item();
+    if (!$item) {
+        continue;
+    }
+    $media = $attachment->media() ?: $item->primaryMedia();
+
+    $title = '';
+    if ($showTitleOption === 'item_title') {
+        $title = (string) $item->displayTitle(null, $valueLang);
+    } elseif ($showTitleOption === 'file_name') {
+        $title = (string) ($media ? $media->displayTitle(null, $valueLang) : $item->displayTitle(null, $valueLang));
+    }
+
+    // The plate takes the largest derivative available rather than the block's
+    // thumbnail_type. That setting governed the rendered size under slick, which
+    // sized slides from the image; here the CSS sizes the plate and the image
+    // fits inside it, so a `medium` (200px) derivative would visibly blur in a
+    // ~400px frame on a 2x screen. It stays the fallback if `large` is missing.
+    $src = '';
+    if ($media) {
+        $src = (string) ($media->thumbnailDisplayUrl('large')
+            ?: $media->thumbnailDisplayUrl($thumbnailType)
+            ?: $media->thumbnailDisplayUrl('medium'));
+    }
+
+    $slides[] = [
+        'url' => $item->siteUrl(),
+        'title' => $title,
+        'name' => (string) $item->displayTitle(null, $valueLang),
+        'caption' => $showCaption ? (string) $attachment->caption() : '',
+        'src' => $src,
+    ];
+}
+
+if (!$slides) {
+    return;
+}
+
+$total = count($slides);
+
+// Column counts. slick took a single pixel breakpoint and dropped to 1 below
+// it; the theme uses its own published breakpoints instead, so the block
+// reflows on the same grid as every other component. The admin's "items per
+// slide" is the >=1024px value. Below 600px the slide is sized at 1/1.2 of the
+// track so the next plate peeks in — the affordance that says "this scrolls"
+// without needing the arrows to have loaded.
+$perLg = max(1, min(10, (int) (isset($perPage) ? $perPage : 1)));
+$perSm = min(2, $perLg);
+$perXs = $perLg > 1 ? '1.2' : '1';
+
+$textAlign = isset($slideCSSTextAlign) && in_array($slideCSSTextAlign, ['left', 'center', 'right'], true)
+    ? $slideCSSTextAlign
+    : 'start';
+// "Fill entire slide" is the one stretch mode that asks for a crop. The others
+// keep the plate whole: these are conference photographs in mixed portrait and
+// landscape, and cropping a group shot to a common ratio cuts people out of it.
+$objectFit = (isset($slideCSSStretch) && $slideCSSStretch === 'entire') ? 'cover' : 'contain';
+
+$autoplayMs = (int) (isset($autoSlideDuration) ? $autoSlideDuration : 0);
+
+$carouselID = 'carousel-' . $blockID;
+$headingID = $carouselID . '-heading';
+$hasHeading = isset($carouselHeading) && trim((string) $carouselHeading) !== '';
+
+$styles = sprintf(
+    '--carousel-per-xs: %s; --carousel-per-sm: %d; --carousel-per-lg: %d; --carousel-text-align: %s; --carousel-fit: %s;',
+    $perXs,
+    $perSm,
+    $perLg,
+    $textAlign,
+    $objectFit
+);
+?>
+<div class="carousel" id="<?php echo $escapeAttr($carouselID); ?>"
+     style="<?php echo $escapeAttr($styles); ?>"
+     data-carousel
+     <?php if ($autoplayMs > 0): ?>data-carousel-autoplay="<?php echo $escapeAttr($autoplayMs); ?>"<?php endif; ?>>
+
+    <div class="carousel__bar">
+        <?php if ($hasHeading): ?>
+            <h2 class="carousel__heading" id="<?php echo $escapeAttr($headingID); ?>"><?php echo $escape($carouselHeading); ?></h2>
+        <?php endif; ?>
+
+        <?php // Counter and buttons ship hidden: without carousel.js the track is
+              // still a working scroller, but a "1 of 12" that never updates and
+              // arrows that do nothing would be worse than no chrome at all. ?>
+        <p class="carousel__counter" hidden data-carousel-counter>
+            <span class="carousel__counter-figure" data-carousel-current>1</span><span class="carousel__counter-sep" aria-hidden="true">/</span><span class="carousel__counter-figure" data-carousel-total><?php echo $escape($total); ?></span>
+            <span class="carousel__counter-sr" data-carousel-status role="status" aria-live="polite"></span>
+        </p>
+
+        <div class="carousel__nav" hidden data-carousel-nav
+             data-label-position="<?php echo $escapeAttr($translate('Slide %1$s of %2$s')); ?>">
+            <?php if ($autoplayMs > 0): ?>
+                <button type="button" class="carousel__toggle" data-carousel-toggle
+                        data-label-play="<?php echo $escapeAttr($translate('Start automatic slideshow')); ?>"
+                        data-label-pause="<?php echo $escapeAttr($translate('Stop automatic slideshow')); ?>">
+                    <span class="carousel__btn-label"><?php echo $escape($translate('Stop automatic slideshow')); ?></span>
+                </button>
+            <?php endif; ?>
+            <button type="button" class="carousel__arrow carousel__arrow--prev" data-carousel-prev>
+                <span class="carousel__btn-label"><?php echo $escape($translate('Previous slide')); ?></span>
+            </button>
+            <button type="button" class="carousel__arrow carousel__arrow--next" data-carousel-next>
+                <span class="carousel__btn-label"><?php echo $escape($translate('Next slide')); ?></span>
+            </button>
+        </div>
+    </div>
+
+    <?php // tabindex=0 makes the scroller itself keyboard-operable, which is what
+          // makes the no-JS state genuinely usable rather than merely present:
+          // arrow keys scroll it. role=group + a name keep it announced as one
+          // region rather than a stray focusable list. ?>
+    <ul class="carousel__track"
+        data-carousel-track
+        tabindex="0"
+        role="group"
+        <?php if ($hasHeading): ?>aria-labelledby="<?php echo $escapeAttr($headingID); ?>"<?php else: ?>aria-label="<?php echo $escapeAttr($translate('Items')); ?>"<?php endif; ?>>
+        <?php foreach ($slides as $i => $slide): ?>
+            <li class="carousel__slide" data-carousel-slide>
+                <?php if ($slide['src']): ?>
+                    <?php // The plate link duplicates the title link below it, so it is
+                          // taken out of the tab order and hidden from the accessibility
+                          // tree — one item, one stop. When there is no title to carry
+                          // the name, the plate link becomes the only link and is
+                          // labelled with the item's title instead. ?>
+                    <a class="carousel__plate"
+                       href="<?php echo $escapeAttr($slide['url']); ?>"
+                       <?php if ($slide['title'] !== ''): ?>tabindex="-1" aria-hidden="true"<?php else: ?>aria-label="<?php echo $escapeAttr($slide['name']); ?>"<?php endif; ?>>
+                        <img src="<?php echo $escapeAttr($slide['src']); ?>"
+                             alt=""
+                             loading="<?php echo $i < $perLg ? 'eager' : 'lazy'; ?>"
+                             decoding="async">
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($slide['title'] !== '' || $slide['caption'] !== ''): ?>
+                    <div class="carousel__text">
+                        <?php if ($slide['caption'] !== ''): ?>
+                            <?php // Above the title, not below: these captions are venue +
+                                  // date, which is a dateline, and a dateline sits over its
+                                  // headline. Admin HTML, so it is printed, not escaped —
+                                  // same contract as the module's template. ?>
+                            <div class="carousel__dateline"><?php echo $slide['caption']; ?></div>
+                        <?php endif; ?>
+                        <?php if ($slide['title'] !== ''): ?>
+                            <div class="carousel__title">
+                                <a href="<?php echo $escapeAttr($slide['url']); ?>"><?php echo $escape($slide['title']); ?></a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php // The progress rule: the run's own scrollbar, drawn as press joinery.
+          // Purely decorative — the counter above states the same position in
+          // words, and carousel.js unhides this only when the track overflows. ?>
+    <div class="carousel__rule" hidden data-carousel-rule aria-hidden="true">
+        <span class="carousel__rule-mark"></span>
+    </div>
+</div>
+<?php $this->inlineScript()->appendFile($this->assetUrl('js/carousel.js')); ?>

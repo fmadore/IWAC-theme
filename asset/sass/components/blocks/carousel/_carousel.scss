@@ -1,192 +1,414 @@
 @use "../../../abstracts/abstracts" as *;
 
 // ==========================================================================
-// Carousel Block
-// Slick carousel styling with card-style slides and navigation
+// Item Carousel — "the plate run"
+//
+// The press-archive answer to a carousel. A broadsheet does not fade between
+// pictures; it runs them across the page under a rule, each one captioned with
+// its dateline. So this is a horizontal register of plates opened by the 2px
+// ink rule, closed by a progress rule, and moved by the reader.
+//
+// Native CSS scroll-snap, no library. The old implementation was accessible-
+// slick loaded from jsDelivr and driven by jQuery — see the note at the head of
+// view/common/block-layout/item-carousel.phtml for why the theme now owns the
+// template outright. Consequences worth knowing while editing this file:
+//
+//   * There is no `.slick-*` class left to hook. Everything here matches the
+//     theme's own markup.
+//   * The track works with the stylesheet alone. carousel.js only unhides the
+//     bar and the rule, so nothing below may be the sole means of reading or
+//     moving the run.
+//   * Column counts come from the block's own settings as three custom
+//     properties set inline (--carousel-per-xs / -sm / -lg), so the admin's
+//     "items per slide" survives without a JS breakpoint watcher.
 // ==========================================================================
 
 .block-carousel {
-    padding-inline: var(--space-12);
-    margin-block-end: var(--space-xl);
-    position: relative;
-
-    // Fix for grid overflow issues
+    // Load-bearing inside the page grid. A flex/grid item's automatic minimum
+    // size is its content, so without this the scroller refuses to shrink and
+    // twelve plates push the whole column sideways. The module's stylesheet
+    // carried this rule; the theme no longer loads it.
     min-width: 0;
-    width: 100%;
+    margin-block-end: var(--space-12);
+}
 
-    .slick-list {
-        margin-inline: calc(var(--space-sm) * -1);
-        padding-block: var(--space-md); // Room for hover lift
+.carousel {
+    --carousel-gap: var(--space-4);
+    --carousel-plate-h: 11rem;
+    // Fallbacks for the inline trio, so the component still lays out if it is
+    // ever rendered from markup that does not set them.
+    --carousel-per: var(--carousel-per-xs, 1.2);
+
+    min-width: 0;
+    // Sections open on a 2px ink rule — the joinery that says "new section"
+    // without a box.
+    border-block-start: var(--accent-line-sm) solid var(--ink-strong);
+
+    @media (min-width: $sm) {
+        --carousel-per: var(--carousel-per-sm, 2);
+        --carousel-plate-h: 13rem;
     }
 
-    .slick-slide {
-        padding-inline: var(--space-sm);
-        height: auto; // Allow height to be determined by content
+    @media (min-width: $lg) {
+        --carousel-per: var(--carousel-per-lg, 3);
+        --carousel-gap: var(--space-6);
+        --carousel-plate-h: 15rem;
+    }
 
-        // Card styling for the content inside the slide
-        // We target the direct child div or anchor
-        >div>* {
-            display: block;
-            background: var(--panel-bg);
-            border: var(--panel-border);
-            border-radius: var(--radius-md);
-            box-shadow: var(--panel-shadow);
-            @include card-hover;
-            overflow: hidden;
-            height: 100%;
-            text-decoration: none;
+    // Load-bearing, and the kind of bug that only shows with scripting off:
+    // the UA's `[hidden] { display: none }` is a type-selector rule, so the
+    // class that lays a control out — `.carousel__nav { display: flex }` —
+    // outranks it and the control renders anyway. Without carousel.js that
+    // means arrows and a counter that are visible and inert, which is worse
+    // than the no-chrome state they are supposed to fall back to. Scoped to
+    // the component so it cannot reach anything else the page hides.
+    [hidden] {
+        display: none;
+    }
+}
 
-            img {
-                width: 100%;
-                height: 250px; // Consistent height
-                object-fit: cover;
-                display: block;
-            }
+// --------------------------------------------------------------------------
+// Control bar — heading on its own row, then position and arrows.
+//
+// Two rows rather than one because the heading is an optional h2 at the theme's
+// section size: sharing a baseline with 2.5rem controls would either shrink the
+// heading or strand the buttons. Wrapping gives the same line when there is no
+// heading, which is the common case.
+// --------------------------------------------------------------------------
+.carousel__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    padding-block: var(--space-3) var(--space-4);
 
-            .caption,
-            figcaption,
-            .slide-caption {
-                padding: var(--space-md);
-                color: var(--ink);
-                font-size: var(--text-sm);
-                background: var(--surface);
-                border-top: 1px solid var(--border-light);
-            }
+    @media (min-width: $md) {
+        padding-block: var(--space-4) var(--space-5);
+    }
+}
 
-            // If it's just an image without container
-            &.media-render {
-                border: none;
-                box-shadow: none;
-                background: transparent;
+.carousel__heading {
+    flex: 1 0 100%;
+    margin: 0;
+}
 
-                img {
-                    border-radius: var(--radius-lg);
-                    box-shadow: var(--shadow-md);
-                }
-            }
+.carousel__counter {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    font-family: var(--font-headings);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--ink-light);
+    // Besley's tabular zero is frozen at 55 units across the weight axis while
+    // 1-9 track it, so a tnum "10" reads as an un-bolded 1 beside a bold 0.
+    // Lining figures give the alignment without the broken metric.
+    font-feature-settings: "lnum" 1;
+}
+
+.carousel__counter-sep {
+    color: var(--muted);
+    font-weight: 400;
+}
+
+// "3 / 12" is the right thing to read and the wrong thing to hear. The visible
+// figures are spoken as "3 slash 12", so the live region below carries the
+// sentence instead and the figures are left to the eye.
+.carousel__counter-sr {
+    @include visually-hidden;
+}
+
+.carousel__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-inline-start: auto;
+}
+
+.carousel__btn-label {
+    @include visually-hidden;
+}
+
+.carousel__arrow,
+.carousel__toggle {
+    // Square, not round: the run's vocabulary is rules and rectangles, and the
+    // pill radius is spoken for by tag chips. Inherits the theme's quiet button
+    // default — outline, ink, no shadow and no lift — which is exactly right
+    // for a control that repeats beside every carousel on the page.
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--size-control-md);
+    block-size: var(--size-control-md);
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ink-light);
+    cursor: pointer;
+    transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast);
+
+    &::before {
+        content: "";
+        inline-size: var(--space-5);
+        block-size: var(--space-5);
+    }
+
+    &:hover:not(:disabled) {
+        background-color: var(--surface-sunken);
+        border-color: var(--border-strong);
+        color: var(--ink-strong);
+    }
+
+    &:focus-visible {
+        outline: var(--focus-outline);
+        outline-offset: 2px;
+    }
+
+    &:disabled {
+        color: var(--muted);
+        border-color: var(--border-light);
+        cursor: default;
+    }
+}
+
+.carousel__arrow--prev::before {
+    @include icon-mask("../img/chevron-left.svg");
+}
+
+.carousel__arrow--next::before {
+    @include icon-mask("../img/chevron-right.svg");
+}
+
+// The autoplay control is drawn from the same two chevrons rather than a new
+// pair of glyph files: stacked they read as a play triangle's cousin, and the
+// icon set stays at the size it is. Playing state inverts to the accent so the
+// control states plainly that something is moving.
+.carousel__toggle {
+    &::before {
+        @include icon-mask("../img/chevron-right.svg");
+    }
+
+    &.is-playing {
+        border-color: var(--primary);
+        color: var(--primary);
+
+        &::before {
+            @include icon-mask("../img/chevron-down.svg");
+        }
+    }
+}
+
+// --------------------------------------------------------------------------
+// Track — the scroller itself
+// --------------------------------------------------------------------------
+.carousel__track {
+    display: flex;
+    gap: var(--carousel-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    // Keep a horizontal flick inside the run instead of handing it to the
+    // browser's back-navigation gesture — losing the page is a steep price for
+    // over-scrolling a picture strip.
+    overscroll-behavior-x: contain;
+
+    // Themed, because a default scrollbar belongs to no design system — and it
+    // is the only position indicator a reader without JS gets, so it stays
+    // until carousel.js has put the progress rule in its place.
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+
+    &:focus-visible {
+        outline: var(--focus-outline);
+        outline-offset: 4px;
+    }
+
+    .carousel.is-enhanced & {
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
         }
     }
 
-    .slick-arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 10;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-full);
-        height: var(--size-control-md);
-        width: var(--size-control-md);
-        background: var(--surface);
-        color: var(--muted);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition:
-            background-color var(--transition-fast),
-            border-color var(--transition-fast),
-            color var(--transition-fast),
-            box-shadow var(--transition-fast);
-        padding: 0;
-        box-shadow: var(--shadow-sm);
+    @media (prefers-reduced-motion: reduce) {
+        scroll-behavior: auto;
+    }
+}
+
+.carousel__slide {
+    flex: 0 0 auto;
+    // The track is the measure; the slide is one column of it, gaps discounted.
+    // A fractional --carousel-per below 600px is deliberate: at 1.2 the next
+    // plate shows a sliver, which says "this scrolls" before any arrow has
+    // rendered and without spending a control on saying it.
+    inline-size: calc((100% - (var(--carousel-per) - 1) * var(--carousel-gap)) / var(--carousel-per));
+    scroll-snap-align: start;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    text-align: var(--carousel-text-align, start);
+}
+
+// --------------------------------------------------------------------------
+// Plate — a mounted photograph, not a card
+//
+// Fixed height, uncropped image, sunken ground. The run mixes portrait and
+// landscape conference photographs; cropping them to one ratio would align the
+// grid by cutting people out of the evidence, so the frame is uniform and the
+// picture sits whole inside it. The block's "Fill entire slide" setting is the
+// one case that asks for a crop, and it arrives as --carousel-fit: cover.
+// --------------------------------------------------------------------------
+.carousel__plate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    block-size: var(--carousel-plate-h);
+    background-color: var(--surface-sunken);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    transition: border-color var(--transition-fast);
+
+    img {
+        inline-size: 100%;
+        block-size: 100%;
+        object-fit: var(--carousel-fit, contain);
+        display: block;
+    }
+}
+
+.carousel__slide:hover .carousel__plate,
+.carousel__slide:focus-within .carousel__plate {
+    border-color: var(--border-strong);
+}
+
+.carousel__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+// The caption the block calls a caption is a dateline: venue, then date. It is
+// set in the dateline's own voice — tracked uppercase label type in quiet ink —
+// and sits above the headline it belongs to, the way a dateline does.
+.carousel__dateline {
+    font-size: var(--text-2xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    line-height: 1.4;
+    color: var(--ink-light);
+
+    @media (min-width: $lg) {
+        font-size: var(--text-xs);
+    }
+
+    // Admin-authored HTML: a caption typed into the block arrives wrapped in
+    // <p>, and its default margins would break the dateline off the title.
+    p {
+        margin: 0;
+    }
+
+    > *:last-child {
+        margin-block-end: 0;
+    }
+}
+
+.carousel__title {
+    font-family: var(--font-headings);
+    font-size: var(--text-base);
+    font-weight: 600;
+    line-height: 1.25;
+    // Slab serifs clog below -0.01em; --tracking-display is the display face's
+    // floor for exactly this reason.
+    letter-spacing: var(--tracking-display);
+    text-wrap: pretty;
+
+    @media (min-width: $lg) {
+        font-size: var(--text-lg);
+    }
+
+    a {
+        color: var(--ink-strong);
+        text-decoration: none;
+        transition: color var(--transition-fast);
 
         &:hover {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            color: var(--white);
-            box-shadow: var(--glow-sm);
-
-            .slick-prev-icon,
-            .slick-next-icon {
-                &::before {
-                    color: var(--white);
-                }
-            }
+            color: var(--primary);
+            text-decoration: underline;
+            text-underline-offset: 0.15em;
         }
 
         &:focus-visible {
-            outline: 2px solid var(--focus-color);
+            outline: var(--focus-outline);
             outline-offset: 2px;
-            background-color: var(--primary);
-            border-color: var(--primary);
-            color: var(--white);
-        }
-
-        &.slick-next {
-            inset-inline-end: 0;
-        }
-
-        &.slick-prev {
-            inset-inline-start: 0;
-        }
-
-        .slick-prev-icon,
-        .slick-next-icon {
-            &::before {
-                @include icon-mask("../img/chevron-left.svg"); // Default to left, override below
-                width: var(--text-base);
-                height: var(--text-base);
-                line-height: 1;
-                transition: background-color var(--transition-fast);
-                color: inherit;
-            }
-        }
-
-        .slick-prev-icon {
-            &::before {
-                @include icon-mask("../img/chevron-left.svg");
-                content: "";
-            }
-        }
-
-        .slick-next-icon {
-            &::before {
-                @include icon-mask("../img/chevron-right.svg");
-                content: "";
-            }
+            border-radius: var(--radius-sm);
         }
     }
+}
 
-    .slick-dots {
-        display: flex !important;
-        justify-content: center;
-        gap: var(--space-xs);
-        margin-block-start: var(--space-md);
-        padding: 0;
-        list-style: none;
+// --------------------------------------------------------------------------
+// Progress rule — the run's scrollbar, drawn as press joinery
+//
+// The one thing on the page that moves, and it moves only because the reader
+// moved: a hairline across the measure carrying an accent mark whose width is
+// the fraction of the run in view and whose offset is how far through it they
+// are. Dots would have said the same thing in a vocabulary this design system
+// does not speak.
+//
+// No transition on the offset. The mark is repainted from the scroll event, so
+// it is already continuous during a swipe and during a smooth arrow step;
+// easing it as well makes it lag the plates it is describing.
+// --------------------------------------------------------------------------
+.carousel__rule {
+    position: relative;
+    block-size: var(--accent-line-sm);
+    margin-block-start: var(--space-4);
+    background-color: var(--border-light);
+    overflow: hidden;
+}
 
-        li {
-            margin: 0;
-            padding: 0;
+.carousel__rule-mark {
+    position: absolute;
+    inset-block: 0;
+    inline-size: calc(var(--carousel-mark-size, 1) * 100%);
+    inset-inline-start: calc(var(--carousel-mark-pos, 0) * (100% - var(--carousel-mark-size, 1) * 100%));
+    background-color: var(--primary);
+}
 
-            button {
-                font-size: 0;
-                width: 0.625rem;
-                height: 0.625rem;
-                padding: 0;
-                border-radius: var(--radius-full);
-                background: var(--border);
-                border: none;
-                transition:
-                    background-color var(--transition-fast),
-                    transform var(--transition-fast);
-                cursor: pointer;
+// --------------------------------------------------------------------------
+// Print — a carousel has no reader on paper. Unfold the run into a plain
+// column so a printed page carries every plate rather than the first three.
+// --------------------------------------------------------------------------
+@media print {
+    .carousel__bar .carousel__nav,
+    .carousel__counter,
+    .carousel__rule {
+        display: none;
+    }
 
-                &:hover {
-                    background: var(--primary-hover);
-                }
+    .carousel__track {
+        display: block;
+        overflow: visible;
+    }
 
-                &:focus-visible {
-                    outline: 2px solid var(--focus-color);
-                    outline-offset: 2px;
-                    background: var(--primary);
-                }
-            }
-
-            &.slick-active button {
-                background: var(--primary);
-                transform: scale(1.2);
-            }
-        }
+    .carousel__slide {
+        inline-size: auto;
+        break-inside: avoid;
+        margin-block-end: var(--space-6);
     }
 }
