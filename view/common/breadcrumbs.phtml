@@ -39,30 +39,16 @@ if ($currentSite) {
 
     // The browse page's slug differs per site (the French site browses at
     // /parcourir), so resolve it by slug lookup against THIS site's pages
-    // rather than composing a path — the same pattern and the same slugs as
+    // rather than composing a path — the same helper and the same slugs as
     // banner.phtml's stat links. A site without the page — any non-IWAC
     // install of the theme — keeps the two-crumb trail: an omitted crumb
     // beats a 404.
-    try {
-        $pagesBySlug = [];
-        foreach ($currentSite->pages() as $sitePage) {
-            $pagesBySlug[$sitePage->slug()] = $sitePage;
-        }
-        foreach (['browse', 'parcourir'] as $slug) {
-            if (isset($pagesBySlug[$slug])) {
-                // The page's own title is already in the site's language
-                // ("Browse" / "Parcourir") and matches the section strip, so
-                // the crumb needs no msgid of its own.
-                $crumbs[] = [
-                    'label' => $pagesBySlug[$slug]->title(),
-                    'url' => $pagesBySlug[$slug]->siteUrl(),
-                ];
-                break;
-            }
-        }
-    } catch (\Throwable $error) {
-        // The page API is the only thing that can fail here; a shorter trail
-        // is the degraded state, not a broken resource page.
+    $browsePage = $this->SitePageBySlug(['browse', 'parcourir'], $currentSite);
+    if ($browsePage) {
+        // The page's own title is already in the site's language ("Browse" /
+        // "Parcourir") and matches the section strip, so the crumb needs no
+        // msgid of its own.
+        $crumbs[] = ['label' => $browsePage->title(), 'url' => $browsePage->siteUrl()];
     }
 }
 

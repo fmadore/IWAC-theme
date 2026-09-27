@@ -157,35 +157,23 @@ if ($compact) {
     // lookup against THIS site's pages rather than composing a path. A site
     // without the page — any non-IWAC install of the theme — keeps the plain
     // figure. Countries has no page at all and stays a figure everywhere.
+    //
+    // SitePageBySlug degrades to null on any failure: the hero must render
+    // whatever the page API does, and an unlinked figure is the degraded
+    // state, not a broken homepage.
+    $statPageSlugs = [
+        'items' => ['browse', 'parcourir'],
+        'index' => ['index'],
+        // The newspapers figure opens the collection-overview dashboard: its
+        // newspaper-coverage panel lists exactly the titles the figure counts.
+        'newspapers' => ['collection-overview', 'vue-d-ensemble'],
+    ];
     $statPageUrls = [];
-    try {
-        $currentSite = $this->currentSite();
-        if ($currentSite) {
-            $pagesBySlug = [];
-            foreach ($currentSite->pages() as $sitePage) {
-                $pagesBySlug[$sitePage->slug()] = $sitePage;
-            }
-            $statPageSlugs = [
-                'items' => ['browse', 'parcourir'],
-                'index' => ['index'],
-                // The newspapers figure opens the collection-overview
-                // dashboard: its newspaper-coverage panel lists exactly the
-                // titles the figure counts.
-                'newspapers' => ['collection-overview', 'vue-d-ensemble'],
-            ];
-            foreach ($statPageSlugs as $statKey => $slugs) {
-                foreach ($slugs as $slug) {
-                    if (isset($pagesBySlug[$slug])) {
-                        $statPageUrls[$statKey] = $pagesBySlug[$slug]->siteUrl();
-                        break;
-                    }
-                }
-            }
+    foreach ($statPageSlugs as $statKey => $slugs) {
+        $statPage = $this->SitePageBySlug($slugs);
+        if ($statPage) {
+            $statPageUrls[$statKey] = $statPage->siteUrl();
         }
-    } catch (\Throwable $error) {
-        // The hero must render whatever the page API does. Unlinked figures
-        // are the degraded state, not a broken homepage.
-        $statPageUrls = [];
     }
 
     $summary = $bannerStats['summary'];

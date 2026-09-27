@@ -98,7 +98,7 @@ namespace IwacThemeTest {
                     return '';
                 },
             ];
-            foreach (['AiGeneratedTerms', 'BrowseLayout', 'FrenchSpacing', 'ResourceTags'] as $name) {
+            foreach (['AiGeneratedTerms', 'BannerStats', 'BrowseLayout', 'FrenchSpacing', 'ResourceTags', 'SitePageBySlug'] as $name) {
                 $class = '\\OmekaTheme\\Helper\\' . $name;
                 $this->helpers[$name] = (new $class())->setView($this);
             }
@@ -506,6 +506,140 @@ namespace IwacThemeTest {
         same(['a', 'b'], $vars['resources']);
         same('items', $vars['resourceName']);
         same('item', $vars['liClass']);
+    });
+
+    /** A site with the given page slugs; counts how often its pages are loaded. */
+    function fakePagedSite(array $slugs, int &$loads, bool $throws = false): object
+    {
+        return new class($slugs, $loads, $throws) {
+            public function __construct(private array $slugs, private int &$loads, private bool $throws)
+            {
+            }
+
+            public function id(): int
+            {
+                return 1;
+            }
+
+            public function url(): string
+            {
+                return '/s/westafrica';
+            }
+
+            public function pages(): array
+            {
+                $this->loads++;
+                if ($this->throws) {
+                    throw new \RuntimeException('page API down');
+                }
+                return array_map(static fn (string $slug) => new class($slug) {
+                    public function __construct(private string $slug)
+                    {
+                    }
+
+                    public function slug(): string
+                    {
+                        return $this->slug;
+                    }
+
+                    public function title(): string
+                    {
+                        return ucfirst($this->slug);
+                    }
+
+                    public function siteUrl(): string
+                    {
+                        return '/s/westafrica/page/' . $this->slug;
+                    }
+                }, $this->slugs);
+            }
+        };
+    }
+
+    test('SitePageBySlug returns the first candidate the site has, loading pages once', function () {
+        $loads = 0;
+        $fake = new FakeView();
+        $site = fakePagedSite(['index', 'parcourir', 'vue-d-ensemble'], $loads);
+        $fake->helpers['currentSite'] = static fn () => $site;
+        $lookup = $fake->helpers['SitePageBySlug'];
+
+        same('parcourir', $lookup(['browse', 'parcourir'])->slug());
+        same('index', $lookup(['index'])->slug());
+        same(null, $lookup(['collection-overview']));
+        same('vue-d-ensemble', $lookup(['collection-overview', 'vue-d-ensemble'], $site)->slug());
+        same(1, $loads, 'pages should load once per site per request');
+    });
+
+    test('SitePageBySlug degrades to null when the page API fails', function () {
+        $loads = 0;
+        $fake = new FakeView();
+        same(null, $fake->helpers['SitePageBySlug'](['browse'], fakePagedSite(['browse'], $loads, true)));
+        $fake->helpers['currentSite'] = static fn () => null;
+        same(null, $fake->helpers['SitePageBySlug'](['browse']));
+    });
+
+    test('breadcrumbs lead Home / Browse / current title', function () {
+        $loads = 0;
+        $fake = new FakeView();
+        $site = fakePagedSite(['browse', 'index'], $loads);
+        $fake->helpers['currentSite'] = static fn () => $site;
+        $resource = new class {
+            public function displayTitle($default = null, $lang = null): string
+            {
+                return 'Gala : le Chamci';
+            }
+        };
+        $html = $fake->render('common/breadcrumbs.phtml', ['resource' => $resource]);
+        preg_match_all('/<a href="([^"]+)">([^<]+)<\/a>/', $html, $links);
+        same(['/s/westafrica', '/s/westafrica/page/browse'], $links[1]);
+        same(['Home', 'Browse'], $links[2]);
+        check(str_contains($html, '<span aria-current="page">Gala : le Chamci</span>'), 'current crumb missing');
+    });
+
+    test('BannerStats counts items and index records, and survives a failing API', function () {
+        $queries = [];
+        $fake = new FakeView();
+        $fake->helpers['api'] = static function () use (&$queries) {
+            return new class($queries) {
+                public function __construct(private array &$queries)
+                {
+                }
+
+                public function search(string $resource, array $query)
+                {
+                    $this->queries[] = $query;
+                    $total = count($query['resource_class_id']) * 100;
+                    return new class($total) {
+                        public function __construct(private int $total)
+                        {
+                        }
+
+                        public function getTotalResults(): int
+                        {
+                            return $this->total;
+                        }
+                    };
+                }
+            };
+        };
+        $stats = $fake->helpers['BannerStats']();
+        same(1400, $stats['counts']['items']);
+        same(500, $stats['counts']['index']);
+        same(6, $stats['counts']['countries']);
+        same(2, count($queries));
+        foreach ($queries as $query) {
+            // Public records only, and a count — never a page of results.
+            same(true, $query['is_public']);
+            same(0, $query['limit']);
+        }
+
+        $fake->helpers['api'] = static fn () => throw new \RuntimeException('database away');
+        $previousLog = ini_set('error_log', PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null');
+        try {
+            same(null, $fake->helpers['BannerStats']()['counts']);
+        } finally {
+            ini_set('error_log', (string) $previousLog);
+        }
     });
 
     // ---- Run ----------------------------------------------------------------

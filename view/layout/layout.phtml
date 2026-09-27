@@ -51,7 +51,16 @@ $pwaManifest = $pwaEnabled ? $this->PwaManifest($site) : null;
 // The hero banner only renders on the homepage (see below), so the LCP
 // preload must be gated the same way — otherwise every inner page fetches
 // a large unused image at high priority.
-$layoutHomepage = method_exists($site, 'homepage') ? $site->homepage() : null;
+//
+// "Homepage" means what Omeka's site root means by it (Site\IndexController):
+// the configured homepage, or failing that the first page linked in the
+// navigation, which is where the root redirects. Reading only homepage() left
+// a site without one — any install that never set it — with no hero at all.
+$layoutHomepage = $site->homepage();
+if (!$layoutHomepage) {
+    $layoutLinkedPages = $site->linkedPages();
+    $layoutHomepage = $layoutLinkedPages ? reset($layoutLinkedPages) : null;
+}
 $layoutIsHomepage = $layoutHomepage && $this->params()->fromRoute('page-slug') === $layoutHomepage->slug();
 
 // For LCP: preload default banner image when no custom banner is set.

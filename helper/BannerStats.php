@@ -18,6 +18,14 @@ final class BannerStats extends AbstractHelper
         'index' => [94, 9, 96, 54, 244],
     ];
 
+    /**
+     * How long the collection counts may be served from APCu. They change
+     * when items are published, not per request; ten minutes of lag on a
+     * homepage figure is invisible, two COUNT queries per homepage view are
+     * not.
+     */
+    private const COUNTS_TTL = 600;
+
     private const SUMMARY_KEYS = [
         'newspapers',
         'references_count',
@@ -42,6 +50,31 @@ final class BannerStats extends AbstractHelper
 
     /** @return array<string,int>|null */
     private function loadCounts(): ?array
+    {
+        // Keyed by installation and class map: one APCu segment can serve
+        // several Omeka installs from the same PHP pool, and a changed map
+        // must not be answered with the old one's totals.
+        $cacheKey = 'iwac-theme:banner-counts:' . md5(
+            (defined('OMEKA_PATH') ? OMEKA_PATH : '') . json_encode(self::RESOURCE_CLASSES)
+        );
+        $useCache = \function_exists('apcu_enabled') && \apcu_enabled();
+        if ($useCache) {
+            $cached = \apcu_fetch($cacheKey, $hit);
+            if ($hit && is_array($cached)) {
+                return $cached;
+            }
+        }
+
+        $counts = $this->queryCounts();
+        // Only a real answer is cached — a failed query retries next request.
+        if ($useCache && $counts !== null) {
+            \apcu_store($cacheKey, $counts, self::COUNTS_TTL);
+        }
+        return $counts;
+    }
+
+    /** @return array<string,int>|null */
+    private function queryCounts(): ?array
     {
         try {
             $api = $this->getView()->api();

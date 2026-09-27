@@ -54,11 +54,11 @@ msgid_plural "Archived web pages"
 msgstr[0] "Page web archivée"
 msgstr[1] "Pages web archivées"
 
-#: view/common/banner.phtml:222
+#: view/common/banner.phtml:210
 msgid "Archives consulted"
 msgstr "Archives consultées"
 
-#: view/common/banner.phtml:224
+#: view/common/banner.phtml:212
 msgid "Audiovisual minutes"
 msgstr "Minutes audiovisuelles"
 
@@ -66,7 +66,7 @@ msgstr "Minutes audiovisuelles"
 msgid "Available languages"
 msgstr "Langues disponibles"
 
-#: view/layout/layout.phtml:343
+#: view/layout/layout.phtml:352
 msgid "Back to top"
 msgstr "Haut de page"
 
@@ -74,7 +74,7 @@ msgstr "Haut de page"
 msgid "Berlin Senate Department"
 msgstr ""
 
-#: view/common/breadcrumbs.phtml:80
+#: view/common/breadcrumbs.phtml:66
 msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
 
@@ -110,7 +110,7 @@ msgstr "Fermer la visionneuse"
 msgid "Collapse the full text"
 msgstr "Réduire le texte intégral"
 
-#: view/common/banner.phtml:253
+#: view/common/banner.phtml:241
 msgid "Collection at a glance"
 msgstr "La collection en un coup d’œil"
 
@@ -126,11 +126,11 @@ msgstr "Copié"
 msgid "Copy"
 msgstr "Copier"
 
-#: view/common/banner.phtml:269
+#: view/common/banner.phtml:257
 msgid "Corpus in depth"
 msgstr "Le corpus en détail"
 
-#: view/common/banner.phtml:206
+#: view/common/banner.phtml:194
 msgid "Countries"
 msgstr "Pays"
 
@@ -150,7 +150,7 @@ msgstr ""
 msgid "Default"
 msgstr "Par défaut"
 
-#: view/common/banner.phtml:223
+#: view/common/banner.phtml:211
 msgid "Document types"
 msgstr "Types de documents"
 
@@ -222,7 +222,7 @@ msgstr "Image %1 sur %2"
 msgid "Image viewer"
 msgstr "Visionneuse d’images"
 
-#: view/common/banner.phtml:197
+#: view/common/banner.phtml:185
 msgid "Index"
 msgstr "Index"
 
@@ -246,11 +246,11 @@ msgstr ""
 msgid "Item: %s"
 msgstr "Document : %s"
 
-#: view/common/banner.phtml:196 view/common/block-layout/item-carousel.phtml:178 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:42
+#: view/common/banner.phtml:184 view/common/block-layout/item-carousel.phtml:178 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:42
 msgid "Items"
 msgstr ""
 
-#: view/common/banner.phtml:225
+#: view/common/banner.phtml:213
 msgid "Languages"
 msgstr "Langues"
 
@@ -294,7 +294,7 @@ msgstr "Plus récents d’abord"
 msgid "Newspaper covers and archival documents from the collection"
 msgstr "Unes de journaux et documents d’archives de la collection"
 
-#: view/common/banner.phtml:204
+#: view/common/banner.phtml:192
 msgid "Newspapers"
 msgstr "Journaux"
 
@@ -386,7 +386,7 @@ msgstr ""
 msgid "Read the full text — %s more words"
 msgstr "Lire le texte intégral — %s mots restants"
 
-#: view/common/banner.phtml:218
+#: view/common/banner.phtml:206
 msgid "References"
 msgstr "Références"
 
@@ -426,7 +426,7 @@ msgstr "Menu du site"
 msgid "Site pages"
 msgstr ""
 
-#: view/layout/layout.phtml:319
+#: view/layout/layout.phtml:328
 msgid "Skip to main content"
 msgstr "Aller au contenu principal"
 
@@ -494,11 +494,11 @@ msgstr "Titre (Z-A)"
 msgid "Toggle submenu"
 msgstr "Afficher ou masquer le sous-menu"
 
-#: view/common/banner.phtml:214
+#: view/common/banner.phtml:202
 msgid "Total pages"
 msgstr "Pages totales"
 
-#: view/common/banner.phtml:213
+#: view/common/banner.phtml:201
 msgid "Total words"
 msgstr "Mots totaux"
 
