@@ -704,6 +704,66 @@ namespace IwacThemeTest {
         same('', trim($fake->render('common/resource-page-block-layout/web-archive.phtml', ['resource' => $none])));
     });
 
+    test('social links are named with each network\'s own spelling', function () {
+        $menuCalls = [];
+        $fake = new FakeView([
+            'youtube_url' => 'https://www.youtube.com/@iwac',
+            'linkedin_url' => 'https://www.linkedin.com/company/zmo',
+        ]);
+        $html = $fake->render('common/footer.phtml', ['site' => fakeSite($menuCalls)]);
+        check(str_contains($html, 'aria-label="YouTube"'), 'YouTube label');
+        check(str_contains($html, 'aria-label="LinkedIn"'), 'LinkedIn label');
+        check(!str_contains($html, '<!--'), 'HTML comments shipped in the footer');
+    });
+
+    test('pagination groups its figures with a narrow no-break space', function () {
+        $fake = new FakeView();
+        $fake->helpers['hyperlink'] = static fn ($text, $url, array $attrs = []): string => '<a href="' . $url . '"></a>';
+        $fake->helpers['queryToHiddenInputs'] = static fn (...$args): string => '';
+        $html = $fake->render('common/pagination.phtml', [
+            'totalCount' => 12345,
+            'offset' => 1000,
+            'perPage' => 25,
+            'currentPage' => 41,
+            'pageCount' => 494,
+            'previousPageUrl' => '?page=40',
+            'nextPageUrl' => '?page=42',
+        ]);
+        $nnbsp = "\u{202F}";
+        check(str_contains($html, "1{$nnbsp}001–1{$nnbsp}025 of 12{$nnbsp}345"), 'row count not grouped');
+        check(str_contains($html, 'of 494'), 'page count missing');
+        // The page field stays a plain number a reader can type over.
+        check(str_contains($html, 'value="41"'), 'page input value altered');
+    });
+
+    test('asset images never take their alt text from the filename', function () {
+        $fake = new FakeView();
+        $fake->helpers['thumbnail'] = static fn ($asset, $type, array $attrs = []): string => '<img alt="' . htmlspecialchars($attrs['alt'] ?? 'MISSING') . '">';
+        $asset = static fn (string $alt) => new class($alt) {
+            public function __construct(private string $alt)
+            {
+            }
+
+            public function altText(): string
+            {
+                return $this->alt;
+            }
+
+            public function name(): string
+            {
+                return 'IMG_2045-final.jpg';
+            }
+        };
+        $attachment = static fn (object $a, string $caption) => ['asset' => $a, 'caption' => $caption, 'alt_link_title' => '', 'page' => null];
+        $html = $fake->render('common/block-layout/asset.phtml', ['attachments' => [
+            $attachment($asset('Conference hall, Lomé, 2019'), ''),
+            $attachment($asset(''), 'Opening <em>session</em>'),
+            $attachment($asset(''), ''),
+        ]]);
+        preg_match_all('/<img alt="([^"]*)">/', $html, $alts);
+        same(['Conference hall, Lomé, 2019', 'Opening session', ''], $alts[1]);
+    });
+
     // ---- Run ----------------------------------------------------------------
 
     $failed = 0;

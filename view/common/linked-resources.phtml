@@ -109,7 +109,7 @@ foreach ($subjectValues as $values) {
 
         <div class="linked-resources__sort">
             <label for="linked-resources-sort" class="sr-only">
-                <?php echo $this->translate('Sort by'); ?>
+                <?php echo $this->escapeHtml($this->translate('Sort by')); ?>
             </label>
             <select id="linked-resources-sort" class="linked-resources__sort-select">
                 <?php foreach ($sortOptions as $value => $label): ?>
@@ -126,12 +126,12 @@ foreach ($subjectValues as $values) {
          role="group"
          aria-label="<?php echo $this->escapeHtmlAttr($this->translate('Filter by relation')); ?>">
         <span class="linked-resources__facets-label">
-            <?php echo $this->translate('Filter:'); ?>
+            <?php echo $this->escapeHtml($this->translate('Filter:')); ?>
         </span>
         <a href="<?php echo $this->escapeHtmlAttr($baseUrl . '#' . $fragment); ?>"
            class="linked-resources__facet<?php echo $isAllActive ? ' is-active' : ''; ?>"
            <?php echo $isAllActive ? 'aria-current="true"' : ''; ?>>
-            <span class="linked-resources__facet-label"><?php echo $this->translate('All'); ?></span>
+            <span class="linked-resources__facet-label"><?php echo $this->escapeHtml($this->translate('All')); ?></span>
             <span class="linked-resources__facet-count"><?php echo $this->escapeHtml($allCount); ?></span>
         </a>
         <?php foreach ($facetChips as $chip): ?>

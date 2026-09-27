@@ -6,7 +6,6 @@
 // stripped by the matching early return at the top of layout/layout.phtml,
 // which also emits the Vary: X-Requested-With header for shared caches.
 if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'fetch') {
-    header('Vary: X-Requested-With');
     echo $this->partial('common/resource-page-block-layout/linked-resources', ['resource' => $item]);
     return;
 }

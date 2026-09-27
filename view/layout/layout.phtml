@@ -3,9 +3,12 @@
 // X-Requested-With: fetch and only reads the linked-resources root out of
 // the response. Skip the entire layout (header, banner, footer, assetUrl
 // work) and output just the inner content. Vary tells shared caches never
-// to serve this chrome-less fragment to a normal navigation (or vice versa).
+// to serve the chrome-less fragment to a normal navigation (or vice versa).
+//
+// Both halves send the Vary: the response to one URL genuinely differs by
+// that header, so a cache must key on it whichever variant it stores first.
+header('Vary: X-Requested-With', false);
 if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'fetch') {
-    header('Vary: X-Requested-With');
     echo $this->content;
     return;
 }

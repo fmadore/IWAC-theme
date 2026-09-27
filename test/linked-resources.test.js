@@ -76,3 +76,43 @@ test('latest linked-resource request wins and history tracks every root', async 
 
     dom.window.close();
 });
+
+function pagedRoot() {
+    return `<!doctype html><body>
+        <div id="resources-linked" class="linked-resources">
+            <table class="linked-resources-table"><tbody><tr data-title="a"><td>a</td></tr></tbody></table>
+            <div class="linked-footer"><nav class="pagination">
+                <a class="pagination-nav next" href="https://example.test/s/westafrica/item/1?page=2">Next</a>
+            </nav></div>
+        </div>
+    </body>`;
+}
+
+function prefetchRun(saveData) {
+    const dom = createDom(pagedRoot());
+    const { window } = dom;
+    window.IWACUtils = { debounce: (callback) => callback, onReady: (callback) => callback() };
+    window.requestIdleCallback = (callback) => callback();
+    if (saveData !== undefined) {
+        Object.defineProperty(window.navigator, 'connection', { configurable: true, value: { saveData } });
+    }
+    const fetched = [];
+    window.fetch = (url) => {
+        fetched.push(String(url));
+        return new Promise(() => {});
+    };
+    runAsset(dom, 'linked-resources.js');
+    const next = window.document.querySelector('a.next');
+    next.dispatchEvent(new window.MouseEvent('mouseenter'));
+    dom.window.close();
+    return fetched;
+}
+
+test('the next page is warmed in idle time', () => {
+    assert.deepEqual(prefetchRun(false), ['https://example.test/s/westafrica/item/1?page=2']);
+    assert.deepEqual(prefetchRun(undefined), ['https://example.test/s/westafrica/item/1?page=2']);
+});
+
+test('Save-Data turns off speculative page fetches', () => {
+    assert.deepEqual(prefetchRun(true), []);
+});

@@ -36,8 +36,16 @@
             : {};
     }
 
+    // A reader who asked the browser to save data gets no speculative
+    // requests: the idle warm-up of the next page is a whole extra page
+    // render per visit, and on a metered connection it is theirs to pay for.
+    function saveData() {
+        const connection = navigator.connection;
+        return Boolean(connection && connection.saveData);
+    }
+
     function prefetch(url) {
-        if (!url || prefetchCache.has(url)) return;
+        if (!url || prefetchCache.has(url) || saveData()) return;
         // Bound the cache. Pagination only warms a handful of URLs, but cap it so
         // a long browsing session can't retain unbounded response bodies (Map
         // keeps insertion order, so the first key is the oldest).

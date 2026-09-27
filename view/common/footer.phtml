@@ -10,7 +10,18 @@ $footerMenu = $this->themeSetting('footer_menu');
 // 0 (or empty) keeps its meaning of "all levels" via maxDepth -1.
 $footerMenuDepth = (int) $this->themeSetting('footer_menu_depth');
 $footerContent = $this->themeSetting('footer_content');
-$socialNetworks = array('facebook', 'x', 'linkedin', 'instagram', 'youtube', 'mastodon', 'bluesky');
+// Network => its own spelling of its name, for the icon link's accessible
+// name. (ucfirst() of the key announced "Youtube", "Linkedin".)
+$socialNetworkNames = [
+	'facebook' => 'Facebook',
+	'x' => 'X',
+	'linkedin' => 'LinkedIn',
+	'instagram' => 'Instagram',
+	'youtube' => 'YouTube',
+	'mastodon' => 'Mastodon',
+	'bluesky' => 'Bluesky',
+];
+$socialNetworks = array_keys($socialNetworkNames);
 
 $additional_classes = '';
 
@@ -40,12 +51,12 @@ foreach ($socialNetworks as $social_network) {
 
 <footer class="main-footer">
 
-	<!-- Footer Top -->
+	<?php // Footer Top ?>
 	<?php if ($footerSiteInfo || $footerMenu || $footerContent): ?>
 		<div class="main-footer__top">
 			<div class="container main-footer__top-container <?php echo $additional_classes; ?>">
 
-				<!-- Column 1: Logos and Site Info -->
+				<?php // Column 1: Logos and Site Info ?>
 				<div class="main-footer__col1">
 					<div class="main-footer__logos">
 						<a href="https://www.zmo.de/en" target="_blank" rel="noopener noreferrer">
@@ -85,7 +96,7 @@ foreach ($socialNetworks as $social_network) {
 					</div>
 				</div>
 
-				<!-- Column 2 -->
+				<?php // Column 2 ?>
 				<?php if ($footerMenu): ?>
 
 					<div class="main-footer__col2">
@@ -98,7 +109,7 @@ foreach ($socialNetworks as $social_network) {
 
 				<?php endif; ?>
 
-				<!-- Column 3 -->
+				<?php // Column 3 ?>
 				<?php if ($footerContent): ?>
 
 					<div class="main-footer__col3">
@@ -113,12 +124,12 @@ foreach ($socialNetworks as $social_network) {
 		</div>
 	<?php endif; ?>
 
-	<!-- Footer Bottom -->
+	<?php // Footer Bottom ?>
 	<div class="main-footer__bottom">
 		<div
 			class="container main-footer__bottom-container <?php echo $hasSocialNetworks ? 'has-social-networks' : ''; ?>">
 
-			<!-- Social Networks -->
+			<?php // Social Networks ?>
 			<?php if ($hasSocialNetworks): ?>
 				<?php
 				// Inline SVGs for dynamic color control (fill="currentColor")
@@ -136,7 +147,7 @@ foreach ($socialNetworks as $social_network) {
 					<?php foreach ($socialNetworks as $social_network): ?>
 						<?php if ($social_network_url = $this->themeSetting("{$social_network}_url")): ?>
 							<a href="<?php echo $escAttr($social_network_url); ?>"
-								aria-label="<?php echo $escAttr(ucfirst($social_network)); ?>" target="_blank"
+								aria-label="<?php echo $escAttr($socialNetworkNames[$social_network]); ?>" target="_blank"
 								rel="noopener noreferrer">
 								<?php echo $socialIcons[$social_network] ?? ''; ?>
 							</a>
@@ -165,7 +176,7 @@ foreach ($socialNetworks as $social_network) {
 				</button>
 			</div>
 
-			<!-- Copyright -->
+			<?php // Copyright ?>
 			<div class="main-footer__copyright">
 				<?php if ($footer_copyright = $this->themeSetting('footer_copyright')): ?>
 					<?php echo $footer_copyright; ?>

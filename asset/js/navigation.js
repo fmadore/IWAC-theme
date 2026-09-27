@@ -35,7 +35,19 @@
 		'[tabindex]:not([tabindex="-1"])',
 	].join(', ');
 
-	document.addEventListener("DOMContentLoaded", function() {
+	// The shared ready helper, like the theme's other scripts — a bare
+	// DOMContentLoaded listener never fires for a script that arrives after
+	// parsing (deferred, async, or injected), and this one would silently do
+	// nothing. The fallback covers a page without utils.js.
+	const onReady = (window.IWACUtils && window.IWACUtils.onReady) || function (callback) {
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', callback, { once: true });
+		} else {
+			callback();
+		}
+	};
+
+	onReady(function() {
 		let collection, menu;
 
 		// Runs before the early returns below (so it still lands on pages with

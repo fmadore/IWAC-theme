@@ -38,9 +38,11 @@ $plateStrings = [
             if (!$altText && $attachment['caption'] !== '') {
                 $altText = strip_tags($attachment['caption']);
             }
-            if (!$altText) {
-                $altText = ucwords(str_replace(['-', '_'], ' ', pathinfo($asset->name(), PATHINFO_FILENAME)));
-            }
+            // No filename fallback: "Img 2045 Final" is not a description,
+            // and a screen reader would read it aloud (WCAG failure F30). With
+            // neither alt text nor caption the image is presented as
+            // decorative; the plate viewer still names its trigger ("View
+            // full screen"), and a linked asset is named by its link title.
         }
         $assetImage = ($asset) ? $this->thumbnail($asset, 'large', ['alt' => $altText]) : '';
         ?>

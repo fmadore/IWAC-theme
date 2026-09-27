@@ -23,21 +23,21 @@ $escapeAttr = $this->plugin('escapeHtmlAttr');
         <thead>
             <tr>
                 <th scope="col" class="linked-resources-table__col-thumb">
-                    <span class="sr-only"><?php echo $translate('Thumbnail'); ?></span>
+                    <span class="sr-only"><?php echo $escape($translate('Thumbnail')); ?></span>
                 </th>
                 <th scope="col" class="linked-resources-table__col-title">
-                    <?php echo $translate('Title'); ?>
+                    <?php echo $escape($translate('Title')); ?>
                 </th>
                 <?php if ($showRelation): ?>
                 <th scope="col" class="linked-resources-table__col-relation">
-                    <?php echo $translate('Relation'); ?>
+                    <?php echo $escape($translate('Relation')); ?>
                 </th>
                 <?php endif; ?>
                 <th scope="col" class="linked-resources-table__col-type">
-                    <?php echo $translate('Type'); ?>
+                    <?php echo $escape($translate('Type')); ?>
                 </th>
                 <th scope="col" class="linked-resources-table__col-date">
-                    <?php echo $translate('Date'); ?>
+                    <?php echo $escape($translate('Date')); ?>
                 </th>
             </tr>
         </thead>
