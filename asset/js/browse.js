@@ -9,14 +9,23 @@
             const layoutToggles = resourcesSet.parentElement.querySelectorAll('.layout-toggle button');
             let masonry = null;
 
+            // The gutter is the grid's `column-gap` in _resource-grid.scss —
+            // resolved to px by the browser, so the spacing scale stays the
+            // single source. 24 (--space-6) only if no stylesheet applies.
+            const readGutter = () => {
+                const gap = parseFloat(window.getComputedStyle(resourcesSet).columnGap);
+                return Number.isFinite(gap) ? gap : 24;
+            };
+
             const initMasonryGrid = () => {
                 if (resourcesSet.classList.contains('resource-grid') && !masonry) {
                     // Masonry
                     resourcesSet.dataset.masonryReady = true;
+                    const gutter = readGutter();
                     const instance = new MiniMasonry({
                         container: resourcesSet,
-                        gutter: 27,
-                        ultimateGutter: 27,
+                        gutter: gutter,
+                        ultimateGutter: gutter,
                         surroundingGutter: false
                     });
                     masonry = instance;

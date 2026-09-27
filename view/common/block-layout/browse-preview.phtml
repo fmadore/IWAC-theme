@@ -1,8 +1,4 @@
 <?php
-$translate = $this->plugin('translate');
-$escape = $this->plugin('escapeHtml');
-$thumbnail = $this->plugin('thumbnail');
-
 $this->inlineScript()->appendFile($this->assetUrl('js/minimasonry.min.js'));
 $this->inlineScript()->appendFile($this->assetUrl('js/browse.js'));
 
@@ -22,6 +18,13 @@ $showHeading = in_array('resource-heading', $this->components);
 $showBody = in_array('resource-body', $this->components);
 $headingTerm = $this->siteSetting('browse_heading_property_term');
 $bodyTerm = $this->siteSetting('browse_body_property_term');
+// The block names its resource type by API name ('items'); the browse pages'
+// cards carry the singular class ('item'). Same card, same class.
+$liClass = [
+    'items' => 'item',
+    'item_sets' => 'item-set',
+    'media' => 'media',
+][$this->resourceType] ?? $this->resourceType;
 ?>
 
 <div class="preview-block clearfix">
@@ -44,20 +47,15 @@ $bodyTerm = $this->siteSetting('browse_body_property_term');
 
     <ul class="resources <?php echo ($isGrid) ? 'resource-grid' : 'resource-list'; ?>">
         <?php foreach ($this->resources as $resource): ?>
-            <?php
-            $heading = $headingTerm
-                ? $resource->value($headingTerm, ['default' => $translate('[Untitled]'), 'lang' => $valueLang])
-                : null;
-            ?>
             <?php echo $this->partial('common/resource-card', [
                 'resource' => $resource,
                 'isGrid' => $isGrid,
                 'valueLang' => $valueLang,
-                'liClass' => $this->resourceType,
+                'liClass' => $liClass,
                 'decorationClass' => $layout['decorationClass'],
+                'headingTerm' => $headingTerm,
                 'bodyTerm' => $bodyTerm,
                 'bodyTruncate' => $bodyTruncate,
-                'heading' => $heading,
                 'showThumbnail' => $showThumbnail,
                 'showHeading' => $showHeading,
                 'showBody' => $showBody,

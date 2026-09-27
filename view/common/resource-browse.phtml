@@ -1,4 +1,17 @@
 <?php
+/**
+ * The browse listing shared by item, item-set and media browse pages: title,
+ * filters, the grid/list toggle, sort, the search link, the card list and
+ * pagination. (An item SET's own page renders its items as a ledger table
+ * instead — see omeka/site/item/browse.phtml.)
+ *
+ * Expected variables:
+ * - $resources:    the page's representations
+ * - $resourceName: API name for the sort selector ('items', 'item_sets', 'media')
+ * - $bodyClass:    body classes for the page
+ * - $liClass:      resource-type class for each card <li>
+ * - $title:        the page heading
+ */
 $translate = $this->plugin('translate');
 $this->inlineScript()->appendFile($this->assetUrl('js/minimasonry.min.js'));
 $this->inlineScript()->appendFile($this->assetUrl('js/browse.js'));
@@ -9,11 +22,18 @@ $lang = $this->lang();
 $valueLang = $filterLocale ? [$lang, ''] : null;
 $layout = $this->BrowseLayout();
 $isGrid = $layout['isGrid'];
+// Site admin → Settings → Browse. Core's browse pages honour both terms; the
+// heading one was read only by the browse-preview block here, so setting it
+// changed the homepage previews and silently nothing on the browse pages.
+$headingTerm = $this->siteSetting('browse_heading_property_term');
 $bodyTerm = $this->siteSetting('browse_body_property_term');
 $bodyTruncate = $this->themeSetting('truncate_body_property');
+// Without the IwacSearch module, fall back to core's advanced search form —
+// carrying the current query, as core's own link does, so the form opens with
+// the filters the reader is already browsing by.
 $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
     ? $this->iwacSearchUrl()
-    : $this->url(null, ['action' => 'search'], true);
+    : $this->url(null, ['action' => 'search'], ['query' => $this->params()->fromQuery()], true);
 ?>
 
 <?php echo $this->pageTitle($title, 1); ?>
@@ -42,6 +62,7 @@ $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
             'valueLang' => $valueLang,
             'liClass' => $liClass,
             'decorationClass' => $layout['decorationClass'],
+            'headingTerm' => $headingTerm,
             'bodyTerm' => $bodyTerm,
             'bodyTruncate' => $bodyTruncate,
             'eager' => $index < 4,

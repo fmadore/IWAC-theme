@@ -11,8 +11,10 @@
  * - $decorationClass: '' or the decoration classes (from the BrowseLayout helper)
  * - $bodyTerm: property term for the body text, or '' (falls back to description)
  * - $bodyTruncate: truncation class from the theme setting, or ''
+ * - $headingTerm: property term for the heading (the site's "browse heading
+ *   property"), or '' — falls back to the resource title
  * - $heading: optional pre-computed heading (string|ValueRepresentation);
- *   defaults to the resource title
+ *   wins over $headingTerm
  * - $showThumbnail / $showHeading / $showBody: optional bools (default true)
  * - $eager: optional bool — set for above-the-fold cards to skip lazy-loading
  */
@@ -23,6 +25,13 @@ $showHeading = $showHeading ?? true;
 $showBody = $showBody ?? true;
 $eager = $eager ?? false;
 $heading = $heading ?? null;
+$headingTerm = $headingTerm ?? null;
+if ($heading === null && $showHeading && $headingTerm) {
+    $heading = $resource->value($headingTerm, [
+        'default' => $this->translate('[Untitled]'),
+        'lang' => $valueLang,
+    ]);
+}
 
 $body = null;
 if ($showBody) {

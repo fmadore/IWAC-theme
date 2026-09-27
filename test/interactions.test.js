@@ -104,7 +104,8 @@ test('browse layout preference does not add history entries and cleans up Masonr
     const instances = [];
     dom.window.IWACUtils = { onReady: (callback) => callback() };
     dom.window.MiniMasonry = class {
-        constructor() {
+        constructor(options) {
+            this.options = options;
             this.destroyed = false;
             instances.push(this);
         }
@@ -114,6 +115,8 @@ test('browse layout preference does not add history entries and cleans up Masonr
 
     const initialHistoryLength = dom.window.history.length;
     runAsset(dom, 'browse.js');
+    // No stylesheet here, so the gutter falls back to --space-6's 24px.
+    assert.equal(instances[0].options.gutter, 24);
     dom.window.document.querySelector('[data-view="list"]').click();
 
     const resources = dom.window.document.querySelector('.resources');
@@ -182,4 +185,23 @@ test('carousel silences position announcements while the slideshow rotates', () 
     } finally {
         dom.window.close();
     }
+});
+
+test('masonry gutter comes from the stylesheet, not a number in the script', () => {
+    const dom = createDom(`<!doctype html><head><style>.resource-grid { column-gap: 20px; }</style></head><body>
+        <ul class="resources resource-grid"><li class="resource"></li></ul>
+    </body>`);
+    const instances = [];
+    dom.window.IWACUtils = { onReady: (callback) => callback() };
+    dom.window.MiniMasonry = class {
+        constructor(options) { instances.push(options); }
+        layout() {}
+        destroy() {}
+    };
+
+    runAsset(dom, 'browse.js');
+    assert.equal(instances[0].gutter, 20);
+    assert.equal(instances[0].ultimateGutter, 20);
+
+    dom.window.close();
 });

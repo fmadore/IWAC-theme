@@ -14,6 +14,11 @@
     list-style: none;
     padding-inline-start: 0;
     position: relative;
+    // The masonry gutter. The cards are absolutely positioned by MiniMasonry,
+    // so this gap is never laid out by CSS — browse.js reads its resolved px
+    // value and hands it to the script. Declared here so the gutter is on the
+    // spacing scale and owned by the stylesheet (it was a bare `27` in JS).
+    column-gap: var(--space-6);
 
     .resource {
         background: var(--panel-bg);

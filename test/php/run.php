@@ -57,6 +57,9 @@ namespace IwacThemeTest {
         /** @var array<string,callable|object> */
         public array $helpers = [];
 
+        /** @var list<array{0:string,1:array}> every partial() call, in order */
+        public array $partials = [];
+
         public function __construct(
             public array $themeSettings = [],
             public array $siteSettings = [],
@@ -90,7 +93,10 @@ namespace IwacThemeTest {
                     }
                 },
                 'thumbnail' => static fn (...$args): string => '',
-                'partial' => static fn (...$args): string => '',
+                'partial' => function (string $name, array $vars = []): string {
+                    $this->partials[] = [$name, $vars];
+                    return '';
+                },
             ];
             foreach (['AiGeneratedTerms', 'BrowseLayout', 'FrenchSpacing', 'ResourceTags'] as $name) {
                 $class = '\\OmekaTheme\\Helper\\' . $name;
@@ -422,6 +428,84 @@ namespace IwacThemeTest {
         ]);
         check(str_contains($html, 'l&#039;an 2000'), 'rendered date missing');
         check(!str_contains($html, '&amp;#039;'), 'rendered date was escaped a second time');
+    });
+
+    /** A browse-card resource whose values are keyed by term. */
+    function fakeCardResource(array $values): object
+    {
+        return new class($values) {
+            public function __construct(private array $values)
+            {
+            }
+
+            public function value(string $term, array $options = [])
+            {
+                return $this->values[$term] ?? ($options['default'] ?? null);
+            }
+
+            public function displayTitle($default = null, $lang = null): string
+            {
+                return 'The display title';
+            }
+
+            public function displayDescription($default = null, $lang = null)
+            {
+                return null;
+            }
+
+            public function primaryMedia()
+            {
+                return null;
+            }
+
+            public function link($text): string
+            {
+                return '<a href="/item/1">' . htmlspecialchars((string) $text) . '</a>';
+            }
+        };
+    }
+
+    test("resource cards use the site's browse heading property", function () {
+        $render = static fn (array $vars): string => (new FakeView())->render('common/resource-card.phtml', $vars + [
+            'isGrid' => true,
+            'valueLang' => null,
+            'liClass' => 'item',
+            'decorationClass' => '',
+            'bodyTerm' => null,
+            'bodyTruncate' => '',
+        ]);
+
+        $withTerm = $render([
+            'resource' => fakeCardResource(['bibo:shortTitle' => 'Short title']),
+            'headingTerm' => 'bibo:shortTitle',
+        ]);
+        check(str_contains($withTerm, '>Short title</a>'), 'heading property not used');
+
+        // A resource without the property gets core's placeholder, not a blank link.
+        $missing = $render(['resource' => fakeCardResource([]), 'headingTerm' => 'bibo:shortTitle']);
+        check(str_contains($missing, '>[Untitled]</a>'), 'missing heading value not defaulted');
+
+        $noTerm = $render(['resource' => fakeCardResource(['bibo:shortTitle' => 'Short title']), 'headingTerm' => '']);
+        check(str_contains($noTerm, '>The display title</a>'), 'title fallback lost');
+
+        // An explicit heading still wins over the term.
+        $explicit = $render([
+            'resource' => fakeCardResource(['bibo:shortTitle' => 'Short title']),
+            'headingTerm' => 'bibo:shortTitle',
+            'heading' => 'Explicit',
+        ]);
+        check(str_contains($explicit, '>Explicit</a>'), 'explicit heading overridden');
+    });
+
+    test('item browse delegates to the shared listing unless it is an item set', function () {
+        $fake = new FakeView();
+        $fake->render('omeka/site/item/browse.phtml', ['items' => ['a', 'b']]);
+        same(1, count($fake->partials));
+        [$name, $vars] = $fake->partials[0];
+        same('common/resource-browse', $name);
+        same(['a', 'b'], $vars['resources']);
+        same('items', $vars['resourceName']);
+        same('item', $vars['liClass']);
     });
 
     // ---- Run ----------------------------------------------------------------

@@ -166,7 +166,7 @@ msgstr "Erreur"
 msgid "Filter by relation"
 msgstr "Filtrer par relation"
 
-#: view/omeka/site/item/browse.phtml:99
+#: view/omeka/site/item/browse.phtml:84
 msgid "Filter items on this page by title"
 msgstr "Filtrer les contenus de cette page par titre"
 
@@ -174,7 +174,7 @@ msgstr "Filtrer les contenus de cette page par titre"
 msgid "Filter linked resources on this page by title"
 msgstr "Filtrer les ressources liées de cette page par titre"
 
-#: view/common/linked-resources.phtml:106 view/omeka/site/item/browse.phtml:98
+#: view/common/linked-resources.phtml:106 view/omeka/site/item/browse.phtml:83
 msgid "Filter this page by title…"
 msgstr "Filtrer cette page par titre…"
 
@@ -246,7 +246,7 @@ msgstr ""
 msgid "Item: %s"
 msgstr "Document : %s"
 
-#: view/common/banner.phtml:196 view/common/block-layout/item-carousel.phtml:178 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
+#: view/common/banner.phtml:196 view/common/block-layout/item-carousel.phtml:178 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:42
 msgid "Items"
 msgstr ""
 
@@ -314,7 +314,7 @@ msgstr "Diapositive suivante"
 msgid "No pages found"
 msgstr "Aucune page trouvée"
 
-#: view/common/linked-resources.phtml:53 view/omeka/site/item/browse.phtml:74
+#: view/common/linked-resources.phtml:53 view/omeka/site/item/browse.phtml:61
 msgid "No resources match your search."
 msgstr "Aucune ressource ne correspond à votre recherche."
 
@@ -406,7 +406,7 @@ msgstr ""
 msgid "Search results for “%s”"
 msgstr "Résultats de recherche pour « %s »"
 
-#: view/common/resource-browse.phtml:31 view/common/search-form.phtml:51 view/omeka/site/item/browse.phtml:59
+#: view/common/resource-browse.phtml:51 view/common/search-form.phtml:51 view/omeka/site/item/browse.phtml:49
 msgid "Search the collection"
 msgstr "Rechercher dans la collection"
 
@@ -542,7 +542,7 @@ msgstr "Vidéo YouTube : %s"
 msgid "Zoom in"
 msgstr "Agrandir"
 
-#: view/common/block-layout/browse-preview.phtml:49 view/hierarchy/common/block-layout/hierarchy-public.phtml:109
+#: view/common/resource-card.phtml:31 view/hierarchy/common/block-layout/hierarchy-public.phtml:109
 msgid "[Untitled]"
 msgstr ""
 
@@ -554,10 +554,10 @@ msgstr "sur %s"
 msgid "show submenu for “%s”"
 msgstr "afficher le sous-menu de « %s »"
 
-#: view/common/linked-resources.phtml:54 view/omeka/site/item/browse.phtml:75
+#: view/common/linked-resources.phtml:54 view/omeka/site/item/browse.phtml:70
 msgid "{count} resources found"
 msgstr "{count} ressources trouvées"
 
-#: view/common/linked-resources.phtml:55 view/omeka/site/item/browse.phtml:76
+#: view/common/linked-resources.phtml:55 view/omeka/site/item/browse.phtml:71
 msgid "{count} resources on this page"
 msgstr "{count} ressources sur cette page"
