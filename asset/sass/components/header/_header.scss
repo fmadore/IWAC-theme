@@ -235,7 +235,8 @@
             min-width: 0;
 
             &:focus {
-                outline: none;
+                // transparent, not none: forced-colors mode (see base/elements/_fields.scss)
+                outline: 2px solid transparent;
                 box-shadow: none;
                 transform: none;
             }

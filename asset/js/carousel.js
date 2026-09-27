@@ -202,6 +202,13 @@
         }
 
         function syncToggle() {
+            // While the run advances itself, the position is not news: a polite
+            // region would talk over the reader every few seconds for as long
+            // as the slideshow plays. Silence it during rotation and restore it
+            // the moment the reader is driving (the APG carousel pattern).
+            if (statusOut) {
+                statusOut.setAttribute('aria-live', autoplayOn ? 'off' : 'polite');
+            }
             if (!toggleBtn) {
                 return;
             }
@@ -210,7 +217,9 @@
                 : toggleBtn.getAttribute('data-label-play');
             var span = toggleBtn.querySelector('.carousel__btn-label');
             if (span) { span.textContent = label; }
-            toggleBtn.setAttribute('aria-pressed', autoplayOn ? 'true' : 'false');
+            // The label already states the action ("Stop automatic slideshow");
+            // no aria-pressed on top of it, or a screen reader hears "Stop
+            // automatic slideshow, pressed" — two contradicting states at once.
             toggleBtn.classList.toggle('is-playing', autoplayOn);
         }
 

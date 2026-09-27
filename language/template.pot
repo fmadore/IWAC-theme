@@ -30,11 +30,11 @@ msgstr ""
 msgid "AI-generated content — verify against the original source."
 msgstr ""
 
-#: view/omeka/site/item/search.phtml:38
+#: view/omeka/site/item/search.phtml:40
 msgid "Advanced item search"
 msgstr ""
 
-#: view/common/footer.phtml:64
+#: view/common/footer.phtml:67
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
 msgstr ""
 
@@ -68,11 +68,11 @@ msgstr ""
 msgid "Available languages"
 msgstr ""
 
-#: view/layout/layout.phtml:339
+#: view/layout/layout.phtml:343
 msgid "Back to top"
 msgstr ""
 
-#: view/common/footer.phtml:57
+#: view/common/footer.phtml:60
 msgid "Berlin Senate Department"
 msgstr ""
 
@@ -116,7 +116,7 @@ msgstr ""
 msgid "Collection at a glance"
 msgstr ""
 
-#: view/omeka/site/item/search.phtml:29
+#: view/omeka/site/item/search.phtml:31
 msgid "Continue to search"
 msgstr ""
 
@@ -212,7 +212,7 @@ msgstr ""
 msgid "How to cite this item"
 msgstr ""
 
-#: view/common/footer.phtml:153
+#: view/common/footer.phtml:156
 msgid "How to install this app"
 msgstr ""
 
@@ -228,7 +228,7 @@ msgstr ""
 msgid "Index"
 msgstr ""
 
-#: view/common/footer.phtml:161
+#: view/common/footer.phtml:164
 msgid "Install app"
 msgstr ""
 
@@ -248,7 +248,7 @@ msgstr ""
 msgid "Item: %s"
 msgstr ""
 
-#: view/common/banner.phtml:196 view/common/block-layout/item-carousel.phtml:177 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
+#: view/common/banner.phtml:196 view/common/block-layout/item-carousel.phtml:178 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:38 view/omeka/site/item/browse.phtml:40
 msgid "Items"
 msgstr ""
 
@@ -256,7 +256,7 @@ msgstr ""
 msgid "Languages"
 msgstr ""
 
-#: view/common/footer.phtml:50
+#: view/common/footer.phtml:53
 msgid "Leibniz-Zentrum Moderner Orient"
 msgstr ""
 
@@ -332,7 +332,7 @@ msgstr ""
 msgid "Open menu"
 msgstr ""
 
-#: view/omeka/site/item/search.phtml:25
+#: view/omeka/site/item/search.phtml:27
 msgid "Opening search…"
 msgstr ""
 
@@ -356,7 +356,7 @@ msgstr ""
 msgid "Part of %s"
 msgstr ""
 
-#: view/common/footer.phtml:170
+#: view/common/footer.phtml:173
 msgid "Powered by Omeka S"
 msgstr ""
 
@@ -396,11 +396,11 @@ msgstr ""
 msgid "Relation"
 msgstr ""
 
-#: view/omeka/site/item/search.phtml:46
+#: view/omeka/site/item/search.phtml:48
 msgid "Reset"
 msgstr ""
 
-#: helper/PwaManifest.php:86 view/common/search-form.phtml:52 view/common/search-form.phtml:57 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:45
+#: helper/PwaManifest.php:86 view/common/search-form.phtml:52 view/common/search-form.phtml:57 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
 msgid "Search"
 msgstr ""
 
@@ -416,7 +416,7 @@ msgstr ""
 msgid "Select language"
 msgstr ""
 
-#: view/common/resource-values.phtml:271
+#: view/common/resource-values.phtml:276
 msgid "Show annotation"
 msgstr ""
 
@@ -428,7 +428,7 @@ msgstr ""
 msgid "Site pages"
 msgstr ""
 
-#: view/layout/layout.phtml:315
+#: view/layout/layout.phtml:319
 msgid "Skip to main content"
 msgstr ""
 
@@ -464,7 +464,7 @@ msgstr ""
 msgid "System theme active. Activate to switch to light mode."
 msgstr ""
 
-#: view/common/footer.phtml:154
+#: view/common/footer.phtml:157
 msgid "Tap the Share icon, then “Add to Home Screen”."
 msgstr ""
 
@@ -508,7 +508,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: view/common/resource-values.phtml:280
+#: view/common/resource-values.phtml:285
 msgid "Value Annotations"
 msgstr ""
 
@@ -524,11 +524,11 @@ msgstr ""
 msgid "View full screen: %s"
 msgstr ""
 
-#: view/common/footer.phtml:71
+#: view/common/footer.phtml:74
 msgid "Volkswagen Foundation"
 msgstr ""
 
-#: view/omeka/site/item/search.phtml:27
+#: view/omeka/site/item/search.phtml:29
 msgid "You are being redirected to the collection search."
 msgstr ""
 

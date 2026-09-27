@@ -39,7 +39,13 @@ select {
     // controls below. No transform — a text field that lifts on focus nudges
     // layout just as you're about to type; the border + ring are enough.
     &:focus-visible {
-        outline: none;
+        // A transparent outline, never `outline: none`, wherever a box-shadow
+        // ring is the visible focus indicator. Forced-colors mode (Windows
+        // High Contrast) drops box-shadow entirely and repaints outline-color
+        // in the system colour — so `none` left these controls with no focus
+        // indicator at all there, while `transparent` is invisible everywhere
+        // else and becomes the ring when the ring is gone.
+        outline: 2px solid transparent;
         border-color: var(--primary);
         box-shadow: var(--ring-focus);
     }

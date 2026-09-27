@@ -281,7 +281,8 @@
             padding: var(--space-3) var(--space-4);
 
             &::placeholder { color: var(--muted); }
-            &:focus { outline: none; }
+            // transparent, not none: forced-colors mode (see base/elements/_fields.scss)
+            &:focus { outline: 2px solid transparent; }
         }
 
         // Scope to the submit button ONLY — mirror the masthead fix in

@@ -125,3 +125,48 @@ test('browse layout preference does not add history entries and cleans up Masonr
 
     dom.window.close();
 });
+
+test('carousel silences position announcements while the slideshow rotates', () => {
+    const dom = createDom(`<!doctype html><body>
+        <div class="carousel" data-carousel data-carousel-autoplay="5000">
+            <p data-carousel-counter hidden>
+                <span data-carousel-current>1</span>
+                <span data-carousel-status role="status" aria-live="polite"></span>
+            </p>
+            <div data-carousel-nav hidden data-label-position="Slide %1$s of %2$s">
+                <button type="button" data-carousel-toggle data-label-play="Start" data-label-pause="Stop"><span class="carousel__btn-label">Stop</span></button>
+                <button type="button" data-carousel-prev>Previous</button>
+                <button type="button" data-carousel-next>Next</button>
+            </div>
+            <ul data-carousel-track><li data-carousel-slide>1</li><li data-carousel-slide>2</li><li data-carousel-slide>3</li></ul>
+        </div>
+    </body>`);
+    dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
+    dom.window.IWACUtils = { onReady: (callback) => callback(), debounce: (callback) => callback };
+    dom.window.Element.prototype.scrollIntoView = function () {};
+    const track = dom.window.document.querySelector('[data-carousel-track]');
+    Object.defineProperty(track, 'scrollWidth', { configurable: true, value: 1200 });
+    Object.defineProperty(track, 'clientWidth', { configurable: true, value: 400 });
+
+    // The autoplay interval would keep node alive past a failed assertion;
+    // close the window (which clears it) whatever happens.
+    try {
+        runAsset(dom, 'carousel.js');
+        const status = dom.window.document.querySelector('[data-carousel-status]');
+        const toggle = dom.window.document.querySelector('[data-carousel-toggle]');
+
+        // Rotating: the run is moving itself, so the region must not narrate it.
+        assert.equal(status.getAttribute('aria-live'), 'off');
+        assert.equal(toggle.textContent.trim(), 'Stop');
+        // The label carries the state; aria-pressed on top would contradict it.
+        assert.equal(toggle.hasAttribute('aria-pressed'), false);
+
+        // The reader takes over: rotation stops and announcements resume.
+        dom.window.document.querySelector('[data-carousel-next]').click();
+        assert.equal(status.getAttribute('aria-live'), 'polite');
+        assert.equal(toggle.textContent.trim(), 'Start');
+        assert.equal(toggle.hasAttribute('aria-pressed'), false);
+    } finally {
+        dom.window.close();
+    }
+});

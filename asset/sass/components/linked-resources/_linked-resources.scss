@@ -114,7 +114,8 @@
         }
 
         &:focus {
-            outline: none;
+            // transparent, not none: forced-colors mode (see base/elements/_fields.scss)
+            outline: 2px solid transparent;
             border-color: var(--primary);
             box-shadow: var(--ring-focus);
         }
@@ -152,7 +153,8 @@
             box-shadow var(--transition-fast);
 
         &:focus {
-            outline: none;
+            // transparent, not none: forced-colors mode (see base/elements/_fields.scss)
+            outline: 2px solid transparent;
             border-color: var(--primary);
             box-shadow: var(--ring-focus);
         }
