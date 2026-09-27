@@ -25,6 +25,8 @@ npm run check:tokens   # fast gate: fails if any var(--…) in asset/sass doesn'
 npm run build          # check:tokens → build:tokens → build:i18n → compile CSS
 npm run start          # compile once, then watch .scss
 npm run bump -- patch  # write every version declaration (patch|minor|major|X.Y.Z)
+npm test               # JS behaviour (node:test + jsdom)
+npm run test:php       # view helpers + template regressions (plain PHP, no Composer)
 ```
 
 Match the command to the change. `npm run build` regenerates `tokens.json` **and** the
@@ -107,7 +109,9 @@ and there is deliberately no 14px step. Relative units (`em`, `%`, `vw`) stay le
 The breakpoint contract is enforced here too as of 2.14 (it was enforced only in the two
 modules before): `min-width` sits **on** a published breakpoint, `max-width` at
 **breakpoint − 1**, so the halves of a pair never both match. `#{$md - 1px}` is now the
-only legal spelling of the "below" half — the `- 0.02px` variant is gone.
+only legal spelling of the "below" half — the `- 0.02px` variant is gone. The same
+contract covers the literal pixel widths Sass can't name: `matchMedia()` strings in
+`asset/js` and `media=""` attributes in `view/`.
 
 ### A composed token must be redeclared wherever its referent flips
 
