@@ -96,6 +96,10 @@ test('browse layout preference does not add history entries and cleans up Masonr
         <div class="resources resource-grid">
             <article class="resource"><div class="resource__thumbnail decoration"></div><div class="resource__meta"></div></article>
         </div>
+        <nav class="pagination"><div class="pager-wrapper">
+            <a class="pagination-nav next" href="https://example.test/s/westafrica/item?page=2">Next</a>
+            <form class="pager"><input type="hidden" name="sort_by" value="title"><input name="page" value="1"></form>
+        </div></nav>
     </section></body>`);
     const instances = [];
     dom.window.IWACUtils = { onReady: (callback) => callback() };
@@ -117,11 +121,20 @@ test('browse layout preference does not add history entries and cleans up Masonr
     assert.equal(resources.classList.contains('resource-list'), true);
     assert.equal(dom.window.history.length, initialHistoryLength);
     assert.equal(new URL(dom.window.location.href).searchParams.get('view'), 'list');
+    // Both ways to change page keep the chosen layout.
+    const next = dom.window.document.querySelector('.pagination a.next');
+    assert.equal(new URL(next.href).searchParams.get('view'), 'list');
+    const pager = dom.window.document.querySelector('form.pager');
+    assert.equal(new dom.window.URLSearchParams(new dom.window.FormData(pager)).get('view'), 'list');
+    assert.equal(new dom.window.URLSearchParams(new dom.window.FormData(pager)).get('sort_by'), 'title');
 
     dom.window.document.querySelector('[data-view="grid"]').click();
     assert.equal(instances.length, 2);
     assert.equal(resources.classList.contains('resource-grid'), true);
     assert.equal(dom.window.history.length, initialHistoryLength);
+    // Toggling back updates the input it added rather than adding a second.
+    assert.equal(pager.querySelectorAll('input[name="view"]').length, 1);
+    assert.equal(pager.querySelector('input[name="view"]').value, 'grid');
 
     dom.window.close();
 });

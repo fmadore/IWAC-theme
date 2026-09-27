@@ -73,6 +73,20 @@
                         navLinkUrl.searchParams.set('view', view);
                         navLink.href = navLinkUrl.toString();
                     });
+                    // The "go to page" form carries the query as hidden inputs
+                    // rendered server-side, so it only has a `view` input if the
+                    // page was loaded with one. Without this, typing a page
+                    // number after toggling silently reverted the layout.
+                    document.querySelectorAll('.pagination form.pager').forEach((pager) => {
+                        let viewInput = pager.querySelector('input[type="hidden"][name="view"]');
+                        if (!viewInput) {
+                            viewInput = document.createElement('input');
+                            viewInput.type = 'hidden';
+                            viewInput.name = 'view';
+                            pager.prepend(viewInput);
+                        }
+                        viewInput.value = view;
+                    });
 
                     e.currentTarget.setAttribute('disabled', true);
                     const isGrid = view === 'grid';
