@@ -21,7 +21,9 @@ if ($this->getHelperPluginManager()->has('iwacSearchUrl')) {
         json_encode($target, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
     ));
     ?>
-    <main class="search-redirect" aria-labelledby="search-redirect-heading">
+    <?php // A <div>, not <main>: layout.phtml already wraps this in <main id="content">,
+          // and a nested main is a second main landmark on the page. ?>
+    <div class="search-redirect">
         <h1 id="search-redirect-heading"><?php echo $this->escapeHtml($translate('Opening search…')); ?></h1>
         <p>
             <?php echo $this->escapeHtml($translate('You are being redirected to the collection search.')); ?>
@@ -29,7 +31,7 @@ if ($this->getHelperPluginManager()->has('iwacSearchUrl')) {
                 <?php echo $this->escapeHtml($translate('Continue to search')); ?>
             </a>
         </p>
-    </main>
+    </div>
     <?php
     return;
 }

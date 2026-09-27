@@ -264,7 +264,12 @@ foreach ($values as $term => $propertyData):
                 <?php endif; ?>
                 <?php if ($valueAnnotation && $showValueAnnotations) : ?>
                     <?php
-                    $annotationId = 'value-annotation-' . spl_object_id($valueAnnotation);
+                    // The annotation's own id, not spl_object_id(): each
+                    // valueAnnotation() call builds a fresh representation, and
+                    // once the previous iteration's is freed PHP reuses its
+                    // object id — three annotated values rendered ids 1, 2, 1,
+                    // pointing aria-controls/aria-labelledby at the wrong panel.
+                    $annotationId = 'value-annotation-' . (int) $valueAnnotation->id();
                     $annotationHeadingId = $annotationId . '-heading';
                     ?>
                     <div class="annotation-btn">

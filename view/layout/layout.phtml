@@ -13,10 +13,14 @@ if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'fetch') {
 $siteTitle = $site->title();
 $userBar = $this->userBar();
 $bannerHeightMobile = $this->themeSetting('banner_height_mobile');
-$bannerEyebrow = $this->themeSetting('banner_eyebrow');
-$bannerHeading = $this->themeSetting('banner_heading');
-$bannerDescription = $this->themeSetting('banner_description');
-$bannerHeightProperty = ($bannerEyebrow || $bannerHeading || $bannerDescription) ? 'min-height' : 'height';
+// Always min-height, never height. common/banner.phtml falls back to a
+// translated scope sentence when banner_description is empty, so the hero
+// ALWAYS carries text (plus the hero search and the stat rows) and resolves
+// its own property to min-height. Deriving it here from the raw settings
+// instead gave `height: … !important` below 768px whenever the three text
+// settings were empty — clamping a box whose content no longer clips, so the
+// stats spilled over the page beneath it.
+$bannerHeightProperty = 'min-height';
 
 // Brand color: SCSS derives every primary variant (--primary,
 // --primary-hover, --primary-active, --focus-ring, glows, etc.) from

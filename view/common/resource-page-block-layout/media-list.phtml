@@ -17,7 +17,10 @@ $decoration = $this->themeSetting('image_decoration');
         }
         ?>
         <dd class="value <?php echo is_array($decoration) && in_array('media', $decoration) ? 'decoration decoration--thumbnail' : ''; ?>">
-            <?php echo $media->linkRaw($this->thumbnail($media, 'square', ['alt' => $altText])); ?>
+            <?php // Lazy: this list sits below the viewer and the metadata, and a
+                  // periodical issue carries one media per page — a dozen or more
+                  // eager thumbnail fetches competing with the page's own LCP. ?>
+            <?php echo $media->linkRaw($this->thumbnail($media, 'square', ['alt' => $altText, 'loading' => 'lazy', 'decoding' => 'async'])); ?>
         </dd>
         <?php endforeach; ?>
     </div>

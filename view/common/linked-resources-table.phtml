@@ -108,8 +108,12 @@ $escapeAttr = $this->plugin('escapeHtmlAttr');
                     <td class="linked-resources-table__cell linked-resources-table__cell--date"
                         data-label="<?php echo $escapeAttr($translate('Date')); ?>">
                         <?php if ($displayDate): ?>
+                            <?php // asHtml() is already escaped markup — the dateline
+                                  // echoes it as-is too. Escaping it again printed
+                                  // `&#039;` for an apostrophe and raw tags for a
+                                  // URI-typed date. ?>
                             <span class="linked-resources-table__date">
-                                <?php echo $escape($displayDate); ?>
+                                <?php echo $displayDate; ?>
                             </span>
                         <?php else: ?>
                             <span class="linked-resources-table__date linked-resources-table__date--empty" aria-hidden="true">—</span>

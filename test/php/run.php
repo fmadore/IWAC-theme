@@ -1,0 +1,441 @@
+<?php
+/**
+ * PHP tests for the theme's view helpers and the template logic that has
+ * broken before. Plain PHP, no framework and no Composer install: run with
+ *
+ *     php test/php/run.php          (or `npm run test:php`)
+ *
+ * CI runs it on both ends of the supported PHP range (see build.yml).
+ *
+ * Until this existed the PHP side had syntax checks and nothing else — every
+ * behavioural test in the repo drove the JavaScript. Templates are rendered
+ * against FakeView below: a stand-in for Laminas' PhpRenderer that answers the
+ * helper calls a template makes from plain arrays and closures. It is not
+ * Omeka; a test that needs more of Omeka than a handful of stubs belongs in
+ * the live Playwright suite instead.
+ */
+declare(strict_types=1);
+
+namespace Laminas\View\Helper {
+    // The one Laminas class the theme's helpers extend. Stubbed rather than
+    // installed so the suite needs nothing but a PHP binary.
+    if (!class_exists(AbstractHelper::class)) {
+        abstract class AbstractHelper
+        {
+            protected $view;
+
+            public function setView($view)
+            {
+                $this->view = $view;
+                return $this;
+            }
+
+            public function getView()
+            {
+                return $this->view;
+            }
+        }
+    }
+}
+
+namespace IwacThemeTest {
+
+    const ROOT = __DIR__ . '/../..';
+
+    foreach (glob(ROOT . '/helper/*.php') as $helperFile) {
+        require_once $helperFile;
+    }
+
+    /**
+     * Minimal PhpRenderer stand-in. Settings come from arrays; any other helper
+     * a template calls must be registered in $helpers, so a template reaching
+     * for something the test did not anticipate fails loudly instead of
+     * rendering against a silent null.
+     */
+    final class FakeView
+    {
+        /** @var array<string,callable|object> */
+        public array $helpers = [];
+
+        public function __construct(
+            public array $themeSettings = [],
+            public array $siteSettings = [],
+            public array $query = [],
+        ) {
+            $escape = static fn ($s): string => htmlspecialchars((string) $s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $this->helpers = [
+                'escapeHtml' => $escape,
+                'escapeHtmlAttr' => $escape,
+                'translate' => static fn ($s): string => (string) $s,
+                'themeSetting' => fn (string $id, $default = null) => $this->themeSettings[$id] ?? $default,
+                'siteSetting' => fn (string $id, $default = null) => $this->siteSettings[$id] ?? $default,
+                'setting' => static fn (string $id, $default = null) => $default,
+                'assetUrl' => static fn (string $file, $module = null): string => '/themes/IWAC-theme/asset/' . $file,
+                'lang' => static fn (): string => 'en',
+                'trigger' => static fn (...$args) => null,
+                'status' => static fn () => new class {
+                    public function isSiteRequest(): bool
+                    {
+                        return true;
+                    }
+                },
+                'params' => fn () => new class($this->query) {
+                    public function __construct(private array $query)
+                    {
+                    }
+
+                    public function fromQuery($name = null, $default = null)
+                    {
+                        return $name === null ? $this->query : ($this->query[$name] ?? $default);
+                    }
+                },
+                'thumbnail' => static fn (...$args): string => '',
+                'partial' => static fn (...$args): string => '',
+            ];
+            foreach (['AiGeneratedTerms', 'BrowseLayout', 'FrenchSpacing', 'ResourceTags'] as $name) {
+                $class = '\\OmekaTheme\\Helper\\' . $name;
+                $this->helpers[$name] = (new $class())->setView($this);
+            }
+        }
+
+        public function plugin(string $name)
+        {
+            return $this->helpers[$name] ?? throw new \LogicException("FakeView has no helper '$name'");
+        }
+
+        public function __call(string $name, array $args)
+        {
+            return ($this->plugin($name))(...$args);
+        }
+
+        /** Render a theme template (path relative to view/) with $vars in scope. */
+        public function render(string $template, array $vars = []): string
+        {
+            $render = function (string $__file, array $__vars): string {
+                extract($__vars);
+                ob_start();
+                try {
+                    include $__file;
+                } catch (\Throwable $e) {
+                    // Drop the half-rendered page so it doesn't bury the failure.
+                    ob_end_clean();
+                    throw $e;
+                }
+                return (string) ob_get_clean();
+            };
+            return \Closure::bind($render, $this, self::class)(ROOT . '/view/' . $template, $vars);
+        }
+    }
+
+    // ---- Tiny runner --------------------------------------------------------
+
+    $tests = [];
+    function test(string $name, callable $fn): void
+    {
+        global $tests;
+        $tests[$name] = $fn;
+    }
+
+    function check(bool $condition, string $message): void
+    {
+        if (!$condition) {
+            throw new \RuntimeException($message);
+        }
+    }
+
+    function same($expected, $actual, string $message = ''): void
+    {
+        if ($expected !== $actual) {
+            throw new \RuntimeException(
+                ($message ? "$message\n" : '') . '  expected: ' . var_export($expected, true)
+                . "\n  actual:   " . var_export($actual, true)
+            );
+        }
+    }
+
+    // ---- Helpers ------------------------------------------------------------
+
+    test('FrenchSpacing binds high punctuation with a narrow no-break space', function () {
+        $fs = (new FakeView())->helpers['FrenchSpacing'];
+        $nnbsp = "\u{202F}";
+        same("Gala de bienfaisance{$nnbsp}: le Chamci", $fs('Gala de bienfaisance : le Chamci'));
+        same("«{$nnbsp}Islam{$nnbsp}»", $fs('« Islam »'));
+        same("Pourquoi{$nnbsp}?{$nnbsp}!", $fs("Pourquoi ?\u{00A0}!"));
+        // English puts no space before the mark, so nothing changes.
+        same('Title: subtitle', $fs('Title: subtitle'));
+        // A mark at the head of its own line is the author's and stays put.
+        same("line\n: kept", $fs("line\n: kept"));
+        same('', $fs(null));
+    });
+
+    test('BrowseLayout honours the setting, then ?view= overrides it', function () {
+        $cases = [
+            // setting, ?view=, isGrid, hasToggle
+            ['grid', null, true, false],
+            ['list', null, false, false],
+            ['togglegrid', null, true, true],
+            ['togglelist', null, false, true],
+            ['togglegrid', 'list', false, true],
+            ['togglelist', 'grid', true, true],
+            // Anything that is not "list" means grid — the helper never
+            // echoes the raw parameter back.
+            ['togglelist', '<script>', true, true],
+        ];
+        foreach ($cases as [$setting, $view, $isGrid, $hasToggle]) {
+            $fake = new FakeView(['browse_layout' => $setting], [], $view === null ? [] : ['view' => $view]);
+            $layout = $fake->helpers['BrowseLayout']();
+            $label = "$setting + view=" . var_export($view, true);
+            same($isGrid, $layout['isGrid'], $label);
+            same($hasToggle, $layout['hasToggle'], $label);
+            same($isGrid ? 'disabled' : '', $layout['gridState'], $label);
+            same($isGrid ? '' : 'disabled', $layout['listState'], $label);
+        }
+
+        $decorated = new FakeView(['browse_layout' => 'list', 'image_decoration' => ['media']]);
+        same('decoration decoration--thumbnail', $decorated->helpers['BrowseLayout']()['decorationClass']);
+    });
+
+    test('AiGeneratedTerms adds template-gated terms only on their template', function () {
+        $helper = (new FakeView())->helpers['AiGeneratedTerms'];
+        $onTemplate = static fn (?int $id) => new class($id) {
+            public function __construct(private ?int $id)
+            {
+            }
+
+            public function resourceTemplate()
+            {
+                return $this->id === null ? null : new class($this->id) {
+                    public function __construct(private int $id)
+                    {
+                    }
+
+                    public function id(): int
+                    {
+                        return $this->id;
+                    }
+                };
+            }
+        };
+        same(['bibo:shortDescription'], $helper(null));
+        same(['bibo:shortDescription'], $helper($onTemplate(null)));
+        same(['bibo:shortDescription'], $helper($onTemplate(5)));
+        same(['bibo:shortDescription', 'dcterms:tableOfContents'], $helper($onTemplate(21)));
+    });
+
+    // ---- Templates ----------------------------------------------------------
+
+    /** A site whose navigation records the options each renderMenu() got. */
+    function fakeSite(array &$menuCalls): object
+    {
+        return new class($menuCalls) {
+            public function __construct(private array &$calls)
+            {
+            }
+
+            public function publicNav()
+            {
+                $calls = &$this->calls;
+                return new class($calls) {
+                    public function __construct(private array &$calls)
+                    {
+                    }
+
+                    public function menu()
+                    {
+                        return $this;
+                    }
+
+                    public function renderMenu($container, array $options): string
+                    {
+                        $this->calls[] = $options;
+                        return '<ul class="navigation"></ul>';
+                    }
+                };
+            }
+        };
+    }
+
+    test('footer renders when the menu-depth field was cleared (regression: PHP 8 TypeError)', function () {
+        $menuCalls = [];
+        $fake = new FakeView([
+            'footer_menu' => '1',
+            // What Omeka stores for an emptied Number element.
+            'footer_menu_depth' => '',
+            'footer_site_info' => '<p>About</p>',
+        ]);
+        $html = $fake->render('common/footer.phtml', ['site' => fakeSite($menuCalls)]);
+        check(str_contains($html, 'main-footer__col2'), 'footer menu column missing');
+        // Empty means "all levels", the same as 0.
+        same([['maxDepth' => -1]], $menuCalls);
+    });
+
+    test('footer maps menu depth N to maxDepth N-1', function () {
+        $menuCalls = [];
+        $fake = new FakeView(['footer_menu' => '1', 'footer_menu_depth' => '2']);
+        $fake->render('common/footer.phtml', ['site' => fakeSite($menuCalls)]);
+        same([['maxDepth' => 1]], $menuCalls);
+    });
+
+    /** One literal value, optionally annotated; valueAnnotation() builds a fresh object per call, as Omeka's does. */
+    function fakeValue(string $text, ?int $annotationId = null): object
+    {
+        return new class($text, $annotationId) {
+            public function __construct(private string $text, private ?int $annotationId)
+            {
+            }
+
+            public function type(): string
+            {
+                return 'literal';
+            }
+
+            public function lang(): string
+            {
+                return '';
+            }
+
+            public function value(): string
+            {
+                return $this->text;
+            }
+
+            public function valueResource()
+            {
+                return null;
+            }
+
+            public function asHtml($lang = null): string
+            {
+                return htmlspecialchars($this->text, ENT_QUOTES);
+            }
+
+            public function isPublic(): bool
+            {
+                return true;
+            }
+
+            public function valueAnnotation()
+            {
+                return $this->annotationId === null ? null : new class($this->annotationId) {
+                    public function __construct(private int $id)
+                    {
+                    }
+
+                    public function id(): int
+                    {
+                        return $this->id;
+                    }
+
+                    public function displayValues(): string
+                    {
+                        return '<dl><dd>note ' . $this->id . '</dd></dl>';
+                    }
+                };
+            }
+        };
+    }
+
+    function fakeProperty(string $label): object
+    {
+        return new class($label) {
+            public function __construct(private string $label)
+            {
+            }
+
+            public function label(): string
+            {
+                return $this->label;
+            }
+        };
+    }
+
+    test('value annotations get unique ids (regression: spl_object_id reuse)', function () {
+        $fake = new FakeView([], ['show_value_annotations' => true]);
+        $values = [];
+        foreach (['dcterms:subject' => [101, 102], 'dcterms:spatial' => [103, 104]] as $term => $ids) {
+            $values[$term] = [
+                'property' => fakeProperty($term),
+                'alternate_label' => null,
+                'values' => array_map(static fn (int $id) => fakeValue("v$id", $id), $ids),
+            ];
+        }
+        $html = $fake->render('common/resource-values.phtml', ['values' => $values, 'resource' => null]);
+
+        preg_match_all('/\sid="(value-annotation-[^"]+)"/', $html, $m);
+        same(8, count($m[1]), 'expected a region id and a heading id per annotation');
+        same(count($m[1]), count(array_unique($m[1])), 'duplicate ids: ' . implode(', ', $m[1]));
+
+        // Every trigger points at the region that holds its own note.
+        preg_match_all('/aria-controls="([^"]+)"/', $html, $controls);
+        foreach ([101, 102, 103, 104] as $i => $id) {
+            same("value-annotation-$id", $controls[1][$i]);
+        }
+    });
+
+    test('ledger dates print the rendered value once-escaped (regression: double escape)', function () {
+        $fake = new FakeView();
+        $date = new class {
+            public function asHtml(): string
+            {
+                return 'l&#039;an 2000';
+            }
+
+            public function __toString(): string
+            {
+                return "l'an 2000";
+            }
+        };
+        $resource = new class($date) {
+            public function __construct(private object $date)
+            {
+            }
+
+            public function displayTitle($default = null, $lang = null): string
+            {
+                return 'Title';
+            }
+
+            public function url(): string
+            {
+                return '/s/westafrica/item/1';
+            }
+
+            public function value(string $term, array $options = [])
+            {
+                return $term === 'dcterms:date' ? $this->date : null;
+            }
+
+            public function resourceName(): string
+            {
+                return 'items';
+            }
+
+            public function created()
+            {
+                return null;
+            }
+        };
+        $html = $fake->render('common/linked-resources-table.phtml', [
+            'rows' => [['resource' => $resource, 'relationLabel' => null]],
+            'showRelation' => false,
+            'valueLang' => null,
+        ]);
+        check(str_contains($html, 'l&#039;an 2000'), 'rendered date missing');
+        check(!str_contains($html, '&amp;#039;'), 'rendered date was escaped a second time');
+    });
+
+    // ---- Run ----------------------------------------------------------------
+
+    $failed = 0;
+    foreach ($tests as $name => $fn) {
+        try {
+            $fn();
+            echo "ok - $name\n";
+        } catch (\Throwable $e) {
+            $failed++;
+            echo "not ok - $name\n  " . get_class($e) . ': ' . str_replace("\n", "\n  ", $e->getMessage()) . "\n";
+        }
+    }
+    echo sprintf("%d tests, %d failed\n", count($tests), $failed);
+    exit($failed ? 1 : 0);
+}

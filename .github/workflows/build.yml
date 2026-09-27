@@ -62,3 +62,9 @@ jobs:
 
       - name: Validate theme configuration
         run: php -r 'if (false === parse_ini_file("config/theme.ini", true, INI_SCANNER_RAW)) { exit(1); }'
+
+      # Behaviour, not just syntax: the view helpers, and template logic that
+      # has broken before (a cleared footer-depth field 500ing every page,
+      # duplicate annotation ids). Plain PHP — no Composer install needed.
+      - name: Helper and template tests
+        run: php test/php/run.php

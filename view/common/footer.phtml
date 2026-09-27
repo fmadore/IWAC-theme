@@ -5,7 +5,10 @@ $translate = $this->plugin('translate');
 
 $footerSiteInfo = $this->themeSetting('footer_site_info');
 $footerMenu = $this->themeSetting('footer_menu');
-$footerMenuDepth = $this->themeSetting('footer_menu_depth');
+// Cast: a cleared Number field is stored as '', and `'' - 1` below is a
+// TypeError on PHP 8 — a 500 on every page, since the footer is everywhere.
+// 0 (or empty) keeps its meaning of "all levels" via maxDepth -1.
+$footerMenuDepth = (int) $this->themeSetting('footer_menu_depth');
 $footerContent = $this->themeSetting('footer_content');
 $socialNetworks = array('facebook', 'x', 'linkedin', 'instagram', 'youtube', 'mastodon', 'bluesky');
 
