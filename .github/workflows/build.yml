@@ -26,6 +26,9 @@ jobs:
 
       - run: npm ci
       - run: npm run check:js
+      # ESLint (correctness rules) + Stylelint (bug-catching rules, plus the
+      # CLAUDE.md gotchas: no @import, no color-mix in srgb, no outline:none).
+      - run: npm run lint
 
       # Catches a version declaration drifting on the commit that drifts it,
       # rather than at the next release — or, as with package-lock.json's two
@@ -53,7 +56,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: none
-          tools: composer:v2
+          tools: composer:v2, phpstan:2
 
       - run: composer validate --strict --no-check-publish
 
@@ -68,3 +71,9 @@ jobs:
       # duplicate annotation ids). Plain PHP — no Composer install needed.
       - name: Helper and template tests
         run: php test/php/run.php
+
+      # The view helpers, at level 6 against the stubbed Laminas base class
+      # (phpstan.neon.dist). Installed by setup-php, so composer.json — which
+      # ships in the release — stays free of dev dependencies.
+      - name: PHPStan
+        run: phpstan analyse --no-progress

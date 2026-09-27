@@ -1,0 +1,17 @@
+# PHPStan over the theme's view helpers — the PHP with real logic in it.
+# Templates are not analysed: every line of them calls Omeka through the view
+# renderer's magic __call, which no stub set short of Omeka itself resolves,
+# so they are covered behaviourally by test/php/run.php instead.
+#
+# CI runs this through setup-php's `tools: phpstan`; locally, any phpstan 2.x
+# binary: `phpstan analyse`.
+#
+# Level 6: every helper passes. From 7 up the findings are all "undefined
+# method on object" — the helpers take Omeka representations typed as
+# `object`, and naming their methods would mean stubbing Omeka.
+parameters:
+    level: 6
+    paths:
+        - helper
+    bootstrapFiles:
+        - test/php/stubs.php

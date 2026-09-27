@@ -52,7 +52,7 @@
      */
     function copyCitation(html, text) {
         if (navigator.clipboard && navigator.clipboard.write && typeof window.ClipboardItem === 'function') {
-            var item = null;
+            var item;
             try {
                 item = new window.ClipboardItem({
                     'text/html': new Blob([html], { type: 'text/html' }),

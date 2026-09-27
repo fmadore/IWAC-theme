@@ -43,6 +43,9 @@
 /test-support/        export-ignore
 /e2e/                 export-ignore
 /playwright.config.js export-ignore
+/eslint.config.js     export-ignore
+/stylelint.config.js  export-ignore
+/phpstan.neon.dist    export-ignore
 
 # Agent and contributor working notes
 /CLAUDE.md      export-ignore

@@ -7,6 +7,13 @@ use Laminas\View\Helper\AbstractHelper;
 
 final class PwaManifest extends AbstractHelper
 {
+    /**
+     * The web-app manifest for $site, as the JSON-ready array layout.phtml
+     * emits into its data island.
+     *
+     * @param object $site the SiteRepresentation
+     * @return array<string, mixed>
+     */
     public function __invoke(object $site): array
     {
         $view = $this->getView();

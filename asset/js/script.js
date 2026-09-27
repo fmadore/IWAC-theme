@@ -53,7 +53,7 @@ const freedomScripts = () => {
 
     // Passive: this handler never calls preventDefault, and saying so lets the
     // browser start compositing the scroll without waiting on it.
-    document.addEventListener('scroll', (event) => {
+    document.addEventListener('scroll', () => {
         scrollDirection = Math.max(lastKnownScrollPosition, window.scrollY) == lastKnownScrollPosition ? 'up': 'down';
         lastKnownScrollPosition = window.scrollY;
 

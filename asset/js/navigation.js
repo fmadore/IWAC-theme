@@ -170,7 +170,7 @@
 					itemSubmenu.style.opacity = '0';
 				});
 
-				item.addEventListener('focusout', (e) => {
+				item.addEventListener('focusout', () => {
 					// Wait a tick to let focus settle
 					requestAnimationFrame(() => {
 						if (!item.contains(document.activeElement)) {

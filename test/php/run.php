@@ -16,29 +16,9 @@
  */
 declare(strict_types=1);
 
-namespace Laminas\View\Helper {
-    // The one Laminas class the theme's helpers extend. Stubbed rather than
-    // installed so the suite needs nothing but a PHP binary.
-    if (!class_exists(AbstractHelper::class)) {
-        abstract class AbstractHelper
-        {
-            protected $view;
-
-            public function setView($view)
-            {
-                $this->view = $view;
-                return $this;
-            }
-
-            public function getView()
-            {
-                return $this->view;
-            }
-        }
-    }
-}
-
 namespace IwacThemeTest {
+
+    require_once __DIR__ . '/stubs.php';
 
     const ROOT = __DIR__ . '/../..';
 

@@ -1,0 +1,74 @@
+'use strict';
+
+/**
+ * ESLint — correctness, not style. `recommended` catches the class of bug the
+ * syntax gate (scripts/check-js-syntax.js) cannot: an undefined name, an
+ * unused variable left behind by a refactor, an unreachable branch. Formatting
+ * is left to .editorconfig; the tree mixes tab- and space-indented files and
+ * that is not worth a mass diff.
+ */
+const js = require('@eslint/js');
+const globals = require('globals');
+
+module.exports = [
+    {
+        ignores: [
+            'node_modules/',
+            'vendor/',
+            'test-results/',
+            'playwright-report/',
+            // Vendored, minified third-party code.
+            'asset/js/minimasonry.min.js',
+        ],
+    },
+
+    js.configs.recommended,
+
+    // The theme's browser scripts: classic scripts (no modules), sharing a
+    // few globals through window.
+    {
+        files: ['asset/js/**/*.js'],
+        languageOptions: {
+            ecmaVersion: 2022,
+            sourceType: 'script',
+            globals: {
+                ...globals.browser,
+                IWACUtils: 'readonly',   // asset/js/utils.js
+                MiniMasonry: 'readonly', // asset/js/minimasonry.min.js
+            },
+        },
+    },
+
+    // Build scripts, guards, tests and config: Node, CommonJS.
+    {
+        files: [
+            'scripts/**/*.js',
+            'test/**/*.js',
+            'test-support/**/*.js',
+            'e2e/**/*.js',
+            '*.js',
+        ],
+        languageOptions: {
+            ecmaVersion: 2024,
+            sourceType: 'commonjs',
+            globals: { ...globals.node },
+        },
+    },
+
+    // Playwright specs run in Node but hand callbacks to page.evaluate(),
+    // which execute in the browser.
+    {
+        files: ['e2e/**/*.js'],
+        languageOptions: {
+            globals: { ...globals.browser },
+        },
+    },
+
+    {
+        rules: {
+            // `catch (e) {}` with a comment is how the theme says "degrade
+            // silently" (storage, clipboard, history) — allow the unused binding.
+            'no-unused-vars': ['error', { caughtErrors: 'none' }],
+        },
+    },
+];

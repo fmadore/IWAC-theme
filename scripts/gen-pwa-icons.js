@@ -293,7 +293,7 @@ async function assertParses(svg) {
     try {
         await sharp(Buffer.from(svg)).png().toBuffer();
     } catch (err) {
-        throw new Error(`favicon.svg is not valid SVG and was not written: ${err.message}`);
+        throw new Error(`favicon.svg is not valid SVG and was not written: ${err.message}`, { cause: err });
     }
 }
 

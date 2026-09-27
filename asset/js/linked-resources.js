@@ -311,7 +311,6 @@
             if (err.name === 'AbortError' || generation !== requestGenerations.get(rootId)) {
                 return;
             }
-            // eslint-disable-next-line no-console
             console.warn('[linked-resources] AJAX swap failed, falling back to full reload', err);
             window.location.href = url;
         } finally {

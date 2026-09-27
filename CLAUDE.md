@@ -27,6 +27,8 @@ npm run start          # compile once, then watch .scss
 npm run bump -- patch  # write every version declaration (patch|minor|major|X.Y.Z)
 npm test               # JS behaviour (node:test + jsdom)
 npm run test:php       # view helpers + template regressions (plain PHP, no Composer)
+npm run lint           # ESLint + Stylelint (correctness rules and the gotchas below)
+phpstan analyse        # helpers at level 6 (CI installs phpstan via setup-php)
 ```
 
 Match the command to the change. `npm run build` regenerates `tokens.json` **and** the
