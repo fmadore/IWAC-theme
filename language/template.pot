@@ -80,7 +80,7 @@ msgstr ""
 msgid "Breadcrumb"
 msgstr ""
 
-#: helper/PwaManifest.php:81 view/error/404.phtml:27
+#: helper/PwaManifest.php:88 view/error/404.phtml:27
 msgid "Browse items"
 msgstr ""
 
@@ -292,7 +292,7 @@ msgstr ""
 msgid "Newest first"
 msgstr ""
 
-#: helper/PwaManifest.php:31
+#: helper/PwaManifest.php:38
 msgid "Newspaper covers and archival documents from the collection"
 msgstr ""
 
@@ -400,7 +400,7 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: helper/PwaManifest.php:86 view/common/search-form.phtml:52 view/common/search-form.phtml:57 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
+#: helper/PwaManifest.php:93 view/common/search-form.phtml:52 view/common/search-form.phtml:57 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
 msgid "Search"
 msgstr ""
 
