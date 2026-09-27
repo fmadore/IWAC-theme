@@ -33,6 +33,10 @@
  *    this on their own CSS; until 2.14 the source of truth did not enforce it
  *    on itself and carried two spellings of the "below" half.
  *
+ *    3b. The same contract for LITERAL widths outside Sass — matchMedia()
+ *    strings in asset/js and media="" attributes in view/ — which cannot name
+ *    a Sass variable and so carry the pixel value.
+ *
  * 4. PRIMARY IS AN ACCENT, NOT A BODY-TEXT COLOUR. `--primary` on
  *    `--background` measures 4.40:1 — under AA for normal-size text, fine as a
  *    large-text / non-text accent. See the narrow heuristic documented at the
@@ -71,6 +75,9 @@
  *    notice going stale, because the result lives in pixels. Assert the
  *    stylesheet still spells the same ground mix, filter chain and plate
  *    opacity.
+ *
+ * 6d. THE MANIFEST COLOURS. helper/PwaManifest.php's theme_color and
+ *    background_color are literal copies of light --surface / --background.
  *
  * 7. DESIGN.md FRONTMATTER. The Impeccable artifact's YAML frontmatter mirrors
  *    tokens.json LIGHT values. tokens.json is normative; the frontmatter is
@@ -148,13 +155,12 @@ const TYPE_SCALE_EXEMPT = [
 
 // The six published breakpoints, read from the file that defines them so this
 // guard can never disagree with tokens.json about what the contract is.
-const BP_NAMES = Object.keys(
-    Object.fromEntries(
-        [...fs.readFileSync(path.join(VARS_DIR, '_breakpoints.scss'), 'utf8')
-            .matchAll(/^\$([\w-]+)\s*:\s*(\d+)px\s*;/gm)]
-            .map((m) => [m[1], m[2]]),
-    ),
+const BP_PX = Object.fromEntries(
+    [...fs.readFileSync(path.join(VARS_DIR, '_breakpoints.scss'), 'utf8')
+        .matchAll(/^\$([\w-]+)\s*:\s*(\d+)px\s*;/gm)]
+        .map((m) => [m[1], Number(m[2])]),
 );
+const BP_NAMES = Object.keys(BP_PX);
 const WIDTH_FEATURE_RE = /\((min|max)-width\s*:\s*([^)]+)\)/g;
 // The condition text of every `@media` on a line.
 //
@@ -227,6 +233,35 @@ for (const file of walk(SASS_DIR, ['.scss'])) {
                         + ' use #{$<bp> - 1px} (the `- 0.02px` spelling was retired in 2.14)',
                     );
                 }
+            }
+        }
+    });
+}
+
+// ---- 3b. The same contract for literal widths outside Sass. -------------
+//
+// Sass can name a breakpoint; a matchMedia() string and a <style media>
+// attribute cannot, so they carry the pixel value itself — $lg twice in the
+// masthead/drawer scripts, $md − 1 in layout.phtml. Nothing compared those
+// with _breakpoints.scss: the "documented in a comment beside the value" state
+// CLAUDE.md warns about. Hold them to the rule the Sass is held to.
+const BP_MIN_PX = new Set(Object.values(BP_PX));
+const BP_MAX_PX = new Set(Object.values(BP_PX).map((px) => px - 1));
+const LITERAL_WIDTH_RE = /\((min|max)-width\s*:\s*(\d+(?:\.\d+)?)px\s*\)/g;
+const BP_LIST = BP_NAMES.map((b) => `$${b} ${BP_PX[b]}px`).join(', ');
+for (const file of [
+    ...walk(path.join(ROOT, 'asset', 'js'), ['.js']),
+    ...walk(path.join(ROOT, 'view'), ['.phtml']),
+]) {
+    if (file.endsWith('.min.js')) continue; // vendored
+    const rel = path.relative(ROOT, file);
+    fs.readFileSync(file, 'utf8').split('\n').forEach((line, i) => {
+        for (const [, kind, raw] of line.matchAll(LITERAL_WIDTH_RE)) {
+            const px = Number(raw);
+            if (kind === 'min' && !BP_MIN_PX.has(px)) {
+                failures.push(`${rel}:${i + 1}  (min-width: ${raw}px) — min-width sits ON a published breakpoint (${BP_LIST})`);
+            } else if (kind === 'max' && !BP_MAX_PX.has(px)) {
+                failures.push(`${rel}:${i + 1}  (max-width: ${raw}px) — max-width sits at breakpoint − 1 (${BP_LIST})`);
             }
         }
     });
@@ -575,6 +610,30 @@ const collapse = (s) => s.replace(/\s+/g, ' ');
     }
 }
 
+// ---- 6d. The web-app manifest's colours must equal their tokens. ---------
+// helper/PwaManifest.php states theme_color and background_color as literals
+// for the same reason the metas do — a manifest cannot read a custom property.
+// The metas were asserted; these two copies were not.
+const PWA_MANIFEST_PHP = path.join('helper', 'PwaManifest.php');
+const MANIFEST_COLOURS = [['theme_color', '--surface'], ['background_color', '--background']];
+
+if (tokens) {
+    const helperSrc = fs.readFileSync(path.join(ROOT, PWA_MANIFEST_PHP), 'utf8');
+    for (const [key, token] of MANIFEST_COLOURS) {
+        const m = new RegExp(`'${key}'\\s*=>\\s*'(#[0-9a-f]{3,8})'`, 'i').exec(helperSrc);
+        const expected = tokens.light && tokens.light[token];
+        if (!m) {
+            artifactFailures.push(`${PWA_MANIFEST_PHP}  no literal '${key}' => '#…' to compare with light ${token}`);
+        } else if (!expected) {
+            artifactFailures.push(`tokens.json has no light['${token}'] — run \`npm run build:tokens\``);
+        } else if (normalizeHex(m[1]) !== normalizeHex(expected)) {
+            artifactFailures.push(
+                `${PWA_MANIFEST_PHP}  ${key} is ${normalizeHex(m[1])} but tokens.json light['${token}'] is ${normalizeHex(expected)}`,
+            );
+        }
+    }
+}
+
 // ---- 7. DESIGN.md frontmatter must equal tokens.json LIGHT. ---------------
 //
 // DESIGN.md is the Impeccable skill's machine-readable artifact and is
@@ -645,7 +704,7 @@ if (tokens && fs.existsSync(DESIGN_MD)) {
 /* ------------------------------------------------------------------ */
 
 const groups = [
-    ['✗ Design-token violations in asset/sass:', failures],
+    ['✗ Design-token violations (asset/sass, plus literal breakpoints in asset/js and view/):', failures],
     ['✗ --primary painted as running body text (it is an accent — 4.40:1 on --background):', primaryText],
     ['✗ Substitution scope — a light composition the dark block never re-bases:', scopeFailures],
     ['✗ Artifacts disagree with tokens.json:', artifactFailures],
@@ -668,10 +727,10 @@ for (const [heading, list] of groups) {
 if (failed) process.exit(1);
 
 console.log(`✓ token usage: every var(--…) resolves and every font-size comes from the scale (${defined.size} tokens defined)`);
-console.log(`✓ breakpoint contract: min-width on a breakpoint, max-width at breakpoint − 1 (${BP_NAMES.join(', ')})`);
+console.log(`✓ breakpoint contract: min-width on a breakpoint, max-width at breakpoint − 1 (${BP_NAMES.join(', ')}) — Sass, JS and templates`);
 console.log('✓ --primary is used as an accent, never as running body text');
 console.log('✓ substitution scope: every theme-relative composition is redeclared in BOTH theme blocks');
-console.log('✓ PWA theme-color metas match tokens.json --surface (light + dark)');
+console.log('✓ PWA theme-color metas match tokens.json --surface (light + dark); manifest colours match --surface / --background');
 console.log('✓ favicon.svg paints tokens.json light --surface, with no scheme switch');
 console.log('✓ the hero duotone recipe still matches the one the PWA screenshots were rendered from');
 console.log('✓ DESIGN.md frontmatter matches tokens.json light values');
