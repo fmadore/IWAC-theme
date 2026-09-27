@@ -42,6 +42,34 @@
         });
     }
 
+    /**
+     * Copy a citation with its formatting. The styles italicise titles
+     * (<em>) and link DOIs/URLs, and a plain-text copy pasted into a word
+     * processor loses exactly the part a bibliography style is about. Writes
+     * text/html alongside text/plain, so rich editors take the formatting and
+     * plain fields take the text; falls back to plain text wherever
+     * ClipboardItem is missing or refused.
+     */
+    function copyCitation(html, text) {
+        if (navigator.clipboard && navigator.clipboard.write && typeof window.ClipboardItem === 'function') {
+            var item = null;
+            try {
+                item = new window.ClipboardItem({
+                    'text/html': new Blob([html], { type: 'text/html' }),
+                    'text/plain': new Blob([text], { type: 'text/plain' })
+                });
+            } catch (err) {
+                item = null;
+            }
+            if (item) {
+                return navigator.clipboard.write([item]).catch(function () {
+                    return copyText(text);
+                });
+            }
+        }
+        return copyText(text);
+    }
+
     function initPanel(root) {
         var tabs = Array.prototype.slice.call(root.querySelectorAll('[data-citation-style]'));
         var panels = Array.prototype.slice.call(root.querySelectorAll('[data-citation-panel]'));
@@ -109,7 +137,9 @@
                 if (!text) {
                     return;
                 }
-                copyText(text).then(function () {
+                // The template's indentation is not part of the citation.
+                var html = panel.innerHTML.replace(/\s+/g, ' ').trim();
+                copyCitation(html, text).then(function () {
                     finish(true, copyBtn.getAttribute('data-copied-label') || 'Copied');
                 }).catch(function () {
                     finish(false, copyBtn.getAttribute('data-error-label') || 'Copy failed');

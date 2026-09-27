@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createDom, runAsset } = require('../test-support/dom');
+const { createDom, flush, runAsset } = require('../test-support/dom');
 
 test('Escape closes an annotation disclosure and restores trigger focus', () => {
     const dom = createDom(`<!doctype html><body>
@@ -204,4 +204,66 @@ test('masonry gutter comes from the stylesheet, not a number in the script', () 
     assert.equal(instances[0].ultimateGutter, 20);
 
     dom.window.close();
+});
+
+function citationDom() {
+    return createDom(`<!doctype html><body>
+        <section class="citation">
+            <p class="citation__text" data-citation-panel="chicago">
+                Madore, Frédérick. <em>Islam in Togo</em>. Berlin: ZMO, 2020.
+            </p>
+            <button type="button" data-citation-copy data-copied-label="Copied"><span class="citation__copy-label">Copy</span></button>
+            <p class="citation__status" role="status"></p>
+        </section>
+    </body>`);
+}
+
+test('citation copy writes rich text alongside plain text', async () => {
+    const dom = citationDom();
+    const writes = [];
+    dom.window.IWACUtils = { onReady: (callback) => callback() };
+    dom.window.ClipboardItem = class {
+        constructor(items) { this.items = items; }
+    };
+    Object.defineProperty(dom.window.navigator, 'clipboard', {
+        configurable: true,
+        value: {
+            write: async (items) => { writes.push(items[0].items); },
+            writeText: async () => { throw new Error('plain path should not run'); },
+        },
+    });
+
+    try {
+        runAsset(dom, 'citation.js');
+        dom.window.document.querySelector('[data-citation-copy]').click();
+        await flush();
+
+        assert.equal(writes.length, 1);
+        const html = await writes[0]['text/html'].text();
+        const text = await writes[0]['text/plain'].text();
+        assert.equal(html, 'Madore, Frédérick. <em>Islam in Togo</em>. Berlin: ZMO, 2020.');
+        assert.equal(text, 'Madore, Frédérick. Islam in Togo. Berlin: ZMO, 2020.');
+        assert.equal(dom.window.document.querySelector('.citation__status').textContent, 'Copied');
+    } finally {
+        dom.window.close();
+    }
+});
+
+test('citation copy falls back to plain text without ClipboardItem', async () => {
+    const dom = citationDom();
+    const texts = [];
+    dom.window.IWACUtils = { onReady: (callback) => callback() };
+    Object.defineProperty(dom.window.navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (text) => { texts.push(text); } },
+    });
+
+    try {
+        runAsset(dom, 'citation.js');
+        dom.window.document.querySelector('[data-citation-copy]').click();
+        await flush();
+        assert.deepEqual(texts, ['Madore, Frédérick. Islam in Togo. Berlin: ZMO, 2020.']);
+    } finally {
+        dom.window.close();
+    }
 });
