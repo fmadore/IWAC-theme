@@ -3,6 +3,15 @@
 const { test, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
 
+const WCAG_A_AA = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
+
+// Only what would fail an audit: serious and critical findings.
+function blocking(results) {
+    return results.violations.filter((violation) =>
+        violation.impact === 'serious' || violation.impact === 'critical'
+    );
+}
+
 async function expectNoHorizontalOverflow(page) {
     const overflow = await page.evaluate(() =>
         document.documentElement.scrollWidth - document.documentElement.clientWidth
@@ -73,10 +82,55 @@ test('theme chrome has no serious WCAG A/AA violations', async ({ page }) => {
         .include('.main-header')
         .include('.banner')
         .include('.main-footer')
-        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+        .withTags(WCAG_A_AA)
         .analyze();
-    const blocking = results.violations.filter((violation) =>
-        violation.impact === 'serious' || violation.impact === 'critical'
-    );
-    expect(blocking).toEqual([]);
+    expect(blocking(results)).toEqual([]);
+});
+
+// The dark palette is a second set of contrast pairs; the light-mode scan
+// above cannot vouch for it. System mode resolves to dark here, which is
+// also the path most dark-mode readers arrive by.
+test('theme chrome has no serious WCAG A/AA violations in dark mode', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.goto('page/home', { waitUntil: 'networkidle' });
+    await expect(page.locator('body')).toHaveAttribute('data-theme', 'dark');
+    const results = await new AxeBuilder({ page })
+        .include('.main-header')
+        .include('.banner')
+        .include('.main-footer')
+        .withTags(WCAG_A_AA)
+        .analyze();
+    expect(blocking(results)).toEqual([]);
+});
+
+// The item page is where most readers land, and until this scan it was never
+// audited: two WCAG A failures (duplicate annotation ids, the carousel's
+// orphaned list items) shipped for releases with the homepage scan green.
+// Module-owned embeds are excluded — Mirador, ReplayWeb.page, third-party
+// iframes and the IwacVisualizations charts answer for their own markup.
+test('item page content has no serious WCAG A/AA violations', async ({ page }) => {
+    await page.goto('item/23365', { waitUntil: 'networkidle' });
+    const results = await new AxeBuilder({ page })
+        .include('#content')
+        .exclude('.block-mirador')
+        .exclude('replay-web-page')
+        .exclude('iframe')
+        .exclude('[class*="iwac-vis"]')
+        .withTags(WCAG_A_AA)
+        .analyze();
+    expect(blocking(results)).toEqual([]);
+});
+
+test('each value annotation trigger controls its own panel', async ({ page }) => {
+    await page.goto('item/23365', { waitUntil: 'domcontentloaded' });
+    const pairs = await page.$$eval('.annotation-btn', (buttons) => buttons.map((button) => ({
+        controls: button.querySelector('.annotation-trigger').getAttribute('aria-controls'),
+        panel: button.querySelector('.annotation-tooltip').id,
+    })));
+    expect(pairs.length).toBeGreaterThan(0);
+    for (const { controls, panel } of pairs) {
+        expect(controls).toBe(panel);
+    }
+    const ids = await page.$$eval('[id^="value-annotation-"]', (nodes) => nodes.map((node) => node.id));
+    expect(new Set(ids).size).toBe(ids.length);
 });
