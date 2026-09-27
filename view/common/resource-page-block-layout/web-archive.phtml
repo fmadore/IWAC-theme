@@ -71,10 +71,13 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/web-archive.css', 'WebA
 $this->headScript()->appendFile($this->assetUrl('vendor/replaywebpage/ui.js', 'WebArchive'));
 ?>
 <div id="web-archive" class="web-archive">
+    <?php // h2, like the other item-page section heads ("Linked resources",
+          // "How to cite"): an h3 here sat directly under the h1 whenever the
+          // capture opened the stack. Its size comes from .web-archive__heading. ?>
     <div class="web-archive__header">
-        <h3 class="web-archive__heading">
-            <?php echo $this->translatePlural('Archived web page', 'Archived web pages', count($archives)); ?>
-        </h3>
+        <h2 class="web-archive__heading">
+            <?php echo $this->escapeHtml($this->translatePlural('Archived web page', 'Archived web pages', count($archives))); ?>
+        </h2>
     </div>
     <?php foreach ($archives as $media): ?>
     <?php
@@ -91,7 +94,7 @@ $this->headScript()->appendFile($this->assetUrl('vendor/replaywebpage/ui.js', 'W
         sandbox
         <?php if ($startUrl): ?>url="<?php echo $this->escapeHtmlAttr($startUrl); ?>"<?php endif; ?>
         embed="<?php echo $this->escapeHtmlAttr($embedMode); ?>"
-        style="width:100%;height:600px;display:block;">
+        class="web-archive__player">
     </replay-web-page>
     <?php endforeach; ?>
 </div>

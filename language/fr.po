@@ -48,7 +48,7 @@ msgstr "Une erreur s’est produite lors du traitement de votre demande. Veuille
 msgid "An open-access collection of newspapers, Islamic publications, archives, audiovisual sources, and academic references on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo."
 msgstr "Une collection en libre accès de journaux, de publications islamiques, d’archives, de sources audiovisuelles et de références scientifiques sur l’islam et les musulmans au Bénin, au Burkina Faso, en Côte d’Ivoire, au Niger, au Nigéria et au Togo."
 
-#: view/common/resource-page-block-layout/web-archive.phtml:76
+#: view/common/resource-page-block-layout/web-archive.phtml:79
 msgid "Archived web page"
 msgid_plural "Archived web pages"
 msgstr[0] "Page web archivée"

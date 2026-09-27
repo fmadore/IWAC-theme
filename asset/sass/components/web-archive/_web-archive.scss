@@ -1,0 +1,46 @@
+// ==========================================================================
+// Web Archive Block
+// The `webArchive` resource-page block (view/common/resource-page-block-layout/
+// web-archive.phtml): a ReplayWeb.page player per archived capture.
+//
+// Head: the item page's section voice — 2px ink rule, Besley head — shared
+// with "Linked resources" and "How to cite". Player: framed like the
+// video-embed and Mirador panels, one of the few sanctioned boxes (a rule
+// cannot bound a live page).
+// ==========================================================================
+
+@use "../../abstracts/abstracts" as *;
+
+.web-archive {
+    margin-block-end: var(--space-8);
+
+    &__header {
+        margin-block-end: var(--space-4);
+        padding-block-start: var(--space-4);
+        border-block-start: 2px solid var(--ink-strong);
+    }
+
+    &__heading {
+        margin: 0;
+        @include section-head;
+    }
+
+    // Was an inline `height:600px`, which the stylesheet could not touch and
+    // which stood taller than a landscape phone's whole viewport — the page
+    // could not be scrolled past the player without scrolling inside it.
+    // 600px matches the Mirador card on a desktop column; small viewports get
+    // 80% of their height instead.
+    &__player {
+        display: block;
+        width: 100%;
+        height: min(600px, 80svh);
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background-color: var(--surface-sunken);
+
+        & + & {
+            margin-block-start: var(--space-6);
+        }
+    }
+}

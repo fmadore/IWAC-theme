@@ -21,12 +21,7 @@
 
     &__title {
         margin: 0 0 var(--space-4);
-        font-family: $font__headings;
-        font-size: var(--text-lg);
-        font-weight: 700;
-        letter-spacing: var(--tracking-display);
-        line-height: $font__headings-line-height;
-        color: var(--ink-strong);
+        @include section-head;
     }
 
     // ── Style tabs (Chicago / APA / MLA) ─────────────────────────────────

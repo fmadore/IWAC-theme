@@ -26,19 +26,10 @@
         border-block-start: 2px solid var(--ink-strong);
     }
 
-    // Weight is set here, not by the tag. The markup is an <h2> because that
-    // is the correct outline level for a top-level item-page section; a raw
-    // h2 renders at --text-3xl, which would shout over the record it lists.
-    // Sized to match .citation__title so the page's two block section heads
-    // are one voice.
+    // Weight is set by the mixin, not by the tag — see section-head.
     &__heading {
         margin: 0;
-        font-family: $font__headings;
-        font-size: var(--text-lg);
-        font-weight: 700;
-        letter-spacing: var(--tracking-display);
-        line-height: $font__headings-line-height;
-        color: var(--ink-strong);
+        @include section-head;
     }
 
     .resource-tag {

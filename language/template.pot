@@ -50,7 +50,7 @@ msgstr ""
 msgid "An open-access collection of newspapers, Islamic publications, archives, audiovisual sources, and academic references on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo."
 msgstr ""
 
-#: view/common/resource-page-block-layout/web-archive.phtml:76
+#: view/common/resource-page-block-layout/web-archive.phtml:79
 msgid "Archived web page"
 msgid_plural "Archived web pages"
 msgstr[0] ""

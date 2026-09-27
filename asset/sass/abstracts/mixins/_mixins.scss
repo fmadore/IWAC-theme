@@ -1,6 +1,9 @@
-// Only breakpoints are consumed here; the other variable modules are
-// reachable through abstracts/_abstracts.scss where components need them.
+// Breakpoints and the heading face are consumed here; the other variable
+// modules are reachable through abstracts/_abstracts.scss where components
+// need them. (typography also emits :root, but Sass outputs a module once no
+// matter how many files @use it.)
 @use "../variables/breakpoints" as *;
+@use "../variables/typography" as *;
 
 // Center block
 @mixin center-block {
@@ -169,6 +172,23 @@
     &:hover {
         color: var(--primary);
     }
+}
+
+// ==========================================================================
+// Section head
+// The item page's block section heads — "How to cite", "Linked resources",
+// "Archived web page" — in one voice. The markup is an <h2> (the right
+// outline level for a top-level item-page section); a raw h2 renders at
+// --text-3xl and would shout over the record it belongs to, so the size is
+// set here, never by the tag.
+// ==========================================================================
+@mixin section-head {
+    font-family: $font__headings;
+    font-size: var(--text-lg);
+    font-weight: 700;
+    letter-spacing: var(--tracking-display);
+    line-height: $font__headings-line-height;
+    color: var(--ink-strong);
 }
 
 // ==========================================================================

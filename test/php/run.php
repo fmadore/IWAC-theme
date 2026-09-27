@@ -642,6 +642,68 @@ namespace IwacThemeTest {
         }
     });
 
+    test('web archive block: h2 section head, player sized by the stylesheet', function () {
+        $fake = new FakeView();
+        $sink = new class {
+            public function __call(string $name, array $args)
+            {
+                return $this;
+            }
+        };
+        $fake->helpers['headLink'] = static fn () => $sink;
+        $fake->helpers['headScript'] = static fn () => $sink;
+        $fake->helpers['translatePlural'] = static fn (string $one, string $many, int $n): string => $n === 1 ? $one : $many;
+        $media = static fn (int $id, string $type) => new class($id, $type) {
+            public function __construct(private int $id, private string $type)
+            {
+            }
+
+            public function id(): int
+            {
+                return $this->id;
+            }
+
+            public function mediaType(): string
+            {
+                return $this->type;
+            }
+
+            public function mediaData(): array
+            {
+                return [];
+            }
+
+            public function originalUrl(): string
+            {
+                return '/files/original/' . $this->id . '.wacz';
+            }
+        };
+        $item = new class([$media(1, 'image/jpeg'), $media(2, 'application/wacz'), $media(3, 'application/warc')]) {
+            public function __construct(private array $media)
+            {
+            }
+
+            public function media(): array
+            {
+                return $this->media;
+            }
+        };
+
+        $html = $fake->render('common/resource-page-block-layout/web-archive.phtml', ['resource' => $item]);
+        same(2, substr_count($html, '<replay-web-page'), 'one player per wacz/warc capture');
+        check((bool) preg_match('/<h2 class="web-archive__heading">\s*Archived web pages\s*<\/h2>/', $html), 'section head is not an h2');
+        check(!str_contains($html, 'style='), 'inline style on the player');
+        same(2, substr_count($html, 'class="web-archive__player"'));
+
+        $none = new class {
+            public function media(): array
+            {
+                return [];
+            }
+        };
+        same('', trim($fake->render('common/resource-page-block-layout/web-archive.phtml', ['resource' => $none])));
+    });
+
     // ---- Run ----------------------------------------------------------------
 
     $failed = 0;
