@@ -87,11 +87,11 @@
         max-width: var(--measure-narrow);
 
         // Word-break long URLs so the citation never forces a horizontal scroll.
+        // Colour comes from the base link rule (ink + primary-tinted underline,
+        // primary on hover): --primary as small text is 4.40:1 on --background,
+        // where this panel sits — an AA failure the live axe scan caught.
         a {
-            color: var(--primary);
             word-break: break-word;
-
-            &:hover { color: var(--primary-hover); }
         }
     }
 

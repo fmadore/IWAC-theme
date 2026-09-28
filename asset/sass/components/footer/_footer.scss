@@ -317,10 +317,23 @@
     // contrast failure (flagged by Lighthouse). Force a legible token regardless
     // of the inline colour; `!important` is required to beat the inline style.
     // Root-cause fix: drop the inline style in the footer_copyright theme setting.
+    //
+    // Underlined, unlike the rest of the footer's links: these sit inside a
+    // line of --footer-text-muted copy, and colour alone does not set them
+    // apart — 3.3:1 against it in light, 1.69:1 in dark (WCAG 1.4.1 needs 3:1
+    // or a non-colour cue). Same underline as the base link rule.
     &__copyright a {
         color: var(--footer-text) !important;
+        text-decoration: underline;
+        text-decoration-color: color-mix(in oklab, var(--primary) 35%, transparent);
+        text-decoration-thickness: 0.0625rem;
+        text-underline-offset: 0.18rem;
 
-        &:hover { color: var(--primary) !important; }
+        &:hover {
+            color: var(--primary) !important;
+            text-decoration-color: var(--primary);
+            text-decoration-thickness: 0.125rem;
+        }
     }
 
     &__social-network {
