@@ -102,8 +102,11 @@ final class BannerStats extends AbstractHelper
         }
         // Written by IwacVisualizations' "Pull latest data" job. The keys read
         // below are a cross-repository contract: that module's
-        // scripts/validate_data.py requires every one of SUMMARY_KEYS in the
-        // snapshot's `summary`, and names this helper as the reason.
+        // scripts/validate_data.py (NESTED_FIGURES) refuses to publish a
+        // snapshot whose `summary` lacks any of SUMMARY_KEYS or carries one
+        // that is not a number — except `total_pages`, which the generator
+        // emits only when the dataset has a pages column, and which this
+        // helper already treats as optional.
         $snapshot = OMEKA_PATH . '/files/iwac-visualizations/collection-overview.json';
         if (!is_readable($snapshot)) {
             return null;

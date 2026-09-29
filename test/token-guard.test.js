@@ -135,6 +135,20 @@ test('comments are not code, but opt-out markers inside them still count', () =>
     clean('a.svelte', '<!-- var(--plate-scrim) -->\n<style>.a { color: #fff; /* allow-hex */ }</style>');
 });
 
+test('freshness: current passes, ahead is reported, behind or diverged fails', () => {
+    const { freshnessVerdict } = require('../scripts/lib/theme-token-guard.cjs');
+    const t = (v, extra = '') => JSON.stringify({ themeVersion: v, extra });
+    const pair = (local, remote, guardLocal = 'g', guardRemote = 'g') => [
+        { rel: 'tokens.json', local, remote },
+        { rel: 'scripts/theme-token-guard.cjs', local: guardLocal, remote: guardRemote },
+    ];
+    assert.equal(freshnessVerdict(pair(t('2.22.0'), t('2.22.0'))).code, 0);
+    assert.equal(freshnessVerdict(pair(t('2.23.0'), t('2.22.0'))).code, 0, 'ahead of master: an unmerged theme change');
+    assert.equal(freshnessVerdict(pair(t('2.21.0'), t('2.22.0'))).code, 1, 'behind master');
+    assert.equal(freshnessVerdict(pair(t('2.22.0', 'a'), t('2.22.0', 'b'))).code, 1, 'same version, different contract');
+    assert.equal(freshnessVerdict(pair(t('2.22.0'), t('2.22.0'), 'old rules', 'new rules')).code, 1, 'engine drifted');
+});
+
 test('removed tokens are refused', () => {
     fires('a.css', '.a { color: hsl(var(--primary-hue) 50% 50%); }', 'removed');
 });

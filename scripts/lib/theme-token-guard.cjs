@@ -591,6 +591,13 @@ function checkRuntimeTables(src, file, T, flag) {
  * @param {string} [config.docs]        where a failing contributor should read
  */
 function cli(config) {
+    if (process.argv.includes('--against-theme-master')) {
+        compareWithTheme(config.root).then((code) => process.exit(code), (e) => {
+            console.error(`✗ could not reach IWAC-theme master: ${e.message}`);
+            process.exit(1);
+        });
+        return;
+    }
     const tokensPath = path.join(config.root, 'tokens.json');
     let tokens = null;
     if (fs.existsSync(tokensPath)) {
@@ -618,4 +625,82 @@ function cli(config) {
     console.log(`✓ theme-token guard: ${files.length} files clean against the ${contract}`);
 }
 
-module.exports = { runGuard, cli, collectFiles, unitsOf };
+/* ------------------------------------------------------------------ */
+/*  Freshness: is this module's copy of the contract the theme's?      */
+/* ------------------------------------------------------------------ */
+
+const THEME_RAW = 'https://raw.githubusercontent.com/fmadore/IWAC-theme/master/';
+const SYNCED = [
+    ['tokens.json', 'tokens.json'],
+    ['scripts/theme-token-guard.cjs', 'scripts/lib/theme-token-guard.cjs'],
+];
+
+/** -1 / 0 / 1 for dotted numeric versions ("2.22.0"). */
+function compareVersions(a, b) {
+    const pa = String(a || '0').split('.').map(Number);
+    const pb = String(b || '0').split('.').map(Number);
+    for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+        const d = (pa[i] || 0) - (pb[i] || 0);
+        if (d) return d < 0 ? -1 : 1;
+    }
+    return 0;
+}
+
+/**
+ * Pure verdict on a module's synced files against the theme's.
+ *
+ * Every rule in this file passes against whatever contract it is handed, so
+ * a module whose tokens.json was never re-synced checks itself against an old
+ * contract and reports green. This is the one check that can tell: run weekly
+ * by each module's `theme-contract` workflow. A copy AHEAD of master (the
+ * theme change it came from is not merged yet) is reported, not failed; a
+ * copy BEHIND, or different at the same version, fails.
+ *
+ * @param {{rel: string, local: string, remote: string}[]} files
+ * @returns {{code: number, lines: string[]}}
+ */
+function freshnessVerdict(files) {
+    const version = (text) => { try { return JSON.parse(text).themeVersion; } catch (e) { return undefined; } };
+    const tokens = files.find((f) => f.rel === 'tokens.json');
+    const localV = tokens && version(tokens.local);
+    const remoteV = tokens && version(tokens.remote);
+    const stale = files.filter((f) => f.local !== f.remote);
+    if (!stale.length) {
+        return { code: 0, lines: [`✓ theme contract current: IWAC-theme ${remoteV} (${files.map((f) => f.rel).join(', ')})`] };
+    }
+    const order = compareVersions(localV, remoteV);
+    const names = stale.map((f) => f.rel).join(', ');
+    if (order > 0) {
+        return { code: 0, lines: [
+            `ℹ ${names} are AHEAD of IWAC-theme master (local ${localV}, master ${remoteV || "unversioned"}):`,
+            '  the theme change they were synced from is not merged yet. Merge it, then re-sync if it changed.',
+        ] };
+    }
+    return { code: 1, lines: [
+        `✗ ${names} differ from IWAC-theme master (local ${localV || 'unversioned'}, master ${remoteV}).`,
+        '  Every guard rule passes against whatever contract it is given, so a stale copy checks this',
+        '  module against an old contract and stays green. In IWAC-theme: `npm run sync:tokens`,',
+        '  then rebuild this module and commit both files.',
+    ] };
+}
+
+async function compareWithTheme(root) {
+    const files = [];
+    for (const [rel, themePath] of SYNCED) {
+        const res = await fetch(THEME_RAW + themePath);
+        // A file master does not have yet (404) is a difference like any
+        // other — the version comparison decides whether this copy is ahead.
+        if (!res.ok && res.status !== 404) throw new Error(`${themePath}: HTTP ${res.status}`);
+        const localPath = path.join(root, rel);
+        files.push({
+            rel,
+            local: fs.existsSync(localPath) ? fs.readFileSync(localPath, 'utf8') : '',
+            remote: res.ok ? await res.text() : '',
+        });
+    }
+    const { code, lines } = freshnessVerdict(files);
+    (code ? console.error : console.log)(lines.join('\n'));
+    return code;
+}
+
+module.exports = { runGuard, cli, collectFiles, unitsOf, freshnessVerdict };
