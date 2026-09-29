@@ -36,6 +36,14 @@ jobs:
       - run: npm run check:versions
 
       - run: npm test
+      # The same behaviour suite against asset/js/dist/*.min.js — what pages
+      # actually load. Proves minification kept every global the scripts
+      # publish and read (IWACUtils, the PWA island, …).
+      - run: npm run test:minified
+      # Before the build rewrites them: a stale twin shows in the diff below,
+      # but a MISSING one (a new source whose .min.js was never committed)
+      # would be an untracked file that `git diff` cannot see.
+      - run: npm run check:js-dist
       - run: npm run build
       - run: npm audit --audit-level=high
 

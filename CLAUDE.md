@@ -22,10 +22,11 @@ values — `tokens.json` stays normative; when tokens change, refresh `DESIGN.md
 
 ```bash
 npm run check:tokens   # fast gate: fails if any var(--…) in asset/sass doesn't resolve
-npm run build          # check:tokens → build:tokens → build:i18n → compile CSS
+npm run build          # check:tokens → build:tokens → build:i18n → build:js → compile CSS
 npm run start          # compile once, then watch .scss
 npm run bump -- patch  # write every version declaration (patch|minor|major|X.Y.Z)
 npm test               # JS behaviour (node:test + jsdom)
+npm run test:minified  # the same suite against asset/js/dist/*.min.js
 npm run test:php       # view helpers + template regressions (plain PHP, no Composer)
 npm run lint           # ESLint + Stylelint (correctness rules and the gotchas below)
 phpstan analyse        # helpers at level 6 (CI installs phpstan via setup-php)
@@ -145,9 +146,21 @@ Do not hand-edit it. On a token change the guard will fail until
 `/impeccable document` regenerates it — that failure is the artifact telling you it is
 stale. Release order: edit tokens → `npm run build` → documenter → green.
 
-### `asset/css/` is generated
+### `asset/css/` and `asset/js/dist/` are generated
 
 Edit `asset/sass/`. Anything written to `asset/css/` is overwritten by the next build.
+
+Likewise edit `asset/js/<name>.js`, never `asset/js/dist/<name>.min.js`:
+`npm run build:js` (esbuild, part of `npm run build`) rewrites the minified twin and
+its source map, and templates load only the twin — `assetUrl('js/dist/<name>.min.js')`.
+A new script needs no registration (every non-`.min` file in `asset/js/` is an input),
+but its template must name the `dist/` path, and the twin must be committed:
+`npm run check:js-dist` fails on a missing, stale or orphaned one. Minification is a
+transform, not a bundle — no module format, so top-level names (the `IWACUtils`
+global the scripts share) survive; `npm run test:minified` proves it by running the
+whole behaviour suite against the twins. Vendored `*.min.js` (MiniMasonry) are not
+inputs and stay where they are. `citation.js` is enqueued by IWAC-SEO, not the theme,
+so `layout.phtml` swaps its src for the twin in the same pass that defers it.
 
 ### Sass module system
 

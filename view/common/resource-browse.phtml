@@ -14,7 +14,7 @@
  */
 $translate = $this->plugin('translate');
 $this->inlineScript()->appendFile($this->assetUrl('js/minimasonry.min.js'));
-$this->inlineScript()->appendFile($this->assetUrl('js/browse.js'));
+$this->inlineScript()->appendFile($this->assetUrl('js/dist/browse.min.js'));
 $this->htmlElement('body')->appendAttribute('class', $bodyClass);
 
 $filterLocale = (bool) $this->siteSetting('filter_locale_values');

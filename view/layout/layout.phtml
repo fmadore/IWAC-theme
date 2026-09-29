@@ -205,8 +205,20 @@ try {
         if (empty($scriptItem->attributes['src'])) {
             continue;
         }
-        if (strpos((string) $scriptItem->attributes['src'], 'js/citation.js') !== false) {
+        $scriptSrc = (string) $scriptItem->attributes['src'];
+        if (strpos($scriptSrc, 'js/citation.js') !== false) {
             $scriptItem->attributes['defer'] = 'defer';
+            // …and serve the theme's minified build of it (asset/js/dist/,
+            // see scripts/build-js.js), which the module enqueuing it cannot
+            // know about. Only the THEME's copy — a module shipping its own
+            // citation.js keeps the file it asked for.
+            if (strpos($scriptSrc, '/themes/') !== false) {
+                $scriptItem->attributes['src'] = str_replace(
+                    'asset/js/citation.js',
+                    'asset/js/dist/citation.min.js',
+                    $scriptSrc
+                );
+            }
         }
     }
 } catch (\Throwable $e) {
@@ -359,7 +371,7 @@ if ($userBar) {
 			// Loaded at body end like the theme's other vanilla scripts (order:
 			// utils.js first — see the prepend chain below). Self-guards if the
 			// manifest island or install button is absent.
-			$this->inlineScript()->prependFile($this->assetUrl('js/pwa-install.js'));
+			$this->inlineScript()->prependFile($this->assetUrl('js/dist/pwa-install.min.js'));
 		}
 		// Page-specific scripts load only where their subject is on the page.
 		// Both already no-op without a target, but they were downloaded and
@@ -370,17 +382,17 @@ if ($userBar) {
 		// every Mirador mount carries "mirador" in its class or id.
 		$pageContent = (string) $this->content;
 		if (strpos($pageContent, 'block-asset') !== false) {
-			$this->inlineScript()->prependFile($this->assetUrl('js/plate-viewer.js'));
+			$this->inlineScript()->prependFile($this->assetUrl('js/dist/plate-viewer.min.js'));
 		}
 		if (stripos($pageContent, 'mirador') !== false) {
-			$this->inlineScript()->prependFile($this->assetUrl('js/mirador-theme-sync.js'));
+			$this->inlineScript()->prependFile($this->assetUrl('js/dist/mirador-theme-sync.min.js'));
 		}
 		echo $this->inlineScript()
-			->prependFile($this->assetUrl('js/pagination-scroll.js'))
-			->prependFile($this->assetUrl('js/theme-toggle.js'))
-			->prependFile($this->assetUrl('js/navigation.js'))
-			->prependFile($this->assetUrl('js/script.js'))
-			->prependFile($this->assetUrl('js/utils.js'));
+			->prependFile($this->assetUrl('js/dist/pagination-scroll.min.js'))
+			->prependFile($this->assetUrl('js/dist/theme-toggle.min.js'))
+			->prependFile($this->assetUrl('js/dist/navigation.min.js'))
+			->prependFile($this->assetUrl('js/dist/script.min.js'))
+			->prependFile($this->assetUrl('js/dist/utils.min.js'));
 		?>
 	</body>
 </html>

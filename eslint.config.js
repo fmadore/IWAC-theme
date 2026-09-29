@@ -19,6 +19,9 @@ module.exports = [
             'playwright-report/',
             // Vendored, minified third-party code.
             'asset/js/minimasonry.min.js',
+            // esbuild output of asset/js/*.js (npm run build:js) — the sources
+            // are what is linted; `check:js-dist` proves the twins match them.
+            'asset/js/dist/',
         ],
     },
 

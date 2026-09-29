@@ -80,6 +80,7 @@
 # Generated artifacts — collapse in diffs/PR review
 # ---------------------------------------------------------------------------
 /asset/css/style.css linguist-generated
+/asset/js/dist/**    linguist-generated
 /tokens.json         linguist-generated
 /language/fr.mo      linguist-generated
 
@@ -99,6 +100,7 @@
 # ever runs on Linux — but it trains you to ignore a dirty generated file,
 # which is exactly the signal that step exists to give you.
 /asset/css/style.css   text eol=lf
+/asset/js/dist/**      text eol=lf
 /tokens.json           text eol=lf
 /docs/DESIGN-SYSTEM.md text eol=lf
 

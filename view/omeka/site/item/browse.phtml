@@ -18,7 +18,7 @@ $escape = $this->plugin('escapeHtml');
 $escapeAttr = $this->plugin('escapeHtmlAttr');
 // The ledger's client title filter and AJAX paging. No masonry or browse.js:
 // there is no card grid and no grid/list toggle on this page.
-$this->inlineScript()->appendFile($this->assetUrl('js/linked-resources.js'));
+$this->inlineScript()->appendFile($this->assetUrl('js/dist/linked-resources.min.js'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/resource-page-blocks.css', 'Omeka'));
 $this->htmlElement('body')->appendAttribute('class', 'item resource browse item-set');
 
