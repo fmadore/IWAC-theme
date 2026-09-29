@@ -85,7 +85,7 @@
             a {
                 @include title-link;
                 font-size: var(--text-base);
-                line-height: 1.4;
+                line-height: var(--line-height-snug);
                 display: block;
             }
         }
@@ -95,7 +95,7 @@
         .resource-description {
             margin-block-start: var(--space-1);
             font-size: var(--text-sm);
-            line-height: 1.5;
+            line-height: var(--line-height-normal);
             color: var(--ink-light);
             display: -webkit-box;
             -webkit-line-clamp: 2;

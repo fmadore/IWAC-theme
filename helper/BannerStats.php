@@ -100,9 +100,28 @@ final class BannerStats extends AbstractHelper
         if (!defined('OMEKA_PATH')) {
             return null;
         }
+        // Written by IwacVisualizations' "Pull latest data" job. The keys read
+        // below are a cross-repository contract: that module's
+        // scripts/validate_data.py requires every one of SUMMARY_KEYS in the
+        // snapshot's `summary`, and names this helper as the reason.
         $snapshot = OMEKA_PATH . '/files/iwac-visualizations/collection-overview.json';
         if (!is_readable($snapshot)) {
             return null;
+        }
+
+        // The snapshot is the whole collection overview (timeline, countries,
+        // treemap…) and changes only when the data is re-synced, yet it was
+        // read and JSON-decoded on every homepage view to keep eight numbers.
+        // Cache the eight, keyed on the file's mtime so a sync is picked up on
+        // the next request rather than after a TTL.
+        $mtime = @filemtime($snapshot);
+        $cacheKey = 'iwac-theme:banner-summary:' . md5($snapshot . '|' . (string) $mtime);
+        $useCache = $mtime !== false && \function_exists('apcu_enabled') && \apcu_enabled();
+        if ($useCache) {
+            $cached = \apcu_fetch($cacheKey, $hit);
+            if ($hit && (is_array($cached) || $cached === false)) {
+                return $cached ?: null;
+            }
         }
 
         try {
@@ -117,6 +136,11 @@ final class BannerStats extends AbstractHelper
                 if (isset($source[$key]) && is_numeric($source[$key])) {
                     $summary[$key] = $source[$key] + 0;
                 }
+            }
+            if ($useCache) {
+                // `false` records "parsed, nothing usable" so an empty summary
+                // is not re-read on every request either.
+                \apcu_store($cacheKey, $summary ?: false, self::COUNTS_TTL);
             }
             return $summary ?: null;
         } catch (Throwable $error) {

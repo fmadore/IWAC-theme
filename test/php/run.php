@@ -622,6 +622,42 @@ namespace IwacThemeTest {
         }
     });
 
+    test('BannerStats reads the eight snapshot figures IwacVisualizations publishes, and survives a bad file', function () {
+        // OMEKA_PATH is only read by BannerStats, and this runs after the
+        // counts test above, so defining it here changes nothing else.
+        $root = sys_get_temp_dir() . '/iwac-theme-banner-' . getmypid();
+        @mkdir($root . '/files/iwac-visualizations', 0777, true);
+        if (!defined('OMEKA_PATH')) {
+            define('OMEKA_PATH', $root);
+        }
+        $snapshot = OMEKA_PATH . '/files/iwac-visualizations/collection-overview.json';
+        file_put_contents($snapshot, json_encode([
+            'summary' => [
+                'newspapers' => 41, 'references_count' => 1200, 'total_words' => 9876543,
+                'total_pages' => 34567, 'unique_sources' => 88, 'document_types' => 7,
+                'audiovisual_minutes' => 1234.5, 'languages' => 5,
+                'not_a_banner_figure' => 1, 'total_articles' => 'n/a',
+            ],
+            'timeline' => [['year' => 1990, 'count' => 3]],
+        ]));
+        $fake = new FakeView();
+        $fake->helpers['api'] = static fn () => throw new \RuntimeException('not under test');
+        $previousLog = ini_set('error_log', PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null');
+        try {
+            same([
+                'newspapers' => 41, 'references_count' => 1200, 'total_words' => 9876543,
+                'total_pages' => 34567, 'unique_sources' => 88, 'document_types' => 7,
+                'audiovisual_minutes' => 1234.5, 'languages' => 5,
+            ], $fake->helpers['BannerStats']()['summary']);
+
+            file_put_contents($snapshot, '{"summary": ');
+            same(null, $fake->helpers['BannerStats']()['summary']);
+        } finally {
+            ini_set('error_log', (string) $previousLog);
+            @unlink($snapshot);
+        }
+    });
+
     test('web archive block: h2 section head, player sized by the stylesheet', function () {
         $fake = new FakeView();
         $sink = new class {

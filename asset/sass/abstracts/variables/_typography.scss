@@ -84,5 +84,5 @@ $font__pre: $font__code;
 // Sass Variables (used in base typography and headings)
 // ==========================================================================
 $font__base-line-height: 1.6;
-$font__headings-line-height: 1.25;
+$font__headings-line-height: var(--line-height-tight);
 $font__pre-base-line-height: 1.6;

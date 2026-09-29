@@ -36,7 +36,7 @@ figcaption {
     font-size: var(--text-sm);
     font-style: italic;
     margin-block-start: var(--space-2);
-    line-height: 1.5;
+    line-height: var(--line-height-normal);
 }
 
 .decoration {

@@ -121,6 +121,35 @@ test('item page content has no serious WCAG A/AA violations', async ({ page }) =
     expect(blocking(results)).toEqual([]);
 });
 
+// The two scans above exclude module markup on the grounds that the modules
+// "answer for their own" — and neither module ran an accessibility scan
+// anywhere, so the search surface and every chart panel were audited by no
+// one. This suite is the only place a real, data-backed page exists, so the
+// module surfaces are scanned here too: each in its own test, so a failure
+// names the repository that owns the markup.
+
+test('IwacSearch results surface has no serious WCAG A/AA violations', async ({ page }) => {
+    await page.goto('search/everything?q=islam', { waitUntil: 'networkidle' });
+    await expect(page.locator('.iwac-card').first()).toBeVisible();
+    const results = await new AxeBuilder({ page })
+        .include('[data-iwac-federated-root], [data-iwac-search-root]')
+        .withTags(WCAG_A_AA)
+        .analyze();
+    expect(blocking(results)).toEqual([]);
+});
+
+test('IwacVisualizations item-page blocks have no serious WCAG A/AA violations', async ({ page }) => {
+    await page.goto('item/23365', { waitUntil: 'networkidle' });
+    const blocks = page.locator('.iwac-vis-block');
+    test.skip(await blocks.count() === 0, 'no IwacVisualizations block on this item page');
+    await expect(blocks.first()).toBeVisible();
+    const results = await new AxeBuilder({ page })
+        .include('.iwac-vis-block')
+        .withTags(WCAG_A_AA)
+        .analyze();
+    expect(blocking(results)).toEqual([]);
+});
+
 test('each value annotation trigger controls its own panel', async ({ page }) => {
     await page.goto('item/23365', { waitUntil: 'domcontentloaded' });
     const pairs = await page.$$eval('.annotation-btn', (buttons) => buttons.map((button) => ({

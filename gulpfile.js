@@ -35,9 +35,15 @@ gulp.task('tokens', function (done) {
 });
 
 gulp.task('css:watch', function () {
-    // A colour change must also regenerate tokens.json, otherwise watch mode
+    // A token change must also regenerate tokens.json, otherwise watch mode
     // silently drifts from the sibling modules' check-theme-tokens guards.
-    gulp.watch('./asset/sass/abstracts/variables/_colors.scss', gulp.series('tokens'));
+    // Every variable file, not just _colors.scss: tokens.json publishes the
+    // spacing, type, radius, shadow and motion values too (`values`), and the
+    // font weights layout.phtml loads (`fonts`).
+    gulp.watch([
+        './asset/sass/abstracts/variables/*.scss',
+        './view/layout/layout.phtml',
+    ], gulp.series('tokens'));
     gulp.watch('./asset/sass/**/*.scss', gulp.parallel('css'));
 });
 

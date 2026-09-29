@@ -8,14 +8,14 @@
 #skipnav {
     position: absolute;
     inset-block-start: -100%;
-    inset-inline-start: var(--space-md);
+    inset-inline-start: var(--space-4);
     // Light theme (dark theme overridden at the foot of this file): in light,
     // --primary-active (28% darkened) keeps white text comfortably past AA —
     // 8.00:1 with the default seed — even when an admin seeds a lighter
     // primary; raw --primary sits at 4.78:1 and dips below AA with lighter ones.
     background: var(--primary-active);
     color: var(--white);
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--space-2) var(--space-4);
     border-radius: var(--radius-md);
     font-weight: 500;
     text-decoration: none;
@@ -23,7 +23,7 @@
     transition: inset-block-start var(--transition-base);
     
     &:focus {
-        inset-block-start: var(--space-md);
+        inset-block-start: var(--space-4);
     }
 }
 
@@ -74,11 +74,11 @@ body[data-theme="dark"] {
         font-size: var(--text-sm);
         font-weight: 700;
         height: auto;
-        inset-inline-start: var(--space-xs);
+        inset-inline-start: var(--space-1);
         line-height: normal;
-        padding: var(--space-md) var(--space-lg);
+        padding: var(--space-4) var(--space-6);
         text-decoration: none;
-        inset-block-start: var(--space-xs);
+        inset-block-start: var(--space-1);
         width: auto;
         z-index: var(--z-tooltip);
     }

@@ -310,7 +310,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: var(--tracking-wide);
-    line-height: 1.4;
+    line-height: var(--line-height-snug);
     color: var(--ink-light);
 
     @media (min-width: $lg) {
@@ -332,7 +332,7 @@
     font-family: var(--font-headings);
     font-size: var(--text-base);
     font-weight: 600;
-    line-height: 1.25;
+    line-height: var(--line-height-tight);
     // Slab serifs clog below -0.01em; --tracking-display is the display face's
     // floor for exactly this reason.
     letter-spacing: var(--tracking-display);

@@ -64,7 +64,7 @@
 		margin: 0;
 		font-size: var(--text-lg);
 		font-weight: 600;
-		line-height: 1.25;
+		line-height: var(--line-height-tight);
 		color: var(--ink);
 		letter-spacing: 0;
 
@@ -160,7 +160,7 @@
 		}
 
 		&:focus-visible {
-			outline: 2px solid var(--focus-color);
+			outline: var(--focus-outline);
 			outline-offset: -2px;
 		}
 

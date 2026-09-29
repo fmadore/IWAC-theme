@@ -78,19 +78,88 @@ value (see §3). Do **not** invent token names — undefined tokens fail silentl
 | **Status** | `--success`, `--warning`, `--error`, `--info` (+ matching `*-bg`) |
 | **Categorical** | `--type-*` (nine resource / entity types); `--series-1 … --series-20` (the ordered chart palette) |
 | **Focus** | `--focus-outline` (default), `--ring-focus`, `--ring-focus-sm`, `--focus-color`, `--focus-ring-color` |
-| **Typography** | `--font-headings`, `--font-serif-text`, `--font-body`, `--font-mono`; `--text-2xs … --text-5xl`; `--line-height-normal`, `--line-height-relaxed`; `--tracking-display/tight/normal/wide/wider` |
-| **Spacing** | `--space-1 … --space-40`; `--space-xs/sm/md/lg/xl/2xl/3xl` |
+| **Typography** | `--font-headings`, `--font-serif-text`, `--font-body`, `--font-mono`; `--text-2xs … --text-5xl`; `--line-height-tight/snug/normal/relaxed`; `--tracking-display/tight/normal/wide/wider` |
+| **Spacing** | `--space-1 … --space-40` (the numeric scale is canonical — see below) |
 | **Radius** | `--radius-sm/md/lg/full` |
 | **Shadow / glow** | `--shadow-xs … --shadow-lg`; `--glow-xs/sm/md` |
 | **Panel** | `--panel-bg`, `--panel-border`, `--panel-radius`, `--panel-shadow` |
 | **Controls** | `--size-control-xs … --size-control-xl` |
 | **Measures** | `--measure-narrow/base/wide` |
-| **Motion** | `--transition-fast/base/slow`, `--ease-out-quart` |
+| **Motion** | `--transition-fast/base/slow`, `--ease-out-quart`; `--lift-xxs/xs/sm` |
+| **Stacking** | `--z-dropdown`, `--z-sticky`, `--z-modal`, `--z-tooltip` (see below) |
 | **Accent mix** | `--accent-mix-subtle/medium/strong`, `--accent-line-sm/md` |
 
-The full list lives in the generated `tokens.json` (`names` publishes the
-complete vocabulary). Rather than consulting a table of names to avoid, run
-`npm run check:tokens` — it fails on anything that doesn't resolve.
+The machine-readable list is `tokens.json` → `public`: every token declared in
+`asset/sass/abstracts/variables/`. `names` is the larger set of everything the
+theme defines, and the difference is the theme's **component parameters**
+(`--carousel-*`, `--plate-*`, `--menu-drawer-top`) — declared inside one
+component to tune that component, and free to change with its markup. The
+module guards refuse them. Rather than consulting a table of names to avoid,
+run the guard — it names the fix.
+
+### Spacing — one scale
+
+The theme used to publish two names for each of seven spacing values
+(`--space-md` *and* `--space-4`), and each repository picked a different one:
+IwacSearch wrote the size names 162 times and the numbers once, while
+IwacVisualizations and the theme did the reverse. Two names for one decision
+is the drift this contract exists to prevent, so **the numeric scale is
+canonical**. The size names stay *defined* — as aliases of their numeric twin,
+so they cannot disagree — for any third-party consumer, and are published as
+`tokens.json` → `deprecated`; every guard, the theme's included, fails on a new
+use and names the replacement:
+
+| Deprecated | Use | Value |
+|---|---|---|
+| `--space-xs` | `--space-1` | 0.25rem |
+| `--space-sm` | `--space-2` | 0.5rem |
+| `--space-md` | `--space-4` | 1rem |
+| `--space-lg` | `--space-6` | 1.5rem |
+| `--space-xl` | `--space-8` | 2rem |
+| `--space-2xl` | `--space-12` | 3rem |
+| `--space-3xl` | `--space-16` | 4rem |
+
+A deprecation is declared in the variable file itself, by a trailing
+`// deprecated: --replacement` on the declaration line; `build-tokens.js`
+publishes it from there.
+
+### Line height — four steps
+
+`--line-height-tight` (1.25, headings and display numerals), `--line-height-snug`
+(1.4, dense UI — card titles, captions, chip and table text), `--line-height-normal`
+(1.5, UI body) and `--line-height-relaxed` (1.7, long-form reading — also a
+prose marker for the accent rule below). The scale used to stop at two steps
+while the stack needed four, so the rest were literals: 19 distinct
+line-heights in the theme and 12 in IwacVisualizations. `line-height: 1` stays
+a literal — it is a reset for icons and single-line numerals, not a leading
+decision. Values that sit between steps (1.3, 1.35, 1.55 …) are still literal
+today; moving them onto the scale changes leading and deserves a visual review
+of its own, so the guards do not yet refuse line-height literals.
+
+### Font weights — only the ones the theme loads
+
+`layout.phtml` requests **Besley at 500/600/800 only**, Public Sans at
+400–700 (italic 400) and Source Serif 4 at 400–600 (italic 400). A weight
+outside that set is not rendered; the browser substitutes the nearest face, so
+`font-weight: 700` on a `--font-headings` element renders at **800** and the
+stylesheet describes a weight nobody sees. The theme's own `section-head` mixin
+and three module rules said exactly that.
+
+`tokens.json` → `fonts` publishes the loaded axes per font token, parsed from
+the webfont URL, and every guard checks a block that sets both a theme family
+and a numeric weight against it. To use a new weight, add it to the webfont
+request first.
+
+### Stacking order — derive from `--z-*`
+
+The theme's stacking scale is `--z-dropdown` (100) · `--z-sticky` (200, the
+masthead) · `--z-modal` (300, drawers and maximized viewers) · `--z-tooltip`
+(500, tooltips, toasts and the skip link). A module's overlay that must clear
+the page chrome states that relationship — `z-index: var(--z-modal, 300)` or
+`calc(var(--z-modal, 300) + 1)` — rather than a number that restates the
+theme's in a comment. Stacking *inside* a module's own component (a raised
+toolbar over its own chart) is local and stays module-owned
+(`--iwac-vis-z-raised` / `-overlay`).
 
 ### Type scale — the floor, and the step that deliberately isn't there
 
@@ -246,14 +315,19 @@ the scale they appear to track.
 Each module's `check-theme-tokens.js` therefore also asserts that every
 `var(--…)` it finds is either:
 
-- present in `names` (a real theme token), **or**
-- prefixed `--iwac-` (module-owned: data-series colours, and runtime-set
-  properties like `--iwac-drawer-width`), **or**
+- in `public` (a theme token modules may consume — not merely one that exists;
+  see §2), **and not** in `deprecated`, **or**
+- in the module's own namespace (§4: `--iwac-vis-` for IwacVisualizations,
+  `--iwac-` minus `--iwac-vis-` for IwacSearch), **or**
 - defined by that module's own sources.
 
-Anything else fails the build. When you add a token to the theme, run
-`npm run build:tokens` and rebuild the modules — same workflow as a colour
-change.
+Anything else fails the build, with the fix named: an unknown name, a
+theme-internal component parameter, or a deprecated alias and its replacement.
+
+`tokens.json` also carries `themeVersion` (the theme release it was generated
+from, printed by every module guard) and `fonts` (§2, font weights). When you
+add or change a token, run `npm run sync:tokens` and rebuild the modules — same
+workflow as a colour change.
 
 ---
 
@@ -483,7 +557,8 @@ These were consumed by the modules historically and have been repointed:
 | `var(--on-primary, …)` | `var(--white, #fff)` |
 | `var(--accent, …)` | `var(--primary, …)` |
 | `var(--success-strong, …)` | `color-mix(in oklab, var(--success), black 18%)` |
-| `#c66` (old rose brand) | `#e64a19` (primary) / `#c0392b` (error) |
+| `#c66` (old rose brand) | `var(--primary, #ce4115)` / `var(--error, #c9222b)` |
+| `var(--space-xs/sm/md/lg/xl/2xl/3xl, …)` | `--space-1/2/4/6/8/12/16` (deprecated aliases — §2) |
 | `var(--focus-ring, …)` | `--focus-ring-color` (tint) — but you almost certainly want `--focus-outline` |
 | `var(--radius-xl, …)` | `--radius-lg` (media) / `--radius-md` (chrome) |
 | `var(--shadow-xl, …)` | `--shadow-lg` |
@@ -683,12 +758,15 @@ with that guard rather than duplicating it badly.
 
 ### IwacSearch (Svelte 5)
 
-- **Mounts** into theme-rendered hooks: `[data-iwac-search-root]` (public
-  search / browse), `[data-iwac-admin-root]` (admin), and the header search box
-  (`view/common/search-form.phtml` → `data-iwac-header-search`).
+- **Mounts** into module-rendered hooks — `[data-iwac-search-root]` (standalone
+  search, browse pages and page blocks) and `[data-iwac-federated-root]` (the
+  "search everything" landing page) — and enhances the theme's header search
+  box (`view/common/search-form.phtml` → `data-iwac-header-search`).
 - **Styling:** scoped component `<style>` blocks; consumes theme tokens via
   `var(--token, <canonical fallback>)`. No own theme system, no Sass.
-- **Build:** `npm run build` → `asset/dist/iwac-search{,-admin,-header}.{js,css}`.
+- **Build:** `npm run build` → `asset/dist/iwac-search.{js,css}` (the search
+  app, loaded on the search surfaces) and `asset/dist/iwac-search-header.{js,css}`
+  (the framework-free typeahead, loaded on every site page — keep it small).
   Run `npm run lint && npm run check` first. Edit `src/`, never `asset/dist/`.
 - The hand-written `asset/css/iwac-search.css` (layout container styles) is
   *not* produced by Vite and is edited directly. It is **inside** the guard's
@@ -703,9 +781,15 @@ with that guard rather than duplicating it badly.
   inline — inherits theme tokens through the normal cascade.
 - **Styling:** plain CSS with tokens (`asset/css/iwac-core.css`, `blocks/*.css`,
   `iwac-maplibre.css`); chart colours resolved in JS via `iwac-theme.js`.
-- **Build:** `npm run build:js` (terser) → sibling `*.min.js` (templates load
-  the `.min.js`). CSS is hand-edited, no build step. Edit `*.js`, then rebuild
-  so the `.min.js` stays in sync — never hand-edit `.min.js`.
+- **Embed routes** render without the theme's CSS, so they load
+  `asset/css/iwac-embed-tokens.css` — generated from `tokens.json` by
+  `npm run build:embed-tokens` (light on `:root`, dark on `[data-theme="dark"]`)
+  and asserted by `npm run lint:embed-tokens`. Without it `?theme=dark` painted
+  light fallbacks around charts drawn with the dark palette.
+- **Build:** `npm run build:js` (esbuild) bundles `asset/js/**` into
+  `asset/js/dist/` per `asset/js/bundles.json`; `npm run build:css` (csso)
+  writes the `*.min.css` the templates load. CSS sources are hand-edited; never
+  hand-edit `dist/` or a `.min.*` file.
 
 ---
 
@@ -720,3 +804,42 @@ with that guard rather than duplicating it badly.
 
 When in doubt, the rule is: **one design decision → one token in the theme →
 consumed (not redefined) everywhere else.**
+
+---
+
+## 8. One guard, published with the contract
+
+The rules above are enforced downstream by **one engine**,
+`scripts/lib/theme-token-guard.cjs`, which `npm run sync:tokens` copies into
+each module as `scripts/theme-token-guard.cjs` in the same run that writes its
+`tokens.json`. A module's `check-theme-tokens.js` only declares what is its
+own: where its sources live, which generated files to skip, and its namespace.
+
+It exists because the guards were the last hand-kept copy. Each module carried
+a 600–700-line fork, and the forks had drifted: one could not see a media query
+written in rem, the other a declaration wrapped over several lines or an
+`oklch()` literal; both still accepted the `− 0.02px` breakpoint spelling this
+theme retired in 2.14; and one exempted from the raw-colour rule any line
+mentioning a namespace that module does not use. The contract was generated
+and single-sourced; the thing enforcing it was not.
+
+The engine's rules, each with a must-fire and a must-pass case in
+`test/token-guard.test.js`:
+
+| Rule | Checks |
+|---|---|
+| `names` | every `var()` is public, module-owned or in the module's namespace; internal and deprecated names fail with the fix named |
+| `override` | a module never re-declares a theme token (`/* allow-override */` for a deliberate, scoped one — the embed's brand accent) |
+| `fallback` | hex, non-colour and chained fallbacks equal the canonical light value |
+| `raw-colour` | no colour literal outside a fallback, in any notation (CSS only) |
+| `srgb-mix` / `absolute-mix` | mix in oklab, never toward black/white |
+| `media` / `media-string` | px widths on the breakpoint contract — in `@media`, and in scripts (`matchMedia` strings) |
+| `font-size` | no absolute length, including inside `clamp()` / `calc()` |
+| `font-weight` | a weight (and italic) the theme loads |
+| `script-fallback` / `fallback-object` | runtime colour fallbacks, `FALLBACK_*` tables and the series palette equal `tokens.json` |
+
+**Change a rule here, never in a module's copy.** Both modules ignore their copy
+in their own ESLint (it is linted here), and each runs a weekly job that
+compares its `tokens.json` and engine copy against this repository's `master` —
+so a contract change that was never synced shows up as a failing check in the
+module rather than as a silent disagreement.

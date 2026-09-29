@@ -37,7 +37,7 @@ html {
 // Focus States
 // ==========================================================================
 :focus-visible {
-  outline: 2px solid var(--focus-color);
+  outline: var(--focus-outline);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }

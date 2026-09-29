@@ -15,7 +15,7 @@ function collect(directory) {
     for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
         const target = path.join(directory, entry.name);
         if (entry.isDirectory()) collect(target);
-        else if (entry.name.endsWith('.js')) files.push(target);
+        else if (entry.name.endsWith('.js') || entry.name.endsWith('.cjs')) files.push(target);
     }
 }
 

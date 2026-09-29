@@ -24,14 +24,14 @@ textarea,
 select {
     display: block;
     width: 100%;
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--space-2) var(--space-4);
     font-size: var(--text-base);
     color: var(--ink);
     background: var(--panel-bg);
     border: var(--panel-border);
     border-radius: var(--panel-radius);
-    margin-bottom: var(--space-sm);
-    line-height: 1.4;
+    margin-bottom: var(--space-2);
+    line-height: var(--line-height-snug);
     text-overflow: ellipsis;
     transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 
@@ -196,8 +196,8 @@ fieldset {
     // Border-only by default — no elevation. Blanket-shadowing every field
     // and fieldset pushed forms (and facets) toward the card-heavy look the
     // "quiet borders, high density" brief resists.
-    padding: var(--space-lg);
-    margin-bottom: var(--space-lg);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
 }
 
 fieldset {
@@ -216,7 +216,7 @@ fieldset {
         flex: 1 1 100px;
         box-shadow: none;
         margin-bottom: 0;
-        margin-inline-end: var(--space-md);
+        margin-inline-end: var(--space-4);
         max-width: 100%;
         min-width: 100px;
         padding: 0;

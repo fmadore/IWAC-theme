@@ -43,6 +43,9 @@ module.exports = [
     {
         files: [
             'scripts/**/*.js',
+            // The module guard engine, synced into both modules as .cjs so it
+            // loads as CommonJS inside IwacSearch's ESM package too.
+            'scripts/**/*.cjs',
             'test/**/*.js',
             'test-support/**/*.js',
             'e2e/**/*.js',

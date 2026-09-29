@@ -71,20 +71,28 @@ The release itself is still `git tag vX.Y.Z && git push origin vX.Y.Z`: pushing 
 
 ### Design tokens are machine-checked — never hand-maintain a list
 
-`scripts/build-tokens.js` reads the four variable files and writes `tokens.json`, then
-syncs it into IwacSearch and IwacVisualizations, whose `check-theme-tokens` guards fail
-their builds on anything that disagrees with it. It publishes five things:
+`scripts/build-tokens.js` reads the variable files and writes `tokens.json`; with
+`--sync-siblings` (`npm run sync:tokens`) it also copies `tokens.json` **and the guard
+engine** (`scripts/lib/theme-token-guard.cjs`) into IwacSearch and IwacVisualizations,
+whose `check-theme-tokens` wrappers run that engine and fail their builds on anything
+that disagrees. Change a guard rule here, never in a module's copy. It publishes:
 
 | Key | What |
 |---|---|
 | `light` / `dark` | every OKLCH colour token resolved to sRGB hex |
 | `values.light` / `values.dark` | every **other** token resolved to a literal CSS value — type steps, spacing, radii, control sizes, font stacks, shadows (collapsed to `rgba()`), transitions |
 | `names` | the full custom-property vocabulary |
+| `public` | the subset modules may consume: everything declared in `abstracts/variables/` (component parameters like `--plate-*` are not) |
+| `deprecated` | retired name → replacement, from `// deprecated: --x` markers on declaration lines |
+| `fonts` | the weights each font token actually loads, parsed from layout.phtml's webfont URL |
 | `breakpoints` | the six media-query widths |
 | `series` | the ordered categorical chart palette (`--series-1 … --series-20`), light + dark, with the theme-driven lead slots marked |
+| `themeVersion` | the theme release the contract came from |
 
 - A wrong or invented token name is caught by `npm run check:tokens`. Run it; don't
-  reason about it from memory.
+  reason about it from memory. It also refuses a deprecated name (the numeric
+  `--space-N` scale is canonical; the size-name aliases are deprecated) and a font
+  weight layout.phtml does not load (Besley is 500/600/800 only).
 - **Adding a token is a cross-repo change**: `npm run sync:tokens`, then rebuild both modules.
 - Never hand-edit `tokens.json` or the `<!-- BEGIN GENERATED -->` tables in
   [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md).

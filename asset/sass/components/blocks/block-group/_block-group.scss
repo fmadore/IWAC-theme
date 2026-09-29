@@ -16,8 +16,8 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
-    padding: var(--space-lg);
-    margin-block-end: var(--space-lg);
+    padding: var(--space-6);
+    margin-block-end: var(--space-6);
 
     @include card-hover;
 }
@@ -32,8 +32,8 @@
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
         box-shadow: var(--shadow-sm);
-        padding: var(--space-lg);
-        margin-block-end: var(--space-lg);
+        padding: var(--space-6);
+        margin-block-end: var(--space-6);
         @include card-hover;
 
         // Reset child block margins inside card
@@ -139,7 +139,7 @@
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: var(--tracking-wide);
-        margin-block: var(--space-sm) var(--space-xs);
+        margin-block: var(--space-2) var(--space-1);
     }
 }
 
@@ -155,8 +155,8 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
-    padding: var(--space-lg);
-    margin-block-end: var(--space-lg);
+    padding: var(--space-6);
+    margin-block-end: var(--space-6);
 
     @include card-hover;
 }

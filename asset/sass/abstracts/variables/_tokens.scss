@@ -78,14 +78,23 @@
   --space-24: 6rem;    // 96px
   --space-40: 10rem;   // 160px
 
-  // Semantic aliases
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-  --space-2xl: 3rem;
-  --space-3xl: 4rem;
+  // DEPRECATED size-name aliases. They were a second vocabulary for the same
+  // seven values, and each repo picked a different one: IwacSearch wrote
+  // `--space-md` 162 times and `--space-4` once, IwacVisualizations and this
+  // theme the reverse. Two names for one decision is the drift the token
+  // contract exists to prevent, so the numeric scale is canonical.
+  //
+  // Kept DEFINED — as aliases of their numeric twin, so they can never
+  // disagree — because a third-party consumer may still read them. The
+  // `// deprecated: --x` marker is data: build-tokens.js publishes it as
+  // tokens.json `deprecated`, and every guard fails on a new use.
+  --space-xs:  var(--space-1);  // deprecated: --space-1
+  --space-sm:  var(--space-2);  // deprecated: --space-2
+  --space-md:  var(--space-4);  // deprecated: --space-4
+  --space-lg:  var(--space-6);  // deprecated: --space-6
+  --space-xl:  var(--space-8);  // deprecated: --space-8
+  --space-2xl: var(--space-12); // deprecated: --space-12
+  --space-3xl: var(--space-16); // deprecated: --space-16
 
   // ========================================================================
   // Border Radius Scale
@@ -236,8 +245,21 @@
   --z-tooltip:  500;
 
   // ========================================================================
-  // Typography Utilities
+  // Line Height (leading)
+  //
+  // Four steps. The scale stopped at two (normal, relaxed) while the stack
+  // needed four, so the other two were written as literals everywhere: the
+  // theme carried 19 distinct line-heights, IwacVisualizations 12 — a second,
+  // undeclared scale of exactly the kind the font-size rule exists to stop.
+  //   tight   — headings, display numerals (was $font__headings-line-height)
+  //   snug    — dense UI: card titles, captions, chip and table text
+  //   normal  — UI body, form text
+  //   relaxed — long-form reading (a prose marker: see check-token-usage.js)
+  // `line-height: 1` stays a literal: it is a reset for icons and single-line
+  // numerals, not a leading decision.
   // ========================================================================
+  --line-height-tight:   1.25;
+  --line-height-snug:    1.4;
   --line-height-normal:  1.5;
   --line-height-relaxed: 1.7;
 }

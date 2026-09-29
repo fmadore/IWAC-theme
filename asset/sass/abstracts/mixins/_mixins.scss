@@ -45,7 +45,7 @@
     appearance: none;
     border-radius: var(--radius-md);
     cursor: pointer;
-    padding: var(--space-sm) var(--space-xl);
+    padding: var(--space-2) var(--space-8);
     font-weight: 500;
     text-decoration: none;
     text-transform: uppercase;
@@ -185,7 +185,11 @@
 @mixin section-head {
     font-family: $font__headings;
     font-size: var(--text-lg);
-    font-weight: 700;
+    // 800, not 700: Besley is loaded at 500/600/800 only (layout.phtml), and
+    // font matching resolves a requested 700 to 800 — so 800 is what these
+    // heads have always rendered at. Stating it keeps the code honest; the
+    // loaded-weight rule in check-token-usage.js now refuses the 700.
+    font-weight: 800;
     letter-spacing: var(--tracking-display);
     line-height: $font__headings-line-height;
     color: var(--ink-strong);

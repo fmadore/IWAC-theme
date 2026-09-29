@@ -12,7 +12,9 @@
  * It then:
  *   1. writes tokens.json at the theme root,
  *   2. optionally syncs a copy into each sibling module repo when invoked
- *      with `--sync-siblings`,
+ *      with `--sync-siblings` — together with the shared guard engine
+ *      (scripts/lib/theme-token-guard.cjs → <sibling>/scripts/), so the rules
+ *      and the contract they check always arrive as a pair,
  *   3. publishes the resolved palette into each of those siblings'
  *      `.impeccable/design.json` under `extensions.colorMeta` — the shape the
  *      Impeccable design detector reads — so a consumer repo's correct
@@ -40,6 +42,7 @@ const path = require('path');
 // same blocks this generator resolves).
 const {
     collectDefinedTokenNames,
+    collectDeprecated,
     extractMixinBody,
     extractRootBody,
     parseDecls,
@@ -54,6 +57,15 @@ const LAYOUT_SCSS = path.join(VARS_DIR, '_layout.scss');
 const BREAKPOINTS_SCSS = path.join(VARS_DIR, '_breakpoints.scss');
 const TOKENS_OUT = path.join(THEME_ROOT, 'tokens.json');
 const DESIGN_DOC = path.join(THEME_ROOT, 'docs', 'DESIGN-SYSTEM.md');
+const LAYOUT_PHTML = path.join(THEME_ROOT, 'view', 'layout', 'layout.phtml');
+const PACKAGE_JSON = path.join(THEME_ROOT, 'package.json');
+// The module guard's rule engine. It is published beside tokens.json for the
+// same reason tokens.json is: the two modules used to carry 621- and 701-line
+// forks of one guard, and the forks had drifted — one could not see a rem
+// media query, the other a multi-line declaration or an oklch() literal, and
+// both still accepted a breakpoint spelling this theme retired in 2.14.
+const GUARD_CORE = path.join(THEME_ROOT, 'scripts', 'lib', 'theme-token-guard.cjs');
+const GUARD_CORE_SIBLING_REL = path.join('scripts', 'theme-token-guard.cjs');
 const SIBLINGS = ['IwacSearch', 'IwacVisualizations'];
 const SYNC_SIBLINGS = process.argv.includes('--sync-siblings');
 
@@ -363,7 +375,7 @@ function omitKeys(obj, exclude) {
     return out;
 }
 
-/** The five responsive breakpoints, as `{ sm: '600px', … }`. */
+/** The responsive breakpoints, as `{ sm: '600px', … }`. */
 function parseBreakpoints() {
     const vars = parseSassVars(fs.readFileSync(BREAKPOINTS_SCSS, 'utf8'));
     const out = {};
@@ -438,6 +450,95 @@ function collectSeries(lightDecls, darkDecls, light, dark) {
         light: names.map((n) => light[n]),
         dark: names.map((n) => dark[n]),
     };
+}
+
+/**
+ * The PUBLIC vocabulary: every token declared in the variable files.
+ *
+ * `names` answers "does this token exist?"; this answers "may a module consume
+ * it?". They differ by the theme's component-local properties —
+ * `--carousel-*`, `--plate-*`, `--menu-drawer-top` — which are declared inside
+ * one component (or set by its script) to parameterise that component, and
+ * which a module reading them would couple to markup the theme is free to
+ * rewrite. Before this list existed the module guards could only check
+ * `names`, so a module could consume `--plate-scrim` and pass.
+ *
+ * Derived from WHERE a token is declared, not from a list: a token added to
+ * `asset/sass/abstracts/variables/` is public by construction, one declared in
+ * a component partial is private by construction.
+ */
+function collectPublicNames() {
+    const out = new Set();
+    for (const file of fs.readdirSync(VARS_DIR)) {
+        if (!file.endsWith('.scss')) continue;
+        const src = fs.readFileSync(path.join(VARS_DIR, file), 'utf8')
+            .replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+        for (const m of src.matchAll(/(?:^|[{;\s])(--[a-z0-9][a-z0-9-]*)\s*:/gim)) out.add(m[1]);
+    }
+    // The two brand seeds are injected by layout.phtml and read from
+    // _colors.scss; they are part of the contract (tokens.json `seeds`).
+    for (const seed of ['--primary-base', '--secondary-base']) out.add(seed);
+    return [...out].sort();
+}
+
+/**
+ * The font weights the theme actually LOADS, per font token.
+ *
+ * The webfont request in layout.phtml is the truth about which weights exist:
+ * Besley ships 500/600/800 only, so `font-weight: 700` on a `--font-headings`
+ * element does not render 700 — the browser's matching picks 800 — and a
+ * stylesheet that says 700 is describing a face nobody sees.
+ * IwacVisualizations' section heading said exactly that. Publishing the loaded
+ * axes lets every guard compare a declared weight against a real one.
+ *
+ * Parsed from the Bunny/Google Fonts `family=` syntax:
+ *   besley:500,600,800
+ *   public-sans:ital,wght@0,400..700;1,400
+ * and keyed by the font token whose FIRST family matches the slug. A stack
+ * that starts with a system font (--font-mono) loads nothing and is omitted.
+ *
+ * @returns {Record<string, {family: string, normal: number[][], italic: number[][]}>}
+ */
+function collectFonts(values) {
+    const layout = fs.readFileSync(LAYOUT_PHTML, 'utf8');
+    const m = layout.match(/fonts\.(?:bunny\.net|googleapis\.com)\/css2?\?family=([^&'"]+)/);
+    if (!m) return {};
+    const bySlug = {};
+    for (const spec of m[1].split('|')) {
+        const [slug, axesSpec = ''] = spec.split(':');
+        const entry = { normal: [], italic: [] };
+        const range = (s) => {
+            const [a, b] = s.split('..').map(Number);
+            return [a, b === undefined ? a : b];
+        };
+        if (!axesSpec) {
+            entry.normal.push([400, 400]);
+        } else if (!axesSpec.includes('@')) {
+            for (const w of axesSpec.split(',')) {
+                if (/^\d+(\.\.\d+)?$/.test(w)) entry.normal.push(range(w));
+                else if (/^\d+i$/.test(w)) entry.italic.push(range(w.slice(0, -1)));
+            }
+        } else {
+            const [axisList, tuples] = axesSpec.split('@');
+            const axes = axisList.split(',');
+            const iItal = axes.indexOf('ital');
+            const iWght = axes.indexOf('wght');
+            for (const tuple of tuples.split(';')) {
+                const parts = tuple.split(',');
+                const italic = iItal !== -1 && parts[iItal] === '1';
+                const wght = iWght !== -1 ? range(parts[iWght]) : [400, 400];
+                entry[italic ? 'italic' : 'normal'].push(wght);
+            }
+        }
+        bySlug[slug.toLowerCase()] = entry;
+    }
+    const out = {};
+    for (const token of Object.keys(values).filter((k) => /^--font-/.test(k)).sort()) {
+        const first = values[token].split(',')[0].trim().replace(/^["']|["']$/g, '');
+        const slug = first.toLowerCase().replace(/\s+/g, '-');
+        if (bySlug[slug]) out[token] = { family: first, ...bySlug[slug] };
+    }
+    return out;
 }
 
 /** Map of `--type-*` → the semantic token it references (for the docs table). */
@@ -625,8 +726,28 @@ function main() {
     const darkHex = resolveTheme(darkDecls, seeds);
     const series = collectSeries(lightDecls, darkDecls, lightHex, darkHex);
 
+    const names = [...collectDefinedTokenNames(THEME_ROOT)].sort();
+    const publicNames = collectPublicNames();
+    const strayPublic = publicNames.filter((n) => !names.includes(n));
+    if (strayPublic.length) {
+        console.error('✗ public tokens missing from names: ' + strayPublic.join(', '));
+        process.exit(1);
+    }
+    const deprecated = collectDeprecated(THEME_ROOT);
+    for (const [old, replacement] of Object.entries(deprecated)) {
+        if (!publicNames.includes(replacement)) {
+            console.error(`✗ ${old} is deprecated in favour of ${replacement}, which is not a public token`);
+            process.exit(1);
+        }
+    }
+
     const tokens = {
-        _comment: 'GENERATED by IWAC-theme/scripts/build-tokens.js from asset/sass/abstracts/variables/*.scss — do not edit by hand. Run `npm run build:tokens` in the IWAC-theme repo. `light`/`dark` are the OKLCH colour tokens resolved to sRGB hex; `values` is every token resolved to its literal CSS value (type, spacing, shadows, fonts, motion); `breakpoints` are the five media-query widths; `series` is the ordered categorical chart palette (`series.light[i]` is `--series-{i+1}`, same hexes as `light`/`dark`, in palette order). Fallbacks (var(--t, <fallback>), FALLBACK_*) must equal the LIGHT value.',
+        _comment: 'GENERATED by IWAC-theme/scripts/build-tokens.js from asset/sass/abstracts/variables/*.scss — do not edit by hand. Run `npm run build:tokens` in the IWAC-theme repo. `light`/`dark` are the OKLCH colour tokens resolved to sRGB hex; `values` is every token resolved to its literal CSS value (type, spacing, shadows, fonts, motion); `breakpoints` are the '
+            + Object.keys(breakpoints).length + ' media-query widths; `series` is the ordered categorical chart palette (`series.light[i]` is `--series-{i+1}`, same hexes as `light`/`dark`, in palette order); `names` is every token the theme defines, `public` the subset a module may consume, `deprecated` maps a retired name to its replacement, and `fonts` lists the weights each font token actually loads. Fallbacks (var(--t, <fallback>), FALLBACK_*) must equal the LIGHT value.',
+        // Which theme release this contract was generated from — so a module's
+        // guard can say which contract it checked against, and a scheduled job
+        // can tell a stale copy from a current one.
+        themeVersion: JSON.parse(fs.readFileSync(PACKAGE_JSON, 'utf8')).version,
         seeds,
         breakpoints,
         // The theme's full custom-property vocabulary — colour tokens AND
@@ -638,7 +759,13 @@ function main() {
         // pass: their hex fallbacks were fine, and nothing downstream knew the
         // names were fiction. Publishing the vocabulary lets each module's
         // check-theme-tokens.js verify names, not just values.
-        names: [...collectDefinedTokenNames(THEME_ROOT)].sort(),
+        names,
+        // The subset of `names` a module may consume — see collectPublicNames().
+        public: publicNames,
+        // Retired name → replacement. Still defined; never to be used anew.
+        deprecated,
+        // Loaded weights per font token — see collectFonts().
+        fonts: collectFonts(values.light),
         light: lightHex,
         dark: darkHex,
         // The categorical chart palette, in palette order — theme-owned since
@@ -680,6 +807,16 @@ function main() {
     for (const t of targets) {
         fs.writeFileSync(t, json);
         console.log('  wrote ' + path.relative(path.join(THEME_ROOT, '..'), t));
+    }
+
+    // 1b. The guard engine travels with the contract it enforces.
+    const guardSrc = sidecarSyncs.length ? fs.readFileSync(GUARD_CORE, 'utf8') : '';
+    for (const [sib, dir] of sidecarSyncs) {
+        const out = path.join(dir, GUARD_CORE_SIBLING_REL);
+        if (fs.existsSync(out) && fs.readFileSync(out, 'utf8') === guardSrc) continue;
+        fs.mkdirSync(path.dirname(out), { recursive: true });
+        fs.writeFileSync(out, guardSrc);
+        console.log('  wrote ' + path.join(sib, GUARD_CORE_SIBLING_REL));
     }
 
     // 2. Sibling Impeccable sidecars — the palette the design detector reads.

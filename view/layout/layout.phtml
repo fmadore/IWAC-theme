@@ -361,9 +361,21 @@ if ($userBar) {
 			// manifest island or install button is absent.
 			$this->inlineScript()->prependFile($this->assetUrl('js/pwa-install.js'));
 		}
+		// Page-specific scripts load only where their subject is on the page.
+		// Both already no-op without a target, but they were downloaded and
+		// parsed on every page — together ~36 KB of the ~74 KB of theme script
+		// each visitor paid for, on pages with no Asset block and no viewer.
+		// The content is rendered before the layout, so the check is exact:
+		// the plate viewer only ever binds `.block-asset .asset > img`, and
+		// every Mirador mount carries "mirador" in its class or id.
+		$pageContent = (string) $this->content;
+		if (strpos($pageContent, 'block-asset') !== false) {
+			$this->inlineScript()->prependFile($this->assetUrl('js/plate-viewer.js'));
+		}
+		if (stripos($pageContent, 'mirador') !== false) {
+			$this->inlineScript()->prependFile($this->assetUrl('js/mirador-theme-sync.js'));
+		}
 		echo $this->inlineScript()
-			->prependFile($this->assetUrl('js/plate-viewer.js'))
-			->prependFile($this->assetUrl('js/mirador-theme-sync.js'))
 			->prependFile($this->assetUrl('js/pagination-scroll.js'))
 			->prependFile($this->assetUrl('js/theme-toggle.js'))
 			->prependFile($this->assetUrl('js/navigation.js'))

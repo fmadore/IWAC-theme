@@ -128,8 +128,33 @@ function parseDecls(body) {
     return decls;
 }
 
+/**
+ * Deprecated tokens and their replacements, from `// deprecated: --x` markers
+ * on declaration lines in the variable files.
+ *
+ * Shared by build-tokens.js (which publishes them as tokens.json `deprecated`
+ * for the module guards) and check-token-usage.js (which refuses them in the
+ * theme's own Sass). A deprecated token stays DEFINED so a third-party
+ * consumer does not break; only new use is refused.
+ *
+ * @param {string} themeRoot
+ * @returns {Record<string, string>} retired name → replacement
+ */
+function collectDeprecated(themeRoot) {
+    const varsDir = path.join(themeRoot, 'asset', 'sass', 'abstracts', 'variables');
+    const out = {};
+    for (const file of fs.readdirSync(varsDir).sort()) {
+        if (!file.endsWith('.scss')) continue;
+        const src = fs.readFileSync(path.join(varsDir, file), 'utf8');
+        const re = /^\s*(--[a-z0-9][a-z0-9-]*)\s*:[^;\n]*;\s*\/\/\s*deprecated:\s*(--[a-z0-9][a-z0-9-]*)/gim;
+        for (const m of src.matchAll(re)) out[m[1]] = m[2];
+    }
+    return out;
+}
+
 module.exports = {
     collectDefinedTokenNames,
+    collectDeprecated,
     walk,
     extractMixinBody,
     extractRootBody,
