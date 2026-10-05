@@ -45,10 +45,15 @@ jobs:
       # would be an untracked file that `git diff` cannot see.
       - run: npm run check:js-dist
       - run: npm run build
-      - run: npm audit --audit-level=high
 
       - name: Generated artifacts must match the committed ones
         run: git diff --exit-code
+
+      # Last, because it is the one step a third party can turn red overnight:
+      # placed before the diff, a new advisory skipped the artifact check on
+      # every push until it was dealt with. Exceptions, each with its reason,
+      # are in scripts/lib/audit-exceptions.js.
+      - run: npm run check:audit
 
   php:
     name: PHP ${{ matrix.php }} syntax and Composer

@@ -29,6 +29,7 @@ npm test               # JS behaviour (node:test + jsdom)
 npm run test:minified  # the same suite against asset/js/dist/*.min.js
 npm run test:php       # view helpers + template regressions (plain PHP, no Composer)
 npm run lint           # ESLint + Stylelint (correctness rules and the gotchas below)
+npm run check:audit    # npm audit at high+, minus the written exceptions (see below)
 phpstan analyse        # helpers at level 6 (CI installs phpstan via setup-php)
 ```
 
@@ -46,6 +47,17 @@ case-sensitive on the Linux server; only the class name is not. So `helpers[] =
 "BrowseLayout"` must be called `$this->BrowseLayout()`. A case mismatch 500s every page
 that renders it — and "fixing" it by lowercasing `theme.ini` just moves the failure to a
 `require_once` fatal that is invisible on a case-insensitive dev filesystem.
+
+### An unfixable advisory gets an exception with a reason, not a weaker gate
+
+`npm run check:audit` fails on any high or critical advisory not listed in
+[scripts/lib/audit-exceptions.js](scripts/lib/audit-exceptions.js), whose entries each
+say why no upgrade clears it and why the code is unreachable. It also fails when an
+entry is no longer needed — npm can fix it in range, or it stopped appearing — so the
+list retires itself. Don't reach for `--omit=dev` or a lower `--audit-level`: every
+dependency here is a dev dependency, so either turns the gate off. And keep a fix
+for an advisory separate from upgrades that change `asset/css/` — a cssnano minor
+rewrote ~460 declarations of the compiled stylesheet, which deserves its own review.
 
 ### The version lives in six places — `npm run bump` is the only writer
 
