@@ -72,7 +72,7 @@ value (see §3). Do **not** invent token names — undefined tokens fail silentl
 | Category | Tokens |
 |----------|--------|
 | **Brand** | `--primary`, `--primary-hover`, `--primary-active`, `--secondary`, `--white`, `--black` |
-| **Ink (text)** | `--ink-strong`, `--ink`, `--ink-light`, `--ink-subtle`, `--muted`, `--ink-on-pastel` |
+| **Ink (text)** | `--ink-strong`, `--ink`, `--ink-light`, `--ink-subtle`, `--muted`, `--ink-on-pastel`, `--ink-on-primary` (text/icons on a `--primary` fill — white in light, dark ink in dark; never hardcode `--white` there) |
 | **Surfaces** | `--surface`, `--surface-raised`, `--surface-sunken`, `--surface-overlay`, `--background` |
 | **Borders** | `--border-light`, `--border`, `--border-strong` |
 | **Status** | `--success`, `--warning`, `--error`, `--info` (+ matching `*-bg`) |
@@ -553,8 +553,8 @@ These were consumed by the modules historically and have been repointed:
 
 | Old reference | Use instead |
 |---------------|-------------|
-| `var(--primary-contrast, …)` | `var(--white, #fff)` |
-| `var(--on-primary, …)` | `var(--white, #fff)` |
+| `var(--primary-contrast, …)` | `var(--ink-on-primary, #ffffff)` |
+| `var(--on-primary, …)` | `var(--ink-on-primary, #ffffff)` |
 | `var(--accent, …)` | `var(--primary, …)` |
 | `var(--success-strong, …)` | `color-mix(in oklab, var(--success), black 18%)` |
 | `#c66` (old rose brand) | `var(--primary, #ce4115)` / `var(--error, #c9222b)` |

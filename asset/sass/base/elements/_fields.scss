@@ -92,7 +92,7 @@ input[type="checkbox"] {
             content: "";
             position: absolute;
             inset: 0;
-            color: var(--white); // icon-mask paints currentColor
+            color: var(--ink-on-primary); // icon-mask paints currentColor
         }
     }
 
