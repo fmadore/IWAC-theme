@@ -12,6 +12,7 @@ colors:
   ink-subtle: "#5a5e63"
   muted: "#66696e"
   ink-on-pastel: "#0d121b"
+  ink-on-primary: "#ffffff"
   surface: "#fdfcfb"
   surface-raised: "#faf8f6"
   surface-sunken: "#f4f1ef"
@@ -124,12 +125,12 @@ components:
     textColor: "{colors.ink-strong}"
   button-primary:
     backgroundColor: "{colors.primary}"
-    textColor: "{colors.white}"
+    textColor: "{colors.ink-on-primary}"
     rounded: "{rounded.md}"
     padding: "0.5rem 1.5rem"
   button-primary-hover:
     backgroundColor: "{colors.primary-hover}"
-    textColor: "{colors.white}"
+    textColor: "{colors.ink-on-primary}"
   button-secondary:
     backgroundColor: "transparent"
     textColor: "{colors.primary}"
@@ -226,6 +227,11 @@ from admin-overridable seeds via `color-mix(in oklab, …)`.
   uppercase metadata labels, quiet chrome.
 - **Ink On Pastel** (#0d121b): the one text ink used on the tinted status grounds, so a
   notice never relies on the body ink landing legibly on a colored plate.
+- **Ink On Primary** (#ffffff): text and icons painted *on* a `--primary` fill —
+  filled buttons and submits, the add/remove-value buttons, a checked box's tick, the
+  hero search submit. White in light; warm dark ink (#0f0a05) in dark mode, because the
+  dark ramp lightens and white there fell to 3.23 / 2.78:1 at rest / hover (dark ink:
+  6.10 / 7.10 / 4.57:1 rest / hover / pressed). Never a hardcoded `--white`.
 - **Surface / Raised / Sunken / Background** (#fdfcfb / #faf8f6 / #f4f1ef / #f7f5f3):
   near-white at chroma ~0.002 — an imperceptible warm tint, never cream.
 - **Border Light / Border / Border Strong** (#e2e5e8 / #ced1d6 / #aeb1b7): hairlines
@@ -450,7 +456,8 @@ The register's signature inversion: **the default is quiet; the loud one opts in
 - **Base `<button>`:** transparent, 1px `--border` outline, ink text, radius 0.5rem,
   padding 0.5rem 1.5rem, 0.9375rem at weight 500; hover fills `--surface-sunken` and
   strengthens the border. No shadow, no lift.
-- **Primary (`.btn--primary` or any submit control):** primary fill, white text,
+- **Primary (`.btn--primary` or any submit control):** primary fill, `--ink-on-primary` text
+  (white in light, dark ink in dark mode — never a hardcoded `--white`),
   `--glow-sm` halo; hover lifts -1px with `--glow-md`; active returns flat on
   `--primary-active` with `--glow-xs`.
 - **Secondary (`.btn--secondary`):** outlined in primary, transparent fill; hover

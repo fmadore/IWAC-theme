@@ -199,7 +199,7 @@ button.remove-value {
     &:focus {
         background-color: var(--primary);
         border-color: var(--primary);
-        color: var(--white);
+        color: var(--ink-on-primary);
         transform: none;
         box-shadow: var(--glow-sm);
     }

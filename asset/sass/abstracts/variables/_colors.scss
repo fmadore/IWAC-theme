@@ -47,6 +47,14 @@
   --white: #fff;
   --black: #000;
 
+  // Text and icons painted ON a --primary fill: filled buttons, submits, the
+  // hero search submit, a checked box's tick. White here, 4.78:1 on resting
+  // --primary and higher on hover/active, which darken. It flips in the dark
+  // block, where the ramp LIGHTENS and white falls to 3.23:1 — so a filled
+  // control must ask for this, never for --white. (After --white: the token
+  // generator resolves a block top to bottom.)
+  --ink-on-primary: var(--white);
+
   // Surfaces — near-white with imperceptible warm hint (chroma 0.002).
   // Drops the previous cream undertone (chroma 0.020 at hue 38) which
   // read as "manuscript / archival" against the brief.
@@ -196,6 +204,12 @@
   --ink-subtle:    oklch(67% 0.010 72);
   --muted:         oklch(62% 0.010 70);   // AA (>=4.5:1) on raised/sunken (was 59%, which fell to 4.39 on raised)
   --ink-on-pastel: oklch(15% 0.015 70);
+
+  // Dark ink on the lightened dark primary: 6.10:1 at rest, 7.10:1 on hover
+  // (seed + white 22%), 4.57:1 pressed (seed + black 4%) — where white reads
+  // 3.23 / 2.78 / 4.31:1. The skip link proved the pairing first (see
+  // utilities/_accessibility.scss), and it improves under a lighter seed.
+  --ink-on-primary: var(--ink-on-pastel);
 
   --surface:         oklch(16% 0.012 70);
   --surface-raised:  oklch(20% 0.013 70);
