@@ -206,6 +206,11 @@ they remain, and safe to drop when you're already editing the file. The thing to
 now is the reverse: **a control that needs to shout must say so**, or it will render
 quiet.
 
+Its label is `--ink-on-primary`, never `--white` — here and in both modules. Dark mode
+*lightens* the primary ramp, so white on a dark-mode fill is 3.23:1; the token flips to
+dark ink there (6.10:1). The light-only scans stayed green on that for every submit and
+IwacSearch's active tab until the token landed.
+
 ### Read a module's rendered HTML before styling it
 
 Omeka modules ship their own markup and vendor CSS (tablesaw; RightsStatements inline-styles

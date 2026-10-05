@@ -138,6 +138,20 @@ test('IwacSearch results surface has no serious WCAG A/AA violations', async ({ 
     expect(blocking(results)).toEqual([]);
 });
 
+// Dark is a second set of pairs here too: the active tab painted white on a
+// dark --primary at 3.23:1 while the light scan above stayed green.
+test('IwacSearch results surface has no serious WCAG A/AA violations in dark mode', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.goto('search/everything?q=islam', { waitUntil: 'networkidle' });
+    await expect(page.locator('body')).toHaveAttribute('data-theme', 'dark');
+    await expect(page.locator('.iwac-card').first()).toBeVisible();
+    const results = await new AxeBuilder({ page })
+        .include('[data-iwac-federated-root], [data-iwac-search-root]')
+        .withTags(WCAG_A_AA)
+        .analyze();
+    expect(blocking(results)).toEqual([]);
+});
+
 test('IwacVisualizations item-page blocks have no serious WCAG A/AA violations', async ({ page }) => {
     await page.goto('item/23365', { waitUntil: 'networkidle' });
     const blocks = page.locator('.iwac-vis-block');

@@ -311,6 +311,23 @@
           "#e7effd"
         ]
       },
+      "ink-on-primary": {
+        "role": "neutral",
+        "displayName": "Ink On Primary",
+        "canonical": "#ffffff",
+        "dark": "#0f0a05",
+        "purpose": "Text and icons on a --primary fill (filled buttons, submits, add/remove-value buttons, checked tick, hero search submit). White in light; warm dark ink in dark mode, where the lightened primary ramp drops white below AA. Never a hardcoded --white.",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#272727",
+          "#454545",
+          "#666666",
+          "#898989",
+          "#ababab",
+          "#cecece",
+          "#eeeeee"
+        ]
+      },
       "success-bg": {
         "role": "neutral",
         "displayName": "Success Ground",
@@ -714,9 +731,9 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The opt-in loud action (.btn--primary or a submit control): brand fill, glow halo, hover lift.",
+      "description": "The opt-in loud action (.btn--primary or a submit control): brand fill, --ink-on-primary text (white light, dark ink dark), glow halo, hover lift.",
       "html": "<button class=\"ds-btn-primary\" type=\"submit\">Search</button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-sm, 0.5rem) var(--space-lg, 1.5rem); font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); font-weight: 500; color: var(--white, #ffffff); background: var(--primary, #ce4115); border: 1px solid transparent; border-radius: var(--radius-md, 0.5rem); box-shadow: var(--glow-sm, 0 2px 6px -1px rgba(206,65,21,0.25)); cursor: pointer; transition: background-color 150ms cubic-bezier(0.25,1,0.5,1), box-shadow 150ms cubic-bezier(0.25,1,0.5,1), transform 150ms cubic-bezier(0.25,1,0.5,1); } .ds-btn-primary:hover { background: var(--primary-hover, #b03710); transform: translateY(-0.0625rem); box-shadow: var(--glow-md, 0 4px 12px -2px rgba(206,65,21,0.3)); } .ds-btn-primary:active { background: var(--primary-active, #942c0c); transform: translateY(0); box-shadow: var(--glow-xs, 0 1px 3px 0 rgba(206,65,21,0.2)); } .ds-btn-primary:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 2px; }"
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-sm, 0.5rem) var(--space-lg, 1.5rem); font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); font-weight: 500; color: var(--ink-on-primary, #ffffff); background: var(--primary, #ce4115); border: 1px solid transparent; border-radius: var(--radius-md, 0.5rem); box-shadow: var(--glow-sm, 0 2px 6px -1px rgba(206,65,21,0.25)); cursor: pointer; transition: background-color 150ms cubic-bezier(0.25,1,0.5,1), box-shadow 150ms cubic-bezier(0.25,1,0.5,1), transform 150ms cubic-bezier(0.25,1,0.5,1); } .ds-btn-primary:hover { background: var(--primary-hover, #b03710); transform: translateY(-0.0625rem); box-shadow: var(--glow-md, 0 4px 12px -2px rgba(206,65,21,0.3)); } .ds-btn-primary:active { background: var(--primary-active, #942c0c); transform: translateY(0); box-shadow: var(--glow-xs, 0 1px 3px 0 rgba(206,65,21,0.2)); } .ds-btn-primary:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 2px; }"
     },
     {
       "name": "Search Input",
