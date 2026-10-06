@@ -809,8 +809,13 @@ function main() {
         console.log('  wrote ' + path.relative(path.join(THEME_ROOT, '..'), t));
     }
 
-    // 1b. The guard engine travels with the contract it enforces.
-    const guardSrc = sidecarSyncs.length ? fs.readFileSync(GUARD_CORE, 'utf8') : '';
+    // 1b. The guard engine travels with the contract it enforces. Written as
+    // LF, the bytes on master: a Windows checkout of this repo (autocrlf) holds
+    // a CRLF working copy, and copying that verbatim left the sibling's file
+    // "different from master" in a repo that does not renormalise on commit.
+    const guardSrc = sidecarSyncs.length
+        ? fs.readFileSync(GUARD_CORE, 'utf8').replace(/\r\n/g, '\n')
+        : '';
     for (const [sib, dir] of sidecarSyncs) {
         const out = path.join(dir, GUARD_CORE_SIBLING_REL);
         if (fs.existsSync(out) && fs.readFileSync(out, 'utf8') === guardSrc) continue;
