@@ -148,7 +148,8 @@ and three module rules said exactly that.
 `tokens.json` → `fonts` publishes the loaded axes per font token, parsed from
 the webfont URL, and every guard checks a block that sets both a theme family
 and a numeric weight against it. To use a new weight, add it to the webfont
-request first.
+request first. The URL itself is published as `tokens.json` → `fontsUrl`, for
+a surface that renders without the theme's layout (§6, embed routes).
 
 ### Stacking order — derive from `--z-*`
 
@@ -325,11 +326,11 @@ Anything else fails the build, with the fix named: an unknown name, a
 theme-internal component parameter, or a deprecated alias and its replacement.
 
 `tokens.json` also carries `themeVersion` (the theme release it was generated
-from, printed by every module guard), `fonts` (§2, font weights) and `themed`
-(every token the dark blocks redeclare — the input to the guard's `scope`
-rule, §5). When you
-add or change a token, run `npm run sync:tokens` and rebuild the modules — same
-workflow as a colour change.
+from, printed by every module guard), `fonts` (§2, font weights), `fontsUrl`
+(the webfont stylesheet those weights come from, §6) and `themed` (every token
+the dark blocks redeclare — the input to the guard's `scope` rule, §5). When
+you add or change a token, run `npm run sync:tokens` and rebuild the modules —
+same workflow as a colour change.
 
 ---
 
@@ -864,7 +865,14 @@ with that guard rather than duplicating it badly.
   `asset/css/iwac-embed-tokens.css` — generated from `tokens.json` by
   `npm run build:embed-tokens` (light on `:root`, dark on `[data-theme="dark"]`)
   and asserted by `npm run lint:embed-tokens`. Without it `?theme=dark` painted
-  light fallbacks around charts drawn with the dark palette.
+  light fallbacks around charts drawn with the dark palette. They carry no
+  theme layout either, so no webfont `<link>`: emit `tokens.json` →
+  `fontsUrl` (the exact stylesheet `layout.phtml` requests) rather than a
+  copied URL, and the embed renders in the faces `fonts` says are loaded.
+  The brand accent follows the same logic: the published `--primary` is the
+  seed **derived** (`seeds['--primary-base']` + 8% black in light), so an
+  embed that repaints from the raw `primary_color` setting must apply that
+  derivation, not use the seed as `--primary`.
 - **Build:** `npm run build:js` (esbuild) bundles `asset/js/**` into
   `asset/js/dist/` per `asset/js/bundles.json`; `npm run build:css` (csso)
   writes the `*.min.css` the templates load. CSS sources are hand-edited; never
