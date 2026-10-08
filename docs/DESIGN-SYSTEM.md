@@ -325,7 +325,9 @@ Anything else fails the build, with the fix named: an unknown name, a
 theme-internal component parameter, or a deprecated alias and its replacement.
 
 `tokens.json` also carries `themeVersion` (the theme release it was generated
-from, printed by every module guard) and `fonts` (§2, font weights). When you
+from, printed by every module guard), `fonts` (§2, font weights) and `themed`
+(every token the dark blocks redeclare — the input to the guard's `scope`
+rule, §5). When you
 add or change a token, run `npm run sync:tokens` and rebuild the modules — same
 workflow as a colour change.
 
@@ -742,6 +744,21 @@ which side of the theme boundary the referent lives on. Theme-independent
 compositions (`--panel-radius: var(--radius-md)`) stay in `:root`; everything
 else belongs in both mixins.
 
+**The same rule binds a module's own compositions**, and until the 2026-10 review
+IwacVisualizations declared 21 ramps on `:root` alone
+(`--iwac-vis-heatmap-0: color-mix(in oklab, var(--primary) 8%, var(--surface))`
+and friends), so a light-OS reader who toggled dark got the light heatmap on
+dark panels, its lowest bucket near-white (review V-01). A module cannot
+redeclare in the dark block — it must not branch on the theme at all — so its
+fix is to declare the composition where the theme's dark tokens land:
+**`:root, body`**. `tokens.json` → `themed` lists every token the dark blocks
+redeclare, and the module guard's `scope` rule (§8) fails a custom property
+declared only on a root-only selector (`:root`, `html`, `:root:not(…)`) whose
+value reaches one of them — directly, or through another module property that
+does — unless the same property is also declared on a selector whose subject
+is `body`. A composition scoped to a component class is fine: it is
+substituted on that element, under `<body>`.
+
 ### `DESIGN.md` frontmatter is generated, and asserted
 
 The root `DESIGN.md` (the Impeccable skill's machine-readable artifact) carries
@@ -899,6 +916,8 @@ The engine's rules, each with a must-fire and a must-pass case in
 | `font-size` | no absolute length, including inside `clamp()` / `calc()` |
 | `font-weight` | a weight (and italic) the theme loads |
 | `script-fallback` / `fallback-object` | runtime colour fallbacks, `FALLBACK_*` tables and the series palette equal `tokens.json` |
+| `scope` | a custom property declared only on `:root` / `html` whose value reaches a `themed` token is also declared on `body` (§5, substitution scope) |
+| `focus-outline` | no `outline: none \| 0` (or `outline-style: none` / `outline-width: 0`) outside `:focus:not(:focus-visible)` — on a focus selector or a base rule alike (see Focus, §2) |
 
 **Change a rule here, never in a module's copy.** Both modules ignore their copy
 in their own ESLint (it is linted here), and each runs a weekly job that

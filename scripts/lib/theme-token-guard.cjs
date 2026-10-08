@@ -67,6 +67,28 @@
  *               `dark`; SERIES_LIGHT / SERIES_DARK / SERIES_LEAD_SLOTS equal
  *               tokens.json `series`.
  *   removed     `--primary-hue` / `--primary-sat` (removed in theme 2.0).
+ *   scope       (CSS only) A custom property declared on a selector that can
+ *               only match the ROOT element (`:root`, `html`,
+ *               `:root:not(…)`), whose value var()s a token that flips with
+ *               the theme (tokens.json `themed`, or a module property composed
+ *               from one), is also declared on a selector that matches
+ *               `<body>` — `:root, body` is the idiom. A custom property is
+ *               substituted on the element that DECLARES it, and the theme's
+ *               manual toggle redeclares its tokens on <body>: on :root alone
+ *               the composition freezes at the OS-scheme value and every dark
+ *               page inherits the light ramp (V-01; the theme's own
+ *               check:tokens rule 5 has caught the same shape three times).
+ *   focus-outline (CSS only) No `outline: none | 0` (nor `outline-style:
+ *               none`, `outline-width: 0`) except under
+ *               `:focus:not(:focus-visible)` — a pointer or programmatic focus
+ *               the browser would not ring anyway. On a selector that targets
+ *               :focus / :focus-visible / :focus-within it deletes the
+ *               indicator outright; on a base rule it deletes it wherever no
+ *               later rule restores an outline (a box-shadow ring does not
+ *               count: forced-colors mode drops it). Use var(--focus-outline),
+ *               or `outline: 2px solid transparent` beside a --ring-focus
+ *               box-shadow. Until this rule the ban lived in the theme's
+ *               Stylelint only (X-10).
  *
  * SCANNING UNIT. CSS is read as LOGICAL lines — source lines joined while
  * their parentheses are unbalanced (at most 12) — because a declaration the
@@ -264,20 +286,24 @@ function unitsOf(rel, raw) {
  * block-level rule (font-family + font-weight in one block). Nested at-rules
  * simply open another block.
  */
-function cssBlocks(region) {
+function cssBlocks(region, { dropComments = false } = {}) {
     const blocks = [];
     const stack = [];
     let frame = '';
     let line = region.start;
+    // Opt-out marker comments survive blankComments(), so they can sit at the
+    // head of the next selector or declaration. The scope / focus rules ask
+    // for them to be dropped; the font-weight rule keeps its original reading.
+    const clean = (s) => (dropComments ? s.replace(/\/\*[\s\S]*?\*\//g, ' ') : s).trim();
     for (const ch of region.text) {
         if (ch === '\n') { line++; frame += ' '; continue; }
         if (ch === '{') {
-            const block = { selector: frame.trim(), decls: [] };
+            const block = { selector: clean(frame), decls: [] };
             blocks.push(block);
             stack.push(block);
             frame = '';
         } else if (ch === '}' || ch === ';') {
-            const decl = frame.trim();
+            const decl = clean(frame);
             const m = /^([\w-]+)\s*:\s*([\s\S]+)$/.exec(decl);
             if (m && stack.length) stack[stack.length - 1].decls.push({ prop: m[1].toLowerCase(), value: m[2].trim(), line });
             if (ch === '}') stack.pop();
@@ -288,6 +314,76 @@ function cssBlocks(region) {
     }
     return blocks;
 }
+
+/* ------------------------------------------------------------------ */
+/*  Selector reading — just enough for the scope and focus rules        */
+/* ------------------------------------------------------------------ */
+
+/** Split on `sep` at paren / bracket depth 0. */
+function splitTop(s, sep) {
+    const out = [];
+    let depth = 0, cur = '';
+    for (const ch of s) {
+        if (ch === '(' || ch === '[') depth++;
+        else if (ch === ')' || ch === ']') depth--;
+        if (ch === sep && depth === 0) { out.push(cur); cur = ''; } else cur += ch;
+    }
+    out.push(cur);
+    return out.map((x) => x.trim()).filter(Boolean);
+}
+
+/** `:global(x)` → `x` (Svelte), with balanced parens. */
+function unwrapGlobal(sel) {
+    let out = sel;
+    for (let i; (i = out.indexOf(':global(')) !== -1;) {
+        const j = closeParen(out, i + 7);
+        if (j === -1) break;
+        out = out.slice(0, i) + out.slice(i + 8, j) + out.slice(j + 1);
+    }
+    return out;
+}
+
+/** The complex selectors of a selector list, `:global()` unwrapped. */
+function complexSelectors(selectorList) {
+    return splitTop(selectorList, ',').map(unwrapGlobal);
+}
+
+/** The compound selector a complex selector's declarations apply to. */
+function subjectCompound(complex) {
+    let depth = 0, start = 0;
+    for (let i = 0; i < complex.length; i++) {
+        const ch = complex[i];
+        if (ch === '(' || ch === '[') depth++;
+        else if (ch === ')' || ch === ']') depth--;
+        else if (depth === 0 && /[\s>+~]/.test(ch)) start = i + 1;
+    }
+    return complex.slice(start).trim();
+}
+
+const ROOT_ONLY = /^(?::root|html)(?![\w-])/i;
+const MATCHES_BODY = /^(?:body|\*)(?![\w-])/i;
+
+/** The sanctioned home of `outline: none`: a focus that is NOT focus-visible. */
+const NOT_FOCUS_VISIBLE = /:not\(\s*:focus-visible\s*\)/i;
+
+/** Does this complex selector target a focus state (outside any :not())? */
+function targetsFocus(complex) {
+    let s = complex;
+    for (let i; (i = s.indexOf(':not(')) !== -1;) {
+        const j = closeParen(s, i + 4);
+        s = s.slice(0, i) + (j === -1 ? '' : s.slice(j + 1));
+        if (j === -1) break;
+    }
+    return /:focus(?:-visible|-within)?(?![\w-])/i.test(s);
+}
+
+const OUTLINE_REMOVED = (prop, value) => {
+    const v = value.replace(/\s*!important\s*$/i, '').trim().toLowerCase();
+    if (prop === 'outline') return /^(?:none|0(?:px)?)(?:\s+(?:none|0(?:px)?))*$/.test(v);
+    if (prop === 'outline-style') return v === 'none';
+    if (prop === 'outline-width') return /^0(?:px)?$/.test(v);
+    return false;
+};
 
 /** Walk `roots` ([[dir, exts]]) under `root`, returning `{ rel, text }`. */
 function collectFiles(root, roots, skip) {
@@ -526,6 +622,63 @@ function runGuard({ files, tokens, ownPrefix }) {
 
         // fallback-object (file level, scripts only)
         if (T && /\.(js|ts|mjs|cjs)$/.test(file)) checkRuntimeTables(f.text, file, T, flag);
+    }
+
+    // The two block-level rules below read every CSS region at once: a
+    // composition on :root in one sheet is repaired by a `body` declaration in
+    // another, and the property it composes from may live in a third.
+    const allBlocks = [];
+    for (const f of parsed) {
+        for (const region of f.cssRegions) {
+            for (const block of cssBlocks(region, { dropComments: true })) {
+                if (!block.selector || block.selector.startsWith('@')) continue;
+                allBlocks.push({ file: f.rel, block, complex: complexSelectors(block.selector) });
+            }
+        }
+    }
+
+    // focus-outline
+    for (const { file, block, complex } of allBlocks) {
+        const offending = complex.filter((c) => !NOT_FOCUS_VISIBLE.test(c));
+        if (!offending.length) continue;
+        const where = offending.some(targetsFocus)
+            ? 'on a focus selector deletes the focus indicator'
+            : 'on a base rule deletes the focus indicator wherever no later rule restores an outline';
+        for (const d of block.decls) {
+            if (OUTLINE_REMOVED(d.prop, d.value)) {
+                flag(file, d.line, 'focus-outline', `${d.prop}: ${d.value} ${where} — use var(--focus-outline), or \`outline: 2px solid transparent\` beside a --ring-focus box-shadow (forced-colors drops the shadow); only \`:focus:not(:focus-visible)\` may drop the outline`, `${block.selector} { ${d.prop}: ${d.value} }`);
+            }
+        }
+    }
+
+    // scope
+    if (T) {
+        const themed = new Set(Array.isArray(T.themed) ? T.themed : Object.keys(T.dark || {}));
+        const refs = (value) => [...value.matchAll(VAR_USE)].map((m) => m[1]);
+        const customDecls = allBlocks.flatMap(({ file, block, complex }) => block.decls
+            .filter((d) => d.prop.startsWith('--'))
+            .map((d) => ({ file, d, complex, selector: block.selector })));
+        // A module property composed from a themed token flips too — and so
+        // does one composed from THAT, so close over the module's own vocabulary.
+        for (let grew = true; grew;) {
+            grew = false;
+            for (const { d } of customDecls) {
+                if (!themed.has(d.prop) && refs(d.value).some((r) => themed.has(r))) {
+                    themed.add(d.prop);
+                    grew = true;
+                }
+            }
+        }
+        const onBody = new Set(customDecls
+            .filter(({ complex }) => complex.some((c) => MATCHES_BODY.test(subjectCompound(c))))
+            .map(({ d }) => d.prop));
+        for (const { file, d, complex, selector } of customDecls) {
+            if (!complex.some((c) => ROOT_ONLY.test(subjectCompound(c)))) continue;
+            if (onBody.has(d.prop)) continue;
+            const flips = [...new Set(refs(d.value).filter((r) => themed.has(r)))];
+            if (!flips.length) continue;
+            flag(file, d.line, 'scope', `${d.prop} composes ${flips.join(', ')}, which flip${flips.length === 1 ? 's' : ''} with the theme, but is declared only on \`${selector}\` — the manual toggle redeclares theme tokens on <body>, so this freezes at the OS-scheme value. Declare it on \`:root, body\``, `${selector} { ${d.prop}: ${d.value} }`);
+        }
     }
 
     violations.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);

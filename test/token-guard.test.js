@@ -149,6 +149,54 @@ test('freshness: current passes, ahead is reported, behind or diverged fails', (
     assert.equal(freshnessVerdict(pair(t('2.22.0'), t('2.22.0'), 'old rules', 'new rules')).code, 1, 'engine drifted');
 });
 
+test('scope: a :root-only composition of a themed token fails; :root, body passes', () => {
+    const ramp = 'color-mix(in oklab, var(--primary, #ce4115) 8%, var(--surface, #fdfcfb))';
+    fires('a.css', `:root { --iwac-test-ramp: ${ramp}; }`, 'scope');
+    fires('a.css', `html { --iwac-test-ramp: ${ramp}; }`, 'scope');
+    fires('a.css', `:root:not([data-x]) { --iwac-test-ramp: ${ramp}; }`, 'scope');
+    fires('a.svelte', `<style>\n  :global(:root) { --iwac-test-ramp: ${ramp}; }\n</style>`, 'scope');
+    clean('a.css', `:root,\nbody { --iwac-test-ramp: ${ramp}; }`);
+    // Repaired by a body declaration in another sheet.
+    const hits = runGuard({
+        files: [
+            { rel: 'a.css', text: `:root { --iwac-test-ramp: ${ramp}; }` },
+            { rel: 'b.css', text: `body { --iwac-test-ramp: ${ramp}; }` },
+        ],
+        tokens,
+        ownPrefix: OWN,
+    });
+    assert.deepEqual(hits.map((v) => v.rule), []);
+    // Theme-independent values and component-scoped compositions are fine.
+    clean('a.css', ':root { --iwac-test-gap: 3px; --iwac-test-r: var(--radius-md, 0.5rem); }');
+    clean('a.css', `.iwac-test-block { --iwac-test-ramp: ${ramp}; }`);
+});
+
+test('scope: a composition of a module property that flips is caught too', () => {
+    fires('a.css', ':root, body { --iwac-test-a: var(--primary, #ce4115); }\n:root { --iwac-test-b: var(--iwac-test-a); }', 'scope');
+    clean('a.css', ':root, body { --iwac-test-a: var(--primary, #ce4115); --iwac-test-b: var(--iwac-test-a); }');
+});
+
+test('focus-outline: dropping the outline anywhere but :focus:not(:focus-visible) fails', () => {
+    fires('a.css', '.a:focus { outline: none; }', 'focus-outline');
+    fires('a.css', '.a:focus-visible { outline: 0; }', 'focus-outline');
+    fires('a.css', '.a:hover,\n.a:focus-within { outline: none !important; }', 'focus-outline');
+    fires('a.css', '.a:focus-visible { outline-style: none; }', 'focus-outline');
+    fires('a.svelte', '<style>\n  .a:global(:focus-visible) { outline: none; }\n</style>', 'focus-outline');
+    // A base rule takes the outline away from every state that does not
+    // restore one — and a box-shadow ring on :focus-visible does not.
+    fires('a.css', '.slider { outline: none; }\n.slider:focus-visible { box-shadow: var(--ring-focus, 0 0 0 3px rgba(206, 65, 21, 0.3)); }', 'focus-outline');
+    // One sanctioned selector does not excuse its neighbour in the list.
+    fires('a.css', '.a:focus:not(:focus-visible),\n.b:focus { outline: none; }', 'focus-outline');
+});
+
+test('focus-outline: the sanctioned exception and real outlines pass', () => {
+    clean('a.css', '.a:focus:not(:focus-visible) { outline: none; }');
+    clean('a.svelte', '<style>\n  .a:focus:not(:focus-visible) { outline: none; }\n</style>');
+    clean('a.css', '.a:focus-visible { outline: var(--focus-outline, 2px solid #ce4115); outline-offset: 2px; }');
+    clean('a.css', '.a:focus-visible { outline: 2px solid transparent; box-shadow: var(--ring-focus, 0 0 0 3px rgba(206, 65, 21, 0.3)); }');
+    clean('a.css', '.a:hover { outline-offset: 4px; }');
+});
+
 test('removed tokens are refused', () => {
     fires('a.css', '.a { color: hsl(var(--primary-hue) 50% 50%); }', 'removed');
 });
