@@ -239,36 +239,44 @@ The theme also includes styling for:
 
 ## Design Tokens
 
-The theme uses CSS custom properties for consistent theming. Only the tokens
-listed below are stable — do **not** invent new token names. The generated
-`tokens.json` is the full reference, and `npm run check:tokens` will tell you
-immediately if a name doesn't resolve.
+The theme uses CSS custom properties for consistent theming. The list below
+is an overview, not the contract: the generated `tokens.json` is — its
+`public` array is every token a module may consume, and `deprecated` the
+names that must not be used anew. Do **not** invent token names;
+`npm run check:tokens` tells you immediately if a name doesn't resolve or is
+deprecated.
 
 ```css
 /* Colors (semantic, auto-adapted for light/dark theme) */
 --primary, --primary-hover, --primary-active
 --secondary    /* 2nd categorical/data-series colour (charts) — not UI chrome */
---ink          /* primary text */
---muted        /* secondary/muted text */
---surface      /* page background */
---surface-raised  /* cards, panels, hover surfaces */
---border, --border-light
---focus-color
+--ink-strong, --ink, --ink-light, --muted     /* text, strongest to quietest */
+--surface      /* page and panel ground */
+--surface-raised, --surface-sunken, --background
+--border, --border-light, --border-strong
+--type-*       /* categorical dots: item types + the five index types */
+--series-1 through --series-20                /* ordered chart palette */
 
-/* Spacing scale (4px base) */
+/* Focus */
+--focus-outline  /* the default: outline: var(--focus-outline) */
+--ring-focus, --ring-focus-sm                 /* when an outline would clip */
+
+/* Spacing scale (4px base) — the numeric names are canonical */
 --space-1 through --space-40
---space-sm, --space-md, --space-lg, --space-xl
+/* --space-xs/sm/md/lg/xl/2xl/3xl are DEPRECATED aliases: use the numbers */
 
 /* Typography */
---text-xs, --text-sm, --text-base, --text-lg   /* fixed rem scale (body/UI) */
---text-xl, --text-2xl, --text-3xl, --text-4xl  /* 3xl/4xl use fluid clamp() */
---font-headings, --font-body, --font-mono       /* font stacks (consumed by modules) */
---line-height-normal, --line-height-relaxed
+--text-2xs, --text-xs, --text-sm, --text-base, --text-lg  /* fixed UI scale; 2xs is the floor */
+--text-xl, --text-2xl, --text-3xl, --text-4xl, --text-5xl /* 3xl-5xl use fluid clamp() */
+--font-headings, --font-serif-text, --font-body, --font-mono
+--line-height-tight, --line-height-snug, --line-height-normal, --line-height-relaxed
+--tracking-display, --tracking-tight, --tracking-normal, --tracking-wide, --tracking-wider
 
-/* Effects */
---shadow-sm, --shadow-md, --shadow-lg
---radius-sm, --radius-md, --radius-lg, --radius-full
---transition-fast, --transition-base, --transition-slow
+/* Effects and motion */
+--shadow-xs, --shadow-sm, --shadow-md, --shadow-lg
+--radius-sm, --radius-md, --radius-lg, --radius-full  /* full is for dots, not controls */
+--transition-fast, --transition-base, --transition-slow  /* duration + easing */
+--duration-fast, --duration-base, --duration-slow        /* for *-duration */
 
 /* Accent mixing (for tinted borders/backgrounds) */
 --accent-mix-subtle, --accent-mix-medium, --accent-mix-strong

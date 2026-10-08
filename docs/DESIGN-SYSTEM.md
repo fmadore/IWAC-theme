@@ -334,6 +334,75 @@ same workflow as a colour change.
 
 ---
 
+## 2c. Shared conventions — decisions every surface makes the same way
+
+Tokens settle values. These settle *behaviour* that the three repositories
+used to decide separately, and disagreed on (review 2026-10). Each is one
+rule, applied in the theme's PHP, IwacSearch's Svelte and IwacVisualizations'
+charts alike.
+
+### Numbers and dates
+
+- **Thousands are grouped with U+202F** (narrow no-break space) in **every**
+  locale — never a comma a French reader would take for a decimal mark, never
+  a full space a line can break at. The theme's pagination, hero stat strip
+  and resource values already do (`number_format($n, 0, '.', "\u{202F}")`).
+- **The decimal mark follows the page locale**: `fr` comma, `en` point.
+  Percent: `12,5 %` in French, with U+202F before the sign; `12.5%` in English.
+- **The page locale, never the browser's.** A reader on an English browser
+  reading the French site gets French numbers. Compact chart notation
+  (`Intl.NumberFormat(pageLocale, { notation: 'compact' })`) is fine, with the
+  grouping rule applied after.
+- **One formatter per repository**, and no bare `toFixed()` /
+  `toLocaleString()` without a locale in display code: every call site that
+  formats for itself is a site that will disagree.
+- **Date-only values are formatted in UTC.** Publication dates are stored as
+  midnight UTC (or `YYYY-MM-DD`), so formatting them in the reader's zone puts
+  every date west of Greenwich one day early. Pass `timeZone: 'UTC'`, and test
+  under a non-UTC zone (Node on Windows may ignore `TZ`; assert with an
+  explicit `timeZone` in the test).
+
+### Controls grammar
+
+Two kinds of switch, two treatments — and the loud fill is not either of them.
+
+| Control | Treatment | Active state |
+|---|---|---|
+| **Page-level tab set** (switching between sections of a page) | Ruled tabs: ink text on the page ground, no box | `--ink-strong` text + a 2px `--primary` underline. No fill. |
+| **In-panel switch / toggle** (chart mode, list ↔ gallery, a filter chip) | Outlined chip, `--radius-sm` | `--primary` border + the existing primary wash (`--primary` mixed toward `transparent` at a low percentage), ink text |
+
+- **Never a filled-primary active state.** A brand fill is reserved for the one
+  loud action — a submit or `.btn--primary` (see the button-default note in
+  CLAUDE.md: the quiet control is the default).
+- **`--radius-full` is for dots**, not controls: categorical dots and status
+  pips. A pill-shaped chip or tab is off-grammar.
+- **Primary-coloured text** uses `--primary-hover` wherever `--primary` would
+  sit under 4.5:1 (see "`--primary` is an accent" above).
+
+### Focus
+
+Every focusable element keeps a visible **outline** — `outline:
+var(--focus-outline); outline-offset: 2px`, or, where it would clip,
+`outline: 2px solid transparent` beside a `--ring-focus` box-shadow (forced-
+colors mode drops the shadow and repaints the transparent outline). The one
+place `outline: none | 0` is legal is `:focus:not(:focus-visible)`: a pointer
+or programmatic focus the browser would not ring anyway. Asserted in the theme
+by Stylelint and in both modules by the guard's `focus-outline` rule (§8),
+which reads a base rule's `outline: none` as the same mistake as a focus
+rule's.
+
+### Section headings
+
+A section-level `h2` on a resource or page layout opens on the newspaper
+**section-opener**: a **2px `--ink-strong` rule** above it (`border-block-start`
+on the section), then the heading in `--font-headings` at `--text-lg`, weight
+800, `--tracking-display`, `--ink-strong`. It is the treatment "How to cite"
+and "Linked resources" already use (the theme's `section-head` mixin); a
+module block that renders its own section heading reproduces it with the
+tokens rather than inventing a quieter one. Never primary-coloured.
+
+---
+
 ## 3. The fallback-harmonization rule
 
 Fallbacks (`var(--token, #hex)`) only render when the IWAC theme is **not** the
@@ -629,7 +698,7 @@ These were consumed by the modules historically and have been repointed:
 | `var(--shadow-xl, …)` | `--shadow-lg` |
 | `var(--iwac-vis-shadow-{subtle,soft,strong})` | `--shadow-color-subtle` / `--shadow-color` / `--shadow-color-strong` |
 | `var(--iwac-vis-icon-btn{,-sm})` | `--size-control-sm` / `--size-control-xs` |
-| `var(--iwac-vis-model-<release-id>)` | `--iwac-vis-model-1` … `-4` |
+| `var(--iwac-vis-model-<release-id>)` | `--iwac-vis-model-1` … `-5` |
 
 ---
 
@@ -686,8 +755,10 @@ theme's:
 3. **Sequential ramps** (`--iwac-vis-cent-*`, `--iwac-vis-subj-*`,
    `--iwac-vis-heatmap-*`): built from `--primary` faded toward `--surface`, so
    they track the brand seed automatically.
-4. **AI-model accents** (`--iwac-vis-model-1` … `-4`): four distinct hues so
-   the sentiment panels separate the models. Site-overridable. Named by **role
+4. **AI-model accents** (`--iwac-vis-model-1` … `-5`): five distinct hues, one
+   per model on the sentiment panels — the subjectivity trend draws all five
+   at once, so the slots must stay apart there, including under colour-vision
+   deficiency. Site-overridable. Named by **role
    slot, not by model**: the names used to be the pinned release ids
    (`--iwac-vis-model-gpt-5-6-luna`, …), built at runtime from the Hugging Face
    column prefix, so every model upgrade renamed a design token and orphaned
@@ -883,9 +954,16 @@ with that guard rather than duplicating it badly.
 ## 7. Changing or adding a token
 
 1. Edit the theme's variable files in `asset/sass/abstracts/variables/`.
-2. Rebuild the theme: `npm run build`.
-3. If either module carries a **fallback** for that token, update the fallback
-   in the module to match the new canonical value (§3) — otherwise it drifts.
+2. Rebuild the theme: `npm run build` (it regenerates `tokens.json` and the
+   tables in this file). If the change touches a colour, radius or spacing
+   value, refresh the root `DESIGN.md` with `/impeccable document` —
+   `check:tokens` fails until you do (§5).
+3. Publish it: `npm run sync:tokens` copies `tokens.json` **and** the guard
+   engine into both modules. Then, in each module, update any **fallback** for
+   that token to the new canonical value (§3), rebuild, and run its guard
+   (`npm run lint:theme`) — a module that is not re-synced checks itself
+   against the old contract and stays green, which its weekly
+   `theme-contract` job exists to catch (§8).
 4. Never duplicate framework/UI tokens in a module; never invent names that
    aren't in the theme.
 
