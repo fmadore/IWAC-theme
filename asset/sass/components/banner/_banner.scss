@@ -306,7 +306,6 @@
             padding-inline: var(--space-5);
             background: var(--primary);
             color: var(--ink-on-primary);
-            font-size: var(--text-lg);
             cursor: pointer;
             // Neutralise the filled-button elevation. This IS a submit, so it
             // takes the loud opt-in in _buttons.scss: box-shadow: var(--glow-sm),
@@ -316,6 +315,15 @@
             // _header.scss.
             box-shadow: none;
             transition: background-color var(--transition-fast);
+
+            // The theme's Lucide search glyph — the button holds no markup.
+            // (It held core's Font Awesome o-icon-search span until 2.24.)
+            &::before {
+                @include icon-mask("../img/search.svg", ButtonText);
+                content: "";
+                width: var(--text-lg);
+                height: var(--text-lg);
+            }
 
             &:hover {
                 background: var(--primary-hover);

@@ -95,10 +95,12 @@ $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1')
 $this->headTitle($siteTitle)->setSeparator(' · ');
 $this->headTitle()->append($this->setting('installation_title', 'Omeka S'));
 $this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
-// Omeka's Font Awesome (iconfonts.css) is loaded async (see <head> below) rather
-// than render-blocking: the theme's own UI now draws from Bootstrap-Icon SVG
-// masks, so the icon font is only needed by a few non-critical module glyphs.
-$iconfontsUrl = $this->assetUrl('css/iconfonts.css', 'Omeka');
+// Omeka's Font Awesome (iconfonts.css) is deliberately NOT loaded. The theme
+// draws every glyph from Lucide SVG masks (asset/img/, the icon-mask() mixin),
+// including the o-icon-* classes core emits on public pages — see
+// base/elements/_icons.scss for the inventory those rules cover. Until 2.24
+// the stylesheet was still preloaded on every page, and with it 77 KB of
+// fa-solid-900.woff2 for the two search-submit glyphs that were its last use.
 // Single combined Google Fonts request: Public Sans (body/UI) +
 // Source Serif 4 with optical-size axis (display + body). Subsetted to
 // the weights actually used across the theme.
@@ -268,10 +270,6 @@ if ($userBar) {
 		      // jQuery and global.js, whose `var Omeka = {…}` replaced the object. ?>
 		<script>window.__iwacOmekaEarly=window.Omeka;</script>
 		<script type="module">var e=window.__iwacOmekaEarly,o=window.Omeka;if(e&&o&&e!==o){for(var k in e){if(!(k in o)){o[k]=e[k];}}}</script>
-
-		<?php // Font Awesome (Omeka iconfonts.css) loaded async so the icon font never blocks first paint. ?>
-		<link rel="preload" as="style" href="<?php echo $this->escapeHtmlAttr($iconfontsUrl); ?>" onload="this.onload=null;this.rel='stylesheet'">
-		<noscript><link rel="stylesheet" href="<?php echo $this->escapeHtmlAttr($iconfontsUrl); ?>"></noscript>
 
 		<style type="text/css" media="screen">
 			:root {

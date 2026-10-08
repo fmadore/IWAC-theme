@@ -6,8 +6,16 @@
 // These `o-icon-*` rules are the unification mechanism: Omeka core and its
 // modules emit FontAwesome-classed markup, and each rule here re-renders one
 // of those classes as a Lucide SVG mask so the public pages never show a
-// FontAwesome glyph. (Core still loads iconfonts.css asynchronously for the
-// glyphs no rule here covers.)
+// FontAwesome glyph.
+//
+// They are also why the public pages no longer load Omeka's iconfonts.css
+// (77 KB of fa-solid-900.woff2) at all. An inventory of the live HTML of both
+// sites — every page the navigation links, plus record, media, browse, item
+// set, index search and 404 pages — found exactly these classes on public
+// pages: o-icon-search (now a mask on the submit itself), -grid, -list,
+// -prev, -next, -annotation, and -private for signed-in editors. Each has a
+// rule here. A module that starts emitting another o-icon-* class on a public
+// page needs one too, or its glyph renders as nothing.
 //
 // The mask files keep their original Bootstrap-Icon FILENAMES from before the
 // Jan-2026 switch to Lucide — `list-ul.svg` holds Lucide's *list*. Read the
@@ -43,4 +51,32 @@
     content: "";
     width: 1em;
     height: 1em;
+}
+
+// Pagination arrows (common/pagination.phtml): links, or inert spans at the
+// first and last page.
+.o-icon-prev::before,
+.o-icon-next::before {
+    content: "";
+    width: var(--text-base);
+    height: var(--text-base);
+}
+
+.o-icon-prev::before {
+    @include icon-mask("../img/chevron-left.svg", LinkText);
+}
+
+.o-icon-next::before {
+    @include icon-mask("../img/chevron-right.svg", LinkText);
+}
+
+// A private value, shown only to signed-in editors (common/resource-values).
+.o-icon-private::before {
+    @include icon-mask("../img/lock.svg");
+    content: "";
+    width: 0.875em;
+    height: 0.875em;
+    margin-inline-start: var(--space-1);
+    vertical-align: -0.1em;
+    color: var(--muted);
 }

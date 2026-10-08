@@ -53,8 +53,16 @@
         transform: none;
     }
 
+    // Lucide's download glyph as a mask
     &__icon {
         display: flex;
+
+        &::before {
+            @include icon-mask("../img/download.svg", ButtonText);
+            content: "";
+            width: 1rem;
+            height: 1rem;
+        }
     }
 
     // iOS hint popover — opens *upward* from the footer control (in the

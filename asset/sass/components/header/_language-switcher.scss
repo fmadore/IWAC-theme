@@ -39,7 +39,7 @@
         }
     }
 
-    // Translate icon (inline Bootstrap Icons SVG, set in language-switcher.phtml)
+    // Translate icon: Lucide's "languages" glyph as a mask
     &__icon {
         display: flex;
         align-items: center;
@@ -47,10 +47,11 @@
         width: 1.125rem;
         height: 1.125rem;
 
-        svg {
+        &::before {
+            @include icon-mask("../img/translate.svg", ButtonText);
+            content: "";
             width: 100%;
             height: 100%;
-            fill: currentColor;
         }
     }
 

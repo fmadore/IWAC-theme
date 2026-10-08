@@ -23,6 +23,12 @@
  * Placeholder uses 'Search' (reliably translated to "Rechercher" by Omeka
  * core on /s/afrique_ouest/) rather than core's 'Enter a search term', whose
  * msgid the French catalog doesn't supply.
+ *
+ * The submit button is empty: its glyph is the theme's Lucide search mask,
+ * drawn as the button's ::before (components/header/_header.scss for the
+ * masthead, components/banner/_banner.scss for the hero). It used to hold
+ * core's <span class="o-icon-search">, a Font Awesome glyph — the only thing
+ * on most pages that needed the 77 KB icon font.
  */
 $translate  = $this->plugin('translate');
 $escapeAttr = $this->plugin('escapeHtmlAttr');
@@ -55,5 +61,5 @@ $formLabel = $variant === 'hero'
     <?php // One name source only: aria-labelledby would override aria-label,
           // and a self-reference makes AT announce the input's own value. ?>
     <input type="text" id="<?php echo $escapeAttr($inputId); ?>" name="<?php echo $escapeAttr($queryName); ?>" value="<?php echo $escapeAttr((string) $query); ?>" placeholder="<?php echo $escapeAttr($translate('Search')); ?>" aria-label="<?php echo $escapeAttr($translate('Query')); ?>">
-    <button id="<?php echo $escapeAttr($submitId); ?>" type="submit" aria-label="<?php echo $escapeAttr($translate('Submit')); ?>" title="<?php echo $escapeAttr($translate('Submit')); ?>"><span class="o-icon-search" aria-hidden="true"></span></button>
+    <button id="<?php echo $escapeAttr($submitId); ?>" type="submit" aria-label="<?php echo $escapeAttr($translate('Submit')); ?>" title="<?php echo $escapeAttr($translate('Submit')); ?>"></button>
 </form>

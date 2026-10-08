@@ -31,11 +31,12 @@
     opacity: 0.15;
     margin-block-end: var(--space-4);
 
-    // For SVG icon (used in generic error)
-    svg {
+    // The generic error page shows Lucide's triangle-alert in place of a code.
+    &--icon::before {
+        @include icon-mask("../img/triangle-alert.svg");
+        content: "";
         width: 4rem;
         height: 4rem;
-        color: var(--primary);
         opacity: 0.6;
     }
 }

@@ -264,12 +264,6 @@
         height: var(--text-lg);
         transition: transform var(--transition-fast);
         color: inherit;
-
-        svg {
-            width: 100%;
-            height: 100%;
-            fill: currentColor;
-        }
     }
 
     &:hover &__icon {
