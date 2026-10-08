@@ -31,12 +31,18 @@ $currentLocaleShort = rtrim(substr($currentLocale, 0, 3), '_-');
 
 <?php // Disclosure of links (button + aria-expanded, toggled in script.js).
       // NOT a listbox: options may not contain links and the listbox keyboard
-      // contract (arrows, aria-activedescendant) was never implemented. ?>
+      // contract (arrows, aria-activedescendant) was never implemented.
+      //
+      // Named by its content, not by aria-label: the button SHOWS "EN", and an
+      // aria-label of "Select language" replaced that, so a voice-control user
+      // saying "click EN" matched nothing (WCAG 2.5.3, label in name). The
+      // visually hidden word supplies the context the code alone lacks: the
+      // name reads "Language EN". ?>
 <div class="language-switcher language-switcher--dropdown" data-language-switcher>
     <button class="language-switcher__toggle" type="button" aria-expanded="false"
-        aria-label="<?php echo $escapeAttr($translate('Select language')); ?>"
         title="<?php echo $escapeAttr($translate('Change language')); ?>">
         <span class="language-switcher__icon" aria-hidden="true"></span>
+        <span class="sr-only"><?php echo $escape($translate('Language')); ?></span>
         <span class="language-switcher__current-code"><?php echo $escape(strtoupper($currentLocaleShort)); ?></span>
     </button>
     <ul class="language-switcher__list"

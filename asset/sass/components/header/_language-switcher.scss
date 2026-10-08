@@ -55,16 +55,17 @@
         }
     }
 
-    // Current language code next to icon
+    // Current language code next to icon. Below $sm it is hidden visually
+    // only — not display:none — so the button's accessible name stays
+    // "Language EN" at every width (the name comes from the content).
     &__current-code {
-        display: none; // Hidden on mobile
         font-size: var(--text-xs);
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: var(--tracking-wide);
 
-        @media (min-width: $sm) {
-            display: inline;
+        @media (max-width: #{$sm - 1px}) {
+            @include visually-hidden;
         }
     }
 
