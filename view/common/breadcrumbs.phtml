@@ -64,6 +64,9 @@ if (isset($trail) && is_array($trail)) {
       // trail only when it actually leads somewhere. ?>
 <?php if ($crumbs): ?>
 <nav class="breadcrumbs" aria-label="<?php echo $escapeAttr($translate('Breadcrumb')); ?>">
-    <?php foreach ($crumbs as $crumb): ?><span><a href="<?php echo $escapeAttr($crumb['url']); ?>"><?php echo $escape($crumb['label']); ?></a></span><?php endforeach; ?><span aria-current="page"><?php echo $escape($resource->displayTitle(null, $valueLang)); ?></span>
+    <?php // The current crumb is the record's own title, in the record's own
+          // language (see helper/ResourceLanguage.php); the crumbs before it
+          // are the site's. ?>
+    <?php foreach ($crumbs as $crumb): ?><span><a href="<?php echo $escapeAttr($crumb['url']); ?>"><?php echo $escape($crumb['label']); ?></a></span><?php endforeach; ?><span aria-current="page"<?php echo $this->ResourceLanguage($resource, true); ?>><?php echo $escape($resource->displayTitle(null, $valueLang)); ?></span>
 </nav>
 <?php endif; ?>

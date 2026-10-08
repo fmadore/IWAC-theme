@@ -78,7 +78,7 @@ namespace IwacThemeTest {
                     return '';
                 },
             ];
-            foreach (['AiGeneratedTerms', 'BannerStats', 'BrowseLayout', 'FrenchSpacing', 'ResourceTags', 'SitePageBySlug'] as $name) {
+            foreach (['AiGeneratedTerms', 'BannerStats', 'BrowseLayout', 'FrenchSpacing', 'ResourceLanguage', 'ResourceTags', 'SitePageBySlug'] as $name) {
                 $class = '\\OmekaTheme\\Helper\\' . $name;
                 $this->helpers[$name] = (new $class())->setView($this);
             }
@@ -310,21 +310,21 @@ namespace IwacThemeTest {
     });
 
     /** One literal value, optionally annotated; valueAnnotation() builds a fresh object per call, as Omeka's does. */
-    function fakeValue(string $text, ?int $annotationId = null): object
+    function fakeValue(string $text, ?int $annotationId = null, string $lang = '', ?object $linked = null): object
     {
-        return new class($text, $annotationId) {
-            public function __construct(private string $text, private ?int $annotationId)
+        return new class($text, $annotationId, $lang, $linked) {
+            public function __construct(private string $text, private ?int $annotationId, private string $lang, private ?object $linked)
             {
             }
 
             public function type(): string
             {
-                return 'literal';
+                return $this->linked ? 'resource:item' : 'literal';
             }
 
             public function lang(): string
             {
-                return '';
+                return $this->lang;
             }
 
             public function value(): string
@@ -334,7 +334,12 @@ namespace IwacThemeTest {
 
             public function valueResource()
             {
-                return null;
+                return $this->linked;
+            }
+
+            public function __toString(): string
+            {
+                return $this->text;
             }
 
             public function asHtml($lang = null): string
@@ -485,9 +490,13 @@ namespace IwacThemeTest {
                 return null;
             }
 
-            public function link($text): string
+            public function link($text, $action = null, array $attributes = []): string
             {
-                return '<a href="/item/1">' . htmlspecialchars((string) $text) . '</a>';
+                $attrs = '';
+                foreach ($attributes as $name => $value) {
+                    $attrs .= ' ' . $name . '="' . htmlspecialchars((string) $value) . '"';
+                }
+                return '<a href="/item/1"' . $attrs . '>' . htmlspecialchars((string) $text) . '</a>';
             }
         };
     }
@@ -825,6 +834,208 @@ namespace IwacThemeTest {
         ]]);
         preg_match_all('/<img alt="([^"]*)">/', $html, $alts);
         same(['Conference hall, Lomé, 2019', 'Opening session', ''], $alts[1]);
+    });
+
+    // ---- Record language (T-02) ---------------------------------------------
+
+    /** A language authority as the IWAC index stores it: titles plus an ISO code as dcterms:alternative. */
+    function fakeLanguage(int $id, string $title, array $alternatives): object
+    {
+        return new class($id, $title, $alternatives) {
+            public function __construct(private int $id, private string $title, private array $alternatives)
+            {
+            }
+
+            public function id(): int
+            {
+                return $this->id;
+            }
+
+            public function displayTitle($default = null, $lang = null): string
+            {
+                return $this->title;
+            }
+
+            public function value(string $term, array $options = [])
+            {
+                return $term === 'dcterms:alternative' ? $this->alternatives : null;
+            }
+        };
+    }
+
+    /** A record whose values are keyed by term; value(…, ['all' => true]) returns the list. */
+    function fakeRecord(array $values, string $resourceName = 'items', ?object $item = null): object
+    {
+        return new class($values, $resourceName, $item) {
+            public function __construct(private array $values, private string $resourceName, private ?object $item)
+            {
+            }
+
+            public function value(string $term, array $options = [])
+            {
+                $values = $this->values[$term] ?? [];
+                if (!empty($options['all'])) {
+                    return $values;
+                }
+                return $values[0] ?? ($options['default'] ?? null);
+            }
+
+            public function resourceName(): string
+            {
+                return $this->resourceName;
+            }
+
+            public function item()
+            {
+                return $this->item;
+            }
+
+            public function displayTitle($default = null, $lang = null): string
+            {
+                return 'La Tabaski à Ouagadougou';
+            }
+
+            public function displayDescription($default = null, $lang = null)
+            {
+                return null;
+            }
+
+            public function primaryMedia()
+            {
+                return null;
+            }
+
+            public function link($text, $action = null, array $attributes = []): string
+            {
+                $attrs = '';
+                foreach ($attributes as $name => $value) {
+                    $attrs .= ' ' . $name . '="' . htmlspecialchars((string) $value) . '"';
+                }
+                return '<a href="/item/8558"' . $attrs . '>' . htmlspecialchars((string) $text) . '</a>';
+            }
+        };
+    }
+
+    function french(): object
+    {
+        return fakeValue('Français', null, '', fakeLanguage(8355, 'Français', ['fr']));
+    }
+
+    test('ResourceLanguage reads the ISO code off the dcterms:language authority', function () {
+        $fake = new FakeView();
+        $language = $fake->helpers['ResourceLanguage'];
+        same('fr', $language(fakeRecord(['dcterms:language' => [french()]])));
+        // Authorities whose alternative is a name, or absent, fall back to the name map.
+        $moore = fakeValue('Mooré', null, '', fakeLanguage(8384, 'Mooré', ['Moore']));
+        same('mos', $language(fakeRecord(['dcterms:language' => [$moore]])));
+        $spanish = fakeValue('Espagnol', null, '', fakeLanguage(26353, 'Espagnol', []));
+        same('es', $language(fakeRecord(['dcterms:language' => [$spanish]])));
+        // A literal language value reads the same way.
+        same('ar', $language(fakeRecord(['dcterms:language' => [fakeValue('Arabe')]])));
+        same('dyu', $language(fakeRecord(['dcterms:language' => [fakeValue('dyu')]])));
+        // Two languages: which one the title is in is unknown, so nothing.
+        $arabic = fakeValue('Arabe', null, '', fakeLanguage(8323, 'Arabe', ['ar']));
+        same('', $language(fakeRecord(['dcterms:language' => [french(), $arabic]])));
+        // …but the same language twice is still one.
+        same('fr', $language(fakeRecord(['dcterms:language' => [french(), french()]])));
+        // No language, an unknown one, or no record at all.
+        same('', $language(fakeRecord([])));
+        same('', $language(fakeRecord(['dcterms:language' => [fakeValue('Klingon')]])));
+        same('', $language(null));
+        // A media takes its item's language.
+        same('fr', $language(fakeRecord([], 'media', fakeRecord(['dcterms:language' => [french()]]))));
+    });
+
+    test('ResourceLanguage marks only text that departs from the page language', function () {
+        $fake = new FakeView();
+        $language = $fake->helpers['ResourceLanguage'];
+        $frenchRecord = fakeRecord(['dcterms:language' => [french()]]);
+        same(' lang="fr" dir="auto"', $language($frenchRecord, true));
+        same(['lang' => 'fr', 'dir' => 'auto'], $language->attributes($frenchRecord));
+        same('', $language(fakeRecord(['dcterms:language' => [fakeValue('English')]]), true));
+        same('', $language(fakeRecord([]), true));
+        // On the French site (lang() "fr", or a regional "fr_FR"), French adds nothing.
+        foreach (['fr', 'fr_FR'] as $siteLocale) {
+            $frenchSite = new FakeView();
+            $frenchSite->helpers['lang'] = static fn (): string => $siteLocale;
+            same('', $frenchSite->helpers['ResourceLanguage']($frenchRecord, true), $siteLocale);
+        }
+    });
+
+    test('item headline carries the record language on the English site', function () {
+        $fake = new FakeView();
+        $sink = new class {
+            public function __call(string $name, array $args)
+            {
+                return $this;
+            }
+        };
+        $titles = [];
+        $fake->helpers['headLink'] = static fn () => $sink;
+        $fake->helpers['htmlElement'] = static fn () => $sink;
+        // Core's pageTitle(): at level 0 it records the <title> and returns the escaped text.
+        $fake->helpers['pageTitle'] = static function ($title, $level = 1) use (&$titles): string {
+            $titles[] = [$title, $level];
+            return htmlspecialchars((string) $title);
+        };
+        $html = $fake->render('omeka/site/item/show.phtml', ['item' => fakeRecord(['dcterms:language' => [french()]])]);
+        check(str_contains($html, '<h1 lang="fr" dir="auto"><span class="title">La Tabaski à Ouagadougou</span></h1>'), 'headline missing lang: ' . $html);
+        same([['La Tabaski à Ouagadougou', 0]], $titles, 'the <title> must still come from pageTitle()');
+
+        $english = $fake->render('omeka/site/item/show.phtml', ['item' => fakeRecord([])]);
+        check(str_contains($english, '<h1><span class="title">'), 'an untagged record keeps the bare core markup');
+    });
+
+    test('breadcrumb and card titles carry the record language', function () {
+        $loads = 0;
+        $fake = new FakeView();
+        $site = fakePagedSite(['browse'], $loads);
+        $fake->helpers['currentSite'] = static fn () => $site;
+        $record = fakeRecord(['dcterms:language' => [french()]]);
+        $crumbs = $fake->render('common/breadcrumbs.phtml', ['resource' => $record]);
+        check(str_contains($crumbs, '<span aria-current="page" lang="fr" dir="auto">La Tabaski à Ouagadougou</span>'), 'current crumb missing lang');
+        check(substr_count($crumbs, 'lang="fr"') === 1, 'only the current crumb is in the record language');
+
+        $card = $fake->render('common/resource-card.phtml', [
+            'resource' => $record, 'isGrid' => true, 'valueLang' => null, 'liClass' => 'item',
+            'decorationClass' => '', 'bodyTerm' => null, 'bodyTruncate' => '', 'headingTerm' => '',
+        ]);
+        check(str_contains($card, '<a href="/item/8558" lang="fr" dir="auto">La Tabaski à Ouagadougou</a>'), 'card title missing lang');
+        // A heading value with its own tag keeps it.
+        $tagged = $fake->render('common/resource-card.phtml', [
+            'resource' => $record, 'isGrid' => true, 'valueLang' => null, 'liClass' => 'item',
+            'decorationClass' => '', 'bodyTerm' => null, 'bodyTruncate' => '',
+            'heading' => fakeValue('Al-Tabaski', null, 'ar'),
+        ]);
+        check(str_contains($tagged, '<a href="/item/8558" lang="ar" dir="auto">Al-Tabaski</a>'), "heading value's own tag lost");
+    });
+
+    test('untagged full text and descriptions take the record language; chrome does not', function () {
+        $fake = new FakeView();
+        $values = [
+            'bibo:content' => ['property' => fakeProperty('Content'), 'alternate_label' => null, 'values' => [fakeValue('Le texte intégral.')]],
+            'dcterms:description' => ['property' => fakeProperty('Description'), 'alternate_label' => null, 'values' => [
+                fakeValue('Une description.'),
+                fakeValue('An English description.', null, 'en'),
+            ]],
+            'dcterms:subject' => ['property' => fakeProperty('Subject'), 'alternate_label' => null, 'values' => [fakeValue('Tabaski')]],
+        ];
+        $record = fakeRecord(['dcterms:language' => [french()]]);
+        $html = $fake->render('common/resource-values.phtml', ['values' => $values, 'resource' => $record]);
+        check(str_contains($html, '<span class="value-content" dir="auto" lang="fr">Le texte intégral.</span>'), 'content missing lang');
+        check(str_contains($html, '<span class="value-content" dir="auto" lang="fr">Une description.</span>'), 'description missing lang');
+        // A value's own tag wins, and goes on the <dd> as before.
+        check(str_contains($html, '<span class="value-content" dir="auto">An English description.</span>'), 'tagged value relabelled');
+        check(str_contains($html, '<dd class="value" lang="en">'), "tagged value's own lang lost");
+        // Subjects are index terms, not the record's prose.
+        check(str_contains($html, '<span class="value-content" dir="auto">Tabaski</span>'), 'subject relabelled');
+        check(!str_contains($html, '<dd class="value" lang="fr"'), 'the record language must not go on the <dd> (it holds site chrome)');
+
+        // On the French site the page language already covers it.
+        $frenchSite = new FakeView();
+        $frenchSite->helpers['lang'] = static fn (): string => 'fr';
+        $onFrench = $frenchSite->render('common/resource-values.phtml', ['values' => $values, 'resource' => $record]);
+        check(!str_contains($onFrench, 'lang="fr"'), 'redundant lang on the French site');
     });
 
     // ---- Run ----------------------------------------------------------------

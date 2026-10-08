@@ -56,6 +56,17 @@ if ($showThumbnail) {
     }
     $thumbnail = $this->thumbnail($resource, 'large', $thumbnailAttribs);
 }
+
+// The title is in the record's language, not the site's: a heading value's own
+// tag when it has one, else the record's dcterms:language authority (helper/
+// ResourceLanguage.php). Nothing when it is the page's own language.
+$titleLinkAttribs = [];
+if ($showHeading) {
+    $headingValueLang = is_object($heading) && method_exists($heading, 'lang') ? (string) $heading->lang() : '';
+    $titleLinkAttribs = $headingValueLang !== ''
+        ? ['lang' => $headingValueLang, 'dir' => 'auto']
+        : $this->plugin('ResourceLanguage')->attributes($resource);
+}
 ?>
 <li class="<?php echo $escape($liClass); ?> resource <?php echo $isGrid ? '' : 'media-object'; ?>">
     <?php if ($thumbnail): ?>
@@ -68,7 +79,7 @@ if ($showThumbnail) {
         <?php if ($showHeading): ?>
             <?php echo $this->ResourceTags($resource); ?>
             <div class="resource__meta <?php echo $isGrid ? '' : 'media-object-section'; ?>">
-                <?php echo $resource->link($heading ?? $resource->displayTitle(null, $valueLang)); ?>
+                <?php echo $resource->link($heading ?? $resource->displayTitle(null, $valueLang), null, $titleLinkAttribs); ?>
                 <?php if ($body): ?>
                     <div class="description <?php echo $bodyTruncate ?: ''; ?>"><?php echo $escape($body); ?></div>
                 <?php endif; ?>
