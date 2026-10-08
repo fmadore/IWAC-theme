@@ -485,10 +485,44 @@ Two views of one resolution pass: `light["--series-7"]` for a CSS consumer,
   so moving the boundary is a token edit, not an edit plus a constant plus a
   number in this file.
 - **Slots past the lead are fixed** and must be reproduced exactly.
-- **Light and dark are independent per slot.** Contract v1 publishes the two
-  at parity from slot 3 on: the scale was theme-blind until now, so moving it
-  into the contract is deliberately separate from redesigning it. Diverging a
-  slot in dark is a value edit in `_colors.scss`, invisible to consumers.
+- **Light and dark are independent per slot.** Contract v1 (2.13) published
+  the two at parity from slot 3 on, keeping "move the scale into the
+  contract" apart from "redesign it". Diverging a slot is a value edit in
+  `_colors.scss`, invisible to consumers — and since the 2026-10 review twelve
+  slots do (below).
+- **Every slot clears 3:1 on all four surfaces of its theme**, because a chart
+  mark is a graphical object and a module does not know which surface its
+  panel sits on. `npm run check:tokens` asserts it (rule 9) for `--series-*`
+  and `--type-*` alike. Until 2026-10 nothing measured it, and nine light
+  slots — the pastel twins 6, 9, 10, 12, 13, 14, 16, 18, 20 — sat at
+  1.84–3.05:1, while dark slot 7 sat at 2.62:1 on `--surface-raised`. They
+  moved in **lightness only**, hue and chroma held:
+
+  | Slot | Light before → after (min ratio) | Dark before → after (min ratio) |
+  |---|---|---|
+  | 5 | — | `#7c5295` 3.02 → `#7e5497` 3.11 |
+  | 6 | `#d4a574` 1.98 → `#ae8050` 3.11 | — |
+  | 7 | — | `#2c5f7c` 2.62 → `#386b88` 3.13 |
+  | 9 | `#5ba3a0` 2.60 → `#4c9491` 3.14 | — |
+  | 10 | `#cc8963` 2.55 → `#824620` 6.56 | — |
+  | 12 | `#a68e6d` 2.78 → `#6d5737` 6.09 | — |
+  | 13 | `#d49b6a` 2.15 → `#a46e3e` 3.83 | — |
+  | 14 | `#6fb08e` 2.26 → `#246648` 6.08 | — |
+  | 16 | `#e0a88a` 1.84 → `#8a583c` 5.27 | — |
+  | 18 | `#d87e7a` 2.60 → `#c76f6b` 3.16 | — |
+  | 19 | — | `#6b5b95` 3.07 → `#6c5c96` 3.11 |
+  | 20 | `#4db6ac` 2.17 → `#007b72` 4.58 | — |
+
+  Slots 6 and 9 (the two most-used of the set) and the dark slots took the
+  smallest step that clears 3.1:1 on the hardest surface. Taking that step
+  everywhere would have collapsed the warm group 6 / 10 / 13 / 16 into one
+  colour (0.012–0.025 ΔEok apart), so the others were placed — never darker
+  than slot 7, L 46% — to keep every pair that touches a moved slot at least
+  0.05 ΔEok apart; the worst such pair was 0.024 before. The older
+  near-duplicates nothing here moved need a **hue** re-pick, which is a
+  design decision rather than a fix: 15 / 17 (0.025) and 5 / 19 (0.035) in
+  both themes, and in dark — where the warm pastels pass and kept their
+  values — 6 / 13 (0.024) and 6 / 16 (0.034).
 - The generator **fails the build** on a hole in the numbering, a slot missing
   from either theme, or a lead that is an alias in one theme and a literal in
   the other.
@@ -500,22 +534,22 @@ Two views of one resolution pass: `light["--series-7"]` for a CSS consumer,
 | 1 | `--series-2` | `--secondary` | `#394f68` | `#708093` |
 | 2 | `--series-3` | fixed | `#4a8c6f` | `#4a8c6f` |
 | 3 | `--series-4` | fixed | `#bb4c49` | `#bb4c49` |
-| 4 | `--series-5` | fixed | `#7c5295` | `#7c5295` |
-| 5 | `--series-6` | fixed | `#d4a574` | `#d4a574` |
-| 6 | `--series-7` | fixed | `#2c5f7c` | `#2c5f7c` |
+| 4 | `--series-5` | fixed | `#7c5295` | `#7e5497` |
+| 5 | `--series-6` | fixed | `#ae8050` | `#d4a574` |
+| 6 | `--series-7` | fixed | `#2c5f7c` | `#386b88` |
 | 7 | `--series-8` | fixed | `#876c45` | `#876c45` |
-| 8 | `--series-9` | fixed | `#5ba3a0` | `#5ba3a0` |
-| 9 | `--series-10` | fixed | `#cc8963` | `#cc8963` |
+| 8 | `--series-9` | fixed | `#4c9491` | `#5ba3a0` |
+| 9 | `--series-10` | fixed | `#824620` | `#cc8963` |
 | 10 | `--series-11` | fixed | `#4a8aab` | `#4a8aab` |
-| 11 | `--series-12` | fixed | `#a68e6d` | `#a68e6d` |
-| 12 | `--series-13` | fixed | `#d49b6a` | `#d49b6a` |
-| 13 | `--series-14` | fixed | `#6fb08e` | `#6fb08e` |
+| 11 | `--series-12` | fixed | `#6d5737` | `#a68e6d` |
+| 12 | `--series-13` | fixed | `#a46e3e` | `#d49b6a` |
+| 13 | `--series-14` | fixed | `#246648` | `#6fb08e` |
 | 14 | `--series-15` | fixed | `#9e7bb8` | `#9e7bb8` |
-| 15 | `--series-16` | fixed | `#e0a88a` | `#e0a88a` |
+| 15 | `--series-16` | fixed | `#8a583c` | `#e0a88a` |
 | 16 | `--series-17` | fixed | `#8e7cb8` | `#8e7cb8` |
-| 17 | `--series-18` | fixed | `#d87e7a` | `#d87e7a` |
-| 18 | `--series-19` | fixed | `#6b5b95` | `#6b5b95` |
-| 19 | `--series-20` | fixed | `#4db6ac` | `#4db6ac` |
+| 17 | `--series-18` | fixed | `#c76f6b` | `#d87e7a` |
+| 18 | `--series-19` | fixed | `#6b5b95` | `#6c5c96` |
+| 19 | `--series-20` | fixed | `#007b72` | `#4db6ac` |
 <!-- END GENERATED:SERIES-TABLE -->
 
 ### Font tokens

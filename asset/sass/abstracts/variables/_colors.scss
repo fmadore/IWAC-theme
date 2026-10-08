@@ -132,26 +132,38 @@
   // surface), so they must clear 4.5:1 in BOTH themes; the both-theme pass
   // band excludes luma 0.1667-0.1953, which is where their original values
   // sat (4.29-4.44:1).
+  //
+  // Every slot is a graphical object, so every slot clears 3:1 against all
+  // four surfaces of its theme — `npm run check:tokens` asserts it. Until the
+  // 2026-10 review nine light slots did not (6, 9, 10, 12, 13, 14, 16, 18,
+  // 20: pastel twins at 1.84-3.05:1 — Togo's #d4a574 measured 2.17:1 on the
+  // panel). They moved in LIGHTNESS ONLY, hue and chroma held: 6 and 9 by
+  // the smallest step that clears 3.1:1 on --surface-sunken; the rest to the
+  // lightness that keeps every pair touching a moved slot >= 0.05 ΔEok apart,
+  // never darker than slot 7 (L 46%). The smallest step alone would have
+  // collapsed the warm group (6/10/13/16) to 0.012-0.025 ΔEok. The pairs
+  // 15/17 and 5/19 (~0.03) — and 6/13, 6/16 in dark — predate this and need
+  // a hue re-pick, not a lightness one.
   --series-1:  var(--primary);
   --series-2:  var(--secondary);
   --series-3:  #4a8c6f;
   --series-4:  #bb4c49;
   --series-5:  #7c5295;
-  --series-6:  #d4a574;
+  --series-6:  #ae8050;
   --series-7:  #2c5f7c;
   --series-8:  #876c45;
-  --series-9:  #5ba3a0;
-  --series-10: #cc8963;
+  --series-9:  #4c9491;
+  --series-10: #824620;
   --series-11: #4a8aab;
-  --series-12: #a68e6d;
-  --series-13: #d49b6a;
-  --series-14: #6fb08e;
+  --series-12: #6d5737;
+  --series-13: #a46e3e;
+  --series-14: #246648;
   --series-15: #9e7bb8;
-  --series-16: #e0a88a;
+  --series-16: #8a583c;
   --series-17: #8e7cb8;
-  --series-18: #d87e7a;
+  --series-18: #c76f6b;
   --series-19: #6b5b95;
-  --series-20: #4db6ac;
+  --series-20: #007b72;
 
   // Blockquote
   --blockquote-bg:     color-mix(in oklab, var(--surface-raised) 88%, var(--primary) 12%);
@@ -263,18 +275,21 @@
   --type-entity-organisations: var(--warning);
 
   // Categorical SERIES palette — see the light block. Slots 1-2 track the
-  // brand seeds and so already differ here; slots 3-20 are deliberately at
-  // parity with light for contract v1 (the scale was module-owned and
-  // theme-blind until now, so publishing it unchanged separates "moving the
-  // palette into the contract" from "redesigning the palette"). Per-slot
-  // divergence is a value edit in this block — no consumer change.
+  // brand seeds and so already differ here. Slots 3-20 were published at
+  // parity with light in contract v1 (2.13), to keep "moving the palette into
+  // the contract" apart from "redesigning it"; they diverge per slot only
+  // where the 3:1 floor demands it. Here that is the dark end of the scale:
+  // slot 7 (#2c5f7c, 2.62:1 on --surface-raised) and slots 5 and 19
+  // (3.02 / 3.07:1, no headroom) lightened to clear 3.1:1 on every dark
+  // surface, hue and chroma held. The light pastels that failed in light
+  // keep their original values here, where they read at 6-9:1.
   --series-1:  var(--primary);
   --series-2:  var(--secondary);
   --series-3:  #4a8c6f;
   --series-4:  #bb4c49;
-  --series-5:  #7c5295;
+  --series-5:  #7e5497;
   --series-6:  #d4a574;
-  --series-7:  #2c5f7c;
+  --series-7:  #386b88;
   --series-8:  #876c45;
   --series-9:  #5ba3a0;
   --series-10: #cc8963;
@@ -286,7 +301,7 @@
   --series-16: #e0a88a;
   --series-17: #8e7cb8;
   --series-18: #d87e7a;
-  --series-19: #6b5b95;
+  --series-19: #6c5c96;
   --series-20: #4db6ac;
 
   --blockquote-bg:     color-mix(in oklab, var(--surface-raised) 76%, var(--primary) 24%);
