@@ -17,6 +17,11 @@ module.exports = [
             'vendor/',
             'test-results/',
             'playwright-report/',
+            // Machine-local agent workspace (gitignored): the preview rig, and
+            // `.claude/worktrees/*` — whole checkouts of this repository, which
+            // ESLint would otherwise lint a second time, generated files and
+            // all (4,278 errors from one stale worktree in October 2026).
+            '.claude/',
             // Vendored, minified third-party code.
             'asset/js/minimasonry.min.js',
             // esbuild output of asset/js/*.js (npm run build:js) — the sources

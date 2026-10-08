@@ -104,6 +104,17 @@
 /tokens.json           text eol=lf
 /docs/DESIGN-SYSTEM.md text eol=lf
 
+# ...and their INPUTS, where the output embeds the input's bytes. The source
+# maps in asset/js/dist/ carry each script verbatim as `sourcesContent`, so a
+# CRLF working copy of asset/js/*.js minifies to maps that differ from the
+# committed (LF) ones, and `npm run check:js-dist` reports every map stale on a
+# Windows checkout while the code is identical. The guard engine is copied
+# byte-for-byte into both modules by `npm run sync:tokens` and compared there
+# against this repository's master; build-tokens.js already strips CR on the
+# way out, and this keeps the copy it reads honest as well.
+/asset/js/*.js                    text eol=lf
+/scripts/lib/theme-token-guard.cjs text eol=lf
+
 # Never newline-translate binaries, whatever core.autocrlf is set to locally.
 *.mo   binary
 *.jpg  binary
