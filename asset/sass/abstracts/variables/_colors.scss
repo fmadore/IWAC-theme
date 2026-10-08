@@ -95,26 +95,6 @@
   --info:       oklch(56% 0.14 245);
   --info-bg:    oklch(96% 0.03 245);
 
-  // Categorical type-colour map — the SINGLE SOURCE for resource-type
-  // colours shared with IwacSearch (result chips) and IwacVisualizations
-  // (badges). Each maps a resource type / entity kind to a semantic token,
-  // so the mapping lives once, here; the modules consume `var(--type-*,
-  // <hex>)` and never re-encode it (the old hand-copied map had already
-  // drifted — the `document` fallback was #e89c4a in one repo, #ea580c in
-  // the other). Each entry references a semantic token — and the SAME nine
-  // entries are redeclared in the dark block, because an alias substitutes
-  // against the referent on the element that declares it, not on the element
-  // that reads it (see the note there). See docs/DESIGN-SYSTEM.md §3.
-  --type-article:              var(--primary);
-  --type-publication:          var(--secondary);
-  --type-audiovisual:          var(--info);
-  --type-document:             var(--warning);
-  --type-reference:            var(--muted);
-  --type-photograph:           var(--success);
-  --type-entity-personnes:     var(--info);
-  --type-entity-lieux:         var(--success);
-  --type-entity-organisations: var(--warning);
-
   // Categorical SERIES palette — the ordered qualitative scale charts cycle
   // through. Theme-owned since 2.13: it lived as a 19-hex array literal in
   // IwacVisualizations' iwac-theme.js, published nowhere and asserted by
@@ -164,6 +144,38 @@
   --series-18: #c76f6b;
   --series-19: #6b5b95;
   --series-20: #007b72;
+
+  // Categorical type-colour map — the SINGLE SOURCE for resource-type
+  // colours shared with IwacSearch (result chips) and IwacVisualizations
+  // (badges). Each maps a resource type / entity kind to a semantic token,
+  // so the mapping lives once, here; the modules consume `var(--type-*,
+  // <hex>)` and never re-encode it (the old hand-copied map had already
+  // drifted — the `document` fallback was #e89c4a in one repo, #ea580c in
+  // the other). Each entry references a semantic or series token — and the
+  // SAME eleven entries are redeclared in the dark block, because an alias
+  // substitutes against the referent on the element that declares it, not on
+  // the element that reads it (see the note there). See docs/DESIGN-SYSTEM.md §3.
+  --type-article:              var(--primary);
+  --type-publication:          var(--secondary);
+  --type-audiovisual:          var(--info);
+  --type-document:             var(--warning);
+  --type-reference:            var(--muted);
+  --type-photograph:           var(--success);
+  // The FIVE index (entity) types — People, Places, Organisations, Subjects,
+  // Events. The first three reuse status hues; Sujets and Événements borrow
+  // series slots, because no status hue is left that stands apart from the
+  // other nine type colours: purple (--series-5) and teal (--series-9) sit
+  // >= 0.09 ΔEok from every other --type-* in both themes and clear 3:1 as
+  // dots on every surface (check:tokens rule 9 asserts the contrast). This
+  // map sits BELOW the series palette because build-tokens.js resolves a
+  // block top to bottom. IwacVisualizations used to colour entities from
+  // series slots of its own choosing, which is how its network legend and
+  // IwacSearch's chips came to disagree (review X-01).
+  --type-entity-personnes:     var(--info);
+  --type-entity-lieux:         var(--success);
+  --type-entity-organisations: var(--warning);
+  --type-entity-sujets:        var(--series-5);
+  --type-entity-evenements:    var(--series-9);
 
   // Blockquote
   --blockquote-bg:     color-mix(in oklab, var(--surface-raised) 88%, var(--primary) 12%);
@@ -252,28 +264,6 @@
   --info:       oklch(72% 0.14 245);
   --info-bg:    color-mix(in oklab, oklch(50% 0.14 245) 22%, transparent);
 
-  // Categorical type-colour map — REDECLARED here, not inherited.
-  //
-  // The light block declares these on :root, where `var(--secondary)` is
-  // substituted against :root's OWN --secondary. The manual toggle applies
-  // this mixin to <body>, so before 2.13 the dark page inherited nine
-  // already-substituted LIGHT hues — and layout.phtml's pre-paint script
-  // writes data-theme on <body> for system-dark too, so that was every dark
-  // session with JS. The browse publication dot measured 2.41:1 on the dark
-  // ground (Phase-1 critique, P1): light slate #394f68, never flipped.
-  // Declaring the map in both blocks makes the substitution happen where the
-  // referents are, and is also the seam for a divergent dark mapping.
-  // Contrast as dots, dark: 4.5-9.1:1 on every surface (>= 3:1 floor).
-  --type-article:              var(--primary);
-  --type-publication:          var(--secondary);
-  --type-audiovisual:          var(--info);
-  --type-document:             var(--warning);
-  --type-reference:            var(--muted);
-  --type-photograph:           var(--success);
-  --type-entity-personnes:     var(--info);
-  --type-entity-lieux:         var(--success);
-  --type-entity-organisations: var(--warning);
-
   // Categorical SERIES palette — see the light block. Slots 1-2 track the
   // brand seeds and so already differ here. Slots 3-20 were published at
   // parity with light in contract v1 (2.13), to keep "moving the palette into
@@ -303,6 +293,31 @@
   --series-18: #d87e7a;
   --series-19: #6c5c96;
   --series-20: #4db6ac;
+
+  // Categorical type-colour map — REDECLARED here, not inherited.
+  //
+  // The light block declares these on :root, where `var(--secondary)` is
+  // substituted against :root's OWN --secondary. The manual toggle applies
+  // this mixin to <body>, so before 2.13 the dark page inherited nine
+  // already-substituted LIGHT hues — and layout.phtml's pre-paint script
+  // writes data-theme on <body> for system-dark too, so that was every dark
+  // session with JS. The browse publication dot measured 2.41:1 on the dark
+  // ground (Phase-1 critique, P1): light slate #394f68, never flipped.
+  // Declaring the map in both blocks makes the substitution happen where the
+  // referents are, and is also the seam for a divergent dark mapping.
+  // Contrast as dots, dark: 3.1-9.1:1 on every surface (>= 3:1 floor; the
+  // low end is Sujets' purple on --surface-raised).
+  --type-article:              var(--primary);
+  --type-publication:          var(--secondary);
+  --type-audiovisual:          var(--info);
+  --type-document:             var(--warning);
+  --type-reference:            var(--muted);
+  --type-photograph:           var(--success);
+  --type-entity-personnes:     var(--info);
+  --type-entity-lieux:         var(--success);
+  --type-entity-organisations: var(--warning);
+  --type-entity-sujets:        var(--series-5);
+  --type-entity-evenements:    var(--series-9);
 
   --blockquote-bg:     color-mix(in oklab, var(--surface-raised) 76%, var(--primary) 24%);
   --blockquote-border: color-mix(in oklab, var(--primary) 68%, var(--ink) 32%);

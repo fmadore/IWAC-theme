@@ -76,7 +76,7 @@ value (see §3). Do **not** invent token names — undefined tokens fail silentl
 | **Surfaces** | `--surface`, `--surface-raised`, `--surface-sunken`, `--surface-overlay`, `--background` |
 | **Borders** | `--border-light`, `--border`, `--border-strong` |
 | **Status** | `--success`, `--warning`, `--error`, `--info` (+ matching `*-bg`) |
-| **Categorical** | `--type-*` (nine resource / entity types); `--series-1 … --series-20` (the ordered chart palette) |
+| **Categorical** | `--type-*` (six item types + five index types — §3); `--series-1 … --series-20` (the ordered chart palette) |
 | **Focus** | `--focus-outline` (default), `--ring-focus`, `--ring-focus-sm`, `--focus-color`, `--focus-ring-color` |
 | **Typography** | `--font-headings`, `--font-serif-text`, `--font-body`, `--font-mono`; `--text-2xs … --text-5xl`; `--line-height-tight/snug/normal/relaxed`; `--tracking-display/tight/normal/wide/wider` |
 | **Spacing** | `--space-1 … --space-40` (the numeric scale is canonical — see below) |
@@ -431,10 +431,38 @@ three repos (the `document` badge fallback was `#e89c4a` in IwacSearch but
 | `--type-entity-personnes` | `--info` | `#037ac0` | `#4dacf6` |
 | `--type-entity-lieux` | `--success` | `#2e9052` | `#56bd78` |
 | `--type-entity-organisations` | `--warning` | `#d66800` | `#f99532` |
+| `--type-entity-sujets` | `--series-5` | `#7c5295` | `#7e5497` |
+| `--type-entity-evenements` | `--series-9` | `#4c9491` | `#5ba3a0` |
 <!-- END GENERATED:TYPE-TABLE -->
 
 Each `--type-*` resolves to its semantic token, so the fallback hex equals
 that token's value above (e.g. `--type-document` = `--warning`).
+
+**The five index (entity) types** each have one token, and every surface that
+colours an entity — result chips, network nodes, legends, badges — reads it
+rather than choosing a slot of its own:
+
+| Index type | Token | Label (en / fr) |
+|---|---|---|
+| Personnes | `--type-entity-personnes` | People / Personnes |
+| Lieux | `--type-entity-lieux` | Places / Lieux |
+| Organisations | `--type-entity-organisations` | Organisations / Organisations |
+| Sujets | `--type-entity-sujets` | Subjects / Sujets |
+| Événements | `--type-entity-evenements` | Events / Événements |
+
+English labels use British spelling, and "Subjects", never "Topics": topics
+on this site are the LDA topic models. Sujets and Événements were added after
+the 2026-10 review (X-01) found IwacVisualizations colouring entities from
+series slots of its own choosing — Personnes slate, Lieux red — so its network
+legend gave Persons and Newspaper articles the same dot while IwacSearch's
+chips said blue / green / orange. No status hue was left that stands apart
+from the other nine type colours, so the two new ones alias series slots:
+purple `--series-5` and teal `--series-9`, each ≥ 0.09 ΔEok from every other
+`--type-*` and ≥ 3.1:1 on every surface in both themes. Three entity types
+share a status hue with an item type by design — `--info` (audiovisual /
+Personnes), `--success` (photograph / Lieux), `--warning` (document /
+Organisations) — so a view that draws item and entity types in one legend
+labels them rather than relying on colour alone.
 
 Consumers: `IwacSearch/src/svelte/components/ResultItem.svelte`
 (`.iwac-card__type[data-type=…]` / `[data-entity-type=…]`) and
