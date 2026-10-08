@@ -153,6 +153,17 @@ $this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=besley:
 // document order so jQuery is always there first, and ready callbacks fire on
 // DOMContentLoaded, which is after every deferred script has run.
 //
+// What that measurement missed is EXTERNAL module scripts. A classic script a
+// module enqueues through headScript() stayed synchronous, so it ran during
+// parsing, before the deferred jQuery: from 2.19 to 2.23 the Mapping module's
+// mapping-show.js threw "$ is not defined" and every place record showed a
+// 700px blank map. So deferring jQuery commits the theme to deferring every
+// external classic script in the <head> — the DeferHeadScripts pass below,
+// after view.layout has let every module enqueue. Deferred scripts run in
+// document order, so each still runs after jQuery and after whatever it was
+// enqueued behind. The live smoke suite (e2e/live.spec.js) fails on any page
+// error and samples a place record, which is how this would have been caught.
+//
 // Worth ~400ms of FCP on mobile: jquery.min.js alone is 31 KB of the ~68 KB of
 // render-blocking bytes, and it was finishing at 1075ms on a throttled Moto G4,
 // holding the theme's own stylesheet behind it.
@@ -190,39 +201,24 @@ try {
     // Non-fatal: if the placeholder shape changes upstream, keep the stylesheets.
 }
 
-// citation.js is the "How to cite" panel's progressive enhancement — a style
-// switcher and a copy button over markup that already renders and already works
-// without it (the downloads are real links). It is enqueued by IWAC-SEO as a
-// plain <script src> in the <head>, so it blocked first paint on every resource
-// page to wire a control below the fold. It is vanilla (IWACUtils.onReady, no
-// jQuery), so deferring it changes nothing but when it runs.
+// Defer every external classic script in the <head> — module scripts included —
+// so each runs after the deferred jQuery, in the order it was enqueued (see the
+// note beside the jQuery prependFile() above, and helper/DeferHeadScripts.php
+// for what is left alone and why). Done here rather than at each enqueue site
+// because the modules own those; this is the same "the theme knows what its own
+// <head> needs" pass as the dead-CSS filter above.
 //
-// Done here rather than at the enqueue site because the module owns that; this
-// is the same "the theme knows what its own <head> needs" pass as the dead-CSS
-// filter above.
+// The pass also serves the theme's minified citation.js (asset/js/dist/, see
+// scripts/build-js.js) in place of the source file IWAC-SEO enqueues. That
+// script is the "How to cite" panel's progressive enhancement — vanilla
+// (IWACUtils.onReady, no jQuery) — so deferring it changes nothing but when it
+// runs, which is no longer before first paint.
 try {
-    foreach ($this->headScript()->getContainer() as $scriptItem) {
-        if (empty($scriptItem->attributes['src'])) {
-            continue;
-        }
-        $scriptSrc = (string) $scriptItem->attributes['src'];
-        if (strpos($scriptSrc, 'js/citation.js') !== false) {
-            $scriptItem->attributes['defer'] = 'defer';
-            // …and serve the theme's minified build of it (asset/js/dist/,
-            // see scripts/build-js.js), which the module enqueuing it cannot
-            // know about. Only the THEME's copy — a module shipping its own
-            // citation.js keeps the file it asked for.
-            if (strpos($scriptSrc, '/themes/') !== false) {
-                $scriptItem->attributes['src'] = str_replace(
-                    'asset/js/citation.js',
-                    'asset/js/dist/citation.min.js',
-                    $scriptSrc
-                );
-            }
-        }
-    }
+    $this->DeferHeadScripts($this->headScript()->getContainer());
 } catch (\Throwable $e) {
-    // Non-fatal: a blocking citation.js is slower, not broken.
+    // Non-fatal for the theme's own scripts (slower, not broken). A module
+    // script that needs jQuery would throw again — the live smoke suite's
+    // page-error check is the net for that.
 }
 
 if ($userBar) {

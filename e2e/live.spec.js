@@ -1,7 +1,25 @@
 'use strict';
 
-const { test, expect } = require('@playwright/test');
+const { test: base, expect } = require('@playwright/test');
 const AxeBuilder = require('@axe-core/playwright').default;
+
+// Every test fails on an uncaught page error. The suite used to look only at
+// layout and axe, so a module script throwing at load — the Mapping module's
+// "$ is not defined" after jQuery was deferred, which left every place record
+// with a blank 700px map from 2.19 to 2.23 — passed every check it had.
+const test = base.extend({
+    page: async ({ page }, use) => {
+        const errors = [];
+        page.on('pageerror', (error) => errors.push(`${page.url()}: ${error.message}`));
+        await use(page);
+        expect(errors, 'uncaught errors in the page').toEqual([]);
+    },
+});
+
+/** What playwright.config.js says about the site this project runs against. */
+function site() {
+    return test.info().project.metadata;
+}
 
 const WCAG_A_AA = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 
@@ -20,13 +38,14 @@ async function expectNoHorizontalOverflow(page) {
 }
 
 test('legacy advanced search reaches IwacSearch and preserves the query', async ({ page }) => {
+    test.skip(site().lang !== 'en', 'the redirect is site-independent; one site is enough');
     await page.goto('item/search?q=togo', { waitUntil: 'domcontentloaded' });
     await expect(page).toHaveURL(/\/search\/everything(?:\?|$)/);
     expect(new URL(page.url()).searchParams.get('q')).toBe('togo');
 });
 
 test('hero search field and submit button fill the banner search box', async ({ page }) => {
-    await page.goto('page/home', { waitUntil: 'domcontentloaded' });
+    await page.goto(site().home, { waitUntil: 'domcontentloaded' });
     const form = page.locator('#search-form-hero');
     const input = page.locator('#fulltext-search-hero');
     const submit = page.locator('#search-submit-hero');
@@ -45,7 +64,7 @@ test('hero search field and submit button fill the banner search box', async ({ 
 
 test('mobile pages, pagination, and popovers do not overflow', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 844 });
-    await page.goto('page/home', { waitUntil: 'domcontentloaded' });
+    await page.goto(site().home, { waitUntil: 'domcontentloaded' });
     await expectNoHorizontalOverflow(page);
 
     await page.locator('.language-switcher__toggle').click();
@@ -77,7 +96,7 @@ test('mobile pages, pagination, and popovers do not overflow', async ({ page }) 
 });
 
 test('theme chrome has no serious WCAG A/AA violations', async ({ page }) => {
-    await page.goto('page/home', { waitUntil: 'networkidle' });
+    await page.goto(site().home, { waitUntil: 'networkidle' });
     const results = await new AxeBuilder({ page })
         .include('.main-header')
         .include('.banner')
@@ -92,7 +111,7 @@ test('theme chrome has no serious WCAG A/AA violations', async ({ page }) => {
 // also the path most dark-mode readers arrive by.
 test('theme chrome has no serious WCAG A/AA violations in dark mode', async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'dark' });
-    await page.goto('page/home', { waitUntil: 'networkidle' });
+    await page.goto(site().home, { waitUntil: 'networkidle' });
     await expect(page.locator('body')).toHaveAttribute('data-theme', 'dark');
     const results = await new AxeBuilder({ page })
         .include('.main-header')
@@ -176,4 +195,39 @@ test('each value annotation trigger controls its own panel', async ({ page }) =>
     }
     const ids = await page.$$eval('[id^="value-annotation-"]', (nodes) => nodes.map((node) => node.id));
     expect(new Set(ids).size).toBe(ids.length);
+});
+
+// One visit per page type, so the page-error check above sees every module's
+// scripts at least once — including the ones that only load on one kind of
+// record. Place records are why this exists: they are the only pages that load
+// the Mapping module, and nothing else in the suite opened one.
+const PAGE_TYPES = [
+    ['home', () => site().home],
+    ['browse page', () => site().browse],
+    ['item browse', () => 'item'],
+    ['item set browse', () => 'item-set'],
+    ['article record (Mirador, citation, visualisations)', () => 'item/23365'],
+    ['place record (Mapping)', () => 'item/271'],
+    ['index search', () => 'index/search?fulltext_search=islam'],
+];
+
+for (const [label, route] of PAGE_TYPES) {
+    test(`${label} loads without script errors`, async ({ page }) => {
+        // `load`, not `networkidle`: every deferred and module script has run
+        // by then, and the IwacVisualizations lazy loaders keep the network
+        // busy for as long as a chart sits in view.
+        const response = await page.goto(route(), { waitUntil: 'load' });
+        expect(response?.status()).toBeLessThan(400);
+        await expect(page.locator('main#content')).toBeVisible();
+    });
+}
+
+test('a place record draws its map', async ({ page }) => {
+    await page.goto('item/271', { waitUntil: 'load' });
+    const map = page.locator('#mapping-map');
+    await expect(map).toBeVisible();
+    // Leaflet initialised: the container class is added by L.map(), and at
+    // least one tile was requested into it.
+    await expect(map).toHaveClass(/leaflet-container/);
+    await expect(map.locator('.leaflet-tile').first()).toBeAttached();
 });

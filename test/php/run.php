@@ -208,6 +208,53 @@ namespace IwacThemeTest {
         same(['bibo:shortDescription', 'dcterms:tableOfContents'], $helper($onTemplate(21)));
     });
 
+    test('DeferHeadScripts defers every external classic script (regression: Mapping "$ is not defined")', function () {
+        // What headScript()->getContainer() holds: one stdClass per script.
+        $item = static fn (string $type, array $attributes, ?string $source = null) => (object) [
+            'type' => $type,
+            'attributes' => $attributes,
+            'source' => $source,
+        ];
+        $container = new \ArrayObject([
+            'jquery' => $item('text/javascript', ['src' => '/application/asset/vendor/jquery/jquery.min.js', 'defer' => 'defer']),
+            'inline' => $item('text/javascript', [], 'window.Omeka=window.Omeka||{};'),
+            'leaflet' => $item('text/javascript', ['src' => '/modules/Mapping/asset/node_modules/leaflet/dist/leaflet.js']),
+            'mapping' => $item('text/javascript', ['src' => '/modules/Mapping/asset/js/mapping-show.js']),
+            'untyped' => $item('', ['src' => '/modules/Other/asset/js/other.js']),
+            'module' => $item('module', ['src' => '/modules/Mirador/asset/js/mirador-4.mjs']),
+            'async' => $item('text/javascript', ['src' => '/modules/Async/asset/js/a.js', 'async' => 'async']),
+            'ldjson' => $item('application/ld+json', [], '{"@context":"https://schema.org"}'),
+            'citation' => $item('text/javascript', ['src' => '/themes/IWAC-theme/asset/js/citation.js?v=2.23.0']),
+            'moduleCitation' => $item('text/javascript', ['src' => '/modules/Other/asset/js/citation.js']),
+        ]);
+        $defer = (new \OmekaTheme\Helper\DeferHeadScripts())->setView(new FakeView());
+        same(5, $defer($container), 'leaflet, mapping, untyped, citation and the module citation get deferred');
+
+        foreach (['jquery', 'leaflet', 'mapping', 'untyped', 'citation', 'moduleCitation'] as $key) {
+            same('defer', $container[$key]->attributes['defer'] ?? null, "$key should be deferred");
+        }
+        foreach (['inline', 'module', 'async', 'ldjson'] as $key) {
+            check(!isset($container[$key]->attributes['defer']), "$key must not be deferred");
+        }
+        // Order is the whole point: the container is never reordered.
+        same(['jquery', 'inline', 'leaflet', 'mapping', 'untyped', 'module', 'async', 'ldjson', 'citation', 'moduleCitation'], array_keys($container->getArrayCopy()));
+        // The theme's citation.js is swapped for its minified twin; a module's is not.
+        same('/themes/IWAC-theme/asset/js/dist/citation.min.js?v=2.23.0', $container['citation']->attributes['src']);
+        same('/modules/Other/asset/js/citation.js', $container['moduleCitation']->attributes['src']);
+        // Idempotent: a second pass changes nothing.
+        same(0, $defer($container));
+    });
+
+    test('the layout runs the head-script defer pass after view.layout', function () {
+        $layout = (string) file_get_contents(ROOT . '/view/layout/layout.phtml');
+        $trigger = strpos($layout, "\$this->trigger('view.layout');");
+        $pass = strpos($layout, '$this->DeferHeadScripts($this->headScript()->getContainer())');
+        check($trigger !== false && $pass !== false, 'view.layout trigger or defer pass missing from layout.phtml');
+        check($pass > $trigger, 'the defer pass must run after modules enqueue on view.layout');
+        $ini = (string) file_get_contents(ROOT . '/config/theme.ini');
+        check((bool) preg_match('/^helpers\[\] = "DeferHeadScripts"\r?$/m', $ini), 'DeferHeadScripts is not registered in theme.ini');
+    });
+
     // ---- Templates ----------------------------------------------------------
 
     /** A site whose navigation records the options each renderMenu() got. */
