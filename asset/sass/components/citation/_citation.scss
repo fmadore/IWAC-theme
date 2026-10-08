@@ -149,15 +149,19 @@
         flex: none;
     }
 
-    // Copied: green confirmation + the check glyph (JS toggles .is-copied and
-    // swaps the label text).
+    // Copied (JS toggles .is-copied and swaps the label text). The success
+    // green is carried by the check glyph and the border — non-text marks,
+    // which need 3:1 and get 3.92:1 — while the label stays in --ink. Green
+    // label text was 3.92:1 at 14px/600 in light mode, under the 4.5:1 text
+    // needs; the word "Copied" says it anyway.
     &.is-copied &__copy {
-        color: var(--success);
+        color: var(--ink);
         border-color: var(--success);
     }
 
     &.is-copied &__copy-icon {
         @include icon-mask("../img/check2.svg", ButtonText);
+        color: var(--success);
     }
 
     // Downloads: an agate label + quiet outlined chips (the type-chip register),
