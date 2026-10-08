@@ -60,8 +60,20 @@
             border-radius: var(--radius-full);
             opacity: 1;
             inset-inline-start: 11px;
-            transform: rotate(0deg);
-            transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out, top 0.25s ease-in-out;
+            transform: none;
+            // Transform and opacity only: the bars used to animate `top` as
+            // well, which re-lays-out the button on every frame. The open
+            // state below reaches the same positions with a translate.
+            transition:
+                transform var(--transition-base),
+                opacity var(--transition-base);
+
+            // Forced colors replace every background with Canvas, which
+            // erased the bars — and with them the only visible sign of the
+            // control. Restate them in the button's own system colour.
+            @media (forced-colors: active) {
+                background: ButtonText;
+            }
         }
 
         span:nth-child(2) {
@@ -79,11 +91,12 @@
             transform-origin: left center;
         }
 
+        // The cross: the outer bars pivot on their start ends, each nudged
+        // 3px inward and 1px apart first (what `top`/`inset-inline-start`
+        // used to move), the middle one folds away.
         &.open {
             span:nth-child(2) {
-                transform: rotate(45deg);
-                top: 13px;
-                inset-inline-start: 14px;
+                transform: translate(3px, -1px) rotate(45deg);
             }
 
             span:nth-child(3) {
@@ -92,9 +105,7 @@
             }
 
             span:nth-child(4) {
-                transform: rotate(-45deg);
-                top: 29px;
-                inset-inline-start: 14px;
+                transform: translate(3px, 1px) rotate(-45deg);
             }
         }
     }
@@ -165,7 +176,7 @@
                     transition: transform var(--transition-fast);
 
                     &::after {
-                        @include icon-mask("../img/chevron-down.svg");
+                        @include icon-mask("../img/chevron-down.svg", ButtonText);
                         content: "" !important;
                         display: inline-block;
                         width: var(--text-xs);

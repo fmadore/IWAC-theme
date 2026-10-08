@@ -15,7 +15,7 @@
 // ==========================================================================
 
 .o-icon-list::before {
-    @include icon-mask("../img/list-ul.svg");
+    @include icon-mask("../img/list-ul.svg", ButtonText);
     content: "";
     width: var(--text-base);
     height: var(--text-base);
@@ -23,7 +23,7 @@
 }
 
 .o-icon-grid::before {
-    @include icon-mask("../img/grid-fill.svg");
+    @include icon-mask("../img/grid-fill.svg", ButtonText);
     content: "";
     width: var(--text-base);
     height: var(--text-base);
@@ -39,7 +39,7 @@
 }
 
 .o-icon-annotation::before {
-    @include icon-mask("../img/info.svg");
+    @include icon-mask("../img/info.svg", ButtonText);
     content: "";
     width: 1em;
     height: 1em;

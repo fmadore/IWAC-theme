@@ -17,8 +17,10 @@
         transition: background-color var(--transition-fast);
     }
 
+    // `color` (the mask paints currentColor), so the forced-colors
+    // restatement in icon-mask() is not overridden on hover.
     &:hover::before {
-        background-color: var(--primary);
+        color: var(--primary);
     }
 }
 

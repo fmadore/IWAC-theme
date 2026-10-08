@@ -36,7 +36,7 @@
 
     &::before {
         content: "";
-        @include icon-mask("../img/arrow-up.svg");
+        @include icon-mask("../img/arrow-up.svg", ButtonText);
         width: 1rem;
         height: 1rem;
     }

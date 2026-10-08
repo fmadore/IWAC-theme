@@ -104,7 +104,7 @@
             content: "";
             inline-size: 1rem;
             block-size: 1rem;
-            @include icon-mask("../img/maximize.svg");
+            @include icon-mask("../img/maximize.svg", ButtonText);
         }
     }
 
@@ -290,7 +290,7 @@
 
     &__tool--zoom {
         &::before {
-            @include icon-mask("../img/zoom-in.svg");
+            @include icon-mask("../img/zoom-in.svg", ButtonText);
         }
 
         // The one control here with a state to hold. Filled means the plate is
@@ -303,11 +303,11 @@
     }
 
     &__tool--close::before {
-        @include icon-mask("../img/x-close.svg");
+        @include icon-mask("../img/x-close.svg", ButtonText);
     }
 
     &.is-zoomed &__tool--zoom::before {
-        @include icon-mask("../img/zoom-out.svg");
+        @include icon-mask("../img/zoom-out.svg", ButtonText);
     }
 
     &__step {
@@ -324,7 +324,7 @@
         grid-area: prev;
 
         &::before {
-            @include icon-mask("../img/chevron-left.svg");
+            @include icon-mask("../img/chevron-left.svg", ButtonText);
         }
     }
 
@@ -332,7 +332,7 @@
         grid-area: next;
 
         &::before {
-            @include icon-mask("../img/chevron-right.svg");
+            @include icon-mask("../img/chevron-right.svg", ButtonText);
         }
     }
 

@@ -32,11 +32,26 @@
     }
 }
 
-@mixin icon-mask($url) {
+// An SVG from asset/img/ as a single-colour glyph: the file is the mask, and
+// the element's background paints through it in currentColor.
+//
+// $forced is the system colour the glyph paints in forced-colors mode (Windows
+// contrast themes). That mode replaces every author background-color with
+// Canvas — the page colour — so a currentColor mask painted nothing at all:
+// icon-only buttons (back to top, the grid/list toggle, the plate viewer's
+// tools), the EU "AI generated" mark, every chevron. An author-specified
+// system colour survives the forcing, so the glyph is restated in one. Pass
+// the colour the glyph's context paints its text in: CanvasText for running
+// text (the default), ButtonText inside a button, LinkText inside a link.
+@mixin icon-mask($url, $forced: CanvasText) {
     mask: url($url) no-repeat center / contain;
     -webkit-mask: url($url) no-repeat center / contain;
     background-color: currentColor;
     display: inline-block;
+
+    @media (forced-colors: active) {
+        background-color: $forced;
+    }
 }
 
 @mixin button {

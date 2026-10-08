@@ -143,7 +143,7 @@
     }
 
     &__copy-icon {
-        @include icon-mask("../img/clipboard.svg");
+        @include icon-mask("../img/clipboard.svg", ButtonText);
         width: 1.05em;
         height: 1.05em;
         flex: none;
@@ -157,7 +157,7 @@
     }
 
     &.is-copied &__copy-icon {
-        @include icon-mask("../img/check2.svg");
+        @include icon-mask("../img/check2.svg", ButtonText);
     }
 
     // Downloads: an agate label + quiet outlined chips (the type-chip register),
@@ -210,7 +210,7 @@
             border-color var(--transition-fast);
 
         &::before {
-            @include icon-mask("../img/download.svg");
+            @include icon-mask("../img/download.svg", LinkText);
             content: "";
             width: 0.9em;
             height: 0.9em;

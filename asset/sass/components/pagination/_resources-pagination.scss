@@ -110,7 +110,7 @@
             margin-inline-start: var(--space-1);
 
             &::after {
-                @include icon-mask("../img/chevron-right.svg");
+                @include icon-mask("../img/chevron-right.svg", ButtonText);
                 content: "";
                 width: 0.875rem;
                 height: 0.875rem;

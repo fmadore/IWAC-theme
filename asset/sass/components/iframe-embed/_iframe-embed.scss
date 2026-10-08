@@ -54,7 +54,7 @@
 
     // External link icon (Bootstrap Icons box-arrow-up-right, via mask)
     &::after {
-        @include icon-mask("../img/box-arrow-up-right.svg");
+        @include icon-mask("../img/box-arrow-up-right.svg", LinkText);
         content: "";
         width: 0.75em;
         height: 0.75em;
