@@ -254,7 +254,9 @@ if ($compact) {
         <?php endif; ?>
 
         <?php if ($substats): ?>
-        <ul class="banner__substats" aria-label="<?php echo $escAttr($translate('Corpus in depth')); ?>">
+        <?php // The count picks the column template (components/banner/_banner.scss):
+              // a grid sized for six left the seventh figure alone on a row. ?>
+        <ul class="banner__substats banner__substats--n<?php echo count($substats); ?>" aria-label="<?php echo $escAttr($translate('Corpus in depth')); ?>">
             <?php foreach ($substats as $stat): ?>
                 <li class="banner__substat">
                     <span class="banner__substat-figure"><?php echo $escHtml(number_format((int) $stat['n'], 0, '.', $thin)); ?></span>
