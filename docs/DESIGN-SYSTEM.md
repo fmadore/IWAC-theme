@@ -85,7 +85,7 @@ value (see §3). Do **not** invent token names — undefined tokens fail silentl
 | **Panel** | `--panel-bg`, `--panel-border`, `--panel-radius`, `--panel-shadow` |
 | **Controls** | `--size-control-xs … --size-control-xl` |
 | **Measures** | `--measure-narrow/base/wide` |
-| **Motion** | `--transition-fast/base/slow`, `--ease-out-quart`; `--lift-xxs/xs/sm` |
+| **Motion** | `--transition-fast/base/slow` (shorthand: duration + easing), `--duration-fast/base/slow` (150 / 200 / 300ms, for `*-duration`), `--ease-out-quart`; `--lift-xxs/xs/sm` |
 | **Stacking** | `--z-dropdown`, `--z-sticky`, `--z-modal`, `--z-tooltip` (see below) |
 | **Accent mix** | `--accent-mix-subtle/medium/strong`, `--accent-line-sm/md` |
 

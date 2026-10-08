@@ -232,9 +232,17 @@
   // Easing & Transitions
   // ========================================================================
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --transition-fast: 150ms var(--ease-out-quart);
-  --transition-base: 200ms var(--ease-out-quart);
-  --transition-slow: 300ms var(--ease-out-quart);
+  // The three durations on their own, for the properties that take only a
+  // time — animation-duration, transition-duration (the view-transition
+  // cross-fade, say). The composite --transition-* tokens are built from
+  // them, so the two spellings of "fast" cannot disagree. check:tokens
+  // refuses a literal duration in a transition or animation (rule 2b).
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --transition-fast: var(--duration-fast) var(--ease-out-quart);
+  --transition-base: var(--duration-base) var(--ease-out-quart);
+  --transition-slow: var(--duration-slow) var(--ease-out-quart);
 
   // ========================================================================
   // Z-Index Scale

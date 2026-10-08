@@ -28,6 +28,12 @@
  *    unitless, vw) stay legal: they scale WITH the token the cascade already
  *    set, so they don't fork the scale.
  *
+ * 2b. TRACKING AND MOTION. The same for the next two private scales: a
+ *    non-zero `letter-spacing` length must be a --tracking-* token, and the
+ *    DURATION in a transition / animation (shorthand or -duration) must be a
+ *    --transition-* or --duration-* token. Delays, near-zero reduced-motion
+ *    kill switches and the hero's sanctioned load choreography are exempt.
+ *
  * 3. BREAKPOINT CONTRACT. `min-width` sits ON a published breakpoint;
  *    `max-width` sits at breakpoint − 1. Both modules' guards already enforce
  *    this on their own CSS; until 2.14 the source of truth did not enforce it
@@ -285,6 +291,85 @@ for (const file of [
     });
 }
 
+// ---- 2b. Tracking and motion come from the scale too. --------------------
+//
+// The font-size rule closed one private scale; letter-spacing and durations
+// were the next two, left to prose ("track Besley at -0.01em", "tight
+// transitions, 150-200ms") while literals accumulated beside the tokens:
+// 0.02em / 0.025em / 0.05em of tracking in three header and annotation
+// files, and a 0.25s ease-in-out on the drawer toggle (review T-21).
+// Declaration-level, because a transition list is routinely wrapped over
+// several lines.
+//
+//   letter-spacing  a non-zero length must be a --tracking-* token. `0`,
+//                   `normal` and the global keywords reset tracking rather
+//                   than choosing one, so they stay legal.
+//   transition / transition-duration / animation / animation-duration
+//                   a DURATION must be --duration-* or come inside a
+//                   --transition-* token. Delays are not durations (a
+//                   stagger has no scale), and a near-zero time is the
+//                   reduced-motion kill switch, not a decision.
+//
+// The hero's one-time load choreography — the Ken Burns settle and the
+// staggered fade-in — is the sanctioned exception to "tight transitions"
+// (DESIGN-PHILOSOPHY.md), so its animations are exempt by file.
+const MOTION_EXEMPT = [
+    [path.join('asset', 'sass', 'components', 'banner', '_banner.scss'), /^animation/],
+];
+const LENGTH_LITERAL_RE = /(?<![\w.$-])(-?\d*\.?\d+)(em|rem|px|ch|ex|%)(?![\w-])/i;
+const TIME_LITERAL_RE = /(?<![\w.$-])(\d*\.?\d+)(ms|s)(?![\w-])/gi;
+const RESET_KEYWORD_RE = /^(?:0|normal|inherit|initial|unset|revert|revert-layer)(?:\s*!important)?$/i;
+const toMs = (n, unit) => (unit.toLowerCase() === 's' ? Number(n) * 1000 : Number(n));
+
+/** The declared duration literals of a transition / animation value. */
+function durationLiterals(prop, value) {
+    const times = (s) => [...s.matchAll(TIME_LITERAL_RE)].filter(([, n, u]) => toMs(n, u) >= 1);
+    if (/-duration$/.test(prop)) return times(value).map((m) => m[0]);
+    // Shorthand: per comma-separated item, the FIRST time is the duration and
+    // the second the delay — unless a token already carries the duration.
+    const out = [];
+    let depth = 0, item = '';
+    const items = [];
+    for (const ch of value) {
+        if (ch === '(') depth++;
+        else if (ch === ')') depth--;
+        if (ch === ',' && depth === 0) { items.push(item); item = ''; } else item += ch;
+    }
+    items.push(item);
+    for (const it of items) {
+        if (/var\(\s*--(?:transition|duration)-/.test(it)) continue;
+        const all = [...it.matchAll(TIME_LITERAL_RE)];
+        if (all.length && toMs(all[0][1], all[0][2]) >= 1) out.push(all[0][0]);
+    }
+    return out;
+}
+
+for (const file of walk(SASS_DIR, ['.scss'])) {
+    const rel = path.relative(ROOT, file);
+    if (TYPE_SCALE_EXEMPT.includes(rel)) continue;
+    for (const block of parseBlocks(blankComments(fs.readFileSync(file, 'utf8')))) {
+        for (const d of block.decls) {
+            const prop = d.prop.toLowerCase();
+            const at = `${rel}:${d.start}`;
+            if (prop === 'letter-spacing') {
+                if (RESET_KEYWORD_RE.test(d.value.trim())) continue;
+                const hit = LENGTH_LITERAL_RE.exec(d.value.replace(/var\([^)]*\)/g, ''));
+                if (hit && Number(hit[1]) !== 0) {
+                    failures.push(`${at}  letter-spacing: ${d.value} — the literal ${hit[0]} must come from a --tracking-* token`
+                        + ' (display -0.01em, tight -0.02em, normal 0, wide 0.04em, wider 0.08em)');
+                }
+            } else if (/^(?:transition|animation)(?:-duration)?$/.test(prop)) {
+                if (MOTION_EXEMPT.some(([f, re]) => f === rel && re.test(prop))) continue;
+                const lits = [...new Set(durationLiterals(prop, d.value))];
+                if (lits.length) {
+                    failures.push(`${at}  ${prop}: ${d.value.replace(/\s+/g, ' ')} — the duration ${lits.join(', ')} must come from`
+                        + ' --transition-fast/base/slow (in a shorthand) or --duration-fast/base/slow (150 / 200 / 300ms)');
+                }
+            }
+        }
+    }
+}
+
 /* ------------------------------------------------------------------ */
 /*  Rule 4: --primary is an accent, never running body text            */
 /*                                                                    */
@@ -345,9 +430,13 @@ function parseBlocks(src) {
     const stack = [];
     let frame = '';
     let line = 1;
+    // The line a statement STARTS on (`line` is where its `;` lands): a
+    // transition list wrapped over five lines is reported where it begins.
+    let start = 1;
     for (let i = 0; i < src.length; i++) {
         const ch = src[i];
         if (ch === '\n') { line++; frame += ' '; continue; }
+        if (!frame.trim() && !/\s/.test(ch)) start = line;
         if (ch === '#' && src[i + 1] === '{') {
             let depth = 0;
             for (; i < src.length; i++) {
@@ -373,7 +462,7 @@ function parseBlocks(src) {
             if (m) {
                 const owner = blocks.find((b) => b.chain.length === stack.length
                     && b.chain.every((s, k) => s === stack[k]));
-                if (owner) owner.decls.push({ prop: m[1], value: m[2].trim(), line });
+                if (owner) owner.decls.push({ prop: m[1], value: m[2].trim(), line, start });
             }
             frame = '';
         } else {
@@ -843,7 +932,7 @@ for (const [heading, list] of groups) {
 }
 if (failed) process.exit(1);
 
-console.log(`✓ token usage: every var(--…) resolves, none is deprecated, and every font-size comes from the scale (${defined.size} tokens defined)`);
+console.log(`✓ token usage: every var(--…) resolves, none is deprecated, and every font-size, letter-spacing and duration comes from the scale (${defined.size} tokens defined)`);
 console.log('✓ every declared font weight is one layout.phtml actually loads');
 console.log(`✓ breakpoint contract: min-width on a breakpoint, max-width at breakpoint − 1 (${BP_NAMES.join(', ')}) — Sass, JS and templates`);
 console.log('✓ --primary is used as an accent, never as running body text');

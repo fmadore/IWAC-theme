@@ -4,9 +4,12 @@
  * Stylelint — bug-catching rules only (unknown properties, units and
  * selectors, invalid hex, duplicate declarations, shorthand overrides…), not a
  * house style: the Sass is consistent already, and a formatter pass would be a
- * mass diff for nothing. The last two rules turn CLAUDE.md gotchas into
- * errors, the way scripts/check-token-usage.js does for tokens: prose that a
- * rule can check should be a rule.
+ * mass diff for nothing. The rules after the Sass block turn CLAUDE.md gotchas
+ * and DESIGN-PHILOSOPHY.md prohibitions (glass outside the header, gradients,
+ * coloured side-stripes) into errors, the way scripts/check-token-usage.js
+ * does for tokens: prose that a rule can check should be a rule. Each
+ * prohibition carries a per-file allowlist in `overrides`, and an entry there
+ * says what job the exception does.
  */
 module.exports = {
     customSyntax: 'postcss-scss',
@@ -57,10 +60,50 @@ module.exports = {
         'declaration-property-value-disallowed-list': [{
             '/.*/': ['/color-mix\\(\\s*in\\s+srgb/'],
             outline: ['none'],
+            // A side stripe in a brand, status or categorical colour — the
+            // "coloured side-stripe" DESIGN-PHILOSOPHY.md lists under What to
+            // Avoid. Hairline dividers in --border-* and the blockquote rule
+            // (--blockquote-border) are typography, and stay legal.
+            '/^border-(?:left|inline-start)(?:-color)?$/': [
+                '/var\\(\\s*--(?:primary|secondary|info|success|warning|error|type-|series-)/',
+            ],
         }, {
-            message: (property) => (property === 'outline'
-                ? 'A focus rule takes `outline: 2px solid transparent`, never `none`: forced-colors mode drops box-shadow rings and repaints the transparent outline.'
-                : 'color-mix takes `in oklab`, not `in srgb` — sRGB mixing muddies mid-tones (CLAUDE.md).'),
+            message: (property) => {
+                if (property === 'outline') {
+                    return 'A focus rule takes `outline: 2px solid transparent`, never `none`: forced-colors mode drops box-shadow rings and repaints the transparent outline.';
+                }
+                if (/^border-(?:left|inline-start)/.test(property)) {
+                    return 'No coloured side-stripes (DESIGN-PHILOSOPHY.md, What to Avoid): a category is a dot, a section opens on a full rule.';
+                }
+                return 'color-mix takes `in oklab`, not `in srgb` — sRGB mixing muddies mid-tones (CLAUDE.md).';
+            },
+        }],
+
+        // Glass is the sticky header's alone (DESIGN-PHILOSOPHY.md, Quiet
+        // chrome) — overridden for _header.scss below.
+        'property-disallowed-list': [['backdrop-filter', '-webkit-backdrop-filter'], {
+            message: 'backdrop-filter is reserved for the sticky header (DESIGN-PHILOSOPHY.md): every other surface is opaque --surface.',
+        }],
+        // "No atmospheric gradients, no gradient bars" (DESIGN-PHILOSOPHY.md,
+        // What to Avoid). The two files that legitimately draw one are
+        // allowlisted below, each for a functional job, not decoration.
+        'function-disallowed-list': [['/^(?:-[a-z]+-)?(?:repeating-)?(?:linear|radial|conic)-gradient$/'], {
+            message: 'No gradients (DESIGN-PHILOSOPHY.md, What to Avoid). If one does a functional job, add its file to the allowlist in stylelint.config.js with the reason.',
         }],
     },
+    overrides: [
+        {
+            files: ['asset/sass/components/header/_header.scss'],
+            rules: { 'property-disallowed-list': null },
+        },
+        {
+            files: [
+                // The hero scrim: legibility of white type over the duotone plate.
+                'asset/sass/components/banner/_banner.scss',
+                // The fade that tells a reader a clamped description continues.
+                'asset/sass/base/elements/_resource-description.scss',
+            ],
+            rules: { 'function-disallowed-list': null },
+        },
+    ],
 };
