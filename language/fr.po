@@ -54,11 +54,11 @@ msgid_plural "Archived web pages"
 msgstr[0] "Page web archivée"
 msgstr[1] "Pages web archivées"
 
-#: view/common/banner.phtml:210
+#: view/common/banner.phtml:225
 msgid "Archives consulted"
 msgstr "Archives consultées"
 
-#: view/common/banner.phtml:212
+#: view/common/banner.phtml:227
 msgid "Audiovisual minutes"
 msgstr "Minutes audiovisuelles"
 
@@ -110,7 +110,7 @@ msgstr "Fermer la visionneuse"
 msgid "Collapse the full text"
 msgstr "Réduire le texte intégral"
 
-#: view/common/banner.phtml:241
+#: view/common/banner.phtml:256
 msgid "Collection at a glance"
 msgstr "La collection en un coup d’œil"
 
@@ -126,11 +126,11 @@ msgstr "Copié"
 msgid "Copy"
 msgstr "Copier"
 
-#: view/common/banner.phtml:257
+#: view/common/banner.phtml:274
 msgid "Corpus in depth"
 msgstr "Le corpus en détail"
 
-#: view/common/banner.phtml:194
+#: view/common/banner.phtml:209
 msgid "Countries"
 msgstr "Pays"
 
@@ -150,7 +150,7 @@ msgstr ""
 msgid "Default"
 msgstr "Par défaut"
 
-#: view/common/banner.phtml:211
+#: view/common/banner.phtml:226
 msgid "Document types"
 msgstr "Types de documents"
 
@@ -222,13 +222,17 @@ msgstr "Image %1 sur %2"
 msgid "Image viewer"
 msgstr "Visionneuse d’images"
 
-#: view/common/banner.phtml:185
+#: view/common/banner.phtml:200
 msgid "Index"
 msgstr "Index"
 
 #: view/common/footer.phtml:170
 msgid "Install app"
 msgstr "Installer l’application"
+
+#: view/common/banner.phtml:101
+msgid "Introduction"
+msgstr "Introduction"
 
 #: helper/ResourceTags.php:41
 msgid "Item"
@@ -246,7 +250,7 @@ msgstr ""
 msgid "Item: %s"
 msgstr "Document : %s"
 
-#: view/common/banner.phtml:184 view/common/block-layout/item-carousel.phtml:178 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:42
+#: view/common/banner.phtml:199 view/common/block-layout/item-carousel.phtml:178 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:42
 msgid "Items"
 msgstr ""
 
@@ -254,7 +258,7 @@ msgstr ""
 msgid "Language"
 msgstr "Langue"
 
-#: view/common/banner.phtml:213
+#: view/common/banner.phtml:228
 msgid "Languages"
 msgstr "Langues"
 
@@ -298,7 +302,7 @@ msgstr "Plus récents d’abord"
 msgid "Newspaper covers and archival documents from the collection"
 msgstr "Unes de journaux et documents d’archives de la collection"
 
-#: view/common/banner.phtml:192
+#: view/common/banner.phtml:207
 msgid "Newspapers"
 msgstr "Journaux"
 
@@ -386,7 +390,7 @@ msgstr ""
 msgid "Read the full text — %s more words"
 msgstr "Lire le texte intégral — %s mots restants"
 
-#: view/common/banner.phtml:206
+#: view/common/banner.phtml:221
 msgid "References"
 msgstr "Références"
 
@@ -490,11 +494,11 @@ msgstr "Titre (Z-A)"
 msgid "Toggle submenu"
 msgstr "Afficher ou masquer le sous-menu"
 
-#: view/common/banner.phtml:202
+#: view/common/banner.phtml:217
 msgid "Total pages"
 msgstr "Pages totales"
 
-#: view/common/banner.phtml:201
+#: view/common/banner.phtml:216
 msgid "Total words"
 msgstr "Mots totaux"
 

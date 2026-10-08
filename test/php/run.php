@@ -836,6 +836,61 @@ namespace IwacThemeTest {
         same(['Conference hall, Lomé, 2019', 'Opening session', ''], $alts[1]);
     });
 
+    // ---- Homepage hero --------------------------------------------------------
+
+    /** Render common/banner.phtml with a snapshot of $summary figures (null: no snapshot). */
+    function renderBanner(array $settings, bool $compact, ?array $summary = null): string
+    {
+        $root = sys_get_temp_dir() . '/iwac-theme-banner-' . getmypid();
+        @mkdir($root . '/files/iwac-visualizations', 0777, true);
+        if (!defined('OMEKA_PATH')) {
+            define('OMEKA_PATH', $root);
+        }
+        $snapshot = OMEKA_PATH . '/files/iwac-visualizations/collection-overview.json';
+        if ($summary !== null) {
+            file_put_contents($snapshot, json_encode(['summary' => $summary]));
+        }
+        $fake = new FakeView($settings);
+        $fake->helpers['themeSettingAsset'] = static fn () => null;
+        $fake->helpers['currentSite'] = static fn () => null;
+        $fake->helpers['api'] = static fn () => throw new \RuntimeException('no API in this test');
+        $previousLog = ini_set('error_log', PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null');
+        try {
+            return $fake->render('common/banner.phtml', ['compact' => $compact]);
+        } finally {
+            ini_set('error_log', (string) $previousLog);
+            @unlink($snapshot);
+        }
+    }
+
+    test('the full hero is a labelled region; the compact band is not (T-08)', function () {
+        $hero = renderBanner(['banner_heading' => 'Islam West Africa Collection'], false);
+        check((bool) preg_match('/<section class="banner[^"]*"[^>]*aria-labelledby="banner-heading">/', $hero), 'hero is not a section named by its heading');
+        check(str_contains($hero, '<h1 class="banner__heading" id="banner-heading">Islam West Africa Collection</h1>'), 'heading id missing');
+        check(str_ends_with(rtrim($hero), '</section>'), 'hero section not closed');
+
+        $unnamed = renderBanner([], false);
+        check((bool) preg_match('/<section class="banner[^"]*"[^>]*aria-label="Introduction">/', $unnamed), 'a hero without a heading needs a label');
+
+        $band = renderBanner([], true);
+        check(str_contains($band, '<div class="banner banner--compact"'), 'compact band should stay a div');
+        check(!str_contains($band, '<section') && !str_contains($band, 'aria-label'), 'compact band must not be a landmark');
+    });
+
+    test('the corpus tier carries its figure count for the column template (T-07)', function () {
+        $summary = [
+            'total_words' => 9876543, 'total_pages' => 34567, 'references_count' => 1200,
+            'unique_sources' => 88, 'document_types' => 7, 'audiovisual_minutes' => 1234, 'languages' => 5,
+        ];
+        $html = renderBanner([], false, $summary);
+        check(str_contains($html, 'class="banner__substats banner__substats--n7"'), 'seven figures, --n7');
+        same(7, substr_count($html, 'class="banner__substat"'));
+
+        unset($summary['languages'], $summary['document_types']);
+        check(str_contains(renderBanner([], false, $summary), 'banner__substats--n5'), 'five figures, --n5');
+        check(!str_contains(renderBanner([], false), 'banner__substats'), 'no snapshot, no tier');
+    });
+
     // ---- Record language (T-02) ---------------------------------------------
 
     /** A language authority as the IWAC index stores it: titles plus an ISO code as dcterms:alternative. */
