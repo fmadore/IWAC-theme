@@ -9,109 +9,16 @@
  *
  * Until this existed the PHP side had syntax checks and nothing else — every
  * behavioural test in the repo drove the JavaScript. Templates are rendered
- * against FakeView below: a stand-in for Laminas' PhpRenderer that answers the
- * helper calls a template makes from plain arrays and closures. It is not
- * Omeka; a test that needs more of Omeka than a handful of stubs belongs in
- * the live Playwright suite instead.
+ * against FakeView (FakeView.php, shared with render-fixtures.php): a stand-in
+ * for Laminas' PhpRenderer that answers the helper calls a template makes from
+ * plain arrays and closures. It is not Omeka; a test that needs more of Omeka
+ * than a handful of stubs belongs in the live Playwright suite instead.
  */
 declare(strict_types=1);
 
 namespace IwacThemeTest {
 
-    require_once __DIR__ . '/stubs.php';
-
-    const ROOT = __DIR__ . '/../..';
-
-    foreach (glob(ROOT . '/helper/*.php') as $helperFile) {
-        require_once $helperFile;
-    }
-
-    /**
-     * Minimal PhpRenderer stand-in. Settings come from arrays; any other helper
-     * a template calls must be registered in $helpers, so a template reaching
-     * for something the test did not anticipate fails loudly instead of
-     * rendering against a silent null.
-     */
-    final class FakeView
-    {
-        /** @var array<string,callable|object> */
-        public array $helpers = [];
-
-        /** @var list<array{0:string,1:array}> every partial() call, in order */
-        public array $partials = [];
-
-        public function __construct(
-            public array $themeSettings = [],
-            public array $siteSettings = [],
-            public array $query = [],
-        ) {
-            $escape = static fn ($s): string => htmlspecialchars((string) $s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-            $this->helpers = [
-                'escapeHtml' => $escape,
-                'escapeHtmlAttr' => $escape,
-                'translate' => static fn ($s): string => (string) $s,
-                'themeSetting' => fn (string $id, $default = null) => $this->themeSettings[$id] ?? $default,
-                'siteSetting' => fn (string $id, $default = null) => $this->siteSettings[$id] ?? $default,
-                'setting' => static fn (string $id, $default = null) => $default,
-                'assetUrl' => static fn (string $file, $module = null): string => '/themes/IWAC-theme/asset/' . $file,
-                'lang' => static fn (): string => 'en',
-                'trigger' => static fn (...$args) => null,
-                'status' => static fn () => new class {
-                    public function isSiteRequest(): bool
-                    {
-                        return true;
-                    }
-                },
-                'params' => fn () => new class($this->query) {
-                    public function __construct(private array $query)
-                    {
-                    }
-
-                    public function fromQuery($name = null, $default = null)
-                    {
-                        return $name === null ? $this->query : ($this->query[$name] ?? $default);
-                    }
-                },
-                'thumbnail' => static fn (...$args): string => '',
-                'partial' => function (string $name, array $vars = []): string {
-                    $this->partials[] = [$name, $vars];
-                    return '';
-                },
-            ];
-            foreach (['AiGeneratedTerms', 'BannerStats', 'BrowseLayout', 'FrenchSpacing', 'ResourceLanguage', 'ResourceTags', 'SitePageBySlug'] as $name) {
-                $class = '\\OmekaTheme\\Helper\\' . $name;
-                $this->helpers[$name] = (new $class())->setView($this);
-            }
-        }
-
-        public function plugin(string $name)
-        {
-            return $this->helpers[$name] ?? throw new \LogicException("FakeView has no helper '$name'");
-        }
-
-        public function __call(string $name, array $args)
-        {
-            return ($this->plugin($name))(...$args);
-        }
-
-        /** Render a theme template (path relative to view/) with $vars in scope. */
-        public function render(string $template, array $vars = []): string
-        {
-            $render = function (string $__file, array $__vars): string {
-                extract($__vars);
-                ob_start();
-                try {
-                    include $__file;
-                } catch (\Throwable $e) {
-                    // Drop the half-rendered page so it doesn't bury the failure.
-                    ob_end_clean();
-                    throw $e;
-                }
-                return (string) ob_get_clean();
-            };
-            return \Closure::bind($render, $this, self::class)(ROOT . '/view/' . $template, $vars);
-        }
-    }
+    require_once __DIR__ . '/FakeView.php';
 
     // ---- Tiny runner --------------------------------------------------------
 
