@@ -12,13 +12,13 @@ msgstr ""
 msgid "%1$s–%2$s of %3$s"
 msgstr ""
 
-#: view/hierarchy/common/block-layout/hierarchy-public.phtml:249 view/hierarchy/common/block-layout/hierarchy-public.phtml:292
+#: view/hierarchy/common/block-layout/hierarchy-public.phtml:253 view/hierarchy/common/block-layout/hierarchy-public.phtml:299
 msgid "%s item"
 msgid_plural "%s items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: view/hierarchy/common/block-layout/hierarchy-public.phtml:103
+#: view/hierarchy/common/block-layout/hierarchy-public.phtml:107
 msgid "(Private)"
 msgstr ""
 
@@ -384,7 +384,7 @@ msgstr ""
 msgid "Previous slide"
 msgstr ""
 
-#: view/common/resource-values.phtml:310 view/hierarchy/common/block-layout/hierarchy-public.phtml:253
+#: view/common/resource-values.phtml:310 view/hierarchy/common/block-layout/hierarchy-public.phtml:257
 msgid "Private"
 msgstr ""
 
@@ -544,7 +544,7 @@ msgstr ""
 msgid "Zoom in"
 msgstr ""
 
-#: view/common/resource-card.phtml:31 view/hierarchy/common/block-layout/hierarchy-public.phtml:109
+#: view/common/resource-card.phtml:31 view/hierarchy/common/block-layout/hierarchy-public.phtml:113
 msgid "[Untitled]"
 msgstr ""
 

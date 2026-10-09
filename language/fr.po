@@ -10,13 +10,13 @@ msgstr ""
 msgid "%1$s–%2$s of %3$s"
 msgstr "%1$s–%2$s sur %3$s"
 
-#: view/hierarchy/common/block-layout/hierarchy-public.phtml:249 view/hierarchy/common/block-layout/hierarchy-public.phtml:292
+#: view/hierarchy/common/block-layout/hierarchy-public.phtml:253 view/hierarchy/common/block-layout/hierarchy-public.phtml:299
 msgid "%s item"
 msgid_plural "%s items"
 msgstr[0] "%s contenu"
 msgstr[1] "%s contenus"
 
-#: view/hierarchy/common/block-layout/hierarchy-public.phtml:103
+#: view/hierarchy/common/block-layout/hierarchy-public.phtml:107
 msgid "(Private)"
 msgstr "(Privé)"
 
@@ -382,7 +382,7 @@ msgstr "Image précédente"
 msgid "Previous slide"
 msgstr "Diapositive précédente"
 
-#: view/common/resource-values.phtml:310 view/hierarchy/common/block-layout/hierarchy-public.phtml:253
+#: view/common/resource-values.phtml:310 view/hierarchy/common/block-layout/hierarchy-public.phtml:257
 msgid "Private"
 msgstr ""
 
@@ -542,7 +542,7 @@ msgstr "Vidéo YouTube : %s"
 msgid "Zoom in"
 msgstr "Agrandir"
 
-#: view/common/resource-card.phtml:31 view/hierarchy/common/block-layout/hierarchy-public.phtml:109
+#: view/common/resource-card.phtml:31 view/hierarchy/common/block-layout/hierarchy-public.phtml:113
 msgid "[Untitled]"
 msgstr ""
 
