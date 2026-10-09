@@ -160,14 +160,24 @@
             }
 
             &.menu-item-has-children {
+                // The label gives up its trailing padding to the toggle
+                // instead of the toggle sliding back over it: a negative
+                // margin put the toggle's first 12px under the link, and axe
+                // measured the clear target at 16px. The active marker ends
+                // at the label's text either way.
                 a {
                     margin-inline-end: 0;
+                    padding-inline-end: 0;
+                }
+
+                &.active > a::after {
+                    inset-inline-end: 0;
                 }
 
                 // The submenu toggle. Its box is a 28px target (WCAG 2.5.8
                 // asks for 24; the padding-only box was 21×21) while the
-                // chevron stays 12px: the extra 4px a side is taken back from
-                // the negative margin, so the glyph sits where it always did.
+                // chevron stays 12px, centred: 8px after the label, where it
+                // always sat.
                 button {
                     display: inline-flex;
                     align-items: center;
@@ -179,7 +189,7 @@
                     border: none;
                     line-height: 1;
                     padding: var(--space-1);
-                    margin-inline-start: calc(-1 * var(--space-3));
+                    margin-inline-start: 0;
                     box-shadow: none;
                     cursor: pointer;
                     transition: transform var(--transition-fast);
