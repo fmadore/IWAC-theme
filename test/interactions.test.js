@@ -280,3 +280,26 @@ test('citation copy falls back to plain text without ClipboardItem', async () =>
         dom.window.close();
     }
 });
+
+test('a refused copy selects the citation and says how to finish', async () => {
+    const dom = citationDom();
+    dom.window.IWACUtils = { onReady: (callback) => callback() };
+    Object.defineProperty(dom.window.navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async () => { throw new Error('denied'); } },
+    });
+
+    try {
+        runAsset(dom, 'citation.js');
+        dom.window.document.querySelector('[data-citation-copy]').click();
+        await flush();
+        const selected = dom.window.getSelection().toString().replace(/\s+/g, ' ').trim();
+        assert.equal(selected, 'Madore, Frédérick. Islam in Togo. Berlin: ZMO, 2020.');
+        const status = dom.window.document.querySelector('.citation__status').textContent;
+        assert.match(status, /Text selected/);
+        assert.match(status, /⌘C/);
+        assert.equal(dom.window.document.querySelector('.citation').classList.contains('is-copied'), false);
+    } finally {
+        dom.window.close();
+    }
+});

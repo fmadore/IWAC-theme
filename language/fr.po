@@ -126,6 +126,10 @@ msgstr "Copié"
 msgid "Copy"
 msgstr "Copier"
 
+#: view/common/citation.phtml:76
+msgid "Copy failed. Text selected: press Ctrl+C or ⌘C."
+msgstr "Échec de la copie. Texte sélectionné : appuyez sur Ctrl+C ou ⌘C."
+
 #: view/common/banner.phtml:274
 msgid "Corpus in depth"
 msgstr "Le corpus en détail"
@@ -365,10 +369,6 @@ msgstr "Fait partie de %s"
 #: view/common/footer.phtml:179
 msgid "Powered by Omeka S"
 msgstr ""
-
-#: view/common/citation.phtml:76
-msgid "Press Ctrl+C to copy"
-msgstr "Appuyez sur Ctrl+C pour copier"
 
 #: view/common/pagination.phtml:25
 msgid "Previous"
