@@ -190,7 +190,9 @@
     color: var(--ink);
     background-color: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-full);
+    // A toggle, not a dot: the small radius of the controls grammar
+    // (docs/DESIGN-SYSTEM.md §2c). It was a pill until the 2026-10 review.
+    border-radius: var(--radius-sm);
     text-decoration: none;
     line-height: 1.8;
     transition:
@@ -200,8 +202,10 @@
 
     @include focus-ring;
 
+    // Hover text takes --primary-hover for the same reason as the active label
+    // below: --primary drops under 4.5:1 once the wash lifts the ground.
     &:hover {
-        color: var(--primary);
+        color: var(--primary-hover);
         background-color: color-mix(in oklab, var(--primary) 6%, var(--surface));
         border-color: color-mix(in oklab, var(--primary) var(--accent-mix-medium), var(--border));
     }
@@ -240,11 +244,11 @@
     padding: 0 var(--space-1);
     font-size: var(--text-xs);
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
     color: var(--muted);
-    background-color: var(--surface-raised);
-    border-radius: var(--radius-full);
+    // A plain tabular figure inside the chip, no filled bubble: DESIGN keeps
+    // counts as text ("no filled pills").
     line-height: var(--line-height-normal);
-
 }
 
 // Active-state count. Written flat, not nested under the rule above: `&` there
@@ -253,12 +257,10 @@
 // — a `.linked-resources` inside the chip, which no markup has ever produced.
 // The active count has been rendering in the resting muted-on-raised treatment
 // the whole time; DESIGN's "active counts as primary tabular text" only takes
-// effect now. Same one-step ramp correction as the label (the count sits on a
-// lighter 12% wash, where `--primary` measured worse than on the chip itself).
+// effect now. Same one-step ramp correction as the label, because the count
+// sits on the chip's active wash.
 .linked-resources .linked-resources__facet.is-active .linked-resources__facet-count {
     color: var(--primary-hover);
-    background-color: color-mix(in oklab, var(--primary) 12%, var(--surface));
-    font-variant-numeric: tabular-nums;
 }
 
 // ==========================================================================
