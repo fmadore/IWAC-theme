@@ -38,7 +38,7 @@ msgstr ""
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
 msgstr ""
 
-#: view/common/linked-resources.phtml:134
+#: view/common/linked-resources.phtml:139
 msgid "All"
 msgstr ""
 
@@ -148,10 +148,6 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: view/common/linked-resources.phtml:46
-msgid "Default"
-msgstr ""
-
 #: view/common/banner.phtml:226
 msgid "Document types"
 msgstr ""
@@ -164,7 +160,7 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: view/common/linked-resources.phtml:127
+#: view/common/linked-resources.phtml:132
 msgid "Filter by relation"
 msgstr ""
 
@@ -172,15 +168,15 @@ msgstr ""
 msgid "Filter items on this page by title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:107
+#: view/common/linked-resources.phtml:112
 msgid "Filter linked resources on this page by title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:106 view/omeka/site/item/browse.phtml:83
+#: view/common/linked-resources.phtml:111 view/omeka/site/item/browse.phtml:83
 msgid "Filter this page by title…"
 msgstr ""
 
-#: view/common/linked-resources.phtml:129
+#: view/common/linked-resources.phtml:134
 msgid "Filter:"
 msgstr ""
 
@@ -300,7 +296,7 @@ msgstr ""
 msgid "Media: %s"
 msgstr ""
 
-#: view/common/linked-resources.phtml:49
+#: view/common/linked-resources.phtml:54
 msgid "Newest first"
 msgstr ""
 
@@ -328,7 +324,7 @@ msgstr ""
 msgid "No pages found"
 msgstr ""
 
-#: view/common/linked-resources.phtml:53 view/omeka/site/item/browse.phtml:61
+#: view/common/linked-resources.phtml:58 view/omeka/site/item/browse.phtml:61
 msgid "No resources match your search."
 msgstr ""
 
@@ -336,7 +332,7 @@ msgstr ""
 msgid "No result found"
 msgstr ""
 
-#: view/common/linked-resources.phtml:50
+#: view/common/linked-resources.phtml:55
 msgid "Oldest first"
 msgstr ""
 
@@ -444,8 +440,12 @@ msgstr ""
 msgid "Something went wrong"
 msgstr ""
 
-#: view/common/linked-resources.phtml:112
-msgid "Sort by"
+#: view/common/linked-resources.phtml:117
+msgid "Sort the resources on this page"
+msgstr ""
+
+#: view/common/linked-resources.phtml:51
+msgid "Sort this page"
 msgstr ""
 
 #: view/common/block-layout/item-carousel.phtml:155
@@ -488,11 +488,11 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:47
+#: view/common/linked-resources.phtml:52
 msgid "Title (A-Z)"
 msgstr ""
 
-#: view/common/linked-resources.phtml:48
+#: view/common/linked-resources.phtml:53
 msgid "Title (Z-A)"
 msgstr ""
 
@@ -556,10 +556,10 @@ msgstr ""
 msgid "show submenu for “%s”"
 msgstr ""
 
-#: view/common/linked-resources.phtml:54 view/omeka/site/item/browse.phtml:70
+#: view/common/linked-resources.phtml:59 view/omeka/site/item/browse.phtml:70
 msgid "{count} resources found"
 msgstr ""
 
-#: view/common/linked-resources.phtml:55 view/omeka/site/item/browse.phtml:71
+#: view/common/linked-resources.phtml:60 view/omeka/site/item/browse.phtml:71
 msgid "{count} resources on this page"
 msgstr ""

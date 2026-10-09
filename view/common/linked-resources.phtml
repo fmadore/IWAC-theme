@@ -42,8 +42,13 @@ foreach ($resourcePropertiesAll as $type => $resourceProperties) {
 
 $baseUrl = $this->url(null, [], true);
 
+// The sort reorders the rows on screen — one page of a set that can run to
+// hundreds (241 on item/1023) — and resets on an AJAX page change, so it says
+// so, the way the title filter beside it already did ("Filter this page…"):
+// the resting option reads "Sort this page" rather than "Default", and the
+// control is named for what it does.
 $sortOptions = [
-    'default' => $this->translate('Default'),
+    'default' => $this->translate('Sort this page'),
     'alpha-asc' => $this->translate('Title (A-Z)'),
     'alpha-desc' => $this->translate('Title (Z-A)'),
     'date-desc' => $this->translate('Newest first'),
@@ -109,7 +114,7 @@ foreach ($subjectValues as $values) {
 
         <div class="linked-resources__sort">
             <label for="linked-resources-sort" class="sr-only">
-                <?php echo $this->escapeHtml($this->translate('Sort by')); ?>
+                <?php echo $this->escapeHtml($this->translate('Sort the resources on this page')); ?>
             </label>
             <select id="linked-resources-sort" class="linked-resources__sort-select">
                 <?php foreach ($sortOptions as $value => $label): ?>
