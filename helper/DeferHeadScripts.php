@@ -60,7 +60,8 @@ final class DeferHeadScripts extends AbstractHelper
     {
         $deferred = 0;
         foreach ($container as $item) {
-            if (!is_object($item) || !isset($item->attributes) || !is_array($item->attributes)) {
+            // Laminas' HeadScript stores each script as a stdClass.
+            if (!$item instanceof \stdClass || !isset($item->attributes) || !is_array($item->attributes)) {
                 continue;
             }
             $src = (string) ($item->attributes['src'] ?? '');
