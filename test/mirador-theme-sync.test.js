@@ -95,6 +95,41 @@ test('Escape restores a maximized window, and only while one is maximized', () =
     assert.equal(store.dispatched.length, before, 'a second Escape has nothing to restore');
 });
 
+test("Mirador's main and h1 are demoted to a region and an h2, and stay so across re-renders", async () => {
+    const dom = createDom(`<!doctype html><body data-theme="light"><main id="content">
+        <h1>The record</h1>
+        <div class="block block-mirador"><div id="mirador-1" class="mirador viewer">
+            <main class="mirador-viewer" aria-label="Workspace">
+                <div class="mirador-workspace-viewport"><h1 style="position:absolute">Mirador viewer</h1><div class="window"></div></div>
+            </main>
+        </div></div>
+    </main></body>`);
+    dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
+    dom.window.miradors = { 'mirador-1': { store: fakeStore({ w1: { maximized: false } }) } };
+    dom.window.IWACUtils = { onReady: (callback) => callback() };
+    runAsset(dom, 'mirador-theme-sync.js');
+    const doc = dom.window.document;
+
+    const viewerMain = doc.querySelector('main.mirador-viewer');
+    assert.equal(viewerMain.getAttribute('role'), 'region');
+    assert.equal(viewerMain.getAttribute('aria-label'), 'Workspace', 'the region keeps its name');
+    const heading = doc.querySelector('.mirador-workspace-viewport > h1');
+    assert.equal(heading.getAttribute('role'), 'heading');
+    assert.equal(heading.getAttribute('aria-level'), '2');
+    // The page's own h1 is untouched.
+    assert.equal(doc.querySelector('#content > h1').hasAttribute('role'), false);
+
+    // React remounts the workspace: a fresh h1 must be demoted too.
+    const viewport = doc.querySelector('.mirador-workspace-viewport');
+    viewport.innerHTML = '<h1>Mirador viewer</h1><div class="window"></div>';
+    await flush();
+    const remounted = doc.querySelector('.mirador-workspace-viewport > h1');
+    assert.equal(remounted.getAttribute('role'), 'heading');
+    assert.equal(remounted.getAttribute('aria-level'), '2');
+
+    dom.window.close();
+});
+
 test('waiting for a viewer that never registers stops after 30 seconds', () => {
     const dom = createDom('<!doctype html><body><div id="mirador-1" class="mirador viewer"></div></body>');
     dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
