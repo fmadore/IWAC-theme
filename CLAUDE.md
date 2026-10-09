@@ -23,7 +23,7 @@ values — `tokens.json` stays normative; when tokens change, refresh `DESIGN.md
 ```bash
 npm run check:tokens   # fast gate: fails if any var(--…) in asset/sass doesn't resolve
 npm run build          # check:tokens → build:tokens → build:i18n → build:js → compile CSS
-npm run start          # compile once, then watch .scss
+npm run start          # compile once, then watch .scss and asset/js
 npm run bump -- patch  # write every version declaration (patch|minor|major|X.Y.Z)
 npm test               # JS behaviour (node:test + jsdom)
 npm run test:minified  # the same suite against asset/js/dist/*.min.js
@@ -98,6 +98,8 @@ that disagrees. Change a guard rule here, never in a module's copy. It publishes
 | `public` | the subset modules may consume: everything declared in `abstracts/variables/` (component parameters like `--plate-*` are not) |
 | `deprecated` | retired name → replacement, from `// deprecated: --x` markers on declaration lines |
 | `fonts` | the weights each font token actually loads, parsed from layout.phtml's webfont URL |
+| `fontsUrl` | that webfont stylesheet URL itself, for routes that render without the theme (IwacVisualizations' embeds) |
+| `themed` | the tokens the dark blocks redeclare — what the guard's `scope` rule reads to decide whether a module composition must also live on `body` |
 | `breakpoints` | the six media-query widths |
 | `series` | the ordered categorical chart palette (`--series-1 … --series-20`), light + dark, with the theme-driven lead slots marked |
 | `themeVersion` | the theme release the contract came from |
@@ -151,6 +153,25 @@ glows "auto-update", which was true of the `@media` path and false of the manual
 `npm run check:tokens` now asserts it statically. Practical rule: if a new token's value
 contains a `var()`, put it in the light/dark **mixin pair**, not in `:root`, unless the
 referent is theme-independent.
+
+The fourth occurrence was in a module (IwacVisualizations, found in the 2026-10 review):
+21 data-colour ramps composed on `:root`, so heatmaps inverted for anyone whose toggle
+disagreed with their OS. The theme's own check could not see module CSS, so the rule now
+lives in the shared engine as `scope`: a module custom property declared only on `:root` /
+`html` that composes a token listed in `tokens.json` `themed` must also be declared on
+`body` (`:root, body`). The engine's `focus-outline` rule rides along: no `outline: none|0`
+anywhere except `:focus:not(:focus-visible)`, because forced-colors mode drops the
+box-shadow rings that usually replace it.
+
+### Colour, tracking and motion are asserted beyond font-size
+
+`check:tokens` rule 2b refuses literal `letter-spacing` and transition/animation durations
+in `asset/sass` (use `--tracking-*` and `--duration-fast/base/slow`; `--transition-*` are
+built from the durations). Rule 9 requires every `--series-*` and `--type-*` colour to
+clear 3:1 on all four surfaces in both themes — nine light series slots sat at
+1.84–3.05:1 until 2026-10 and moved in lightness only. Stylelint carries the prose-only
+design rules: gradients only in the allowlisted files, `backdrop-filter` only in the
+header, no brand/status-coloured side stripes.
 
 ### `DESIGN.md` frontmatter is checked against `tokens.json`
 
@@ -210,6 +231,35 @@ Its label is `--ink-on-primary`, never `--white` — here and in both modules. D
 *lightens* the primary ramp, so white on a dark-mode fill is 3.23:1; the token flips to
 dark ink there (6.10:1). The light-only scans stayed green on that for every submit and
 IwacSearch's active tab until the token landed.
+
+### jQuery is deferred, so every external head script must be too
+
+`layout.phtml` defers jQuery and Omeka's `global.js` (worth ~400ms of mobile FCP). A module
+script that stays synchronous then runs before jQuery exists: from 2.19 to the 2026-10
+fix, the Mapping module's `mapping-show.js` threw `$ is not defined` and every place
+record showed a 700px blank map, because the original measurement covered inline scripts
+and never a page with an external module script. The `DeferHeadScripts` helper now defers
+every external classic head script (not modules, JSON islands or `async`), which keeps
+document order, so modules run after jQuery. `e2e/live.spec.js` fails on any page error
+and samples a place record on both sites, which is the check that was missing.
+
+### Icons are Lucide masks — and masks need a forced-colors colour
+
+No icon font loads: Font Awesome went in 2026-10, after an inventory of 96 live pages found
+it drawing only the two search submits. Every UI glyph is `@include icon-mask(url,
+$forced)`, which paints with `background-color: currentColor` — and forced-colors mode
+replaces backgrounds with `Canvas`, so a mask with no `$forced` colour vanishes. Pass
+`ButtonText` inside buttons and `LinkText` inside links (`CanvasText` is the default). A
+rule that sets `background-color` after the mixin re-hides the glyph; set `color` instead.
+
+### Record language comes from `dcterms:language`
+
+Corpus values carry no language tag, so `$value->lang()` is empty and French text on the
+English site was read with English pronunciation. `ResourceLanguage` maps the record's
+linked language authority (ISO code in its `dcterms:alternative`, plus a small name map
+for the three without one) to a BCP-47 tag, which goes on the h1, the current crumb,
+card titles and untagged full-text/description values. A multilingual record gets no tag
+rather than a guess.
 
 ### Read a module's rendered HTML before styling it
 
