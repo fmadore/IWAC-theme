@@ -63,3 +63,11 @@ test('a load without the flag does not scroll', () => {
     const { scrolls } = load(RESULTS);
     assert.equal(scrolls.length, 0);
 });
+
+test('a click that opens a new tab or window leaves no flag behind', () => {
+    for (const init of [{ ctrlKey: true }, { metaKey: true }, { shiftKey: true }, { button: 1 }]) {
+        const { dom, doc } = load(RESULTS);
+        doc.querySelector('.pagination-nav').dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true, ...init }));
+        assert.equal(dom.window.sessionStorage.getItem(KEY), null, JSON.stringify(init));
+    }
+});

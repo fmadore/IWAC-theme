@@ -47,6 +47,10 @@
     // (no reload ever consumes the flag), so skip it — otherwise the stale
     // flag auto-scrolls the NEXT full page load.
     document.addEventListener('click', (e) => {
+        // A modified or non-primary click opens the page in a new tab or
+        // window: this page is not reloaded, so the flag would wait for the
+        // reader's next, unrelated navigation and scroll that instead.
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
         if (e.target.closest('.linked-resources')) return;
         if (e.target.closest('.pagination a.pagination-nav:not(.disabled)')) {
             store.set(STORAGE_KEY, '1');

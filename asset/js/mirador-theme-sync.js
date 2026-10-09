@@ -139,15 +139,24 @@
      * Mirador loads asynchronously via an ES module. Observe DOM changes and
      * keep a low-frequency fallback check until the store becomes available.
      */
+    // Give up after this long. A viewer that has not registered by then is
+    // not coming (a failed module load, a manifest error), and the check
+    // used to run every 250ms — plus on every DOM mutation — for as long as
+    // the page stayed open.
+    const WAIT_LIMIT_MS = 30000;
+
     function waitForMirador(callback) {
         let interval = null;
         let observer = null;
+        let timeout = null;
 
         function stop() {
             if (interval) window.clearInterval(interval);
             if (observer) observer.disconnect();
+            if (timeout) window.clearTimeout(timeout);
             interval = null;
             observer = null;
+            timeout = null;
         }
 
         function check() {
@@ -162,6 +171,7 @@
         }
 
         interval = window.setInterval(check, 250);
+        timeout = window.setTimeout(stop, WAIT_LIMIT_MS);
         observer = new MutationObserver(check);
         observer.observe(document.documentElement, { childList: true, subtree: true });
         window.addEventListener('pagehide', stop, { once: true });

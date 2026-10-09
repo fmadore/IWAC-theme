@@ -95,6 +95,26 @@ test('Escape restores a maximized window, and only while one is maximized', () =
     assert.equal(store.dispatched.length, before, 'a second Escape has nothing to restore');
 });
 
+test('waiting for a viewer that never registers stops after 30 seconds', () => {
+    const dom = createDom('<!doctype html><body><div id="mirador-1" class="mirador viewer"></div></body>');
+    dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
+    // A config with no store yet: the module's raw entry before the viewer starts.
+    dom.window.miradors = { 'mirador-1': { id: 'mirador-1' } };
+    const timeouts = [];
+    const cleared = [];
+    dom.window.setInterval = () => 7;
+    dom.window.clearInterval = (id) => { cleared.push(id); };
+    dom.window.setTimeout = (callback, ms) => { timeouts.push({ callback, ms }); return 9; };
+    dom.window.IWACUtils = { onReady: (callback) => callback() };
+    runAsset(dom, 'mirador-theme-sync.js');
+
+    const limit = timeouts.find((t) => t.ms === 30000);
+    assert.ok(limit, 'no time limit on the wait');
+    limit.callback();
+    assert.deepEqual(cleared, [7], 'the 250ms check keeps running past the limit');
+    dom.window.close();
+});
+
 test('a page without a viewer starts no polling at all', () => {
     const dom = createDom('<!doctype html><body><main>No viewer here</main></body>');
     let intervals = 0;

@@ -143,8 +143,11 @@ $styles = sprintf(
         <?php // Counter and buttons ship hidden: without carousel.js the track is
               // still a working scroller, but a "1 of 12" that never updates and
               // arrows that do nothing would be worse than no chrome at all. ?>
+        <?php // The visible "1 / 12" is for the eye only: assistive tech read it
+              // as "1 12" and then heard the status region say "Slide 1 of 12".
+              // The status region is the one announcement. ?>
         <p class="carousel__counter" hidden data-carousel-counter>
-            <span class="carousel__counter-figure" data-carousel-current>1</span><span class="carousel__counter-sep" aria-hidden="true">/</span><span class="carousel__counter-figure" data-carousel-total><?php echo $escape($total); ?></span>
+            <span aria-hidden="true"><span class="carousel__counter-figure" data-carousel-current>1</span><span class="carousel__counter-sep">/</span><span class="carousel__counter-figure" data-carousel-total><?php echo $escape($total); ?></span></span>
             <span class="carousel__counter-sr" data-carousel-status role="status" aria-live="polite"></span>
         </p>
 
