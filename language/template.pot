@@ -200,7 +200,7 @@ msgstr ""
 msgid "Go to homepage"
 msgstr ""
 
-#: view/common/browse-toggle.phtml:15
+#: view/common/browse-toggle.phtml:20
 msgid "Grid"
 msgstr ""
 
@@ -264,6 +264,10 @@ msgstr ""
 msgid "Languages"
 msgstr ""
 
+#: view/common/browse-toggle.phtml:19
+msgid "Layout"
+msgstr ""
+
 #: view/common/footer.phtml:64
 msgid "Leibniz-Zentrum Moderner Orient"
 msgstr ""
@@ -280,7 +284,7 @@ msgstr ""
 msgid "Linked resources"
 msgstr ""
 
-#: view/common/browse-toggle.phtml:16
+#: view/common/browse-toggle.phtml:21
 msgid "List"
 msgstr ""
 

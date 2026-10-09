@@ -39,8 +39,11 @@ class BrowseLayout extends AbstractHelper
             'setting' => $layoutSetting,
             'hasToggle' => str_contains($layoutSetting, 'toggle'),
             'isGrid' => $isGrid,
-            'gridState' => $isGrid ? 'disabled' : '',
-            'listState' => $isGrid ? '' : 'disabled',
+            // aria-pressed, not `disabled`: a disabled "current" button
+            // dropped keyboard focus to <body> when activated and was
+            // announced as dimmed (unavailable) rather than as selected.
+            'gridState' => $isGrid ? 'aria-pressed="true"' : 'aria-pressed="false"',
+            'listState' => $isGrid ? 'aria-pressed="false"' : 'aria-pressed="true"',
             'decorationClass' => $decorationClass,
         ];
     }

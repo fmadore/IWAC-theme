@@ -173,8 +173,9 @@ namespace IwacThemeTest {
             $label = "$setting + view=" . var_export($view, true);
             same($isGrid, $layout['isGrid'], $label);
             same($hasToggle, $layout['hasToggle'], $label);
-            same($isGrid ? 'disabled' : '', $layout['gridState'], $label);
-            same($isGrid ? '' : 'disabled', $layout['listState'], $label);
+            // aria-pressed, never `disabled` (T-10).
+            same('aria-pressed="' . ($isGrid ? 'true' : 'false') . '"', $layout['gridState'], $label);
+            same('aria-pressed="' . ($isGrid ? 'false' : 'true') . '"', $layout['listState'], $label);
         }
 
         $decorated = new FakeView(['browse_layout' => 'list', 'image_decoration' => ['media']]);

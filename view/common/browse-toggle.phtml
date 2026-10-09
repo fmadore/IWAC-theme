@@ -5,13 +5,18 @@
  * browse.js reads the data-view attribute to build the ?view= query
  * parameter — never derive it from the (translated) aria-label.
  *
+ * A pair of toggle buttons: aria-pressed marks the current layout, and both
+ * stay enabled (activating the current one is a no-op in browse.js). They
+ * were `disabled` for "current", which dropped keyboard focus to <body> the
+ * moment a button was used and announced the current layout as unavailable.
+ *
  * Expected variables:
- * - $gridState / $listState: 'disabled' or '' (from the BrowseLayout helper)
+ * - $gridState / $listState: 'aria-pressed="true|false"' (BrowseLayout helper)
  */
 $translate = $this->plugin('translate');
 $escapeAttr = $this->plugin('escapeHtmlAttr');
 ?>
-<div class="layout-toggle">
-    <button type="button" data-view="grid" aria-label="<?php echo $escapeAttr($translate('Grid')); ?>" title="<?php echo $escapeAttr($translate('Grid')); ?>" class="grid icon-btn o-icon-grid" <?php echo $gridState; ?>></button>
-    <button type="button" data-view="list" aria-label="<?php echo $escapeAttr($translate('List')); ?>" title="<?php echo $escapeAttr($translate('List')); ?>" class="list icon-btn o-icon-list" <?php echo $listState; ?>></button>
+<div class="layout-toggle" role="group" aria-label="<?php echo $escapeAttr($translate('Layout')); ?>">
+    <button type="button" data-view="grid" aria-label="<?php echo $escapeAttr($translate('Grid')); ?>" title="<?php echo $escapeAttr($translate('Grid')); ?>" class="grid o-icon-grid" <?php echo $gridState; ?>></button>
+    <button type="button" data-view="list" aria-label="<?php echo $escapeAttr($translate('List')); ?>" title="<?php echo $escapeAttr($translate('List')); ?>" class="list o-icon-list" <?php echo $listState; ?>></button>
 </div>

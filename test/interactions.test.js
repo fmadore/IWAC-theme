@@ -90,8 +90,8 @@ test('public theme API rejects unsupported modes', () => {
 test('browse layout preference does not add history entries and cleans up Masonry', () => {
     const dom = createDom(`<!doctype html><body><section>
         <div class="layout-toggle">
-            <button data-view="list">List</button>
-            <button data-view="grid" disabled>Grid</button>
+            <button data-view="list" aria-pressed="false">List</button>
+            <button data-view="grid" aria-pressed="true">Grid</button>
         </div>
         <div class="resources resource-grid">
             <article class="resource"><div class="resource__thumbnail decoration"></div><div class="resource__meta"></div></article>
@@ -117,9 +117,22 @@ test('browse layout preference does not add history entries and cleans up Masonr
     runAsset(dom, 'browse.js');
     // No stylesheet here, so the gutter falls back to --space-6's 24px.
     assert.equal(instances[0].options.gutter, 24);
-    dom.window.document.querySelector('[data-view="list"]').click();
+    const listButton = dom.window.document.querySelector('[data-view="list"]');
+    const gridButton = dom.window.document.querySelector('[data-view="grid"]');
+    // Choosing the current layout again is a no-op.
+    gridButton.click();
+    assert.equal(instances[0].destroyed, false);
+    assert.equal(new URL(dom.window.location.href).searchParams.get('view'), null);
+
+    listButton.focus();
+    listButton.click();
 
     const resources = dom.window.document.querySelector('.resources');
+    // aria-pressed moves; neither button is ever disabled, so focus stays put.
+    assert.equal(listButton.getAttribute('aria-pressed'), 'true');
+    assert.equal(gridButton.getAttribute('aria-pressed'), 'false');
+    assert.equal(listButton.disabled || gridButton.disabled, false);
+    assert.equal(dom.window.document.activeElement, listButton);
     assert.equal(instances[0].destroyed, true);
     assert.equal(resources.classList.contains('resource-list'), true);
     assert.equal(dom.window.history.length, initialHistoryLength);

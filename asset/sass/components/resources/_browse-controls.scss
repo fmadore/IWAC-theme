@@ -27,9 +27,42 @@
         width: auto;
     }
 
+    // Grid / list: an in-panel view switch, so the chip grammar — the current
+    // layout is an outlined chip with the primary wash and the small radius,
+    // never a fill; the other is a bare glyph. aria-pressed carries "current"
+    // (the buttons were `disabled` for it, which dropped focus and read as
+    // unavailable).
     .layout-toggle {
         display: flex;
-        gap: var(--space-5);
+        gap: var(--space-2);
+
+        button {
+            min-inline-size: var(--size-control-sm);
+            min-block-size: var(--size-control-sm);
+            padding: 0;
+            color: var(--ink-light);
+            border-color: transparent;
+            border-radius: var(--radius-sm);
+
+            // The glyph follows the button's colour (_icons.scss pins it to
+            // --ink for core's own markup).
+            &::before {
+                color: inherit;
+            }
+
+            &:hover {
+                background: var(--surface-sunken);
+                border-color: var(--border);
+                color: var(--ink-strong);
+            }
+
+            &[aria-pressed="true"] {
+                color: var(--primary-hover);
+                background-color: color-mix(in oklab, var(--primary) 10%, var(--surface));
+                border-color: var(--primary);
+                cursor: default;
+            }
+        }
     }
 
     .sorting {
