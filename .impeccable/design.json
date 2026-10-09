@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-25T00:00:00Z",
+  "generatedAt": "2026-10-09T00:00:00Z",
   "title": "Design System: IWAC Theme",
   "extensions": {
     "colorMeta": {
@@ -412,7 +412,7 @@
       },
       "title": {
         "displayName": "Title (Besley 600)",
-        "purpose": "h3 and ledger-row item titles; 1.875rem at >=768px. In-record block heads drop to 1.1875rem at weight 700."
+        "purpose": "h3 and ledger-row item titles; 1.875rem at >=768px. In-record section heads (citation, linked resources, web archive) use the section-head treatment: 2px --ink-strong rule above, Besley 1.1875rem (--text-lg) at weight 800, --tracking-display, --ink-strong, never primary."
       },
       "body": {
         "displayName": "Body (Public Sans)",
@@ -491,19 +491,34 @@
     ],
     "motion": [
       {
+        "name": "duration-fast",
+        "value": "150ms",
+        "purpose": "Color/border state changes; the bare time for transition-duration / animation-duration."
+      },
+      {
+        "name": "duration-base",
+        "value": "200ms",
+        "purpose": "Default duration."
+      },
+      {
+        "name": "duration-slow",
+        "value": "300ms",
+        "purpose": "Larger reveals; ceiling."
+      },
+      {
         "name": "transition-fast",
         "value": "150ms cubic-bezier(0.25, 1, 0.5, 1)",
-        "purpose": "Color/border state changes."
+        "purpose": "--duration-fast on the house curve. Color/border state changes."
       },
       {
         "name": "transition-base",
         "value": "200ms cubic-bezier(0.25, 1, 0.5, 1)",
-        "purpose": "Default transitions."
+        "purpose": "--duration-base on the house curve. Default transitions."
       },
       {
         "name": "transition-slow",
         "value": "300ms cubic-bezier(0.25, 1, 0.5, 1)",
-        "purpose": "Larger reveals; ceiling. No bounce, no elastic."
+        "purpose": "--duration-slow on the house curve. No bounce, no elastic. A literal duration fails npm run check:tokens."
       },
       {
         "name": "ease-out-quart",
@@ -538,7 +553,7 @@
       }
     ],
     "typeMap": {
-      "purpose": "Fixed semantic map for resource types and entities, rendered as dots on outlined chips. Declared in BOTH theme blocks: as :root-only aliases they inherited already-substituted light hues under the data-theme toggle.",
+      "purpose": "Fixed semantic map for resource types and the five index (entity) types — personnes, lieux, organisations, sujets, evenements — rendered as dots on outlined chips. Sujets and evenements alias --series-5 and --series-9; the rest alias status hues and the brand pair. Declared in BOTH theme blocks: as :root-only aliases they inherited already-substituted light hues under the data-theme toggle. Every slot clears 3:1 on all four surfaces of its theme.",
       "slots": [
         {
           "name": "--type-article",
@@ -584,11 +599,21 @@
           "name": "--type-entity-organisations",
           "light": "#d66800",
           "dark": "#f99532"
+        },
+        {
+          "name": "--type-entity-sujets",
+          "light": "#7c5295",
+          "dark": "#7e5497"
+        },
+        {
+          "name": "--type-entity-evenements",
+          "light": "#4c9491",
+          "dark": "#5ba3a0"
         }
       ]
     },
     "categoricalSeries": {
-      "purpose": "The theme-owned categorical chart palette, consumed by IwacVisualizations. Slots 1-2 alias --primary/--secondary and flip with the theme; slots 3-20 are literals held at parity across themes. Slots 4 and 8 were lifted out of the crossover band so knocked-out labels stay legible.",
+      "purpose": "The theme-owned categorical chart palette, consumed by IwacVisualizations. Slots 1-2 alias --primary/--secondary and flip with the theme; slots 3-20 are literals, independent per theme. Since the 2026-10 review twelve diverge: light 6, 9, 10, 12, 13, 14, 16, 18, 20 darkened and dark 5, 7, 19 lightened, in lightness only (hue and chroma held), so every slot clears 3:1 on all four surfaces of its theme — asserted by npm run check:tokens. Slots 4 and 8 were lifted out of the crossover band so knocked-out labels stay legible.",
       "leadSlots": 2,
       "leads": [
         "--primary",
@@ -622,19 +647,19 @@
         {
           "name": "--series-5",
           "light": "#7c5295",
-          "dark": "#7c5295",
+          "dark": "#7e5497",
           "lead": false
         },
         {
           "name": "--series-6",
-          "light": "#d4a574",
+          "light": "#ae8050",
           "dark": "#d4a574",
           "lead": false
         },
         {
           "name": "--series-7",
           "light": "#2c5f7c",
-          "dark": "#2c5f7c",
+          "dark": "#386b88",
           "lead": false
         },
         {
@@ -645,13 +670,13 @@
         },
         {
           "name": "--series-9",
-          "light": "#5ba3a0",
+          "light": "#4c9491",
           "dark": "#5ba3a0",
           "lead": false
         },
         {
           "name": "--series-10",
-          "light": "#cc8963",
+          "light": "#824620",
           "dark": "#cc8963",
           "lead": false
         },
@@ -663,19 +688,19 @@
         },
         {
           "name": "--series-12",
-          "light": "#a68e6d",
+          "light": "#6d5737",
           "dark": "#a68e6d",
           "lead": false
         },
         {
           "name": "--series-13",
-          "light": "#d49b6a",
+          "light": "#a46e3e",
           "dark": "#d49b6a",
           "lead": false
         },
         {
           "name": "--series-14",
-          "light": "#6fb08e",
+          "light": "#246648",
           "dark": "#6fb08e",
           "lead": false
         },
@@ -687,7 +712,7 @@
         },
         {
           "name": "--series-16",
-          "light": "#e0a88a",
+          "light": "#8a583c",
           "dark": "#e0a88a",
           "lead": false
         },
@@ -699,19 +724,19 @@
         },
         {
           "name": "--series-18",
-          "light": "#d87e7a",
+          "light": "#c76f6b",
           "dark": "#d87e7a",
           "lead": false
         },
         {
           "name": "--series-19",
           "light": "#6b5b95",
-          "dark": "#6b5b95",
+          "dark": "#6c5c96",
           "lead": false
         },
         {
           "name": "--series-20",
-          "light": "#4db6ac",
+          "light": "#007b72",
           "dark": "#4db6ac",
           "lead": false
         }
@@ -790,11 +815,18 @@
       "description": "Plain uppercase crumb line — wayfinding, not a component to decorate. Current page marked with a primary dot; link crumbs wrap rather than truncate.",
       "html": "<nav class=\"ds-crumbs\" aria-label=\"Breadcrumb\"><a href=\"#\">Home</a><span class=\"ds-crumbs-sep\">/</span><a href=\"#\">Items</a><span class=\"ds-crumbs-sep\">/</span><span class=\"ds-crumbs-current\">Le pèlerinage à La Mecque</span></nav>",
       "css": ".ds-crumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-xs, 0.8125rem); text-transform: uppercase; letter-spacing: var(--tracking-wide, 0.04em); } .ds-crumbs a { color: var(--muted, #66696e); text-decoration: none; border-radius: var(--radius-sm, 0.375rem); transition: color 150ms cubic-bezier(0.25, 1, 0.5, 1); } .ds-crumbs a:hover { color: var(--primary, #ce4115); } .ds-crumbs a:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 1px; } .ds-crumbs-sep { color: var(--border-strong, #aeb1b7); } .ds-crumbs-current { display: inline-flex; align-items: center; gap: 0.4em; color: var(--ink-light, #3f4349); font-weight: 600; } .ds-crumbs-current::before { content: \"\"; width: 0.4em; height: 0.4em; border-radius: 9999px; background: var(--primary, #ce4115); }"
+    },
+    {
+      "name": "Layout Toggle",
+      "kind": "toggle",
+      "description": "In-panel switch per the controls grammar: a role=\"group\" pair of icon buttons, state in aria-pressed (both stay enabled), outlined at --radius-sm; pressed = primary border + 10% primary wash, glyph in --primary-hover. Never a filled-primary active state.",
+      "html": "<div class=\"ds-toggle\" role=\"group\" aria-label=\"Layout\"><button type=\"button\" class=\"ds-toggle-btn\" aria-pressed=\"true\" aria-label=\"Grid\">Grid</button><button type=\"button\" class=\"ds-toggle-btn\" aria-pressed=\"false\" aria-label=\"List\">List</button></div>",
+      "css": ".ds-toggle { display: flex; gap: var(--space-2, 0.5rem); } .ds-toggle-btn { min-inline-size: var(--size-control-sm, 2.25rem); min-block-size: var(--size-control-sm, 2.25rem); padding: 0 var(--space-2, 0.5rem); background: transparent; border: 1px solid transparent; border-radius: var(--radius-sm, 0.375rem); color: var(--ink-light, #3f4349); font: inherit; cursor: pointer; transition: color var(--transition-fast, 150ms cubic-bezier(0.25,1,0.5,1)), background-color var(--transition-fast, 150ms cubic-bezier(0.25,1,0.5,1)), border-color var(--transition-fast, 150ms cubic-bezier(0.25,1,0.5,1)); } .ds-toggle-btn:hover { background: var(--surface-sunken, #f4f1ef); border-color: var(--border, #ced1d6); color: var(--ink-strong, #05070c); } .ds-toggle-btn[aria-pressed=\"true\"] { color: var(--primary-hover, #b03710); background-color: color-mix(in oklab, var(--primary, #ce4115) 10%, var(--surface, #fdfcfb)); border-color: var(--primary, #ce4115); cursor: default; } .ds-toggle-btn:focus-visible { outline: var(--focus-outline, 2px solid #ce4115); outline-offset: 2px; }"
     }
   ],
   "narrative": {
     "northStar": "The Research Broadsheet",
-    "overview": "A 20th-century broadsheet operated as a scientific instrument. The site is a scholarly database — LLM sentiment models, LDA topics, embeddings, IIIF — that carries the visual grammar of the newspapers it preserves: masthead wordmark, uppercase section strip, thick 2px ink rules, datelines, ledger-style result rows, a duotone press-collage hero. The execution is a modern broadsheet's digital archive run by a university press: newspaper typographic conventions with Linear/Stripe-grade product polish.\n\nDensity is a feature, not a compromise: researchers want more items per screen, flat ledger rows over boxed cards, metadata flowing inline with interpunct separators. Restraint is the resting state — the quiet control is the default and loudness opts in. Confirmed anti-references: not a small museum's website, not a warm editorial magazine, not a generic dashboard; no cream or parchment, no pastiche of aged paper.\n\nThe system is enforced, not merely written down. Every value the token generator publishes is compared by a guard in this repo and in both consumer modules; a rule that lives only in prose is a rule that has already drifted. That doctrine — publish it and assert it — is why the palette below includes the twenty categorical chart slots and the nine resource-type hues that once lived as loose hex in a sibling repo.",
+    "overview": "A 20th-century broadsheet operated as a scientific instrument. The site is a scholarly database — LLM sentiment models, LDA topics, embeddings, IIIF — that carries the visual grammar of the newspapers it preserves: masthead wordmark, uppercase section strip, thick 2px ink rules, datelines, ledger-style result rows, a duotone press-collage hero. The execution is a modern broadsheet's digital archive run by a university press: newspaper typographic conventions with Linear/Stripe-grade product polish.\n\nDensity is a feature, not a compromise: researchers want more items per screen, flat ledger rows over boxed cards, metadata flowing inline with interpunct separators. Restraint is the resting state — the quiet control is the default and loudness opts in. Confirmed anti-references: not a small museum's website, not a warm editorial magazine, not a generic dashboard; no cream or parchment, no pastiche of aged paper.\n\nThe system is enforced, not merely written down. Every value the token generator publishes is compared by a guard in this repo and in both consumer modules; a rule that lives only in prose is a rule that has already drifted. That doctrine — publish it and assert it — is why the palette below includes the twenty categorical chart slots and the eleven resource-type and entity hues that once lived as loose hex in a sibling repo.",
     "keyCharacteristics": [
       "Newspaper grammar (rules, datelines, ledgers) executed with product-grade polish",
       "Density over comfort; typography as architecture, rules as joinery",
@@ -830,6 +862,11 @@
         "section": "colors"
       },
       {
+        "name": "The Three-to-One Mark Rule",
+        "body": "Every categorical mark — each `--series-*` slot and each `--type-*` dot — clears 3:1 on all four surfaces of its theme (surface, raised, background, sunken), because a chart mark is a graphical object and a module does not know which panel it lands on. `npm run check:tokens` measures it; a slot that fails moves in lightness, never in hue.",
+        "section": "colors"
+      },
+      {
         "name": "The Published Scale Rule",
         "body": "A color that encodes data belongs in `tokens.json` with a name, a light value and a dark value. Owning a scale means deciding it, never leaving it unpublished in a consumer's source.",
         "section": "colors"
@@ -847,6 +884,11 @@
       {
         "name": "The No-14px Rule",
         "body": "The type scale deliberately skips 14px; 11px (`--text-2xs`) is the floor. Absolute `font-size` literals fail `npm run check:tokens` — use `--text-*` tokens. The check reads the whole value, not just its first token, so `clamp()`, `min()` and `max()` are not an escape hatch: a fluid size composes `--text-*` steps (or `calc()` on them).",
+        "section": "typography"
+      },
+      {
+        "name": "The Narrow-Space Figure Rule",
+        "body": "Thousands group with U+202F (narrow no-break space) in every locale — pagination, hero figures and transcript word counts all pass through `number_format($n, 0, '.', \"\\u{202F}\")`. The decimal mark follows the page locale, never the browser's (`12,5 %` fr, `12.5%` en), and date-only values format in UTC so no date lands a day early west of Greenwich.",
         "section": "typography"
       },
       {
@@ -871,20 +913,30 @@
       },
       {
         "name": "The Outline-First Focus Rule",
-        "body": "`--focus-outline` at 2px offset is the focus indicator. The `--ring-focus` halo is the exception for clipped or oddly-shaped controls, never the default — it is the weaker indicator, and reaching for it by habit is how a surface ends up with no visible focus at all.",
+        "body": "`--focus-outline` at 2px offset is the focus indicator. The `--ring-focus` halo is the exception for clipped or oddly-shaped controls — paired with `outline: 2px solid transparent`, never `outline: none`, so forced-colors mode (which drops the shadow) repaints a real outline. The one legal `outline: none` is `:focus:not(:focus-visible)`. The halo is never the default — it is the weaker indicator, and reaching for it by habit is how a surface ends up with no visible focus at all.",
         "section": "elevation-and-depth"
       },
       {
         "name": "The One-Spelling Breakpoint Rule",
         "body": "`min-width` sits ON a published breakpoint and `max-width` at breakpoint − 1px — one spelling, not two. Bootstrap's − 0.02px was tolerated until 2.14 and the theme carried both idioms in files that reflow the same header; neither is wrong alone, carrying both is. Guards in this repo and in both consumer modules assert it. `@container` queries are exempt.",
         "section": "layout"
+      },
+      {
+        "name": "The Two-Switch Rule",
+        "body": "Page-level tab sets are ruled tabs: ink text, no box, active = `--ink-strong` on a 2px `--primary` underline. In-panel toggles (list/grid, chart mode, filter chips) are outlined chips at `--radius-sm`: active = `--primary` border + 10% in-oklab primary wash, label in `--primary-hover`, state exposed by `aria-pressed`. Neither is ever a filled-primary active state — the brand fill belongs to the one loud action — and `--radius-full` is for dots, pips and circular icon controls, not tabs or toggles.",
+        "section": "components"
+      },
+      {
+        "name": "The Mask-Not-Font Icon Rule",
+        "body": "Every UI glyph is a Lucide SVG painted through `icon-mask()` in `currentColor`; Font Awesome is not loaded, and module-emitted FA-classed elements are re-rendered as masks. The mixin restates the glyph in a system colour (CanvasText / ButtonText / LinkText) under `forced-colors: active`, where a bare mask would paint nothing.",
+        "section": "components"
       }
     ],
     "dos": [
       "**Do** open sections with 2px ink rules and divide rows with hairlines — typography is the architecture, rules are the joinery.",
       "**Do** declare every composed or aliased token in **both** theme blocks — dark pages must compose against dark referents, and a manual light choice on a dark OS must be able to win back.",
       "**Do** publish any color that encodes data as a named light/dark pair in `tokens.json`, and let the guards compare it.",
-      "**Do** keep transitions 150–300ms on `cubic-bezier(0.25, 1, 0.5, 1)`; real objects decelerate smoothly.",
+      "**Do** time motion from `--duration-fast/base/slow` (150 / 200 / 300ms) alone, or composed with `cubic-bezier(0.25, 1, 0.5, 1)` as `--transition-*`; a literal duration fails `npm run check:tokens`.",
       "**Do** mark AI-generated fields with the EU \"AI GENERATED\" provenance treatment on the label, and open the lede on an ink rule.",
       "**Do** mix colors `in oklab`, derive primary variants from the seed, and run `npm run check:tokens` before trusting any token name.",
       "**Do** test any new font against `ḥ ṣ ḍ ṭ ẓ ʿ ā ī ū` before adopting it.",
@@ -893,6 +945,7 @@
     "donts": [
       "**Don't** use warm cream or parchment surfaces — wrong register (\"manuscript museum brochure\").",
       "**Don't** add atmospheric gradients, gradient bars, glassmorphism (outside the sticky header), or colored side-stripes.",
+      "**Don't** give a tab or toggle a filled-primary active state, or a pill shape.",
       "**Don't** fill category badges, color `h2`s, or set running prose in primary — category is a dot, primary is an accent (4.25:1 on sunken as text).",
       "**Don't** use cold blue-gray dark surfaces — dark mode is warm (\"lamplit\"), hue ~70–80.",
       "**Don't** box result rows, filter bars, linked-resource lists, or the AI lede into cards.",
