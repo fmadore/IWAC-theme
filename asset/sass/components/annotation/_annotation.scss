@@ -151,7 +151,7 @@
             font-weight: 500;
             color: var(--muted);
             text-transform: uppercase;
-            letter-spacing: 0.025em;
+            letter-spacing: var(--tracking-wide);
             margin: 0;
             padding: 0;
         }
@@ -163,14 +163,9 @@
             color: var(--ink);
             margin: 0;
 
-            a {
-                color: var(--primary);
-                text-decoration: none;
-
-                &:hover {
-                    text-decoration: underline;
-                }
-            }
+            // Links take the base treatment (ink, primary underline, primary
+            // on hover): primary link text at rest was the one place in the
+            // metadata that painted words orange.
 
             &.resource.media img {
                 display: block;
