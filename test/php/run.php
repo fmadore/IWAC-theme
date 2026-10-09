@@ -837,6 +837,56 @@ namespace IwacThemeTest {
         same(['Conference hall, Lomé, 2019', 'Opening session', ''], $alts[1]);
     });
 
+    test('the 404 page and the PWA shortcut open the browse page, not /item (T-16)', function () {
+        $loads = 0;
+        $site = fakePagedSite(['parcourir', 'index'], $loads);
+        $sink = new class {
+            public function __call(string $name, array $args)
+            {
+                return $this;
+            }
+        };
+        $fake = new FakeView();
+        $fake->helpers['htmlElement'] = static fn () => $sink;
+        $fake->helpers['headTitle'] = static fn () => $sink;
+        $html = $fake->render('error/404.phtml', ['site' => $site]);
+        check(str_contains($html, 'href="/s/westafrica/page/parcourir" class="error-page__button error-page__button--secondary"'), 'browse button not on the browse page');
+
+        // A fresh view: SitePageBySlug memoises pages per site id, and both fakes are site 1.
+        $other = new FakeView();
+        $other->helpers['htmlElement'] = static fn () => $sink;
+        $other->helpers['headTitle'] = static fn () => $sink;
+        $bare = $other->render('error/404.phtml', ['site' => fakePagedSite(['index'], $loads)]);
+        check(str_contains($bare, 'href="/s/westafrica/item" class="error-page__button'), 'no browse page: /item fallback');
+
+        $fake->helpers['getHelperPluginManager'] = static fn () => new class {
+            public function has(string $name): bool
+            {
+                return false;
+            }
+        };
+        $manifest = (new \OmekaTheme\Helper\PwaManifest())->setView($fake);
+        $siteWithTitle = new class($site) {
+            public function __construct(private object $site)
+            {
+            }
+
+            public function __call(string $name, array $args)
+            {
+                return $this->site->$name(...$args);
+            }
+
+            public function title(): string
+            {
+                return 'Collection Islam Afrique de l’Ouest';
+            }
+        };
+        $shortcuts = $manifest($siteWithTitle)['shortcuts'];
+        same('/s/westafrica/page/parcourir', $shortcuts[0]['url']);
+        // Without IwacSearch, core's fulltext search — /search is no core route.
+        same('/s/westafrica/index/search', $shortcuts[1]['url']);
+    });
+
     // ---- Homepage hero --------------------------------------------------------
 
     /** Render common/banner.phtml with a snapshot of $summary figures (null: no snapshot). */

@@ -80,7 +80,7 @@ msgstr ""
 msgid "Breadcrumb"
 msgstr ""
 
-#: helper/PwaManifest.php:88 view/error/404.phtml:27
+#: helper/PwaManifest.php:96 view/error/404.phtml:36
 msgid "Browse items"
 msgstr ""
 
@@ -196,7 +196,7 @@ msgstr ""
 msgid "Go"
 msgstr ""
 
-#: view/error/404.phtml:24 view/error/404.phtml:31 view/error/index.phtml:24 view/error/index.phtml:28
+#: view/error/404.phtml:33 view/error/404.phtml:40 view/error/index.phtml:24 view/error/index.phtml:28
 msgid "Go to homepage"
 msgstr ""
 
@@ -304,7 +304,7 @@ msgstr ""
 msgid "Newest first"
 msgstr ""
 
-#: helper/PwaManifest.php:38
+#: helper/PwaManifest.php:46
 msgid "Newspaper covers and archival documents from the collection"
 msgstr ""
 
@@ -352,7 +352,7 @@ msgstr ""
 msgid "Page"
 msgstr ""
 
-#: view/error/404.phtml:10 view/error/404.phtml:16
+#: view/error/404.phtml:10 view/error/404.phtml:25
 msgid "Page not found"
 msgstr ""
 
@@ -404,7 +404,7 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: helper/PwaManifest.php:93 view/common/search-form.phtml:58 view/common/search-form.phtml:66 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
+#: helper/PwaManifest.php:101 view/common/search-form.phtml:58 view/common/search-form.phtml:66 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
 msgid "Search"
 msgstr ""
 
@@ -476,7 +476,7 @@ msgstr ""
 msgid "Tap to enlarge"
 msgstr ""
 
-#: view/error/404.phtml:18
+#: view/error/404.phtml:27
 msgid "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable."
 msgstr ""
 
