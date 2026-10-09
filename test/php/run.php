@@ -891,6 +891,74 @@ namespace IwacThemeTest {
         check(!str_contains(renderBanner([], false), 'banner__substats'), 'no snapshot, no tier');
     });
 
+    test('linked values show the uncropped medium thumbnail, keeping the rendered markup (T-09)', function () {
+        $fake = new FakeView();
+        $escape = static fn (string $s): string => str_replace('/', '&#x2F;', htmlspecialchars($s, ENT_QUOTES));
+        $logo = new class {
+            public function resourceName(): string
+            {
+                return 'items';
+            }
+
+            public function thumbnailDisplayUrl(string $type): ?string
+            {
+                return 'https://islam.zmo.de/files/' . $type . '/c586e3e7.jpg';
+            }
+        };
+        // What core's linkPretty('square') renders, attribute-escaped, plus
+        // something a module might append on rep.value.html.
+        $linked = new class($logo, $escape) {
+            public function __construct(private object $logo, private \Closure $escape)
+            {
+            }
+
+            public function type(): string
+            {
+                return 'resource:item';
+            }
+
+            public function lang(): string
+            {
+                return '';
+            }
+
+            public function value(): string
+            {
+                return '';
+            }
+
+            public function valueResource()
+            {
+                return $this->logo;
+            }
+
+            public function asHtml($lang = null): string
+            {
+                return '<a class="resource-link" href="/s/westafrica/item/415"><img src="'
+                    . ($this->escape)('https://islam.zmo.de/files/square/c586e3e7.jpg')
+                    . '" alt=""><span class="resource-name">Bibliothèque du Congrès</span></a><span class="module-mark"></span>';
+            }
+
+            public function isPublic(): bool
+            {
+                return true;
+            }
+
+            public function valueAnnotation()
+            {
+                return null;
+            }
+        };
+        // FakeView's escapeHtmlAttr leaves "/" alone; Laminas' encodes it. Use the real spelling.
+        $fake->helpers['escapeHtmlAttr'] = $escape;
+        $html = $fake->render('common/resource-values.phtml', ['values' => [
+            'dcterms:source' => ['property' => fakeProperty('Source'), 'alternate_label' => null, 'values' => [$linked]],
+        ], 'resource' => null]);
+        check(str_contains($html, 'files&#x2F;medium&#x2F;c586e3e7.jpg'), 'medium derivative not swapped in');
+        check(!str_contains($html, 'square'), 'square derivative left behind');
+        check(str_contains($html, '<span class="module-mark"></span>'), "the value's rendered markup must be kept");
+    });
+
     // ---- Record language (T-02) ---------------------------------------------
 
     /** A language authority as the IWAC index stores it: titles plus an ISO code as dcterms:alternative. */

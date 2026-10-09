@@ -106,7 +106,7 @@ msgstr ""
 msgid "Close viewer"
 msgstr "Fermer la visionneuse"
 
-#: view/common/resource-values.phtml:275
+#: view/common/resource-values.phtml:276
 msgid "Collapse the full text"
 msgstr "Réduire le texte intégral"
 
@@ -382,11 +382,11 @@ msgstr "Image précédente"
 msgid "Previous slide"
 msgstr "Diapositive précédente"
 
-#: view/common/resource-values.phtml:285 view/hierarchy/common/block-layout/hierarchy-public.phtml:253
+#: view/common/resource-values.phtml:310 view/hierarchy/common/block-layout/hierarchy-public.phtml:253
 msgid "Private"
 msgstr ""
 
-#: view/common/resource-values.phtml:270
+#: view/common/resource-values.phtml:271
 msgid "Read the full text — %s more words"
 msgstr "Lire le texte intégral — %s mots restants"
 
@@ -414,7 +414,7 @@ msgstr "Résultats de recherche pour « %s »"
 msgid "Search the collection"
 msgstr "Rechercher dans la collection"
 
-#: view/common/resource-values.phtml:298
+#: view/common/resource-values.phtml:323
 msgid "Show annotation"
 msgstr "Afficher l’annotation"
 
@@ -506,7 +506,7 @@ msgstr "Mots totaux"
 msgid "Type"
 msgstr ""
 
-#: view/common/resource-values.phtml:307
+#: view/common/resource-values.phtml:332
 msgid "Value Annotations"
 msgstr "Annotations de valeur"
 

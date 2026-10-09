@@ -208,6 +208,7 @@ foreach ($values as $term => $propertyData):
             $valueType = $value->type();
             $valueLang = $value->lang();
             $valueAnnotation = $value->valueAnnotation();
+            $valueResource = null;
             $class = ['value'];
             if ('resource' == $valueType || strpos($valueType, 'resource') !== false) {
                 // The target can be null when the anonymous user can't see it.
@@ -279,7 +280,31 @@ foreach ($values as $term => $propertyData):
                         </details>
                     </div>
                 <?php else: ?>
-                    <span class="value-content" dir="auto"<?php echo $proseLangAttr; ?>><?php echo $filterLocale ? $value->asHtml($lang) : $value->asHtml(); ?></span>
+                    <?php
+                    $valueHtml = $filterLocale ? $value->asHtml($lang) : $value->asHtml();
+                    // A linked resource renders through core's linkPretty('square'):
+                    // a centre-cropped 200px square, so a wide logo lost both
+                    // ends (the "Bibliothèque du Congrès" source mark read
+                    // "ARY"). The stylesheet already sizes these marks by
+                    // height with an auto width, so swap the uncropped medium
+                    // derivative into the rendered HTML. Done on asHtml()'s
+                    // output rather than by calling linkPretty('medium')
+                    // ourselves, so whatever modules add on rep.value.html
+                    // (and the value's own markup) is kept. The URL appears
+                    // attribute-escaped in the <img>; both spellings are tried.
+                    if ($valueResource && method_exists($valueResource, 'thumbnailDisplayUrl')) {
+                        $squareThumb = (string) $valueResource->thumbnailDisplayUrl('square');
+                        $mediumThumb = (string) $valueResource->thumbnailDisplayUrl('medium');
+                        if ($squareThumb !== '' && $mediumThumb !== '' && $squareThumb !== $mediumThumb) {
+                            $valueHtml = str_replace(
+                                [$escapeAttr($squareThumb), $squareThumb],
+                                [$escapeAttr($mediumThumb), $mediumThumb],
+                                $valueHtml
+                            );
+                        }
+                    }
+                    ?>
+                    <span class="value-content" dir="auto"<?php echo $proseLangAttr; ?>><?php echo $valueHtml; ?></span>
                 <?php endif; ?>
                 <?php if(!$value->isPublic()) : ?>
                     <span class="o-icon-private" role="img" title="<?php echo $this->escapeHtml($translate('Private')); ?>" aria-label="<?php echo $this->escapeHtml($translate('Private')); ?>"></span>
