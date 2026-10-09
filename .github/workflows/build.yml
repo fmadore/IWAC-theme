@@ -4,12 +4,26 @@ on:
   push:
     branches: [master]
   pull_request:
+  # Also a reusable workflow: release.yml calls it on the tagged tree and will
+  # not publish unless every job here passes. A reusable call ignores path
+  # filters, so the whole suite always runs.
+  workflow_call:
+    inputs:
+      ref:
+        description: 'The ref to check out (the release tag); empty means the triggering ref'
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: read
 
+# The event is part of the group: when release.yml calls this workflow, the
+# github context is the caller's, and a release rebuilt by hand runs on a
+# branch ref — without the event name, the next push to that branch would
+# cancel the release's gates mid-run (and the release with them).
 concurrency:
-  group: quality-${{ github.ref }}
+  group: quality-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -18,6 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -64,6 +81,9 @@ jobs:
         php: ['8.5', '8.1']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
 
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
