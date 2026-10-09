@@ -101,9 +101,9 @@ $this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
 // base/elements/_icons.scss for the inventory those rules cover. Until 2.24
 // the stylesheet was still preloaded on every page, and with it 77 KB of
 // fa-solid-900.woff2 for the two search-submit glyphs that were its last use.
-// Single combined Google Fonts request: Public Sans (body/UI) +
-// Source Serif 4 with optical-size axis (display + body). Subsetted to
-// the weights actually used across the theme.
+// One combined webfont request to Bunny Fonts (not Google Fonts): Besley,
+// Public Sans (body/UI) and Source Serif 4 with its optical-size axis,
+// subsetted to the weights the theme actually uses.
 // Bunny Fonts — privacy-first, GDPR-compliant drop-in mirror of Google
 // Fonts. Relevant since IWAC is hosted at ZMO Berlin (German research
 // institute), where Google Fonts has been ruled non-compliant under
@@ -297,7 +297,7 @@ if ($layoutIsHomepage) {
 		<?php if ($pwaEnabled): ?>
 		<?php // PWA: icons, status-bar theming, and the manifest data island.
 		      // js/pwa-install.js (loaded at body end) turns the island into a
-		      // same-origin blob: manifest and wires the masthead install button.
+		      // same-origin blob: manifest and wires the footer install button.
 		      //
 		      // The two theme-color values are --surface, one per scheme. A
 		      // <meta> can't read a custom property, so these are copies — but
