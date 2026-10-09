@@ -1,95 +1,98 @@
 'use strict';
 
+// The two `.linked-resources` roots linked-resources.js keeps apart, as the
+// item-set page renders them (test/php/render-fixtures.php): the set's own
+// Linked resources block (#linked-resources — facet chips, one page) above
+// the ledger of its items (#item-set-resources — five a page, with a pager).
+// Every AJAX response is that page rendered for the request the script sends
+// (X-Requested-With: fetch, so layout.phtml's chrome-less fast path), at the
+// URL the clicked control names.
+
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createDom, flush, runAsset } = require('../test-support/dom');
+const { flush, runAsset } = require('../test-support/dom');
+const { fixtureDom, fixtureHtml, fixtureUrl } = require('../test-support/fixtures');
 
-function rootMarkup(id, state, links = true) {
-    return `<div id="${id}" class="linked-resources" data-page-results-text="{count} resources on this page">
-        ${links ? `<a class="linked-resources__facet first" href="?state=first#${id}">First</a>
-        <a class="linked-resources__facet second" href="?state=second#${id}">Second</a>` : ''}
-        <div class="linked-resources__status"></div>
-        <table class="linked-resources-table"><tbody><tr data-state="${state}" data-title="${state}"><td>${state}</td></tr></tbody></table>
-    </div>`;
+/** The row titles a root lists, in order. */
+function titles(root) {
+    return [...root.querySelectorAll('.linked-resources-table tbody tr')].map((row) => row.dataset.title);
+}
+
+/** The row titles root #id lists in a rendered response. */
+function titlesIn(window, name, id) {
+    const doc = new window.DOMParser().parseFromString(fixtureHtml(name), 'text/html');
+    return titles(doc.getElementById(id));
 }
 
 test('latest linked-resource request wins and history tracks every root', async () => {
-    const dom = createDom(`<!doctype html><body>
-        ${rootMarkup('resources-a', 'initial-a')}
-        ${rootMarkup('resources-b', 'initial-b')}
-    </body>`);
+    const dom = fixtureDom('item-set.en');
     const { window } = dom;
+    const doc = window.document;
     window.IWACUtils = {
         debounce: (callback) => callback,
         onReady: (callback) => callback(),
     };
+    // The ledger's idle warm-up of its next page has its own tests below.
+    window.requestIdleCallback = () => {};
 
     const pending = [];
     window.fetch = (url) => new Promise((resolve) => pending.push({ url: String(url), resolve }));
+    const respond = (request, name) => request.resolve({ ok: true, text: async () => fixtureHtml(name) });
     runAsset(dom, 'linked-resources.js');
 
     assert.deepEqual(
         Object.keys(window.history.state.linkedResources).sort(),
-        ['resources-a', 'resources-b']
+        ['item-set-resources', 'linked-resources']
     );
 
-    window.document.querySelector('#resources-a .first').click();
-    window.document.querySelector('#resources-a .second').click();
-    assert.equal(pending.length, 2);
+    const chip = (label) => [...doc.querySelectorAll('#linked-resources .linked-resources__facet')]
+        .find((a) => a.querySelector('.linked-resources__facet-label').textContent.trim() === label);
+    chip('Publisher').click();
+    chip('Subject').click();
+    assert.deepEqual(pending.map((request) => request.url), [
+        fixtureUrl('item-set.xhr-publisher.en') + '#resources-linked',
+        fixtureUrl('item-set.xhr-subject.en') + '#resources-linked',
+    ]);
 
-    pending[1].resolve({
-        ok: true,
-        text: async () => rootMarkup('resources-a', 'second'),
-    });
+    const subject = titlesIn(window, 'item-set.xhr-subject.en', 'linked-resources');
+    const publisher = titlesIn(window, 'item-set.xhr-publisher.en', 'linked-resources');
+    assert.notDeepEqual(subject, publisher, 'the two filters must list different rows for this test to mean anything');
+
+    respond(pending[1], 'item-set.xhr-subject.en');
     await flush();
     await flush();
+    assert.deepEqual(titles(doc.getElementById('linked-resources')), subject);
+
+    // The earlier request answers late: it must not overwrite the later one.
+    respond(pending[0], 'item-set.xhr-publisher.en');
+    await flush();
+    await flush();
+    assert.deepEqual(titles(doc.getElementById('linked-resources')), subject);
     assert.equal(
-        window.document.querySelector('#resources-a tbody tr').dataset.state,
-        'second'
+        doc.querySelector('#linked-resources .linked-resources__status').textContent,
+        `${subject.length} resources on this page`
     );
 
-    pending[0].resolve({
-        ok: true,
-        text: async () => rootMarkup('resources-a', 'first'),
-    });
+    // The ledger pages on its own, leaving the block's filter as it is.
+    const ledgerBefore = titles(doc.getElementById('item-set-resources'));
+    doc.querySelector('#item-set-resources .linked-footer a.pagination-nav.next').click();
+    assert.equal(pending[2].url, fixtureUrl('item-set.xhr-page-2.en'));
+    respond(pending[2], 'item-set.xhr-page-2.en');
     await flush();
     await flush();
-    assert.equal(
-        window.document.querySelector('#resources-a tbody tr').dataset.state,
-        'second'
-    );
+    const ledger = titles(doc.getElementById('item-set-resources'));
+    assert.deepEqual(ledger, titlesIn(window, 'item-set.xhr-page-2.en', 'item-set-resources'));
+    assert.notDeepEqual(ledger, ledgerBefore);
+    assert.deepEqual(titles(doc.getElementById('linked-resources')), subject);
 
-    window.document.querySelector('#resources-b .first').click();
-    pending[2].resolve({
-        ok: true,
-        text: async () => rootMarkup('resources-b', 'first'),
-    });
-    await flush();
-    await flush();
-
-    assert.match(window.history.state.linkedResources['resources-a'], /state=second/);
-    assert.match(window.history.state.linkedResources['resources-b'], /state=first/);
-    assert.equal(
-        window.document.querySelector('#resources-a .linked-resources__status').textContent,
-        '1 resources on this page'
-    );
+    assert.match(window.history.state.linkedResources['linked-resources'], /resource_property=items%3A3-86%2C329/);
+    assert.match(window.history.state.linkedResources['item-set-resources'], /page=2/);
 
     dom.window.close();
 });
 
-function pagedRoot() {
-    return `<!doctype html><body>
-        <div id="resources-linked" class="linked-resources">
-            <table class="linked-resources-table"><tbody><tr data-title="a"><td>a</td></tr></tbody></table>
-            <div class="linked-footer"><nav class="pagination">
-                <a class="pagination-nav next" href="https://example.test/s/westafrica/item/1?page=2">Next</a>
-            </nav></div>
-        </div>
-    </body>`;
-}
-
 function prefetchRun(saveData) {
-    const dom = createDom(pagedRoot());
+    const dom = fixtureDom('item-set.en');
     const { window } = dom;
     window.IWACUtils = { debounce: (callback) => callback, onReady: (callback) => callback() };
     window.requestIdleCallback = (callback) => callback();
@@ -102,15 +105,16 @@ function prefetchRun(saveData) {
         return new Promise(() => {});
     };
     runAsset(dom, 'linked-resources.js');
-    const next = window.document.querySelector('a.next');
+    const next = window.document.querySelector('#item-set-resources .linked-footer a.next');
     next.dispatchEvent(new window.MouseEvent('mouseenter'));
     dom.window.close();
     return fetched;
 }
 
 test('the next page is warmed in idle time', () => {
-    assert.deepEqual(prefetchRun(false), ['https://example.test/s/westafrica/item/1?page=2']);
-    assert.deepEqual(prefetchRun(undefined), ['https://example.test/s/westafrica/item/1?page=2']);
+    // Once: hovering the link afterwards reuses the warmed request.
+    assert.deepEqual(prefetchRun(false), [fixtureUrl('item-set.xhr-page-2.en')]);
+    assert.deepEqual(prefetchRun(undefined), [fixtureUrl('item-set.xhr-page-2.en')]);
 });
 
 test('Save-Data turns off speculative page fetches', () => {

@@ -1,8 +1,13 @@
 'use strict';
 
+// The masthead, section strip and drawer are the real ones: common/header.phtml
+// and common/menu-drawer.phtml inside layout.phtml, around a site navigation
+// rendered the way Laminas renders it (test-support/fixtures.js).
+
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createDom, runAsset } = require('../test-support/dom');
+const { runAsset } = require('../test-support/dom');
+const { fixtureDom } = require('../test-support/fixtures');
 
 function installMatchMedia(window) {
     const listeners = new Set();
@@ -24,29 +29,22 @@ function installMatchMedia(window) {
     return query;
 }
 
-test('mobile drawer owns focus and resets cleanly at the desktop breakpoint', () => {
-    const dom = createDom(`<!doctype html><body>
-        <header class="main-header">
-            <div class="main-header__site-title"><a href="/">IWAC</a></div>
-            <div class="main-header__search-form"><input></div>
-            <div class="main-header__utilities"><button>Theme</button></div>
-            <button class="main-navigation__toggle" aria-expanded="false">
-                <span class="sr-only">Open menu</span><span></span><span></span><span></span>
-            </button>
-            <nav class="main-navigation"><ul id="main-menu"><li><a href="/one">One</a><ul><li><a href="/child">Child</a></li></ul></li></ul></nav>
-            <nav class="main-navigation"></nav>
-            <nav class="section-tabs"><a href="/tab">Tab</a></nav>
-        </header>
-        <nav id="menu-drawer" inert aria-hidden="true" data-close-text="Close"><button id="menu-backer" tabindex="-1">Close</button><div id="menu-clones"></div></nav>
-        <main id="content"><a href="/content">Content</a></main>
-        <footer class="main-footer" inert>Footer</footer>
-    </body>`);
+/** A rendered page with navigation.js running at phone width. */
+function navigated(name, prepare = () => {}) {
+    const dom = fixtureDom(name);
     const media = installMatchMedia(dom.window);
-
+    prepare(dom);
     runAsset(dom, 'navigation.js');
     dom.window.document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+    return { dom, media, document: dom.window.document };
+}
 
-    const document = dom.window.document;
+test('mobile drawer owns focus and resets cleanly at the desktop breakpoint', () => {
+    const { dom, media, document } = navigated('item.en', (dom) => {
+        // Inert state that predates the drawer (another modal's, say).
+        dom.window.document.querySelector('.main-footer').setAttribute('inert', '');
+    });
+
     const toggle = document.querySelector('.main-navigation__toggle');
     const drawer = document.getElementById('menu-drawer');
     const backer = document.getElementById('menu-backer');
@@ -77,34 +75,18 @@ test('mobile drawer owns focus and resets cleanly at the desktop breakpoint', ()
     dom.window.close();
 });
 
-function drawerFixture() {
-    return createDom(`<!doctype html><body>
-        <header class="main-header">
-            <div class="main-header__site-title"><a href="/">IWAC</a></div>
-            <button class="main-navigation__toggle" aria-expanded="false">
-                <span class="sr-only">Open menu</span><span></span><span></span><span></span>
-            </button>
-            <nav class="main-navigation"><ul id="main-menu">
-                <li><a href="/browse">Browse</a><ul><li><a href="/items">Items</a></li></ul></li>
-                <li><a href="/about">About</a><ul><li><a href="/team">Team</a></li></ul></li>
-            </ul></nav>
-        </header>
-        <nav id="menu-drawer" inert aria-hidden="true" data-close-text="Close"
-            data-show-submenu-text="show submenu for “%s”"><button id="menu-backer" tabindex="-1">Close</button><div id="menu-clones"></div></nav>
-        <main id="content"><a href="/content">Content</a></main>
-    </body>`);
-}
-
 test('every submenu toggle is named after its own entry, desktop and drawer alike', () => {
-    const dom = drawerFixture();
-    installMatchMedia(dom.window);
-    runAsset(dom, 'navigation.js');
-    dom.window.document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
-    const document = dom.window.document;
+    // The French site: the English name pattern is also the script's
+    // fallback, so only a translated one proves the drawer's own is read.
+    const { dom, document } = navigated('item.fr');
 
     const drawerNames = [...document.querySelectorAll('#menu-drawer .mobile-dropdown-toggle')]
         .map((button) => button.getAttribute('aria-label'));
-    assert.deepEqual(drawerNames, ['show submenu for “Browse”', 'show submenu for “About”']);
+    assert.deepEqual(drawerNames, [
+        'afficher le sous-menu de « Parcourir »',
+        'afficher le sous-menu de « Expositions »',
+        'afficher le sous-menu de « À propos »',
+    ]);
     const desktopNames = [...document.querySelectorAll('.main-navigation .submenu-btn')]
         .map((button) => button.textContent.trim());
     assert.deepEqual(desktopNames, drawerNames);
@@ -113,17 +95,14 @@ test('every submenu toggle is named after its own entry, desktop and drawer alik
 });
 
 test('the open drawer traps Tab and Shift+Tab, and Escape hands focus back to the toggle', () => {
-    const dom = drawerFixture();
-    installMatchMedia(dom.window);
-    // jsdom does no layout, so every offsetParent is null and the trap would
-    // see nothing focusable; stand in "attached" for "rendered".
-    Object.defineProperty(dom.window.HTMLElement.prototype, 'offsetParent', {
-        configurable: true,
-        get() { return this.isConnected ? this.parentNode : null; },
+    const { dom, document } = navigated('item.en', (dom) => {
+        // jsdom does no layout, so every offsetParent is null and the trap would
+        // see nothing focusable; stand in "attached" for "rendered".
+        Object.defineProperty(dom.window.HTMLElement.prototype, 'offsetParent', {
+            configurable: true,
+            get() { return this.isConnected ? this.parentNode : null; },
+        });
     });
-    runAsset(dom, 'navigation.js');
-    dom.window.document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
-    const document = dom.window.document;
     const toggle = document.querySelector('.main-navigation__toggle');
     const backer = document.getElementById('menu-backer');
     const press = (key, shiftKey = false) => document.dispatchEvent(

@@ -4,16 +4,18 @@
 // click sets a sessionStorage flag, and the next load consumes it and scrolls
 // to the results. The regression it has already had is a flag set by the
 // AJAX-swapped Linked-resources pager, which no reload ever consumes — so the
-// NEXT unrelated page load jumped. Both halves are asserted here.
+// NEXT unrelated page load jumped. Both halves are asserted here, on the item
+// browse and the item-set ledger as the templates render them.
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createDom, runAsset } = require('../test-support/dom');
+const { runAsset } = require('../test-support/dom');
+const { fixtureDom } = require('../test-support/fixtures');
 
 const KEY = 'pagination-scroll';
 
-function load(body, { flag = false } = {}) {
-    const dom = createDom(`<!doctype html><body>${body}</body>`);
+function load(name, { flag = false } = {}) {
+    const dom = fixtureDom(name);
     if (flag) dom.window.sessionStorage.setItem(KEY, '1');
     const scrolls = [];
     dom.window.scrollTo = (options) => { scrolls.push(options); };
@@ -22,52 +24,51 @@ function load(body, { flag = false } = {}) {
     return { dom, doc: dom.window.document, scrolls };
 }
 
-const RESULTS = `
-    <header class="main-header"></header>
-    <div class="browse-controls"></div>
-    <nav class="pagination"><a class="pagination-nav next" href="?page=2">Next</a>
-        <form class="pager"><input name="page"></form></nav>`;
+const click = (dom, element, init = {}) => element.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true, ...init }));
 
 test('a pagination click leaves the flag the next load will consume', () => {
-    const { dom, doc } = load(RESULTS);
-    doc.querySelector('.pagination-nav').dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
+    const { dom, doc } = load('items-browse.en');
+    click(dom, doc.querySelector('.pagination a.pagination-nav.next'));
     assert.equal(dom.window.sessionStorage.getItem(KEY), '1');
 });
 
 test('submitting the page-number form sets the flag too', () => {
-    const { dom, doc } = load(RESULTS);
-    doc.querySelector('.pager').dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true }));
+    const { dom, doc } = load('items-browse.en');
+    doc.querySelector('.pagination .pager').dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true }));
     assert.equal(dom.window.sessionStorage.getItem(KEY), '1');
 });
 
 test('the Linked-resources pager (AJAX, no reload) never sets it', () => {
-    const { dom, doc } = load(`<div class="linked-resources">${RESULTS}</div>`);
-    doc.querySelector('.pagination-nav').dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
+    const { dom, doc } = load('item-set.en');
+    click(dom, doc.querySelector('.linked-resources .pagination a.pagination-nav.next'));
+    assert.equal(dom.window.sessionStorage.getItem(KEY), null);
+    doc.querySelector('.linked-resources .pagination .pager').dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true }));
     assert.equal(dom.window.sessionStorage.getItem(KEY), null);
 });
 
-test('a disabled pager link does not set it', () => {
-    const { dom, doc } = load(`<nav class="pagination"><a class="pagination-nav disabled">Next</a></nav>`);
-    doc.querySelector('.pagination-nav').dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
+test('a disabled pager control does not set it', () => {
+    // Page 1: "previous" is rendered disabled.
+    const { dom, doc } = load('items-browse.en');
+    click(dom, doc.querySelector('.pagination .pagination-nav.previous.disabled'));
     assert.equal(dom.window.sessionStorage.getItem(KEY), null);
 });
 
 test('the next load consumes the flag and scrolls to the results', () => {
-    const { dom, scrolls } = load(RESULTS, { flag: true });
+    const { dom, scrolls } = load('items-browse.en', { flag: true });
     assert.equal(scrolls.length, 1);
     assert.equal(scrolls[0].behavior, 'instant');
     assert.equal(dom.window.sessionStorage.getItem(KEY), null, 'the flag is one-shot');
 });
 
 test('a load without the flag does not scroll', () => {
-    const { scrolls } = load(RESULTS);
+    const { scrolls } = load('items-browse.en');
     assert.equal(scrolls.length, 0);
 });
 
 test('a click that opens a new tab or window leaves no flag behind', () => {
     for (const init of [{ ctrlKey: true }, { metaKey: true }, { shiftKey: true }, { button: 1 }]) {
-        const { dom, doc } = load(RESULTS);
-        doc.querySelector('.pagination-nav').dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true, ...init }));
+        const { dom, doc } = load('items-browse.en');
+        click(dom, doc.querySelector('.pagination a.pagination-nav.next'), init);
         assert.equal(dom.window.sessionStorage.getItem(KEY), null, JSON.stringify(init));
     }
 });

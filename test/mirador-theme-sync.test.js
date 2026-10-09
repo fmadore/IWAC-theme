@@ -6,10 +6,17 @@
 // placeholder on the block, the body class, and Escape to restore). Mirador
 // itself is not loaded here — the script only ever talks to it through
 // `window.miradors[id].store`, so a Redux-shaped fake is the real interface.
+//
+// The page is the rendered item page (test-support/fixtures.js). Its viewer
+// block is the one piece no theme template renders: the Mirador module prints
+// it, so the fixture carries a copy of the live markup (miradorBlock() in
+// test/php/render-fixtures.php). What sits inside it — Mirador's <main> and
+// <h1> — is React's, mounted at runtime, and is mounted here the same way.
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createDom, flush, runAsset } = require('../test-support/dom');
+const { flush, runAsset } = require('../test-support/dom');
+const { fixtureDom } = require('../test-support/fixtures');
 
 function fakeStore(windows) {
     const listeners = [];
@@ -35,10 +42,15 @@ function fakeStore(windows) {
     };
 }
 
+/** The item page, its body themed as layout.phtml's inline script leaves it. */
+function itemPage(theme = 'light') {
+    const dom = fixtureDom('item.en');
+    dom.window.document.body.setAttribute('data-theme', theme);
+    return dom;
+}
+
 function mount({ theme = 'light', windows = { w1: { maximized: false } } } = {}) {
-    const dom = createDom(`<!doctype html><body data-theme="${theme}">
-        <div class="block block-mirador"><div id="mirador-1" class="mirador viewer"></div></div>
-    </body>`);
+    const dom = itemPage(theme);
     dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
     const store = fakeStore(windows);
     dom.window.miradors = { 'mirador-1': { store } };
@@ -96,14 +108,12 @@ test('Escape restores a maximized window, and only while one is maximized', () =
 });
 
 test("Mirador's main and h1 are demoted to a region and an h2, and stay so across re-renders", async () => {
-    const dom = createDom(`<!doctype html><body data-theme="light"><main id="content">
-        <h1>The record</h1>
-        <div class="block block-mirador"><div id="mirador-1" class="mirador viewer">
-            <main class="mirador-viewer" aria-label="Workspace">
-                <div class="mirador-workspace-viewport"><h1 style="position:absolute">Mirador viewer</h1><div class="window"></div></div>
-            </main>
-        </div></div>
-    </main></body>`);
+    const dom = itemPage();
+    // What Mirador mounts into the module's container.
+    dom.window.document.getElementById('mirador-1').innerHTML = `
+        <main class="mirador-viewer" aria-label="Workspace">
+            <div class="mirador-workspace-viewport"><h1 style="position:absolute">Mirador viewer</h1><div class="window"></div></div>
+        </main>`;
     dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
     dom.window.miradors = { 'mirador-1': { store: fakeStore({ w1: { maximized: false } }) } };
     dom.window.IWACUtils = { onReady: (callback) => callback() };
@@ -116,7 +126,8 @@ test("Mirador's main and h1 are demoted to a region and an h2, and stay so acros
     const heading = doc.querySelector('.mirador-workspace-viewport > h1');
     assert.equal(heading.getAttribute('role'), 'heading');
     assert.equal(heading.getAttribute('aria-level'), '2');
-    // The page's own h1 is untouched.
+    // The page's own h1 — the record's headline — is untouched.
+    assert.equal(doc.querySelector('#content > h1').textContent.trim(), 'La Tabaski à Ouagadougou');
     assert.equal(doc.querySelector('#content > h1').hasAttribute('role'), false);
 
     // React remounts the workspace: a fresh h1 must be demoted too.
@@ -131,7 +142,7 @@ test("Mirador's main and h1 are demoted to a region and an h2, and stay so acros
 });
 
 test('waiting for a viewer that never registers stops after 30 seconds', () => {
-    const dom = createDom('<!doctype html><body><div id="mirador-1" class="mirador viewer"></div></body>');
+    const dom = itemPage();
     dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
     // A config with no store yet: the module's raw entry before the viewer starts.
     dom.window.miradors = { 'mirador-1': { id: 'mirador-1' } };
@@ -151,7 +162,7 @@ test('waiting for a viewer that never registers stops after 30 seconds', () => {
 });
 
 test('a page without a viewer starts no polling at all', () => {
-    const dom = createDom('<!doctype html><body><main>No viewer here</main></body>');
+    const dom = fixtureDom('items-browse.en');
     let intervals = 0;
     dom.window.setInterval = () => { intervals++; return 0; };
     dom.window.IWACUtils = { onReady: (callback) => callback() };

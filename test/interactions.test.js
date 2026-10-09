@@ -1,25 +1,33 @@
 'use strict';
 
+// Every page here is rendered from the real templates (test-support/fixtures.js):
+// the annotation disclosure and the citation panel from the item page, the
+// theme toggle from the masthead, the layout toggle from the item browse, the
+// carousel from the About page.
+
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createDom, flush, runAsset } = require('../test-support/dom');
+const { flush, runAsset } = require('../test-support/dom');
+const { fixtureDom } = require('../test-support/fixtures');
 
-test('Escape closes an annotation disclosure and restores trigger focus', () => {
-    const dom = createDom(`<!doctype html><body>
-        <div class="annotation-btn">
-            <button class="annotation-trigger" aria-expanded="false">Annotation</button>
-            <div class="annotation-tooltip" aria-hidden="true"><div class="annotation-tooltip__wrapper">Note</div></div>
-        </div>
-    </body>`);
+/** The item page with script.js running: its annotation disclosures bound. */
+function annotatedItem(prepare = () => {}) {
+    const dom = fixtureDom('item.en');
     dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
     dom.window.IWACUtils = {
         debounce: (callback) => callback,
         onReady: (callback) => callback(),
     };
-
+    prepare(dom);
     runAsset(dom, 'script.js');
+    return dom;
+}
+
+test('Escape closes an annotation disclosure and restores trigger focus', () => {
+    // The AI summary's model note (common/resource-values.phtml).
+    const dom = annotatedItem();
     const trigger = dom.window.document.querySelector('.annotation-trigger');
-    const tooltip = dom.window.document.querySelector('.annotation-tooltip');
+    const tooltip = dom.window.document.getElementById(trigger.getAttribute('aria-controls'));
     trigger.click();
     assert.equal(trigger.getAttribute('aria-expanded'), 'true');
     assert.equal(tooltip.getAttribute('aria-hidden'), 'false');
@@ -33,30 +41,20 @@ test('Escape closes an annotation disclosure and restores trigger focus', () => 
 });
 
 test('annotation disclosure stays inside a narrow viewport', () => {
-    const dom = createDom(`<!doctype html><body>
-        <div class="annotation-btn">
-            <button class="annotation-trigger" aria-expanded="false">Annotation</button>
-            <div class="annotation-tooltip" aria-hidden="true"><div class="annotation-tooltip__wrapper">Note</div></div>
-        </div>
-    </body>`);
-    dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
-    dom.window.IWACUtils = {
-        debounce: (callback) => callback,
-        onReady: (callback) => callback(),
-    };
-    Object.defineProperty(dom.window, 'innerWidth', { configurable: true, value: 320 });
-    Object.defineProperty(dom.window.document.documentElement, 'clientWidth', { configurable: true, value: 320 });
-
+    const dom = annotatedItem((dom) => {
+        Object.defineProperty(dom.window, 'innerWidth', { configurable: true, value: 320 });
+        Object.defineProperty(dom.window.document.documentElement, 'clientWidth', { configurable: true, value: 320 });
+        // jsdom does no layout: place the trigger near the right edge by hand.
+        const annotation = dom.window.document.querySelector('.annotation-btn');
+        const wrapper = annotation.querySelector('.annotation-tooltip__wrapper');
+        annotation.getBoundingClientRect = () => ({ top: 300, left: 305, right: 329, bottom: 324, width: 24, height: 24 });
+        Object.defineProperty(wrapper, 'offsetWidth', { configurable: true, value: 288 });
+        Object.defineProperty(wrapper, 'offsetHeight', { configurable: true, value: 100 });
+    });
     const annotation = dom.window.document.querySelector('.annotation-btn');
-    const trigger = dom.window.document.querySelector('.annotation-trigger');
-    const tooltip = dom.window.document.querySelector('.annotation-tooltip');
-    const wrapper = dom.window.document.querySelector('.annotation-tooltip__wrapper');
-    annotation.getBoundingClientRect = () => ({ top: 300, left: 305, right: 329, bottom: 324, width: 24, height: 24 });
-    Object.defineProperty(wrapper, 'offsetWidth', { configurable: true, value: 288 });
-    Object.defineProperty(wrapper, 'offsetHeight', { configurable: true, value: 100 });
-
-    runAsset(dom, 'script.js');
-    trigger.click();
+    const tooltip = annotation.querySelector('.annotation-tooltip');
+    const wrapper = annotation.querySelector('.annotation-tooltip__wrapper');
+    annotation.querySelector('.annotation-trigger').click();
 
     assert.equal(tooltip.style.left, '-289px');
     assert.equal(305 + parseFloat(tooltip.style.left), 16);
@@ -65,10 +63,11 @@ test('annotation disclosure stays inside a narrow viewport', () => {
     dom.window.close();
 });
 
-test('public theme API rejects unsupported modes', () => {
-    const dom = createDom('<!doctype html><body><button data-theme-toggle></button></body>');
+/** A rendered page with theme-toggle.js running against an in-memory store. */
+function themed(name, { prefersDark = false } = {}) {
+    const dom = fixtureDom(name);
     const values = new Map();
-    dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
+    dom.window.matchMedia = () => ({ matches: prefersDark, addEventListener() {} });
     dom.window.IWACUtils = {
         onReady: (callback) => callback(),
         localStore: {
@@ -77,8 +76,12 @@ test('public theme API rejects unsupported modes', () => {
             remove: (key) => values.delete(key),
         },
     };
-
     runAsset(dom, 'theme-toggle.js');
+    return { dom, values };
+}
+
+test('public theme API rejects unsupported modes', () => {
+    const { dom } = themed('item.en');
     assert.equal(dom.window.IWACTheme.set('sepia'), false);
     assert.equal(dom.window.document.body.dataset.themeMode, 'system');
     assert.equal(dom.window.IWACTheme.set('dark'), true);
@@ -88,23 +91,10 @@ test('public theme API rejects unsupported modes', () => {
 });
 
 test('the theme toggle cycles system → light → dark → system, persisting and announcing each', () => {
-    const dom = createDom(`<!doctype html><body>
-        <button data-theme-toggle data-label-system="SYS" data-label-light="LIGHT" data-label-dark="DARK"
-            data-state-system="System theme" data-state-light="Light theme" data-state-dark="Dark theme"></button>
-        <span data-theme-status role="status"></span>
-    </body>`);
-    const values = new Map();
+    // The French masthead: the English labels are also the script's
+    // fallbacks, so only translated ones prove the button's own are read.
     // The OS prefers dark, so "system" must resolve to dark.
-    dom.window.matchMedia = () => ({ matches: true, addEventListener() {} });
-    dom.window.IWACUtils = {
-        onReady: (callback) => callback(),
-        localStore: {
-            get: (key) => values.get(key) || null,
-            set: (key, value) => values.set(key, value),
-            remove: (key) => values.delete(key),
-        },
-    };
-    runAsset(dom, 'theme-toggle.js');
+    const { dom, values } = themed('item.fr', { prefersDark: true });
     const { body } = dom.window.document;
     const button = dom.window.document.querySelector('[data-theme-toggle]');
     const status = dom.window.document.querySelector('[data-theme-status]');
@@ -112,13 +102,13 @@ test('the theme toggle cycles system → light → dark → system, persisting a
     // Initial load: the system mode, named on the button, announced to no one.
     assert.equal(body.dataset.themeMode, 'system');
     assert.equal(body.dataset.theme, 'dark');
-    assert.equal(button.getAttribute('aria-label'), 'SYS');
+    assert.equal(button.getAttribute('aria-label'), 'Thème système actif. Activer pour passer au mode clair.');
     assert.equal(status.textContent, '');
 
     const steps = [
-        ['light', 'light', 'LIGHT', 'Light theme', 'light'],
-        ['dark', 'dark', 'DARK', 'Dark theme', 'dark'],
-        ['system', 'dark', 'SYS', 'System theme', null],
+        ['light', 'light', 'Thème clair actif. Activer pour passer au mode sombre.', 'Thème clair', 'light'],
+        ['dark', 'dark', 'Thème sombre actif. Activer pour passer au thème système.', 'Thème sombre', 'dark'],
+        ['system', 'dark', 'Thème système actif. Activer pour passer au mode clair.', 'Thème système', null],
     ];
     for (const [mode, theme, label, announced, stored] of steps) {
         button.click();
@@ -133,20 +123,9 @@ test('the theme toggle cycles system → light → dark → system, persisting a
     dom.window.close();
 });
 
-test('browse layout preference does not add history entries and cleans up Masonry', () => {
-    const dom = createDom(`<!doctype html><body><section>
-        <div class="layout-toggle">
-            <button data-view="list" aria-pressed="false">List</button>
-            <button data-view="grid" aria-pressed="true">Grid</button>
-        </div>
-        <div class="resources resource-grid">
-            <article class="resource"><div class="resource__thumbnail decoration"></div><div class="resource__meta"></div></article>
-        </div>
-        <nav class="pagination"><div class="pager-wrapper">
-            <a class="pagination-nav next" href="https://example.test/s/westafrica/item?page=2">Next</a>
-            <form class="pager"><input type="hidden" name="sort_by" value="title"><input name="page" value="1"></form>
-        </div></nav>
-    </section></body>`);
+/** The item browse (grid by default, ?sort_by=title) with browse.js and a fake MiniMasonry. */
+function browsed(prepare = () => {}) {
+    const dom = fixtureDom('items-browse.en');
     const instances = [];
     dom.window.IWACUtils = { onReady: (callback) => callback() };
     dom.window.MiniMasonry = class {
@@ -158,13 +137,19 @@ test('browse layout preference does not add history entries and cleans up Masonr
         layout() {}
         destroy() { this.destroyed = true; }
     };
-
-    const initialHistoryLength = dom.window.history.length;
+    prepare(dom);
     runAsset(dom, 'browse.js');
+    return { dom, instances };
+}
+
+test('browse layout preference does not add history entries and cleans up Masonry', () => {
+    let initialHistoryLength;
+    const { dom, instances } = browsed((dom) => { initialHistoryLength = dom.window.history.length; });
+    const document = dom.window.document;
     // No stylesheet here, so the gutter falls back to --space-6's 24px.
     assert.equal(instances[0].options.gutter, 24);
-    const listButton = dom.window.document.querySelector('[data-view="list"]');
-    const gridButton = dom.window.document.querySelector('[data-view="grid"]');
+    const listButton = document.querySelector('[data-view="list"]');
+    const gridButton = document.querySelector('[data-view="grid"]');
     // Choosing the current layout again is a no-op.
     gridButton.click();
     assert.equal(instances[0].destroyed, false);
@@ -173,24 +158,26 @@ test('browse layout preference does not add history entries and cleans up Masonr
     listButton.focus();
     listButton.click();
 
-    const resources = dom.window.document.querySelector('.resources');
+    const resources = document.querySelector('.resources');
     // aria-pressed moves; neither button is ever disabled, so focus stays put.
     assert.equal(listButton.getAttribute('aria-pressed'), 'true');
     assert.equal(gridButton.getAttribute('aria-pressed'), 'false');
     assert.equal(listButton.disabled || gridButton.disabled, false);
-    assert.equal(dom.window.document.activeElement, listButton);
+    assert.equal(document.activeElement, listButton);
     assert.equal(instances[0].destroyed, true);
     assert.equal(resources.classList.contains('resource-list'), true);
+    assert.ok([...resources.querySelectorAll('.resource')].every((card) => card.classList.contains('media-object')));
     assert.equal(dom.window.history.length, initialHistoryLength);
     assert.equal(new URL(dom.window.location.href).searchParams.get('view'), 'list');
-    // Both ways to change page keep the chosen layout.
-    const next = dom.window.document.querySelector('.pagination a.next');
+    // Both ways to change page keep the chosen layout — and the sort.
+    const next = document.querySelector('.pagination a.next');
     assert.equal(new URL(next.href).searchParams.get('view'), 'list');
-    const pager = dom.window.document.querySelector('form.pager');
+    assert.equal(new URL(next.href).searchParams.get('sort_by'), 'title');
+    const pager = document.querySelector('.pagination form.pager');
     assert.equal(new dom.window.URLSearchParams(new dom.window.FormData(pager)).get('view'), 'list');
     assert.equal(new dom.window.URLSearchParams(new dom.window.FormData(pager)).get('sort_by'), 'title');
 
-    dom.window.document.querySelector('[data-view="grid"]').click();
+    gridButton.click();
     assert.equal(instances.length, 2);
     assert.equal(resources.classList.contains('resource-grid'), true);
     assert.equal(dom.window.history.length, initialHistoryLength);
@@ -202,20 +189,8 @@ test('browse layout preference does not add history entries and cleans up Masonr
 });
 
 test('carousel silences position announcements while the slideshow rotates', () => {
-    const dom = createDom(`<!doctype html><body>
-        <div class="carousel" data-carousel data-carousel-autoplay="5000">
-            <p data-carousel-counter hidden>
-                <span data-carousel-current>1</span>
-                <span data-carousel-status role="status" aria-live="polite"></span>
-            </p>
-            <div data-carousel-nav hidden data-label-position="Slide %1$s of %2$s">
-                <button type="button" data-carousel-toggle data-label-play="Start" data-label-pause="Stop"><span class="carousel__btn-label">Stop</span></button>
-                <button type="button" data-carousel-prev>Previous</button>
-                <button type="button" data-carousel-next>Next</button>
-            </div>
-            <ul data-carousel-track><li data-carousel-slide>1</li><li data-carousel-slide>2</li><li data-carousel-slide>3</li></ul>
-        </div>
-    </body>`);
+    // The About page's conference carousel, which auto-advances every 5s.
+    const dom = fixtureDom('page-about.en');
     dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
     dom.window.IWACUtils = { onReady: (callback) => callback(), debounce: (callback) => callback };
     dom.window.Element.prototype.scrollIntoView = function () {};
@@ -232,14 +207,14 @@ test('carousel silences position announcements while the slideshow rotates', () 
 
         // Rotating: the run is moving itself, so the region must not narrate it.
         assert.equal(status.getAttribute('aria-live'), 'off');
-        assert.equal(toggle.textContent.trim(), 'Stop');
+        assert.equal(toggle.textContent.trim(), 'Stop automatic slideshow');
         // The label carries the state; aria-pressed on top would contradict it.
         assert.equal(toggle.hasAttribute('aria-pressed'), false);
 
         // The reader takes over: rotation stops and announcements resume.
         dom.window.document.querySelector('[data-carousel-next]').click();
         assert.equal(status.getAttribute('aria-live'), 'polite');
-        assert.equal(toggle.textContent.trim(), 'Start');
+        assert.equal(toggle.textContent.trim(), 'Start automatic slideshow');
         assert.equal(toggle.hasAttribute('aria-pressed'), false);
     } finally {
         dom.window.close();
@@ -247,40 +222,44 @@ test('carousel silences position announcements while the slideshow rotates', () 
 });
 
 test('masonry gutter comes from the stylesheet, not a number in the script', () => {
-    const dom = createDom(`<!doctype html><head><style>.resource-grid { column-gap: 20px; }</style></head><body>
-        <ul class="resources resource-grid"><li class="resource"></li></ul>
-    </body>`);
-    const instances = [];
-    dom.window.IWACUtils = { onReady: (callback) => callback() };
-    dom.window.MiniMasonry = class {
-        constructor(options) { instances.push(options); }
-        layout() {}
-        destroy() {}
-    };
-
-    runAsset(dom, 'browse.js');
-    assert.equal(instances[0].gutter, 20);
-    assert.equal(instances[0].ultimateGutter, 20);
+    const { dom, instances } = browsed((dom) => {
+        const style = dom.window.document.createElement('style');
+        style.textContent = '.resource-grid { column-gap: 20px; }';
+        dom.window.document.head.append(style);
+    });
+    assert.equal(instances[0].options.gutter, 20);
+    assert.equal(instances[0].options.ultimateGutter, 20);
 
     dom.window.close();
 });
 
+// Item 8558's "How to cite" panel; Chicago is the style shown by default.
+const CHICAGO_HTML = '“La Tabaski à Ouagadougou.” <em>Carrefour africain</em>, April 9, 1966. '
+    + '<a href="https://islam.zmo.de/s/westafrica/item/8558">https://islam.zmo.de/s/westafrica/item/8558</a>.';
+const CHICAGO_TEXT = '“La Tabaski à Ouagadougou.” Carrefour africain, April 9, 1966. https://islam.zmo.de/s/westafrica/item/8558.';
+
+/**
+ * The panel's Copy button, found the way a reader finds it — by its name —
+ * not by the data-citation-copy hook citation.js binds. Rename the hook in
+ * citation.phtml and the button is still found, the script no longer binds
+ * it, and the assertions below say so.
+ */
+function copyButton(dom) {
+    const button = [...dom.window.document.querySelectorAll('.citation button')]
+        .find((candidate) => candidate.textContent.trim() === 'Copy');
+    assert.ok(button, 'no Copy button in the citation panel');
+    return button;
+}
+
 function citationDom() {
-    return createDom(`<!doctype html><body>
-        <section class="citation">
-            <p class="citation__text" data-citation-panel="chicago">
-                Madore, Frédérick. <em>Islam in Togo</em>. Berlin: ZMO, 2020.
-            </p>
-            <button type="button" data-citation-copy data-copied-label="Copied"><span class="citation__copy-label">Copy</span></button>
-            <p class="citation__status" role="status"></p>
-        </section>
-    </body>`);
+    const dom = fixtureDom('item.en');
+    dom.window.IWACUtils = { onReady: (callback) => callback() };
+    return dom;
 }
 
 test('citation copy writes rich text alongside plain text', async () => {
     const dom = citationDom();
     const writes = [];
-    dom.window.IWACUtils = { onReady: (callback) => callback() };
     dom.window.ClipboardItem = class {
         constructor(items) { this.items = items; }
     };
@@ -294,14 +273,14 @@ test('citation copy writes rich text alongside plain text', async () => {
 
     try {
         runAsset(dom, 'citation.js');
-        dom.window.document.querySelector('[data-citation-copy]').click();
+        copyButton(dom).click();
         await flush();
 
         assert.equal(writes.length, 1);
         const html = await writes[0]['text/html'].text();
         const text = await writes[0]['text/plain'].text();
-        assert.equal(html, 'Madore, Frédérick. <em>Islam in Togo</em>. Berlin: ZMO, 2020.');
-        assert.equal(text, 'Madore, Frédérick. Islam in Togo. Berlin: ZMO, 2020.');
+        assert.equal(html, CHICAGO_HTML);
+        assert.equal(text, CHICAGO_TEXT);
         assert.equal(dom.window.document.querySelector('.citation__status').textContent, 'Copied');
     } finally {
         dom.window.close();
@@ -311,7 +290,6 @@ test('citation copy writes rich text alongside plain text', async () => {
 test('citation copy falls back to plain text without ClipboardItem', async () => {
     const dom = citationDom();
     const texts = [];
-    dom.window.IWACUtils = { onReady: (callback) => callback() };
     Object.defineProperty(dom.window.navigator, 'clipboard', {
         configurable: true,
         value: { writeText: async (text) => { texts.push(text); } },
@@ -319,9 +297,9 @@ test('citation copy falls back to plain text without ClipboardItem', async () =>
 
     try {
         runAsset(dom, 'citation.js');
-        dom.window.document.querySelector('[data-citation-copy]').click();
+        copyButton(dom).click();
         await flush();
-        assert.deepEqual(texts, ['Madore, Frédérick. Islam in Togo. Berlin: ZMO, 2020.']);
+        assert.deepEqual(texts, [CHICAGO_TEXT]);
     } finally {
         dom.window.close();
     }
@@ -329,7 +307,6 @@ test('citation copy falls back to plain text without ClipboardItem', async () =>
 
 test('a refused copy selects the citation and says how to finish', async () => {
     const dom = citationDom();
-    dom.window.IWACUtils = { onReady: (callback) => callback() };
     Object.defineProperty(dom.window.navigator, 'clipboard', {
         configurable: true,
         value: { writeText: async () => { throw new Error('denied'); } },
@@ -337,10 +314,10 @@ test('a refused copy selects the citation and says how to finish', async () => {
 
     try {
         runAsset(dom, 'citation.js');
-        dom.window.document.querySelector('[data-citation-copy]').click();
+        copyButton(dom).click();
         await flush();
         const selected = dom.window.getSelection().toString().replace(/\s+/g, ' ').trim();
-        assert.equal(selected, 'Madore, Frédérick. Islam in Togo. Berlin: ZMO, 2020.');
+        assert.equal(selected, CHICAGO_TEXT);
         const status = dom.window.document.querySelector('.citation__status').textContent;
         assert.match(status, /Text selected/);
         assert.match(status, /⌘C/);

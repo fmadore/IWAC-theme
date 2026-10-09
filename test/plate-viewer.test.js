@@ -1,8 +1,15 @@
 'use strict';
 
+// The French About page, rendered from the real templates: three Asset blocks
+// (common/block-layout/asset.phtml) — one image named by its caption, one by
+// its alt text, one linked to a page — inside core's page-block grid. French,
+// so every string the viewer shows is one the template's island supplied, not
+// the script's English fallback.
+
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createDom, runAsset } = require('../test-support/dom');
+const { runAsset } = require('../test-support/dom');
+const { fixtureDom } = require('../test-support/fixtures');
 
 // jsdom ships no <dialog> behaviour, no Web Animations and no scrollIntoView.
 // The script guards `animate` itself (that guard is what makes it degrade on an
@@ -20,64 +27,36 @@ function prepare(dom) {
     dom.window.Element.prototype.scrollIntoView = function scrollIntoView() {};
 }
 
-function page(extra = '') {
-    return `<!doctype html><body>
-        <div class="block block-asset"><div class="assets"
-            data-plate-open="Voir en plein écran"
-            data-plate-open-named="Voir en plein écran : %s"
-            data-plate-viewer="Visionneuse"
-            data-plate-close="Fermer"
-            data-plate-previous="Précédente"
-            data-plate-next="Suivante"
-            data-plate-zoom-in="Agrandir"
-            data-plate-zoom-out="Ajuster"
-            data-plate-tap="Toucher pour agrandir"
-            data-plate-position="Image %1 sur %2">
-            <div class="asset"><img alt="Premier écran" src="/files/asset/a.webp">
-                <div class="caption">Premier écran</div></div>
-        </div></div>
-        <div class="block block-asset"><div class="assets">
-            <div class="asset"><img alt="Second" src="/files/asset/b.webp"></div>
-        </div></div>
-        ${extra}
-    </body>`;
+function aboutPage(edit = () => {}) {
+    const dom = fixtureDom('page-about.fr');
+    prepare(dom);
+    edit(dom.window.document);
+    runAsset(dom, 'plate-viewer.js');
+    return { dom, doc: dom.window.document };
 }
 
 test('an asset that links to a page keeps its link and is not enhanced', () => {
-    const dom = createDom(page(`
-        <div class="block block-asset"><div class="assets">
-            <div class="asset"><a href="/s/x/page/y"><img alt="Linked" src="/files/asset/c.webp"></a>
-                <span class="link-title">Linked page</span></div>
-        </div></div>`));
-    prepare(dom);
-    runAsset(dom, 'plate-viewer.js');
-
-    const doc = dom.window.document;
+    const { dom, doc } = aboutPage();
     assert.equal(doc.querySelectorAll('.plate-trigger').length, 2);
-    assert.equal(doc.querySelector('.asset a img').closest('.plate-trigger'), null);
+    const linked = doc.querySelector('.block-asset .asset a img');
+    assert.ok(linked, 'the page-linked asset is missing from the fixture');
+    assert.equal(linked.closest('.plate-trigger'), null);
     dom.window.close();
 });
 
 test('triggers take their translated name from the caption, falling back to alt', () => {
-    const dom = createDom(page());
-    prepare(dom);
-    runAsset(dom, 'plate-viewer.js');
-
-    const triggers = dom.window.document.querySelectorAll('.plate-trigger');
-    assert.equal(triggers[0].getAttribute('aria-label'), 'Voir en plein écran : Premier écran');
-    assert.equal(triggers[1].getAttribute('aria-label'), 'Voir en plein écran : Second');
+    const { dom, doc } = aboutPage();
+    const triggers = doc.querySelectorAll('.plate-trigger');
+    assert.equal(triggers[0].getAttribute('aria-label'), 'Afficher en plein écran : Bibliothèque nationale du Togo');
+    assert.equal(triggers[1].getAttribute('aria-label'), 'Afficher en plein écran : Frédérick Madore');
     assert.equal(triggers[0].getAttribute('aria-haspopup'), 'dialog');
     // The image itself is preserved, not replaced.
-    assert.equal(triggers[0].querySelector('img').getAttribute('alt'), 'Premier écran');
+    assert.equal(triggers[0].querySelector('img').getAttribute('alt'), 'Bibliothèque nationale du Togo');
     dom.window.close();
 });
 
 test('the series steps, bounds its ends, and announces position', () => {
-    const dom = createDom(page());
-    prepare(dom);
-    runAsset(dom, 'plate-viewer.js');
-
-    const doc = dom.window.document;
+    const { dom, doc } = aboutPage();
     doc.querySelectorAll('.plate-trigger')[0].click();
 
     const dialog = doc.querySelector('dialog.plate-viewer');
@@ -86,11 +65,11 @@ test('the series steps, bounds its ends, and announces position', () => {
     const next = dialog.querySelector('.plate-viewer__step--next');
 
     assert.equal(dialog.open, true);
-    assert.equal(dialog.getAttribute('aria-label'), 'Visionneuse');
-    assert.equal(prev.getAttribute('aria-label'), 'Précédente');
+    assert.equal(dialog.getAttribute('aria-label'), 'Visionneuse d’images');
+    assert.equal(prev.getAttribute('aria-label'), 'Image précédente');
     assert.equal(prev.disabled, true);
     assert.equal(next.disabled, false);
-    assert.equal(status.textContent, 'Image 1 sur 2. Premier écran');
+    assert.equal(status.textContent, 'Image 1 sur 2. Bibliothèque nationale du Togo');
     assert.equal(dialog.querySelector('.plate-viewer__counter').textContent, '12');
 
     next.click();
@@ -106,11 +85,7 @@ test('the series steps, bounds its ends, and announces position', () => {
 // clear the transform. An un-guarded oncancel handler ran finish() there and
 // closed the dialog milliseconds after showModal() opened it.
 test('the viewer survives repeated open/close cycles', async () => {
-    const dom = createDom(page());
-    prepare(dom);
-    runAsset(dom, 'plate-viewer.js');
-
-    const doc = dom.window.document;
+    const { dom, doc } = aboutPage();
     const trigger = doc.querySelectorAll('.plate-trigger')[0];
 
     for (let pass = 0; pass < 3; pass += 1) {
@@ -128,22 +103,24 @@ test('the viewer survives repeated open/close cycles', async () => {
 });
 
 test('English fallbacks apply when the template has not shipped its string island', () => {
-    const dom = createDom(`<!doctype html><body>
-        <div class="block block-asset"><div class="assets">
-            <div class="asset"><img alt="Only" src="/files/asset/a.webp"></div>
-        </div></div></body>`);
-    prepare(dom);
-    runAsset(dom, 'plate-viewer.js');
+    // Today's asset.phtml always ships the island; an older deployed one did
+    // not. Take today's page back to that: strip the island, and keep only
+    // the first image.
+    const { dom, doc } = aboutPage((doc) => {
+        doc.querySelectorAll('.assets').forEach((assets) => {
+            [...assets.attributes].filter((a) => a.name.startsWith('data-plate-')).forEach((a) => assets.removeAttribute(a.name));
+        });
+        doc.querySelectorAll('.block-asset').forEach((block, index) => { if (index > 0) block.remove(); });
+    });
 
-    const doc = dom.window.document;
     assert.equal(
         doc.querySelector('.plate-trigger').getAttribute('aria-label'),
-        'View full screen: Only',
+        'View full screen: Bibliothèque nationale du Togo',
     );
     doc.querySelector('.plate-trigger').click();
     const dialog = doc.querySelector('dialog.plate-viewer');
     // A single plate is not a series: no counter, no step controls.
     assert.ok(dialog.classList.contains('plate-viewer--single'));
-    assert.equal(dialog.querySelector('[role="status"]').textContent, 'Image 1 of 1');
+    assert.equal(dialog.querySelector('[role="status"]').textContent, 'Image 1 of 1. Bibliothèque nationale du Togo');
     dom.window.close();
 });
