@@ -38,7 +38,7 @@ msgstr ""
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
 msgstr ""
 
-#: view/common/linked-resources.phtml:139
+#: view/common/linked-resources.phtml:132
 msgid "All"
 msgstr ""
 
@@ -164,23 +164,23 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: view/common/linked-resources.phtml:132
+#: view/common/linked-resources.phtml:125
 msgid "Filter by relation"
 msgstr ""
 
-#: view/omeka/site/item/browse.phtml:84
+#: view/omeka/site/item/browse.phtml:77
 msgid "Filter items on this page by title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:112
+#: view/common/linked-resources.phtml:105
 msgid "Filter linked resources on this page by title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:111 view/omeka/site/item/browse.phtml:83
+#: view/common/linked-resources-search.phtml:32
 msgid "Filter this page by title…"
 msgstr ""
 
-#: view/common/linked-resources.phtml:134
+#: view/common/linked-resources.phtml:127
 msgid "Filter:"
 msgstr ""
 
@@ -436,7 +436,7 @@ msgstr ""
 msgid "Something went wrong"
 msgstr ""
 
-#: view/common/linked-resources.phtml:117
+#: view/common/linked-resources.phtml:110
 msgid "Sort the resources on this page"
 msgstr ""
 

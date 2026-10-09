@@ -1,0 +1,41 @@
+<?php
+/**
+ * The client-side title filter and its feedback, shared by the two
+ * linked-resources ledgers (common/linked-resources.phtml on item pages,
+ * omeka/site/item/browse.phtml for an item set's items). linked-resources.js
+ * binds them by class inside the `.linked-resources` root.
+ *
+ * Both templates carried their own copy of this markup, and the copies had
+ * already drifted (one escaped the icon URL, the other did not).
+ *
+ * Expected variables:
+ * - $part:     'field' (the search input) or 'feedback' (status + no-results)
+ * - $inputId:  id/name of the input ('field' only)
+ * - $label:    the input's accessible name ('field' only)
+ * - $noResultsText: the empty-state sentence ('feedback' only)
+ */
+$translate = $this->plugin('translate');
+$escape = $this->plugin('escapeHtml');
+$escapeAttr = $this->plugin('escapeHtmlAttr');
+$part = isset($part) ? (string) $part : 'field';
+?>
+<?php if ($part === 'field'): ?>
+<div class="linked-resources__search">
+    <img src="<?php echo $escapeAttr($this->assetUrl('img/search.svg')); ?>"
+         class="linked-resources__search-icon"
+         alt=""
+         aria-hidden="true">
+    <input type="search"
+           id="<?php echo $escapeAttr($inputId); ?>"
+           name="<?php echo $escapeAttr($inputId); ?>"
+           class="linked-resources__search-input"
+           placeholder="<?php echo $escapeAttr($translate('Filter this page by title…')); ?>"
+           aria-label="<?php echo $escapeAttr($label); ?>">
+</div>
+<?php else: ?>
+<div class="linked-resources__status" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<div class="linked-resources__no-results" hidden>
+    <p><?php echo $escape($noResultsText); ?></p>
+</div>
+<?php endif; ?>

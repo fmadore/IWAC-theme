@@ -36,7 +36,7 @@ msgstr ""
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
 msgstr "Pôle d’excellence Africa Multiple – Université de Bayreuth"
 
-#: view/common/linked-resources.phtml:139
+#: view/common/linked-resources.phtml:132
 msgid "All"
 msgstr "Tout"
 
@@ -162,23 +162,23 @@ msgstr "Télécharger"
 msgid "Error"
 msgstr "Erreur"
 
-#: view/common/linked-resources.phtml:132
+#: view/common/linked-resources.phtml:125
 msgid "Filter by relation"
 msgstr "Filtrer par relation"
 
-#: view/omeka/site/item/browse.phtml:84
+#: view/omeka/site/item/browse.phtml:77
 msgid "Filter items on this page by title"
 msgstr "Filtrer les contenus de cette page par titre"
 
-#: view/common/linked-resources.phtml:112
+#: view/common/linked-resources.phtml:105
 msgid "Filter linked resources on this page by title"
 msgstr "Filtrer les ressources liées de cette page par titre"
 
-#: view/common/linked-resources.phtml:111 view/omeka/site/item/browse.phtml:83
+#: view/common/linked-resources-search.phtml:32
 msgid "Filter this page by title…"
 msgstr "Filtrer cette page par titre…"
 
-#: view/common/linked-resources.phtml:134
+#: view/common/linked-resources.phtml:127
 msgid "Filter:"
 msgstr "Filtrer :"
 
@@ -434,7 +434,7 @@ msgstr "Diapositive %1$s sur %2$s"
 msgid "Something went wrong"
 msgstr "Une erreur s’est produite"
 
-#: view/common/linked-resources.phtml:117
+#: view/common/linked-resources.phtml:110
 msgid "Sort the resources on this page"
 msgstr "Trier les ressources de cette page"
 

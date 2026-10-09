@@ -107,10 +107,6 @@
             max-width: 120px;
             height: auto;
             border-radius: var(--radius-sm);
-
-            &.main-footer__logo--with-info {
-                margin-block-end: var(--space-8);
-            }
         }
     }
 
@@ -214,8 +210,7 @@
                 }
 
                 &.active > a,
-                &.current > a,
-                &.current-menu-item > a { color: var(--primary); }
+                &.current > a { color: var(--primary); }
 
                 > ul {
                     margin-inline-start: 0;

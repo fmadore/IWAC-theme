@@ -534,6 +534,25 @@ namespace IwacThemeTest {
         check(str_contains($explicit, '>Explicit</a>'), 'explicit heading overridden');
     });
 
+    test('the linked-resources filter field and feedback come from one partial (T-25)', function () {
+        $fake = new FakeView();
+        $field = $fake->render('common/linked-resources-search.phtml', [
+            'part' => 'field', 'inputId' => 'item-set-resources-search', 'label' => 'Filter items on this page by title',
+        ]);
+        check(str_contains($field, 'id="item-set-resources-search"') && str_contains($field, 'name="item-set-resources-search"'), 'input id/name');
+        check(str_contains($field, 'aria-label="Filter items on this page by title"'), 'input name');
+        check(str_contains($field, 'class="linked-resources__search-input"'), 'the class linked-resources.js binds');
+        $feedback = $fake->render('common/linked-resources-search.phtml', ['part' => 'feedback', 'noResultsText' => 'None <here>']);
+        check(str_contains($feedback, 'class="linked-resources__status" role="status"'), 'status region');
+        check(str_contains($feedback, '<p>None &lt;here&gt;</p>'), 'empty state escaped');
+        // Both ledgers use it, and neither keeps its own copy.
+        foreach (['common/linked-resources.phtml', 'omeka/site/item/browse.phtml'] as $template) {
+            $source = (string) file_get_contents(ROOT . '/view/' . $template);
+            same(2, substr_count($source, "partial('common/linked-resources-search'"), $template);
+            check(!str_contains($source, 'linked-resources__search-input'), "$template still has its own copy");
+        }
+    });
+
     test('item browse delegates to the shared listing unless it is an item set', function () {
         $fake = new FakeView();
         $fake->render('omeka/site/item/browse.phtml', ['items' => ['a', 'b']]);
