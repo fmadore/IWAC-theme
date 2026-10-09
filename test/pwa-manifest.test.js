@@ -83,3 +83,76 @@ test('every URL in the blob manifest is absolute, screenshots included', async (
         ['narrow', 'wide'],
     );
 });
+
+/** A page with the island and the footer install button, pwa-install.js running. */
+async function installDom({ userAgent } = {}) {
+    const dom = createDom(`<!doctype html><html><head>
+        <script type="application/json" id="iwac-pwa-manifest">${JSON.stringify(ISLAND)}</script>
+        </head><body><div class="main-footer__install"><button type="button" data-pwa-install hidden
+            data-label-ios="How to install this app" data-hint-ios="Tap Share, then Add to Home Screen.">Install</button></div></body></html>`);
+    dom.window.URL.createObjectURL = () => 'blob:https://example.test/fake';
+    dom.window.URL.revokeObjectURL = () => {};
+    dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
+    if (userAgent) {
+        Object.defineProperty(dom.window.navigator, 'userAgent', { configurable: true, value: userAgent });
+    }
+    runAsset(dom, 'utils.js');
+    runAsset(dom, 'pwa-install.js');
+    await flush();
+    return dom;
+}
+
+test('the install button appears on beforeinstallprompt and spends the prompt once', async () => {
+    const dom = await installDom();
+    const button = dom.window.document.querySelector('[data-pwa-install]');
+    try {
+        assert.equal(button.hidden, true, 'hidden until the browser says it can install');
+
+        let prompts = 0;
+        let resolveChoice;
+        const event = new dom.window.Event('beforeinstallprompt', { cancelable: true });
+        event.prompt = () => { prompts += 1; };
+        event.userChoice = new Promise((resolve) => { resolveChoice = resolve; });
+        dom.window.dispatchEvent(event);
+        assert.equal(event.defaultPrevented, true, "the browser's own infobar is suppressed");
+        assert.equal(button.hidden, false);
+
+        button.click();
+        button.click(); // a second click must not call prompt() on the spent event
+        assert.equal(prompts, 1);
+        resolveChoice({ outcome: 'dismissed' });
+        await flush();
+        assert.equal(button.hidden, true, 'hidden after a dismissal until the browser re-offers');
+
+        dom.window.dispatchEvent(event);
+        assert.equal(button.hidden, false, 're-offered');
+        dom.window.dispatchEvent(new dom.window.Event('appinstalled'));
+        assert.equal(button.hidden, true, 'installed: nothing left to offer');
+    } finally {
+        dom.window.close();
+    }
+});
+
+test('on iOS the install button opens and closes the Add to Home Screen hint', async () => {
+    const dom = await installDom({ userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)' });
+    const { document } = dom.window;
+    const button = document.querySelector('[data-pwa-install]');
+    try {
+        assert.equal(button.hidden, false);
+        assert.equal(button.getAttribute('aria-expanded'), 'false');
+
+        button.click();
+        const hint = document.querySelector('.pwa-install__hint');
+        assert.ok(hint, 'hint opened');
+        assert.equal(hint.getAttribute('role'), 'dialog');
+        assert.equal(hint.textContent, 'Tap Share, then Add to Home Screen.');
+        assert.equal(button.getAttribute('aria-expanded'), 'true');
+
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        document.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        assert.equal(document.querySelector('.pwa-install__hint'), null, 'Escape closes the hint');
+        assert.equal(button.getAttribute('aria-expanded'), 'false');
+    } finally {
+        dom.window.close();
+    }
+});

@@ -87,6 +87,52 @@ test('public theme API rejects unsupported modes', () => {
     dom.window.close();
 });
 
+test('the theme toggle cycles system → light → dark → system, persisting and announcing each', () => {
+    const dom = createDom(`<!doctype html><body>
+        <button data-theme-toggle data-label-system="SYS" data-label-light="LIGHT" data-label-dark="DARK"
+            data-state-system="System theme" data-state-light="Light theme" data-state-dark="Dark theme"></button>
+        <span data-theme-status role="status"></span>
+    </body>`);
+    const values = new Map();
+    // The OS prefers dark, so "system" must resolve to dark.
+    dom.window.matchMedia = () => ({ matches: true, addEventListener() {} });
+    dom.window.IWACUtils = {
+        onReady: (callback) => callback(),
+        localStore: {
+            get: (key) => values.get(key) || null,
+            set: (key, value) => values.set(key, value),
+            remove: (key) => values.delete(key),
+        },
+    };
+    runAsset(dom, 'theme-toggle.js');
+    const { body } = dom.window.document;
+    const button = dom.window.document.querySelector('[data-theme-toggle]');
+    const status = dom.window.document.querySelector('[data-theme-status]');
+
+    // Initial load: the system mode, named on the button, announced to no one.
+    assert.equal(body.dataset.themeMode, 'system');
+    assert.equal(body.dataset.theme, 'dark');
+    assert.equal(button.getAttribute('aria-label'), 'SYS');
+    assert.equal(status.textContent, '');
+
+    const steps = [
+        ['light', 'light', 'LIGHT', 'Light theme', 'light'],
+        ['dark', 'dark', 'DARK', 'Dark theme', 'dark'],
+        ['system', 'dark', 'SYS', 'System theme', null],
+    ];
+    for (const [mode, theme, label, announced, stored] of steps) {
+        button.click();
+        assert.equal(body.dataset.themeMode, mode);
+        assert.equal(body.dataset.theme, theme);
+        assert.equal(button.getAttribute('aria-label'), label);
+        assert.equal(status.textContent, announced);
+        // "system" is the absence of a stored preference.
+        assert.equal(values.get('iwac-theme-preference') || null, stored);
+    }
+
+    dom.window.close();
+});
+
 test('browse layout preference does not add history entries and cleans up Masonry', () => {
     const dom = createDom(`<!doctype html><body><section>
         <div class="layout-toggle">

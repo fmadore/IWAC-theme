@@ -889,6 +889,100 @@ namespace IwacThemeTest {
         same('/s/westafrica/index/search', $shortcuts[1]['url']);
     });
 
+    // ---- AI table of contents and the value list (T-17) ---------------------
+
+    test('the AI table of contents parses into page / title / byline / summary entries', function () {
+        $fake = new FakeView();
+        $text = "p. 1-2 : L'islam au Togo (Issa Moussa)\nUn résumé\nsur deux lignes.\r\n\r\n"
+            . "p. 3 : Suite du feuilleton (1)\nLa suite.\n\n\n"
+            . "Éditorial sans page\nTexte <b>brut</b>.";
+        $html = $fake->render('common/ai-toc.phtml', ['text' => $text]);
+        same(3, substr_count($html, '<li class="ai-toc__entry">'));
+        check(str_contains($html, '<span class="ai-toc__pages">p.&nbsp;1-2</span>'), 'page range');
+        check(str_contains($html, '<span class="ai-toc__title">L&#039;islam au Togo</span>'), 'title, escaped, byline peeled');
+        check(str_contains($html, '<span class="ai-toc__author">(Issa Moussa)</span>'), 'byline');
+        // Soft wraps in a summary collapse to spaces.
+        check(str_contains($html, '<p class="ai-toc__summary">Un résumé sur deux lignes.</p>'), 'summary joined');
+        // "(1)" is a continuation marker, not an author.
+        check(str_contains($html, '<span class="ai-toc__title">Suite du feuilleton (1)</span>'), 'numeric pair kept in title');
+        same(1, substr_count($html, 'ai-toc__author'));
+        // An entry without "p. … :" keeps its whole header as the title; markup is escaped.
+        check(str_contains($html, '<span class="ai-toc__title">Éditorial sans page</span>'), 'unpaged entry');
+        check(str_contains($html, 'Texte &lt;b&gt;brut&lt;/b&gt;.'), 'summary escaped');
+
+        // Nothing to parse: the raw value, never swallowed.
+        check(str_contains($fake->render('common/ai-toc.phtml', ['text' => ' ']), 'ai-toc--raw'), 'empty parse falls back to raw');
+    });
+
+    /** A values array for resource-values.phtml: term => [label, [values]]. */
+    function valueRows(array $rows): array
+    {
+        $values = [];
+        foreach ($rows as $term => [$label, $list, $alternate]) {
+            $values[$term] = ['property' => fakeProperty($label), 'alternate_label' => $alternate, 'values' => $list];
+        }
+        return $values;
+    }
+
+    test('the AI lede narrows to the site language and carries the EU provenance mark', function () {
+        $values = valueRows([
+            'bibo:shortDescription' => ['Short description', [
+                fakeValue('Résumé en français.', null, 'fr'),
+                fakeValue('Summary in English.', null, 'en'),
+            ], 'DescriptionAI'],
+            'dcterms:description' => ['Description', [
+                fakeValue('Description française.', null, 'fr'),
+                fakeValue('English description.', null, 'en'),
+            ], null],
+        ]);
+        $english = (new FakeView())->render('common/resource-values.phtml', ['values' => $values, 'resource' => null]);
+        // The lede: the English rendering only, no "en" chip (it would restate <html lang>).
+        check(str_contains($english, 'Summary in English.') && !str_contains($english, 'Résumé en français.'), 'lede not narrowed');
+        check(!(bool) preg_match('/data-property-term="bibo:shortDescription".*?<span class="language">/s', explode('dcterms:description', $english)[0]), 'redundant language chip on the narrowed lede');
+        // AI provenance: the class, the labelled EU mark, and "DescriptionAI" → "Description".
+        check(str_contains($english, 'class="property property--ai" data-property-term="bibo:shortDescription"'), 'AI class missing');
+        check(str_contains($english, 'class="property__ai-eu" role="img" aria-label="AI-generated content — verify against the original source."'), 'EU mark missing');
+        check((bool) preg_match('/<dt>\s*Description\s*<span class="property__ai-eu"/', $english), 'trailing "AI" not stripped from the label');
+        // Other fr/en pairs are genuine metadata: both kept, each with its chip.
+        check(str_contains($english, 'Description française.') && str_contains($english, 'English description.'), 'description narrowed');
+        check(str_contains($english, '<span class="language">fr</span>'), 'chip on a departing value');
+
+        // On a regional French locale (fr_FR) the lede narrows to French.
+        $french = new FakeView();
+        $french->helpers['lang'] = static fn (): string => 'fr_FR';
+        $onFrench = $french->render('common/resource-values.phtml', ['values' => $values, 'resource' => null]);
+        check(str_contains($onFrench, 'Résumé en français.') && !str_contains($onFrench, 'Summary in English.'), 'lede not narrowed to French');
+
+        // A lede with no value in the site language keeps what it has.
+        $frenchOnly = valueRows(['bibo:shortDescription' => ['Short description', [fakeValue('Seulement en français.', null, 'fr')], null]]);
+        check(str_contains((new FakeView())->render('common/resource-values.phtml', ['values' => $frenchOnly, 'resource' => null]), 'Seulement en français.'), 'lone French lede dropped');
+    });
+
+    test('a long transcript folds past its opening extract; a press article does not', function () {
+        $paragraph = str_repeat('Le mot de la fin. ', 40) . "\n";
+        $long = str_repeat($paragraph, 15); // ~10,800 characters
+        $short = str_repeat($paragraph, 3);
+        $render = static fn (string $text): string => (new FakeView())->render('common/resource-values.phtml', [
+            'values' => valueRows(['bibo:content' => ['Content', [fakeValue($text)], null]]),
+            'resource' => null,
+        ]);
+
+        $folded = $render($long);
+        check(str_contains($folded, '<details class="transcript__rest">'), 'long transcript not folded');
+        // The extract ends on a line break inside the first 1,200 characters.
+        preg_match('/<div class="transcript__lede value-content" dir="auto">(.*?)<\/div>/s', $folded, $lede);
+        check(isset($lede[1]) && mb_strlen(strip_tags($lede[1])) <= 1400, 'extract too long');
+        // The remainder's word count — 3,000 words less the one-paragraph
+        // extract's 200 — grouped with a narrow no-break space.
+        same(200, preg_match_all('/\S+/u', strip_tags($lede[1])), 'extract should be the first paragraph');
+        check(str_contains($folded, "Read the full text — 2\u{202F}800 more words"), 'word count missing or ungrouped');
+        // The full text is all still in the page.
+        same(15 * 40, substr_count($folded, 'Le mot de la fin.'));
+
+        $plain = $render($short);
+        check(!str_contains($plain, '<details'), 'short text folded');
+    });
+
     // ---- Homepage hero --------------------------------------------------------
 
     /** Render common/banner.phtml with a snapshot of $summary figures (null: no snapshot). */
