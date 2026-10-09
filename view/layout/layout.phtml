@@ -226,6 +226,11 @@ try {
 if ($userBar) {
 	$this->htmlElement('body')->appendAttribute('class', 'user-bar');
 }
+// The homepage's slug differs per site (home / accueil), so the stylesheet
+// cannot key on Omeka's site-page-<slug> class; it keys on this one.
+if ($layoutIsHomepage) {
+	$this->htmlElement('body')->appendAttribute('class', 'is-homepage');
+}
 ?>
 
 <?php echo $this->doctype(); ?>

@@ -161,6 +161,31 @@
     @include card-hover;
 }
 
+// The homepage's standalone HTML block is "About the collection": long-form
+// prose, not a panel. Principle 2 keeps boxes for true panels, and principle 3
+// gives long-form reading to Source Serif 4 — so it drops the card (border,
+// radius, shadow, hover) and opens on the 2px ink section rule instead, with
+// the prose in the reading serif at the body measure. Scoped to the homepage:
+// elsewhere a standalone HTML block can be a genuine callout.
+.is-homepage .block-html:not(.block-blockGroup .block-html) {
+    padding: var(--space-4) 0 0;
+    background: none;
+    border: 0;
+    border-block-start: 2px solid var(--ink-strong);
+    border-radius: 0;
+    box-shadow: none;
+
+    &:hover {
+        border-color: var(--ink-strong);
+        box-shadow: none;
+    }
+
+    p {
+        max-inline-size: var(--measure-narrow);
+        font-family: var(--font-serif-text);
+    }
+}
+
 // Content blocks - enhanced readability for both standalone and grouped
 .block-blockGroup .block-html,
 .block-html {

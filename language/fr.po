@@ -66,7 +66,7 @@ msgstr "Minutes audiovisuelles"
 msgid "Available languages"
 msgstr "Langues disponibles"
 
-#: view/layout/layout.phtml:361
+#: view/layout/layout.phtml:366
 msgid "Back to top"
 msgstr "Haut de page"
 
@@ -426,7 +426,7 @@ msgstr "Menu du site"
 msgid "Site pages"
 msgstr ""
 
-#: view/layout/layout.phtml:337
+#: view/layout/layout.phtml:342
 msgid "Skip to main content"
 msgstr "Aller au contenu principal"
 
