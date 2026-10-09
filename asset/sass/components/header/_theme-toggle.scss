@@ -16,6 +16,18 @@
     // absent (JS off) the page follows the system, so show the auto mark.
     &__icon { display: none; }
     &__icon--auto { display: flex; }
+
+    // Lucide glyphs as masks (they were inline Bootstrap SVGs): contrast for
+    // "follow the system", sun, moon.
+    &__icon::before {
+        content: "";
+        width: 100%;
+        height: 100%;
+    }
+
+    &__icon--auto::before { @include icon-mask("../img/contrast.svg", ButtonText); }
+    &__icon--light::before { @include icon-mask("../img/sun.svg", ButtonText); }
+    &__icon--dark::before { @include icon-mask("../img/moon.svg", ButtonText); }
 }
 
 body[data-theme-mode="system"] {

@@ -402,7 +402,10 @@ body.item-set {
             flex: none;
             height: 1.15rem;
             aspect-ratio: 1401 / 283;
-            background-color: var(--ink-light);
+            // `color`, not `background-color`: the mask paints currentColor,
+            // and a background set after the mixin would also override its
+            // forced-colors restatement — the mark vanished in contrast themes.
+            color: var(--ink-light);
         }
     }
 }

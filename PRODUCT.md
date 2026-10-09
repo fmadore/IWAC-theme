@@ -89,12 +89,14 @@ the press register grounded in the collection's own material.
   read the `class="lucide …"` attribute. Eleven older masks are still Bootstrap-drawn
   from before the switch (quote, clipboard, check2, book, bookmark, camera, newspaper,
   file-earmark-text, box-arrow-up-right, arrow-up, arrow-down); converging them is open.
-  Separately, a few icons are inlined in templates instead of masked, and those are
-  Bootstrap: the theme toggle and language switcher (`header.phtml`,
-  `language-switcher.phtml`), and the footer's seven brand marks (`footer.phtml`) —
-  brand marks stay each platform's own official logo, not a system glyph. FontAwesome
-  and flag-icon are intentionally absent from the theme (Omeka core still injects
-  FontAwesome asynchronously for other modules' glyphs).
+  The theme toggle, language switcher, PWA install control and generic error page
+  were inline Bootstrap SVGs until 2.24 and are masks now (`contrast`, `sun`, `moon`,
+  `translate`, `download`, `triangle-alert`). The one deliberate exception is the
+  footer's seven brand marks (`footer.phtml`), still inlined: brand marks stay each
+  platform's own official logo, not a system glyph. FontAwesome and flag-icon are
+  absent — since 2.24 the layout no longer loads Omeka's `iconfonts.css` at all, and
+  the `o-icon-*` classes core emits on public pages are re-drawn as masks in
+  `base/elements/_icons.scss`.
 - **AI provenance:** AI-generated fields carry the official EU "AI GENERATED" mark.
 - **Register:** the press-archive stance in `docs/DESIGN-PHILOSOPHY.md` is binding,
   including its anti-cliché guardrail (no warm pastiche, no cream/parchment).

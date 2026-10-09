@@ -178,11 +178,11 @@
 }
 
 .carousel__arrow--prev::before {
-    @include icon-mask("../img/chevron-left.svg");
+    @include icon-mask("../img/chevron-left.svg", ButtonText);
 }
 
 .carousel__arrow--next::before {
-    @include icon-mask("../img/chevron-right.svg");
+    @include icon-mask("../img/chevron-right.svg", ButtonText);
 }
 
 // The autoplay control is drawn from the same two chevrons rather than a new
@@ -191,7 +191,7 @@
 // control states plainly that something is moving.
 .carousel__toggle {
     &::before {
-        @include icon-mask("../img/chevron-right.svg");
+        @include icon-mask("../img/chevron-right.svg", ButtonText);
     }
 
     &.is-playing {
@@ -199,7 +199,7 @@
         color: var(--primary);
 
         &::before {
-            @include icon-mask("../img/chevron-down.svg");
+            @include icon-mask("../img/chevron-down.svg", ButtonText);
         }
     }
 }

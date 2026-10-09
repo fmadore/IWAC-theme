@@ -172,9 +172,10 @@ Legend: `[x]` done · `[ ]` open · `[~]` deferred (rationale inline).
   font subsetting + licensing review of committed binaries + verification of the
   Arabic-transliteration diacritics coverage per face. Interim mitigation shipped:
   correct `preconnect`, `display=swap` already present.
-- [~] **P8** Cache the three homepage COUNT queries. *Deferred*: needs an
-  infra decision (APCu availability on the ZMO host); the queries are indexed and
-  failure-guarded today.
+- [x] **P8** Cache the homepage COUNT queries. `BannerStats` keeps the counts in
+  APCu for 10 minutes (`COUNTS_TTL`) wherever APCu is enabled, and the
+  IwacVisualizations snapshot figures keyed on the file's mtime; without APCu it
+  queries as before (indexed, failure-guarded).
 
 ## Phase 7 — Build, config & guardrails
 

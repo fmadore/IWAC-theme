@@ -70,13 +70,11 @@
                 margin: var(--space-4);
                 margin-block-end: var(--space-2);
                 
+                // Ink at rest, primary only on hover — never primary
+                // heading text (principle 5).
                 a {
-                    color: var(--primary);
-                    text-decoration: none;
-                    
-                    &:hover {
-                        text-decoration: underline;
-                    }
+                    @include title-link;
+                    font-weight: inherit;
                 }
             }
 

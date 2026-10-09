@@ -62,10 +62,15 @@
 
             layoutToggles.forEach((layoutToggle) => {
                 layoutToggle.addEventListener('click', (e) => {
-                    const layoutToggleDisabled = e.currentTarget.parentElement.querySelector('.layout-toggle button:disabled');
-                    if (layoutToggleDisabled) {
-                        layoutToggleDisabled.removeAttribute('disabled');
+                    // aria-pressed marks the current layout (both buttons stay
+                    // enabled, so focus stays on the one just used); choosing
+                    // the current layout again changes nothing.
+                    if (e.currentTarget.getAttribute('aria-pressed') === 'true') {
+                        return;
                     }
+                    e.currentTarget.parentElement.querySelectorAll('button[data-view]').forEach((button) => {
+                        button.setAttribute('aria-pressed', button === e.currentTarget ? 'true' : 'false');
+                    });
 
                     const url = new URL(window.location.href);
                     // data-view carries the untranslated value — never derive
@@ -97,7 +102,6 @@
                         viewInput.value = view;
                     });
 
-                    e.currentTarget.setAttribute('disabled', true);
                     const isGrid = view === 'grid';
                     resourcesSet.classList.toggle('resource-list', !isGrid);
                     resourcesSet.classList.toggle('resource-grid', isGrid);

@@ -107,10 +107,6 @@
             max-width: 120px;
             height: auto;
             border-radius: var(--radius-sm);
-
-            &.main-footer__logo--with-info {
-                margin-block-end: var(--space-8);
-            }
         }
     }
 
@@ -214,8 +210,7 @@
                 }
 
                 &.active > a,
-                &.current > a,
-                &.current-menu-item > a { color: var(--primary); }
+                &.current > a { color: var(--primary); }
 
                 > ul {
                     margin-inline-start: 0;
@@ -274,6 +269,31 @@
             ul {
                 display: none;
                 @media (min-width: $lg) { display: block; }
+            }
+
+            // Top-level entries without children, gathered into one column by
+            // footer.phtml (each used to head an empty column). They are
+            // top-level destinations, so they keep the top-level link voice,
+            // stacked — and stay visible below $lg, where nested lists hide.
+            > li.main-footer__menu-links > ul {
+                display: flex;
+                flex-direction: column;
+                gap: var(--space-1);
+                margin-top: 0;
+
+                > li {
+                    margin-bottom: 0;
+                }
+
+                > li > a {
+                    font-size: var(--text-base);
+                    font-weight: 600;
+                    color: var(--footer-text);
+
+                    &:hover { color: var(--primary); }
+                }
+
+                > li.active > a { color: var(--primary); }
             }
         }
     }

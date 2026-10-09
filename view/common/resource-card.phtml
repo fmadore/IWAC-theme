@@ -40,15 +40,23 @@ if ($showBody) {
         : $resource->displayDescription(null, $valueLang);
 }
 
+// With a heading, the thumbnail link is a second, mouse-only door to the same
+// record: out of the tab order, hidden from assistive tech, empty alt. It used
+// to repeat the title as its alt text, so every card was announced twice and
+// cost two tab stops (~50 for a page of 25). Without a heading the thumbnail
+// is the card's only link and keeps a name. Same pattern as index/search.
+$thumbnailIsSecondLink = $showHeading;
 $thumbnail = '';
 if ($showThumbnail) {
-    $primaryMedia = $resource->primaryMedia();
     $altText = '';
-    if ($primaryMedia) {
-        $altText = method_exists($primaryMedia, 'altText') ? (string) $primaryMedia->altText() : '';
-    }
-    if (!$altText) {
-        $altText = $resource->displayTitle(null, $valueLang);
+    if (!$thumbnailIsSecondLink) {
+        $primaryMedia = $resource->primaryMedia();
+        if ($primaryMedia) {
+            $altText = method_exists($primaryMedia, 'altText') ? (string) $primaryMedia->altText() : '';
+        }
+        if (!$altText) {
+            $altText = $resource->displayTitle(null, $valueLang);
+        }
     }
     $thumbnailAttribs = ['alt' => $altText, 'decoding' => 'async'];
     if (!$eager) {
@@ -56,11 +64,22 @@ if ($showThumbnail) {
     }
     $thumbnail = $this->thumbnail($resource, 'large', $thumbnailAttribs);
 }
+
+// The title is in the record's language, not the site's: a heading value's own
+// tag when it has one, else the record's dcterms:language authority (helper/
+// ResourceLanguage.php). Nothing when it is the page's own language.
+$titleLinkAttribs = [];
+if ($showHeading) {
+    $headingValueLang = is_object($heading) && method_exists($heading, 'lang') ? (string) $heading->lang() : '';
+    $titleLinkAttribs = $headingValueLang !== ''
+        ? ['lang' => $headingValueLang, 'dir' => 'auto']
+        : $this->plugin('ResourceLanguage')->attributes($resource);
+}
 ?>
 <li class="<?php echo $escape($liClass); ?> resource <?php echo $isGrid ? '' : 'media-object'; ?>">
     <?php if ($thumbnail): ?>
         <div class="resource__thumbnail <?php echo $decorationClass; ?>">
-            <?php echo $resource->linkRaw($thumbnail); ?>
+            <?php echo $resource->linkRaw($thumbnail, null, $thumbnailIsSecondLink ? ['tabindex' => '-1', 'aria-hidden' => 'true'] : []); ?>
         </div>
     <?php endif; ?>
 
@@ -68,7 +87,7 @@ if ($showThumbnail) {
         <?php if ($showHeading): ?>
             <?php echo $this->ResourceTags($resource); ?>
             <div class="resource__meta <?php echo $isGrid ? '' : 'media-object-section'; ?>">
-                <?php echo $resource->link($heading ?? $resource->displayTitle(null, $valueLang)); ?>
+                <?php echo $resource->link($heading ?? $resource->displayTitle(null, $valueLang), null, $titleLinkAttribs); ?>
                 <?php if ($body): ?>
                     <div class="description <?php echo $bodyTruncate ?: ''; ?>"><?php echo $escape($body); ?></div>
                 <?php endif; ?>

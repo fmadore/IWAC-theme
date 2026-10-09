@@ -42,14 +42,3 @@ html {
   border-radius: var(--radius-sm);
 }
 
-// ==========================================================================
-// View Transitions (Progressive Enhancement)
-// ==========================================================================
-@media (prefers-reduced-motion: no-preference) {
-  @supports (view-transition-name: none) {
-    ::view-transition-old(root),
-    ::view-transition-new(root) {
-      animation-duration: 0.3s;
-    }
-  }
-}

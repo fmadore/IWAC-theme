@@ -24,8 +24,9 @@ the project carries:
 | `docs/DESIGN-SYSTEM.md` | Cross-repo token contract with generated tables (unchanged) |
 
 **Drift rule:** `DESIGN.md`'s frontmatter mirrors `tokens.json` **light** values.
-`tokens.json` is normative. Until the guard in §5 exists, any token change must be
-followed by an `/impeccable document` refresh.
+`tokens.json` is normative. The guard now exists: `npm run check:tokens` fails while
+`DESIGN.md`'s frontmatter disagrees with `tokens.json`, so a token change is not done
+until an `/impeccable document` refresh turns it green.
 
 ## 2. Testing without a local Omeka instance
 

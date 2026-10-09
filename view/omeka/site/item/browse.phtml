@@ -71,25 +71,14 @@ $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
          data-page-results-text="<?php echo $escapeAttr($translate('{count} resources on this page')); ?>">
 
         <div class="linked-resources__controls">
-            <div class="linked-resources__search">
-                <img src="<?php echo $escapeAttr($this->assetUrl('img/search.svg')); ?>"
-                     class="linked-resources__search-icon"
-                     alt=""
-                     aria-hidden="true">
-                <input type="search"
-                       id="item-set-resources-search"
-                       name="item-set-resources-search"
-                       class="linked-resources__search-input"
-                       placeholder="<?php echo $escapeAttr($translate('Filter this page by title…')); ?>"
-                       aria-label="<?php echo $escapeAttr($translate('Filter items on this page by title')); ?>">
-            </div>
+            <?php echo $this->partial('common/linked-resources-search', [
+                'part' => 'field',
+                'inputId' => 'item-set-resources-search',
+                'label' => $translate('Filter items on this page by title'),
+            ]); ?>
         </div>
 
-        <div class="linked-resources__status" role="status" aria-live="polite" aria-atomic="true"></div>
-
-        <div class="linked-resources__no-results" hidden>
-            <p><?php echo $escape($noResultsText); ?></p>
-        </div>
+        <?php echo $this->partial('common/linked-resources-search', ['part' => 'feedback', 'noResultsText' => $noResultsText]); ?>
 
         <?php echo $this->partial('common/linked-resources-table', [
             'rows' => $rows,

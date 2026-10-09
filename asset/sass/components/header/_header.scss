@@ -96,7 +96,7 @@
 
             .main-header__site-title-acronym {
                 display: inline;
-                letter-spacing: 0.02em; // acronyms read better slightly open, not display-tight
+                letter-spacing: var(--tracking-wide); // acronyms read better slightly open, not display-tight
             }
         }
 
@@ -274,7 +274,7 @@
                 background-color var(--transition-fast);
 
             &::before {
-                @include icon-mask("../img/search.svg");
+                @include icon-mask("../img/search.svg", ButtonText);
                 content: "";
                 width: var(--text-base);
                 height: var(--text-base);

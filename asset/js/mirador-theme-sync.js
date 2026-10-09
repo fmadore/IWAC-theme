@@ -1,9 +1,10 @@
 /**
  * Mirador Integration
- * Two jobs, both reached through the same handle:
+ * Three jobs, all reached through the same handle:
  *
  *  1. Syncs the site's light/dark toggle with Mirador's built-in theme system.
  *  2. Makes "Maximize window" fill the page instead of the card.
+ *  3. Fits Mirador's landmarks into the page's outline (see fitLandmarks).
  *
  * The Mirador module stores viewer instances at window.miradors[id], keyed by
  * the id of their container element. Each instance exposes a Redux store —
@@ -135,19 +136,71 @@
     }
 
     /**
+     * Mirador renders itself as a whole application: a <main class="mirador-
+     * viewer" aria-label="Workspace"> and a visually hidden <h1> "Mirador
+     * viewer". On an item page both sit inside the theme's own <main
+     * id="content">, under the record's h1 — a nested second main landmark
+     * and a second h1 (axe on every item with images). Demote them in place:
+     * the main becomes a region (its "Workspace" name kept, so it is still a
+     * landmark one can jump to) and the h1 a level-2 heading, below the
+     * record title it belongs to.
+     *
+     * Mirador is React and may re-render or remount either element (the h1
+     * remounts with the workspace), so a MutationObserver on the container
+     * re-applies the attributes; each write is skipped when already in place,
+     * so the observer settles instead of feeding itself.
+     */
+    function demote(element, attributes) {
+        for (const name of Object.keys(attributes)) {
+            if (element.getAttribute(name) !== attributes[name]) {
+                element.setAttribute(name, attributes[name]);
+            }
+        }
+    }
+
+    function applyLandmarks(container) {
+        container.querySelectorAll('main.mirador-viewer').forEach((main) => {
+            demote(main, { role: 'region' });
+        });
+        container.querySelectorAll('.mirador-workspace-viewport > h1').forEach((heading) => {
+            demote(heading, { role: 'heading', 'aria-level': '2' });
+        });
+    }
+
+    function fitLandmarks() {
+        eachViewer((id) => {
+            const container = document.getElementById(id);
+            if (!container || container.dataset.iwacLandmarks) return;
+            container.dataset.iwacLandmarks = 'watched';
+            applyLandmarks(container);
+            new MutationObserver(() => applyLandmarks(container))
+                .observe(container, { childList: true, subtree: true });
+        });
+    }
+
+    /**
      * Wait for Mirador to initialize, then apply the current site theme.
      * Mirador loads asynchronously via an ES module. Observe DOM changes and
      * keep a low-frequency fallback check until the store becomes available.
      */
+    // Give up after this long. A viewer that has not registered by then is
+    // not coming (a failed module load, a manifest error), and the check
+    // used to run every 250ms — plus on every DOM mutation — for as long as
+    // the page stayed open.
+    const WAIT_LIMIT_MS = 30000;
+
     function waitForMirador(callback) {
         let interval = null;
         let observer = null;
+        let timeout = null;
 
         function stop() {
             if (interval) window.clearInterval(interval);
             if (observer) observer.disconnect();
+            if (timeout) window.clearTimeout(timeout);
             interval = null;
             observer = null;
+            timeout = null;
         }
 
         function check() {
@@ -162,6 +215,7 @@
         }
 
         interval = window.setInterval(check, 250);
+        timeout = window.setTimeout(stop, WAIT_LIMIT_MS);
         observer = new MutationObserver(check);
         observer.observe(document.documentElement, { childList: true, subtree: true });
         window.addEventListener('pagehide', stop, { once: true });
@@ -199,6 +253,7 @@
         waitForMirador(() => {
             syncMiradorTheme(getCurrentTheme());
             watchMaximizedState();
+            fitLandmarks();
         });
     }
 

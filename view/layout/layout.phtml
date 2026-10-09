@@ -95,13 +95,15 @@ $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1')
 $this->headTitle($siteTitle)->setSeparator(' · ');
 $this->headTitle()->append($this->setting('installation_title', 'Omeka S'));
 $this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
-// Omeka's Font Awesome (iconfonts.css) is loaded async (see <head> below) rather
-// than render-blocking: the theme's own UI now draws from Bootstrap-Icon SVG
-// masks, so the icon font is only needed by a few non-critical module glyphs.
-$iconfontsUrl = $this->assetUrl('css/iconfonts.css', 'Omeka');
-// Single combined Google Fonts request: Public Sans (body/UI) +
-// Source Serif 4 with optical-size axis (display + body). Subsetted to
-// the weights actually used across the theme.
+// Omeka's Font Awesome (iconfonts.css) is deliberately NOT loaded. The theme
+// draws every glyph from Lucide SVG masks (asset/img/, the icon-mask() mixin),
+// including the o-icon-* classes core emits on public pages — see
+// base/elements/_icons.scss for the inventory those rules cover. Until 2.24
+// the stylesheet was still preloaded on every page, and with it 77 KB of
+// fa-solid-900.woff2 for the two search-submit glyphs that were its last use.
+// One combined webfont request to Bunny Fonts (not Google Fonts): Besley,
+// Public Sans (body/UI) and Source Serif 4 with its optical-size axis,
+// subsetted to the weights the theme actually uses.
 // Bunny Fonts — privacy-first, GDPR-compliant drop-in mirror of Google
 // Fonts. Relevant since IWAC is hosted at ZMO Berlin (German research
 // institute), where Google Fonts has been ruled non-compliant under
@@ -153,6 +155,17 @@ $this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=besley:
 // document order so jQuery is always there first, and ready callbacks fire on
 // DOMContentLoaded, which is after every deferred script has run.
 //
+// What that measurement missed is EXTERNAL module scripts. A classic script a
+// module enqueues through headScript() stayed synchronous, so it ran during
+// parsing, before the deferred jQuery: from 2.19 to 2.23 the Mapping module's
+// mapping-show.js threw "$ is not defined" and every place record showed a
+// 700px blank map. So deferring jQuery commits the theme to deferring every
+// external classic script in the <head> — the DeferHeadScripts pass below,
+// after view.layout has let every module enqueue. Deferred scripts run in
+// document order, so each still runs after jQuery and after whatever it was
+// enqueued behind. The live smoke suite (e2e/live.spec.js) fails on any page
+// error and samples a place record, which is how this would have been caught.
+//
 // Worth ~400ms of FCP on mobile: jquery.min.js alone is 31 KB of the ~68 KB of
 // render-blocking bytes, and it was finishing at 1075ms on a throttled Moto G4,
 // holding the theme's own stylesheet behind it.
@@ -190,43 +203,33 @@ try {
     // Non-fatal: if the placeholder shape changes upstream, keep the stylesheets.
 }
 
-// citation.js is the "How to cite" panel's progressive enhancement — a style
-// switcher and a copy button over markup that already renders and already works
-// without it (the downloads are real links). It is enqueued by IWAC-SEO as a
-// plain <script src> in the <head>, so it blocked first paint on every resource
-// page to wire a control below the fold. It is vanilla (IWACUtils.onReady, no
-// jQuery), so deferring it changes nothing but when it runs.
+// Defer every external classic script in the <head> — module scripts included —
+// so each runs after the deferred jQuery, in the order it was enqueued (see the
+// note beside the jQuery prependFile() above, and helper/DeferHeadScripts.php
+// for what is left alone and why). Done here rather than at each enqueue site
+// because the modules own those; this is the same "the theme knows what its own
+// <head> needs" pass as the dead-CSS filter above.
 //
-// Done here rather than at the enqueue site because the module owns that; this
-// is the same "the theme knows what its own <head> needs" pass as the dead-CSS
-// filter above.
+// The pass also serves the theme's minified citation.js (asset/js/dist/, see
+// scripts/build-js.js) in place of the source file IWAC-SEO enqueues. That
+// script is the "How to cite" panel's progressive enhancement — vanilla
+// (IWACUtils.onReady, no jQuery) — so deferring it changes nothing but when it
+// runs, which is no longer before first paint.
 try {
-    foreach ($this->headScript()->getContainer() as $scriptItem) {
-        if (empty($scriptItem->attributes['src'])) {
-            continue;
-        }
-        $scriptSrc = (string) $scriptItem->attributes['src'];
-        if (strpos($scriptSrc, 'js/citation.js') !== false) {
-            $scriptItem->attributes['defer'] = 'defer';
-            // …and serve the theme's minified build of it (asset/js/dist/,
-            // see scripts/build-js.js), which the module enqueuing it cannot
-            // know about. Only the THEME's copy — a module shipping its own
-            // citation.js keeps the file it asked for.
-            if (strpos($scriptSrc, '/themes/') !== false) {
-                $scriptItem->attributes['src'] = str_replace(
-                    'asset/js/citation.js',
-                    'asset/js/dist/citation.min.js',
-                    $scriptSrc
-                );
-            }
-        }
-    }
+    $this->DeferHeadScripts($this->headScript()->getContainer());
 } catch (\Throwable $e) {
-    // Non-fatal: a blocking citation.js is slower, not broken.
+    // Non-fatal for the theme's own scripts (slower, not broken). A module
+    // script that needs jQuery would throw again — the live smoke suite's
+    // page-error check is the net for that.
 }
 
 if ($userBar) {
 	$this->htmlElement('body')->appendAttribute('class', 'user-bar');
+}
+// The homepage's slug differs per site (home / accueil), so the stylesheet
+// cannot key on Omeka's site-page-<slug> class; it keys on this one.
+if ($layoutIsHomepage) {
+	$this->htmlElement('body')->appendAttribute('class', 'is-homepage');
 }
 ?>
 
@@ -273,10 +276,6 @@ if ($userBar) {
 		<script>window.__iwacOmekaEarly=window.Omeka;</script>
 		<script type="module">var e=window.__iwacOmekaEarly,o=window.Omeka;if(e&&o&&e!==o){for(var k in e){if(!(k in o)){o[k]=e[k];}}}</script>
 
-		<?php // Font Awesome (Omeka iconfonts.css) loaded async so the icon font never blocks first paint. ?>
-		<link rel="preload" as="style" href="<?php echo $this->escapeHtmlAttr($iconfontsUrl); ?>" onload="this.onload=null;this.rel='stylesheet'">
-		<noscript><link rel="stylesheet" href="<?php echo $this->escapeHtmlAttr($iconfontsUrl); ?>"></noscript>
-
 		<style type="text/css" media="screen">
 			:root {
 				/* Brand seeds; SCSS derives every primary/secondary variant via color-mix(in oklab, ...) */
@@ -298,7 +297,7 @@ if ($userBar) {
 		<?php if ($pwaEnabled): ?>
 		<?php // PWA: icons, status-bar theming, and the manifest data island.
 		      // js/pwa-install.js (loaded at body end) turns the island into a
-		      // same-origin blob: manifest and wires the masthead install button.
+		      // same-origin blob: manifest and wires the footer install button.
 		      //
 		      // The two theme-color values are --surface, one per scheme. A
 		      // <meta> can't read a custom property, so these are copies — but

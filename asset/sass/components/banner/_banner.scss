@@ -306,7 +306,6 @@
             padding-inline: var(--space-5);
             background: var(--primary);
             color: var(--ink-on-primary);
-            font-size: var(--text-lg);
             cursor: pointer;
             // Neutralise the filled-button elevation. This IS a submit, so it
             // takes the loud opt-in in _buttons.scss: box-shadow: var(--glow-sm),
@@ -316,6 +315,15 @@
             // _header.scss.
             box-shadow: none;
             transition: background-color var(--transition-fast);
+
+            // The theme's Lucide search glyph — the button holds no markup.
+            // (It held core's Font Awesome o-icon-search span until 2.24.)
+            &::before {
+                @include icon-mask("../img/search.svg", ButtonText);
+                content: "";
+                width: var(--text-lg);
+                height: var(--text-lg);
+            }
 
             &:hover {
                 background: var(--primary-hover);
@@ -498,25 +506,68 @@
     }
 
     // Secondary tier — corpus depth. Smaller numerals, half-weight rules, so it
-    // supports the lead figures without competing. Packs 2-up on phones, 3-up
-    // on small tablets, all six across one row from $md.
+    // supports the lead figures without competing.
+    //
+    // The column count follows the NUMBER of figures (banner.phtml sets
+    // --n<count>), because a grid sized for six orphaned the seventh: when
+    // References joined, "10 Languages" sat alone on a third row on desktop
+    // and a fourth on phones. The rule is that no row may hold a lone figure
+    // under a fuller one, for five to eight figures, at any width:
+    //
+    //   count     $sm–$md   $md–$lg   $lg+
+    //   5         3 + 2     5         5
+    //   6         3 + 3     6         6
+    //   7         4 + 3     4 + 3     4 + 3
+    //   8         4 + 4     4 + 4     4 + 4
+    //
+    // Seven and eight stay at four columns even on desktop. Seven across a
+    // 1024px content column is a ~117px cell — exactly what the French
+    // AUDIOVISUELLES sets — and four is also the lead tier's own column
+    // count, so with the same gaps every tier-2 rule starts and ends under a
+    // tier-1 rule: one ledger grid instead of two near-misses.
+    //
+    // Below $sm the tier is not a grid at all but one compact, wrapping run
+    // of figure + label pairs under a single rule. Seven stacked cells there
+    // were four more rows of hero — ~1,000px of figures before the first
+    // content on a 390px phone.
     &__substats {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: var(--space-4);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-1) var(--space-4);
+        width: 100%;
         margin-block-start: var(--space-6);
         margin-block-end: 0;
         padding: 0;
+        padding-block-start: var(--space-2);
+        border-block-start: 2px solid color-mix(in oklab, var(--white) 26%, transparent);
         list-style: none;
 
         @media (min-width: $sm) {
+            display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: var(--space-5) var(--space-6);
+            gap: var(--space-5) var(--space-4);
+            padding-block-start: 0;
+            border-block-start: none;
         }
 
         @media (min-width: $md) {
             grid-template-columns: repeat(6, minmax(0, 1fr));
+
+            // Tier 1's gaps, so four-column rows share its rules' edges.
+            gap: var(--space-5) var(--space-6);
             margin-block-start: var(--space-8);
+        }
+
+        // Plain declarations rather than a custom property: a component
+        // parameter would join the published token vocabulary (tokens.json
+        // `names`). Below $sm the list is flex, so these only bite from $sm.
+        @each $count, $columns in (1: 1, 2: 2, 4: 4, 7: 4, 8: 4) {
+            &--n#{$count} { grid-template-columns: repeat($columns, minmax(0, 1fr)); }
+        }
+
+        @media (min-width: $md) {
+            &--n3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            &--n5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
         }
 
         .banner__content--center & { text-align: center; }
@@ -524,15 +575,19 @@
     }
 
     &__substat {
+        // Phones: one figure + label pair per flex item, so a pair wraps as a
+        // unit; the bold Besley figure marks where each one starts.
         min-width: 0;
-        border-block-start: 2px solid color-mix(in oklab, var(--white) 26%, transparent);
-        padding-block-start: var(--space-2);
+
+        @media (min-width: $sm) {
+            border-block-start: 2px solid color-mix(in oklab, var(--white) 26%, transparent);
+            padding-block-start: var(--space-2);
+        }
     }
 
     &__substat-figure {
-        display: block;
         font-family: $font__headings;
-        font-size: var(--text-lg);
+        font-size: var(--text-base);
         font-weight: 800;
         line-height: 1.05;
         letter-spacing: var(--tracking-display);
@@ -540,12 +595,17 @@
         font-feature-settings: "kern" 1, "liga" 1, "lnum" 1;
         color: var(--white);
 
+        @media (min-width: $sm) {
+            display: block;
+            font-size: var(--text-lg);
+        }
+
         @media (min-width: $md) { font-size: var(--text-xl); }
     }
 
     &__substat-label {
-        display: block;
-        margin-block-start: var(--space-1);
+        // Inline beside its figure on phones; its own line from $sm.
+        margin-inline-start: 0.35em;
         font-family: $font__body;
         font-size: var(--text-xs);
         font-weight: 600;
@@ -555,13 +615,23 @@
         // for AA — the hierarchy vs the lead figures comes from size/weight.
         color: color-mix(in oklab, var(--white) 92%, transparent);
 
+        @media (min-width: $sm) {
+            display: block;
+            margin-inline-start: 0;
+            margin-block-start: var(--space-1);
+        }
+
         // Same trade as __stat-label, one tier down: six across from $md is a
         // ~97px cell at 768, and the French AUDIOVISUELLES sets 117px there —
         // 20px past its own rule, on the most common tablet width. English
-        // clears it, so this only ever showed on one site.
+        // clears it, so this only ever showed on one site. Only the five- and
+        // six-across templates are that narrow; four across is a ~159px cell.
         @media (min-width: $md) and (max-width: #{$lg - 1px}) {
-            font-size: var(--text-2xs);
-            letter-spacing: normal;
+            .banner__substats--n5 &,
+            .banner__substats--n6 & {
+                font-size: var(--text-2xs);
+                letter-spacing: normal;
+            }
         }
     }
 }

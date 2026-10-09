@@ -10,12 +10,26 @@ $decoration = $this->themeSetting('image_decoration');
     $caption = $attachment->caption();
     if ($item):
         $media = $attachment->media() ?: $item->primaryMedia();
+        // When the title is shown as a link, the image link is a duplicate
+        // door: keep it out of the tab order and the accessibility tree, with
+        // an empty alt (it repeated the title, announcing each item twice).
+        // Without the title link it is the only link, and it is named.
+        $titleIsLinked = $this->showTitleOption == 'item_title';
         if ($media):
             $mediaClass = 'item-showcase__media';
             if (is_array($decoration) && in_array('media', $decoration)) {
                 $mediaClass .= ' decoration';
             }
-            echo $item->linkRaw($this->thumbnail($media, $this->thumbnailType), null, ['class' => $mediaClass]);
+            $mediaAlt = '';
+            if (!$titleIsLinked) {
+                $mediaAlt = method_exists($media, 'altText') ? (string) $media->altText() : '';
+                $mediaAlt = $mediaAlt ?: $item->displayTitle();
+            }
+            $mediaLinkAttribs = ['class' => $mediaClass];
+            if ($titleIsLinked) {
+                $mediaLinkAttribs += ['tabindex' => '-1', 'aria-hidden' => 'true'];
+            }
+            echo $item->linkRaw($this->thumbnail($media, $this->thumbnailType, ['alt' => $mediaAlt]), null, $mediaLinkAttribs);
         endif;
         ?>
         <div class="item-showcase__content">

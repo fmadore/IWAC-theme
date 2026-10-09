@@ -70,6 +70,18 @@
         return copyText(text);
     }
 
+    /** Select an element's text, so a keyboard copy takes exactly it. */
+    function selectText(element) {
+        var selection = window.getSelection ? window.getSelection() : null;
+        if (!selection || !element) {
+            return;
+        }
+        var range = document.createRange();
+        range.selectNodeContents(element);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+
     function initPanel(root) {
         var tabs = Array.prototype.slice.call(root.querySelectorAll('[data-citation-style]'));
         var panels = Array.prototype.slice.call(root.querySelectorAll('[data-citation-panel]'));
@@ -142,7 +154,12 @@
                 copyCitation(html, text).then(function () {
                     finish(true, copyBtn.getAttribute('data-copied-label') || 'Copied');
                 }).catch(function () {
-                    finish(false, copyBtn.getAttribute('data-error-label') || 'Copy failed');
+                    // Leave the reader one keystroke from done: select the
+                    // citation, so the shortcut the message names copies it.
+                    // (The message used to say "Press Ctrl+C" with nothing
+                    // selected — and the shortcut is ⌘C on a Mac.)
+                    selectText(panel);
+                    finish(false, copyBtn.getAttribute('data-error-label') || 'Copy failed. Text selected: press Ctrl+C or ⌘C.');
                 });
             });
 
@@ -153,13 +170,14 @@
                     status.textContent = message;
                 }
                 window.clearTimeout(resetTimer);
+                // A failure asks the reader to act, so it stays up longer.
                 resetTimer = window.setTimeout(function () {
                     root.classList.remove('is-copied');
                     copyLabel.textContent = idleLabel;
                     if (status) {
                         status.textContent = '';
                     }
-                }, 2200);
+                }, ok ? 2200 : 8000);
             };
         }
     }

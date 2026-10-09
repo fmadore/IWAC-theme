@@ -80,7 +80,6 @@
 		mmStrings = {
 			close: (mmDrawer && mmDrawer.dataset.closeText) || 'Close',
 			openMenu: (mmDrawer && mmDrawer.dataset.openMenuText) || 'Open menu',
-			toggleSubmenu: (mmDrawer && mmDrawer.dataset.toggleSubmenuText) || 'Toggle submenu',
 			// %s is replaced with the parent entry's name.
 			showSubmenuFor: (mmDrawer && mmDrawer.dataset.showSubmenuText) || 'show submenu for “%s”',
 		};
@@ -214,11 +213,13 @@
 			const link = item.querySelector('a');
 			if (!link) return;
 
-			// Create toggle button
+			// Create toggle button. Named after its entry, like the desktop
+			// toggles: four identical "Toggle submenu" buttons were
+			// indistinguishable in a screen reader's list of buttons.
 			const toggleBtn = document.createElement('button');
 			toggleBtn.className = 'mobile-dropdown-toggle';
 			toggleBtn.type = 'button';
-			toggleBtn.setAttribute('aria-label', mmStrings.toggleSubmenu);
+			toggleBtn.setAttribute('aria-label', mmStrings.showSubmenuFor.replace('%s', link.textContent.trim()));
 			toggleBtn.setAttribute('aria-expanded', 'false');
 
 			// Insert after link

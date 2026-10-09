@@ -42,8 +42,13 @@ foreach ($resourcePropertiesAll as $type => $resourceProperties) {
 
 $baseUrl = $this->url(null, [], true);
 
+// The sort reorders the rows on screen — one page of a set that can run to
+// hundreds (241 on item/1023) — and resets on an AJAX page change, so it says
+// so, the way the title filter beside it already did ("Filter this page…"):
+// the resting option reads "Sort this page" rather than "Default", and the
+// control is named for what it does.
 $sortOptions = [
-    'default' => $this->translate('Default'),
+    'default' => $this->translate('Sort this page'),
     'alpha-asc' => $this->translate('Title (A-Z)'),
     'alpha-desc' => $this->translate('Title (Z-A)'),
     'date-desc' => $this->translate('Newest first'),
@@ -94,22 +99,15 @@ foreach ($subjectValues as $values) {
      data-fragment="<?php echo $this->escapeHtmlAttr($fragment); ?>">
 
     <div class="linked-resources__controls">
-        <div class="linked-resources__search">
-            <img src="<?php echo $this->assetUrl('img/search.svg'); ?>"
-                 class="linked-resources__search-icon"
-                 alt=""
-                 aria-hidden="true">
-            <input type="search"
-                   id="linked-resources-search"
-                   name="linked-resources-search"
-                   class="linked-resources__search-input"
-                   placeholder="<?php echo $this->escapeHtmlAttr($this->translate('Filter this page by title…')); ?>"
-                   aria-label="<?php echo $this->escapeHtmlAttr($this->translate('Filter linked resources on this page by title')); ?>">
-        </div>
+        <?php echo $this->partial('common/linked-resources-search', [
+            'part' => 'field',
+            'inputId' => 'linked-resources-search',
+            'label' => $this->translate('Filter linked resources on this page by title'),
+        ]); ?>
 
         <div class="linked-resources__sort">
             <label for="linked-resources-sort" class="sr-only">
-                <?php echo $this->escapeHtml($this->translate('Sort by')); ?>
+                <?php echo $this->escapeHtml($this->translate('Sort the resources on this page')); ?>
             </label>
             <select id="linked-resources-sort" class="linked-resources__sort-select">
                 <?php foreach ($sortOptions as $value => $label): ?>
@@ -149,11 +147,7 @@ foreach ($subjectValues as $values) {
     </div>
     <?php endif; ?>
 
-    <div class="linked-resources__status" role="status" aria-live="polite" aria-atomic="true"></div>
-
-    <div class="linked-resources__no-results" hidden>
-        <p><?php echo $this->escapeHtml($noResultsText); ?></p>
-    </div>
+    <?php echo $this->partial('common/linked-resources-search', ['part' => 'feedback', 'noResultsText' => $noResultsText]); ?>
 
     <?php echo $this->partial('common/linked-resources-table', [
         'rows' => $rows,

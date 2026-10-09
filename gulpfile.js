@@ -34,6 +34,16 @@ gulp.task('tokens', function (done) {
     });
 });
 
+// Rebuild asset/js/dist/ (the minified twins the templates load) — see
+// scripts/build-js.js.
+gulp.task('js', function (done) {
+    execFile(process.execPath, ['scripts/build-js.js'], function (err, stdout, stderr) {
+        if (stdout) process.stdout.write(stdout);
+        if (stderr) process.stderr.write(stderr);
+        done(err);
+    });
+});
+
 gulp.task('css:watch', function () {
     // A token change must also regenerate tokens.json, otherwise watch mode
     // silently drifts from the sibling modules' check-theme-tokens guards.
@@ -45,6 +55,10 @@ gulp.task('css:watch', function () {
         './view/layout/layout.phtml',
     ], gulp.series('tokens'));
     gulp.watch('./asset/sass/**/*.scss', gulp.parallel('css'));
+    // Templates load only asset/js/dist/<name>.min.js, so an edit to a source
+    // script did nothing in the browser until someone remembered build:js.
+    // Vendored *.min.js files are not inputs (scripts/build-js.js).
+    gulp.watch(['./asset/js/*.js', '!./asset/js/*.min.js'], gulp.series('js'));
 });
 
 // `npm run start`: compile once first so a fresh checkout / branch switch

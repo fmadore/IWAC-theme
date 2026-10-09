@@ -30,9 +30,17 @@ final class PwaManifest extends AbstractHelper
         $language = $view->lang() ?: 'en';
         $siteBase = rtrim($site->url(), '/') . '/';
         $icon = static fn (string $file): string => $view->assetUrl('img/pwa/' . $file);
+        // Core's fulltext search lives at /index/search; a bare /search is
+        // not a core route, so the old fallback opened a 404.
         $searchUrl = $view->getHelperPluginManager()->has('iwacSearchUrl')
             ? $view->iwacSearchUrl()
-            : $siteBase . 'search';
+            : $siteBase . 'index/search';
+        // "Browse items" opens the browse page the navigation, breadcrumbs
+        // and hero all lead to (/page/browse, /page/parcourir on the French
+        // site), not the legacy /item grid; /item only when the site has no
+        // such page.
+        $browsePage = $view->SitePageBySlug(['browse', 'parcourir'], $site);
+        $browseUrl = $browsePage ? (string) $browsePage->siteUrl() : $siteBase . 'item';
         // Alt text for both install-dialog screenshots; they are two crops of
         // one image, so they describe the same thing.
         $screenshotLabel = $view->translate('Newspaper covers and archival documents from the collection');
@@ -86,7 +94,7 @@ final class PwaManifest extends AbstractHelper
             'shortcuts' => [
                 [
                     'name' => $view->translate('Browse items'),
-                    'url' => $siteBase . 'item',
+                    'url' => $browseUrl,
                     'icons' => [['src' => $icon('icon-192.png'), 'sizes' => '192x192', 'type' => 'image/png']],
                 ],
                 [

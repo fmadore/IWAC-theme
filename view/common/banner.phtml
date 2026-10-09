@@ -86,7 +86,22 @@ if ($compact) {
 }
 ?>
 
-<div class="<?php echo $escAttr(implode(' ', $class)); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>">
+<?php
+// The full hero is a labelled <section>, which makes it a region landmark.
+// It renders before <main> (layout.phtml), so as a plain <div> it sat outside
+// every landmark: screen-reader landmark navigation skipped the site's only
+// h1, its description and the hero search (axe `region`, both homepages).
+// Named by its heading when there is one; the compact inner-page band is
+// decoration (an aria-hidden image) and stays an anonymous <div>.
+$bannerTag = $compact ? 'div' : 'section';
+$bannerLandmark = '';
+if (!$compact) {
+    $bannerLandmark = $bannerHeading
+        ? ' aria-labelledby="banner-heading"'
+        : ' aria-label="' . $escAttr($translate('Introduction')) . '"';
+}
+?>
+<<?php echo $bannerTag; ?> class="<?php echo $escAttr(implode(' ', $class)); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>"<?php echo $bannerLandmark; ?>>
 
     <?php
     // Both are LCP candidates. The hero obviously so; the compact band because
@@ -226,7 +241,7 @@ if ($compact) {
             <span class="banner__eyebrow"><?php echo $escHtml($bannerEyebrow); ?></span>
         <?php endif; ?>
         <?php if ($bannerHeading): ?>
-            <h1 class="banner__heading"><?php echo $escHtml($bannerHeading); ?></h1>
+            <h1 class="banner__heading" id="banner-heading"><?php echo $escHtml($bannerHeading); ?></h1>
         <?php endif; ?>
         <?php if ($bannerDescription): ?>
             <p class="banner__description"><?php echo nl2br($escHtml($bannerDescription)); ?></p>
@@ -254,7 +269,9 @@ if ($compact) {
         <?php endif; ?>
 
         <?php if ($substats): ?>
-        <ul class="banner__substats" aria-label="<?php echo $escAttr($translate('Corpus in depth')); ?>">
+        <?php // The count picks the column template (components/banner/_banner.scss):
+              // a grid sized for six left the seventh figure alone on a row. ?>
+        <ul class="banner__substats banner__substats--n<?php echo count($substats); ?>" aria-label="<?php echo $escAttr($translate('Corpus in depth')); ?>">
             <?php foreach ($substats as $stat): ?>
                 <li class="banner__substat">
                     <span class="banner__substat-figure"><?php echo $escHtml(number_format((int) $stat['n'], 0, '.', $thin)); ?></span>
@@ -265,4 +282,4 @@ if ($compact) {
         <?php endif; ?>
     </div>
     <?php endif; ?>
-</div>
+</<?php echo $bannerTag; ?>>

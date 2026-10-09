@@ -10,13 +10,13 @@ msgstr ""
 msgid "%1$s–%2$s of %3$s"
 msgstr "%1$s–%2$s sur %3$s"
 
-#: view/hierarchy/common/block-layout/hierarchy-public.phtml:249 view/hierarchy/common/block-layout/hierarchy-public.phtml:292
+#: view/hierarchy/common/block-layout/hierarchy-public.phtml:253 view/hierarchy/common/block-layout/hierarchy-public.phtml:299
 msgid "%s item"
 msgid_plural "%s items"
 msgstr[0] "%s contenu"
 msgstr[1] "%s contenus"
 
-#: view/hierarchy/common/block-layout/hierarchy-public.phtml:103
+#: view/hierarchy/common/block-layout/hierarchy-public.phtml:107
 msgid "(Private)"
 msgstr "(Privé)"
 
@@ -24,7 +24,7 @@ msgstr "(Privé)"
 msgid "0 results"
 msgstr "0 résultat"
 
-#: view/common/resource-values.phtml:184
+#: view/common/resource-values.phtml:200
 msgid "AI-generated content — verify against the original source."
 msgstr "Contenu généré par IA — à vérifier avec la source originale."
 
@@ -32,15 +32,15 @@ msgstr "Contenu généré par IA — à vérifier avec la source originale."
 msgid "Advanced item search"
 msgstr ""
 
-#: view/common/footer.phtml:78
+#: view/common/footer.phtml:38
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
-msgstr ""
+msgstr "Pôle d’excellence Africa Multiple – Université de Bayreuth"
 
-#: view/common/linked-resources.phtml:134
+#: view/common/linked-resources.phtml:132
 msgid "All"
 msgstr "Tout"
 
-#: view/error/index.phtml:22
+#: view/error/index.phtml:18
 msgid "An error occurred while processing your request. Please try again later."
 msgstr "Une erreur s’est produite lors du traitement de votre demande. Veuillez réessayer plus tard."
 
@@ -54,39 +54,39 @@ msgid_plural "Archived web pages"
 msgstr[0] "Page web archivée"
 msgstr[1] "Pages web archivées"
 
-#: view/common/banner.phtml:210
+#: view/common/banner.phtml:225
 msgid "Archives consulted"
 msgstr "Archives consultées"
 
-#: view/common/banner.phtml:212
+#: view/common/banner.phtml:227
 msgid "Audiovisual minutes"
 msgstr "Minutes audiovisuelles"
 
-#: view/common/language-switcher.phtml:51
+#: view/common/language-switcher.phtml:49
 msgid "Available languages"
 msgstr "Langues disponibles"
 
-#: view/layout/layout.phtml:367
+#: view/layout/layout.phtml:366
 msgid "Back to top"
 msgstr "Haut de page"
 
-#: view/common/footer.phtml:71
+#: view/common/footer.phtml:36
 msgid "Berlin Senate Department"
-msgstr ""
+msgstr "Administration du Sénat de Berlin"
 
 #: view/common/breadcrumbs.phtml:66
 msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
 
-#: helper/PwaManifest.php:88 view/error/404.phtml:27
+#: helper/PwaManifest.php:96 view/error/404.phtml:39
 msgid "Browse items"
 msgstr "Parcourir les documents"
 
-#: view/common/header.phtml:106
+#: view/common/header.phtml:96
 msgid "Browse sections"
 msgstr "Parcourir les sections"
 
-#: view/common/language-switcher.phtml:38
+#: view/common/language-switcher.phtml:43
 msgid "Change language"
 msgstr "Changer de langue"
 
@@ -106,11 +106,11 @@ msgstr ""
 msgid "Close viewer"
 msgstr "Fermer la visionneuse"
 
-#: view/common/resource-values.phtml:253
+#: view/common/resource-values.phtml:276
 msgid "Collapse the full text"
 msgstr "Réduire le texte intégral"
 
-#: view/common/banner.phtml:241
+#: view/common/banner.phtml:256
 msgid "Collection at a glance"
 msgstr "La collection en un coup d’œil"
 
@@ -126,11 +126,15 @@ msgstr "Copié"
 msgid "Copy"
 msgstr "Copier"
 
-#: view/common/banner.phtml:257
+#: view/common/citation.phtml:76
+msgid "Copy failed. Text selected: press Ctrl+C or ⌘C."
+msgstr "Échec de la copie. Texte sélectionné : appuyez sur Ctrl+C ou ⌘C."
+
+#: view/common/banner.phtml:274
 msgid "Corpus in depth"
 msgstr "Le corpus en détail"
 
-#: view/common/banner.phtml:194
+#: view/common/banner.phtml:209
 msgid "Countries"
 msgstr "Pays"
 
@@ -142,15 +146,11 @@ msgstr "Thème sombre"
 msgid "Dark theme active. Activate to switch to system theme."
 msgstr "Thème sombre actif. Activer pour passer au thème système."
 
-#: view/common/linked-resources-table.phtml:109 view/common/linked-resources-table.phtml:40
+#: view/common/linked-resources-table.phtml:111 view/common/linked-resources-table.phtml:40
 msgid "Date"
 msgstr ""
 
-#: view/common/linked-resources.phtml:46
-msgid "Default"
-msgstr "Par défaut"
-
-#: view/common/banner.phtml:211
+#: view/common/banner.phtml:226
 msgid "Document types"
 msgstr "Types de documents"
 
@@ -162,31 +162,27 @@ msgstr "Télécharger"
 msgid "Error"
 msgstr "Erreur"
 
-#: view/common/linked-resources.phtml:127
+#: view/common/linked-resources.phtml:125
 msgid "Filter by relation"
 msgstr "Filtrer par relation"
 
-#: view/omeka/site/item/browse.phtml:84
+#: view/omeka/site/item/browse.phtml:77
 msgid "Filter items on this page by title"
 msgstr "Filtrer les contenus de cette page par titre"
 
-#: view/common/linked-resources.phtml:107
+#: view/common/linked-resources.phtml:105
 msgid "Filter linked resources on this page by title"
 msgstr "Filtrer les ressources liées de cette page par titre"
 
-#: view/common/linked-resources.phtml:106 view/omeka/site/item/browse.phtml:83
+#: view/common/linked-resources-search.phtml:32
 msgid "Filter this page by title…"
 msgstr "Filtrer cette page par titre…"
 
-#: view/common/linked-resources.phtml:129
+#: view/common/linked-resources.phtml:127
 msgid "Filter:"
 msgstr "Filtrer :"
 
-#: view/common/block-layout/asset.phtml:24
-msgid "Fit to screen"
-msgstr "Ajuster à l’écran"
-
-#: view/common/resource-values.phtml:184
+#: view/common/resource-values.phtml:200
 msgid "Generated by an AI model. Verify against the original source."
 msgstr "Généré par un modèle d’IA. Vérifiez avec la source originale."
 
@@ -194,11 +190,11 @@ msgstr "Généré par un modèle d’IA. Vérifiez avec la source originale."
 msgid "Go"
 msgstr ""
 
-#: view/error/404.phtml:24 view/error/404.phtml:31 view/error/index.phtml:28 view/error/index.phtml:32
+#: view/error/404.phtml:36 view/error/404.phtml:43 view/error/index.phtml:24 view/error/index.phtml:28
 msgid "Go to homepage"
 msgstr "Aller à la page d’accueil"
 
-#: view/common/browse-toggle.phtml:15
+#: view/common/browse-toggle.phtml:20
 msgid "Grid"
 msgstr ""
 
@@ -210,11 +206,11 @@ msgstr "Accueil"
 msgid "How to cite this item"
 msgstr "Comment citer ce document"
 
-#: view/common/footer.phtml:167
+#: view/common/footer.phtml:231
 msgid "How to install this app"
 msgstr "Comment installer cette application"
 
-#: view/common/block-layout/asset.phtml:26
+#: view/common/block-layout/asset.phtml:25
 msgid "Image %1 of %2"
 msgstr "Image %1 sur %2"
 
@@ -222,13 +218,17 @@ msgstr "Image %1 sur %2"
 msgid "Image viewer"
 msgstr "Visionneuse d’images"
 
-#: view/common/banner.phtml:185
+#: view/common/banner.phtml:200
 msgid "Index"
 msgstr "Index"
 
-#: view/common/footer.phtml:175
+#: view/common/footer.phtml:234
 msgid "Install app"
 msgstr "Installer l’application"
+
+#: view/common/banner.phtml:101
+msgid "Introduction"
+msgstr "Introduction"
 
 #: helper/ResourceTags.php:41
 msgid "Item"
@@ -246,17 +246,25 @@ msgstr ""
 msgid "Item: %s"
 msgstr "Document : %s"
 
-#: view/common/banner.phtml:184 view/common/block-layout/item-carousel.phtml:178 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:42
+#: view/common/banner.phtml:199 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:19 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:42
 msgid "Items"
 msgstr ""
 
-#: view/common/banner.phtml:213
+#: view/common/language-switcher.phtml:45
+msgid "Language"
+msgstr "Langue"
+
+#: view/common/banner.phtml:228
 msgid "Languages"
 msgstr "Langues"
 
-#: view/common/footer.phtml:64
+#: view/common/browse-toggle.phtml:19
+msgid "Layout"
+msgstr "Affichage"
+
+#: view/common/footer.phtml:34
 msgid "Leibniz-Zentrum Moderner Orient"
-msgstr ""
+msgstr "Leibniz-Zentrum Moderner Orient"
 
 #: view/common/header.phtml:50
 msgid "Light theme"
@@ -270,11 +278,11 @@ msgstr "Thème clair actif. Activer pour passer au mode sombre."
 msgid "Linked resources"
 msgstr ""
 
-#: view/common/browse-toggle.phtml:16
+#: view/common/browse-toggle.phtml:21
 msgid "List"
 msgstr ""
 
-#: view/common/header.phtml:90
+#: view/common/header.phtml:80
 msgid "Main navigation"
 msgstr "Navigation principale"
 
@@ -286,15 +294,15 @@ msgstr ""
 msgid "Media: %s"
 msgstr "Média : %s"
 
-#: view/common/linked-resources.phtml:49
+#: view/common/linked-resources.phtml:54
 msgid "Newest first"
 msgstr "Plus récents d’abord"
 
-#: helper/PwaManifest.php:38
+#: helper/PwaManifest.php:46
 msgid "Newspaper covers and archival documents from the collection"
 msgstr "Unes de journaux et documents d’archives de la collection"
 
-#: view/common/banner.phtml:192
+#: view/common/banner.phtml:207
 msgid "Newspapers"
 msgstr "Journaux"
 
@@ -306,7 +314,7 @@ msgstr ""
 msgid "Next image"
 msgstr "Image suivante"
 
-#: view/common/block-layout/item-carousel.phtml:164
+#: view/common/block-layout/item-carousel.phtml:167
 msgid "Next slide"
 msgstr "Diapositive suivante"
 
@@ -314,7 +322,7 @@ msgstr "Diapositive suivante"
 msgid "No pages found"
 msgstr "Aucune page trouvée"
 
-#: view/common/linked-resources.phtml:53 view/omeka/site/item/browse.phtml:61
+#: view/common/linked-resources.phtml:58 view/omeka/site/item/browse.phtml:61
 msgid "No resources match your search."
 msgstr "Aucune ressource ne correspond à votre recherche."
 
@@ -322,11 +330,11 @@ msgstr "Aucune ressource ne correspond à votre recherche."
 msgid "No result found"
 msgstr "Aucun résultat trouvé"
 
-#: view/common/linked-resources.phtml:50
+#: view/common/linked-resources.phtml:55
 msgid "Oldest first"
 msgstr "Plus anciens d’abord"
 
-#: view/common/header.phtml:80 view/common/menu-drawer.phtml:13
+#: view/common/header.phtml:70 view/common/menu-drawer.phtml:13
 msgid "Open menu"
 msgstr "Ouvrir le menu"
 
@@ -338,7 +346,7 @@ msgstr "Ouverture de la recherche…"
 msgid "Page"
 msgstr ""
 
-#: view/error/404.phtml:10 view/error/404.phtml:16
+#: view/error/404.phtml:10 view/error/404.phtml:28
 msgid "Page not found"
 msgstr "Page non trouvée"
 
@@ -354,13 +362,9 @@ msgstr "Pagination"
 msgid "Part of %s"
 msgstr "Fait partie de %s"
 
-#: view/common/footer.phtml:184
+#: view/common/footer.phtml:243
 msgid "Powered by Omeka S"
 msgstr ""
-
-#: view/common/citation.phtml:76
-msgid "Press Ctrl+C to copy"
-msgstr "Appuyez sur Ctrl+C pour copier"
 
 #: view/common/pagination.phtml:25
 msgid "Previous"
@@ -370,27 +374,23 @@ msgstr ""
 msgid "Previous image"
 msgstr "Image précédente"
 
-#: view/common/block-layout/item-carousel.phtml:161
+#: view/common/block-layout/item-carousel.phtml:164
 msgid "Previous slide"
 msgstr "Diapositive précédente"
 
-#: view/common/resource-values.phtml:263 view/hierarchy/common/block-layout/hierarchy-public.phtml:253
+#: view/common/resource-values.phtml:310 view/hierarchy/common/block-layout/hierarchy-public.phtml:257
 msgid "Private"
 msgstr ""
 
-#: view/common/search-form.phtml:57
-msgid "Query"
-msgstr ""
-
-#: view/common/resource-values.phtml:248
+#: view/common/resource-values.phtml:271
 msgid "Read the full text — %s more words"
 msgstr "Lire le texte intégral — %s mots restants"
 
-#: view/common/banner.phtml:206
+#: view/common/banner.phtml:221
 msgid "References"
 msgstr "Références"
 
-#: view/common/linked-resources-table.phtml:100 view/common/linked-resources-table.phtml:33
+#: view/common/linked-resources-table.phtml:102 view/common/linked-resources-table.phtml:33
 msgid "Relation"
 msgstr "Relation"
 
@@ -398,7 +398,7 @@ msgstr "Relation"
 msgid "Reset"
 msgstr ""
 
-#: helper/PwaManifest.php:93 view/common/search-form.phtml:52 view/common/search-form.phtml:57 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
+#: helper/PwaManifest.php:101 view/common/search-form.phtml:58 view/common/search-form.phtml:66 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
 msgid "Search"
 msgstr ""
 
@@ -406,15 +406,11 @@ msgstr ""
 msgid "Search results for “%s”"
 msgstr "Résultats de recherche pour « %s »"
 
-#: view/common/resource-browse.phtml:51 view/common/search-form.phtml:51 view/omeka/site/item/browse.phtml:49
+#: view/common/resource-browse.phtml:51 view/common/search-form.phtml:57 view/omeka/site/item/browse.phtml:49
 msgid "Search the collection"
 msgstr "Rechercher dans la collection"
 
-#: view/common/language-switcher.phtml:37
-msgid "Select language"
-msgstr "Choisir la langue"
-
-#: view/common/resource-values.phtml:276
+#: view/common/resource-values.phtml:323
 msgid "Show annotation"
 msgstr "Afficher l’annotation"
 
@@ -426,31 +422,35 @@ msgstr "Menu du site"
 msgid "Site pages"
 msgstr ""
 
-#: view/layout/layout.phtml:343
+#: view/layout/layout.phtml:342
 msgid "Skip to main content"
 msgstr "Aller au contenu principal"
 
-#: view/common/block-layout/item-carousel.phtml:152
+#: view/common/block-layout/item-carousel.phtml:155
 msgid "Slide %1$s of %2$s"
 msgstr "Diapositive %1$s sur %2$s"
 
-#: view/error/index.phtml:20
+#: view/error/index.phtml:16
 msgid "Something went wrong"
 msgstr "Une erreur s’est produite"
 
-#: view/common/linked-resources.phtml:112
-msgid "Sort by"
-msgstr ""
+#: view/common/linked-resources.phtml:110
+msgid "Sort the resources on this page"
+msgstr "Trier les ressources de cette page"
 
-#: view/common/block-layout/item-carousel.phtml:155
+#: view/common/linked-resources.phtml:51
+msgid "Sort this page"
+msgstr "Trier cette page"
+
+#: view/common/block-layout/item-carousel.phtml:158
 msgid "Start automatic slideshow"
 msgstr "Démarrer le défilement automatique"
 
-#: view/common/block-layout/item-carousel.phtml:156 view/common/block-layout/item-carousel.phtml:157
+#: view/common/block-layout/item-carousel.phtml:159 view/common/block-layout/item-carousel.phtml:160
 msgid "Stop automatic slideshow"
 msgstr "Arrêter le défilement automatique"
 
-#: view/common/search-form.phtml:58
+#: view/common/search-form.phtml:67
 msgid "Submit"
 msgstr ""
 
@@ -462,15 +462,15 @@ msgstr "Thème système"
 msgid "System theme active. Activate to switch to light mode."
 msgstr "Thème système actif. Activer pour passer au mode clair."
 
-#: view/common/footer.phtml:168
+#: view/common/footer.phtml:232
 msgid "Tap the Share icon, then “Add to Home Screen”."
 msgstr "Touchez l’icône Partager, puis « Sur l’écran d’accueil »."
 
-#: view/common/block-layout/asset.phtml:25
+#: view/common/block-layout/asset.phtml:24
 msgid "Tap to enlarge"
 msgstr "Toucher pour agrandir"
 
-#: view/error/404.phtml:18
+#: view/error/404.phtml:30
 msgid "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable."
 msgstr "La page que vous recherchez a peut-être été supprimée, renommée ou est temporairement indisponible."
 
@@ -482,31 +482,27 @@ msgstr "Vignette"
 msgid "Title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:47
+#: view/common/linked-resources.phtml:52
 msgid "Title (A-Z)"
 msgstr "Titre (A-Z)"
 
-#: view/common/linked-resources.phtml:48
+#: view/common/linked-resources.phtml:53
 msgid "Title (Z-A)"
 msgstr "Titre (Z-A)"
 
-#: view/common/menu-drawer.phtml:14
-msgid "Toggle submenu"
-msgstr "Afficher ou masquer le sous-menu"
-
-#: view/common/banner.phtml:202
+#: view/common/banner.phtml:217
 msgid "Total pages"
 msgstr "Pages totales"
 
-#: view/common/banner.phtml:201
+#: view/common/banner.phtml:216
 msgid "Total words"
 msgstr "Mots totaux"
 
-#: view/common/linked-resources-table.phtml:105 view/common/linked-resources-table.phtml:37
+#: view/common/linked-resources-table.phtml:107 view/common/linked-resources-table.phtml:37
 msgid "Type"
 msgstr ""
 
-#: view/common/resource-values.phtml:285
+#: view/common/resource-values.phtml:332
 msgid "Value Annotations"
 msgstr "Annotations de valeur"
 
@@ -522,9 +518,9 @@ msgstr "Afficher en plein écran"
 msgid "View full screen: %s"
 msgstr "Afficher en plein écran : %s"
 
-#: view/common/footer.phtml:85
+#: view/common/footer.phtml:40
 msgid "Volkswagen Foundation"
-msgstr ""
+msgstr "Fondation Volkswagen"
 
 #: view/omeka/site/item/search.phtml:29
 msgid "You are being redirected to the collection search."
@@ -542,7 +538,7 @@ msgstr "Vidéo YouTube : %s"
 msgid "Zoom in"
 msgstr "Agrandir"
 
-#: view/common/resource-card.phtml:31 view/hierarchy/common/block-layout/hierarchy-public.phtml:109
+#: view/common/resource-card.phtml:31 view/hierarchy/common/block-layout/hierarchy-public.phtml:113
 msgid "[Untitled]"
 msgstr ""
 
@@ -550,14 +546,14 @@ msgstr ""
 msgid "of %s"
 msgstr "sur %s"
 
-#: view/common/menu-drawer.phtml:15
+#: view/common/menu-drawer.phtml:14
 msgid "show submenu for “%s”"
 msgstr "afficher le sous-menu de « %s »"
 
-#: view/common/linked-resources.phtml:54 view/omeka/site/item/browse.phtml:70
+#: view/common/linked-resources.phtml:59 view/omeka/site/item/browse.phtml:70
 msgid "{count} resources found"
 msgstr "{count} ressources trouvées"
 
-#: view/common/linked-resources.phtml:55 view/omeka/site/item/browse.phtml:71
+#: view/common/linked-resources.phtml:60 view/omeka/site/item/browse.phtml:71
 msgid "{count} resources on this page"
 msgstr "{count} ressources sur cette page"

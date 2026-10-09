@@ -23,6 +23,89 @@ $socialNetworkNames = [
 ];
 $socialNetworks = array_keys($socialNetworkNames);
 
+// Partner logos. Each links to the partner's own site in the page's language
+// when it has one: none of the four publishes French, so the French site
+// links the English pages (as the English site does) — except the Berlin
+// Senate department, which is German only — and hreflang says so wherever the
+// destination's language is not the page's. The names are translated in fr.po.
+$pageLang = strtolower(explode('-', str_replace('_', '-', (string) $this->lang()))[0]);
+$footerPartners = [];
+foreach ([
+	['logo' => 'ZMO-logo.webp', 'width' => 131, 'name' => $translate('Leibniz-Zentrum Moderner Orient'),
+		'urls' => ['en' => 'https://www.zmo.de/en', 'de' => 'https://www.zmo.de/']],
+	['logo' => 'senate-logo.webp', 'width' => 180, 'name' => $translate('Berlin Senate Department'),
+		'urls' => ['de' => 'https://www.berlin.de/sen/wgp/']],
+	['logo' => 'uni-bayreuth-africa-multiple-logo.webp', 'width' => 231, 'name' => $translate('Africa Multiple Cluster of Excellence - University of Bayreuth'),
+		'urls' => ['en' => 'https://www.africamultiple.uni-bayreuth.de/en/index.html', 'de' => 'https://www.africamultiple.uni-bayreuth.de/de/index.html']],
+	['logo' => 'VWST-logo.webp', 'width' => 372, 'name' => $translate('Volkswagen Foundation'),
+		'urls' => ['en' => 'https://www.volkswagenstiftung.de/en', 'de' => 'https://www.volkswagenstiftung.de/de']],
+] as $partner) {
+	$linkLang = isset($partner['urls'][$pageLang]) ? $pageLang : (isset($partner['urls']['en']) ? 'en' : (string) array_key_first($partner['urls']));
+	$footerPartners[] = $partner + [
+		'href' => $partner['urls'][$linkLang],
+		'hreflang' => $linkLang !== $pageLang ? $linkLang : '',
+	];
+}
+
+// The footer menu's top-level entries are column heads over their children.
+// An entry WITHOUT children (on the French site: Références, Index, À propos)
+// rendered as a head over an empty column. Gather those into one column of
+// plain links instead, where the first of them stood. DOM round-trip on the
+// renderer's own well-formed markup; if anything about it fails, the menu is
+// printed as rendered.
+$groupChildlessFooterItems = static function (string $html): string {
+	if (trim($html) === '' || !class_exists(\DOMDocument::class)) {
+		return $html;
+	}
+	$doc = new \DOMDocument();
+	$previous = libxml_use_internal_errors(true);
+	$loaded = $doc->loadHTML('<?xml encoding="utf-8"?><div id="footer-menu-root">' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+	libxml_clear_errors();
+	libxml_use_internal_errors($previous);
+	$root = $loaded ? $doc->getElementById('footer-menu-root') : null;
+	$menu = null;
+	foreach ($root ? $root->childNodes : [] as $node) {
+		if ($node instanceof \DOMElement && $node->tagName === 'ul') {
+			$menu = $node;
+			break;
+		}
+	}
+	if (!$menu) {
+		return $html;
+	}
+	$childless = [];
+	foreach (iterator_to_array($menu->childNodes) as $item) {
+		if (!$item instanceof \DOMElement || $item->tagName !== 'li') {
+			continue;
+		}
+		$hasSubmenu = false;
+		foreach ($item->childNodes as $child) {
+			if ($child instanceof \DOMElement && $child->tagName === 'ul') {
+				$hasSubmenu = true;
+			}
+		}
+		if (!$hasSubmenu) {
+			$childless[] = $item;
+		}
+	}
+	if (!$childless) {
+		return $html;
+	}
+	$column = $doc->createElement('li');
+	$column->setAttribute('class', 'main-footer__menu-links');
+	$list = $doc->createElement('ul');
+	$column->appendChild($list);
+	$menu->insertBefore($column, $childless[0]);
+	foreach ($childless as $item) {
+		$list->appendChild($item);
+	}
+	$out = '';
+	foreach ($root->childNodes as $node) {
+		$out .= $doc->saveHTML($node);
+	}
+	return $out;
+};
+
 $additional_classes = '';
 
 if (!$footerMenu) {
@@ -59,34 +142,15 @@ foreach ($socialNetworks as $social_network) {
 				<?php // Column 1: Logos and Site Info ?>
 				<div class="main-footer__col1">
 					<div class="main-footer__logos">
-						<a href="https://www.zmo.de/en" target="_blank" rel="noopener noreferrer">
-							<img src="<?php echo $this->assetUrl('img/ZMO-logo.webp'); ?>"
-								alt="<?php echo $escAttr($translate('Leibniz-Zentrum Moderner Orient')); ?>"
+						<?php foreach ($footerPartners as $partner): ?>
+						<a href="<?php echo $escAttr($partner['href']); ?>"<?php echo $partner['hreflang'] !== '' ? ' hreflang="' . $escAttr($partner['hreflang']) . '"' : ''; ?> target="_blank" rel="noopener noreferrer">
+							<img src="<?php echo $escAttr($this->assetUrl('img/' . $partner['logo'])); ?>"
+								alt="<?php echo $escAttr($partner['name']); ?>"
 								class="main-footer__logo"
-								width="131" height="120"
+								width="<?php echo (int) $partner['width']; ?>" height="120"
 								loading="lazy" decoding="async" />
 						</a>
-						<a href="https://www.berlin.de/sen/wgp/" target="_blank" rel="noopener noreferrer">
-							<img src="<?php echo $this->assetUrl('img/senate-logo.webp'); ?>"
-								alt="<?php echo $escAttr($translate('Berlin Senate Department')); ?>"
-								class="main-footer__logo"
-								width="180" height="120"
-								loading="lazy" decoding="async" />
-						</a>
-						<a href="https://www.africamultiple.uni-bayreuth.de/en/index.html" target="_blank" rel="noopener noreferrer">
-							<img src="<?php echo $this->assetUrl('img/uni-bayreuth-africa-multiple-logo.webp'); ?>"
-								alt="<?php echo $escAttr($translate('Africa Multiple Cluster of Excellence - University of Bayreuth')); ?>"
-								class="main-footer__logo"
-								width="231" height="120"
-								loading="lazy" decoding="async" />
-						</a>
-						<a href="https://www.volkswagenstiftung.de/en" target="_blank" rel="noopener noreferrer">
-							<img src="<?php echo $this->assetUrl('img/VWST-logo.webp'); ?>"
-								alt="<?php echo $escAttr($translate('Volkswagen Foundation')); ?>"
-								class="main-footer__logo"
-								width="372" height="120"
-								loading="lazy" decoding="async" />
-						</a>
+						<?php endforeach; ?>
 					</div>
 
 					<div class="footer_site_info">
@@ -101,9 +165,9 @@ foreach ($socialNetworks as $social_network) {
 
 					<div class="main-footer__col2">
 						<?php
-						echo $site->publicNav()->menu()->renderMenu(null, [
+						echo $groupChildlessFooterItems((string) $site->publicNav()->menu()->renderMenu(null, [
 							'maxDepth' => $footerMenuDepth - 1
-						]);
+						]));
 						?>
 					</div>
 
@@ -166,12 +230,7 @@ foreach ($socialNetworks as $social_network) {
 				<button class="pwa-install" data-pwa-install type="button" hidden
 					data-label-ios="<?php echo $escAttr($translate('How to install this app')); ?>"
 					data-hint-ios="<?php echo $escAttr($translate('Tap the Share icon, then “Add to Home Screen”.')); ?>">
-					<span class="pwa-install__icon" aria-hidden="true">
-						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-							<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
-							<path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
-						</svg>
-					</span>
+					<span class="pwa-install__icon" aria-hidden="true"></span>
 					<span class="pwa-install__label"><?php echo $escHtml($translate('Install app')); ?></span>
 				</button>
 			</div>

@@ -87,11 +87,57 @@ test('public theme API rejects unsupported modes', () => {
     dom.window.close();
 });
 
+test('the theme toggle cycles system → light → dark → system, persisting and announcing each', () => {
+    const dom = createDom(`<!doctype html><body>
+        <button data-theme-toggle data-label-system="SYS" data-label-light="LIGHT" data-label-dark="DARK"
+            data-state-system="System theme" data-state-light="Light theme" data-state-dark="Dark theme"></button>
+        <span data-theme-status role="status"></span>
+    </body>`);
+    const values = new Map();
+    // The OS prefers dark, so "system" must resolve to dark.
+    dom.window.matchMedia = () => ({ matches: true, addEventListener() {} });
+    dom.window.IWACUtils = {
+        onReady: (callback) => callback(),
+        localStore: {
+            get: (key) => values.get(key) || null,
+            set: (key, value) => values.set(key, value),
+            remove: (key) => values.delete(key),
+        },
+    };
+    runAsset(dom, 'theme-toggle.js');
+    const { body } = dom.window.document;
+    const button = dom.window.document.querySelector('[data-theme-toggle]');
+    const status = dom.window.document.querySelector('[data-theme-status]');
+
+    // Initial load: the system mode, named on the button, announced to no one.
+    assert.equal(body.dataset.themeMode, 'system');
+    assert.equal(body.dataset.theme, 'dark');
+    assert.equal(button.getAttribute('aria-label'), 'SYS');
+    assert.equal(status.textContent, '');
+
+    const steps = [
+        ['light', 'light', 'LIGHT', 'Light theme', 'light'],
+        ['dark', 'dark', 'DARK', 'Dark theme', 'dark'],
+        ['system', 'dark', 'SYS', 'System theme', null],
+    ];
+    for (const [mode, theme, label, announced, stored] of steps) {
+        button.click();
+        assert.equal(body.dataset.themeMode, mode);
+        assert.equal(body.dataset.theme, theme);
+        assert.equal(button.getAttribute('aria-label'), label);
+        assert.equal(status.textContent, announced);
+        // "system" is the absence of a stored preference.
+        assert.equal(values.get('iwac-theme-preference') || null, stored);
+    }
+
+    dom.window.close();
+});
+
 test('browse layout preference does not add history entries and cleans up Masonry', () => {
     const dom = createDom(`<!doctype html><body><section>
         <div class="layout-toggle">
-            <button data-view="list">List</button>
-            <button data-view="grid" disabled>Grid</button>
+            <button data-view="list" aria-pressed="false">List</button>
+            <button data-view="grid" aria-pressed="true">Grid</button>
         </div>
         <div class="resources resource-grid">
             <article class="resource"><div class="resource__thumbnail decoration"></div><div class="resource__meta"></div></article>
@@ -117,9 +163,22 @@ test('browse layout preference does not add history entries and cleans up Masonr
     runAsset(dom, 'browse.js');
     // No stylesheet here, so the gutter falls back to --space-6's 24px.
     assert.equal(instances[0].options.gutter, 24);
-    dom.window.document.querySelector('[data-view="list"]').click();
+    const listButton = dom.window.document.querySelector('[data-view="list"]');
+    const gridButton = dom.window.document.querySelector('[data-view="grid"]');
+    // Choosing the current layout again is a no-op.
+    gridButton.click();
+    assert.equal(instances[0].destroyed, false);
+    assert.equal(new URL(dom.window.location.href).searchParams.get('view'), null);
+
+    listButton.focus();
+    listButton.click();
 
     const resources = dom.window.document.querySelector('.resources');
+    // aria-pressed moves; neither button is ever disabled, so focus stays put.
+    assert.equal(listButton.getAttribute('aria-pressed'), 'true');
+    assert.equal(gridButton.getAttribute('aria-pressed'), 'false');
+    assert.equal(listButton.disabled || gridButton.disabled, false);
+    assert.equal(dom.window.document.activeElement, listButton);
     assert.equal(instances[0].destroyed, true);
     assert.equal(resources.classList.contains('resource-list'), true);
     assert.equal(dom.window.history.length, initialHistoryLength);
@@ -263,6 +322,29 @@ test('citation copy falls back to plain text without ClipboardItem', async () =>
         dom.window.document.querySelector('[data-citation-copy]').click();
         await flush();
         assert.deepEqual(texts, ['Madore, Frédérick. Islam in Togo. Berlin: ZMO, 2020.']);
+    } finally {
+        dom.window.close();
+    }
+});
+
+test('a refused copy selects the citation and says how to finish', async () => {
+    const dom = citationDom();
+    dom.window.IWACUtils = { onReady: (callback) => callback() };
+    Object.defineProperty(dom.window.navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async () => { throw new Error('denied'); } },
+    });
+
+    try {
+        runAsset(dom, 'citation.js');
+        dom.window.document.querySelector('[data-citation-copy]').click();
+        await flush();
+        const selected = dom.window.getSelection().toString().replace(/\s+/g, ' ').trim();
+        assert.equal(selected, 'Madore, Frédérick. Islam in Togo. Berlin: ZMO, 2020.');
+        const status = dom.window.document.querySelector('.citation__status').textContent;
+        assert.match(status, /Text selected/);
+        assert.match(status, /⌘C/);
+        assert.equal(dom.window.document.querySelector('.citation').classList.contains('is-copied'), false);
     } finally {
         dom.window.close();
     }

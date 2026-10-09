@@ -33,6 +33,15 @@ one-off overrides.
   "osdConfig": {
     "maxZoomPixelRatio": 10
   },
+  "window": {
+    "allowClose": false
+  },
+  "workspace": {
+    "allowNewWindows": false
+  },
+  "workspaceControlPanel": {
+    "enabled": false
+  },
   "selectedTheme": "light",
   "themes": {
     "light": {
@@ -63,6 +72,49 @@ one-off overrides.
 
 `selectedTheme` is just the first-paint default; the theme JS overrides it with
 the visitor's actual light/dark choice on load (see below).
+
+## Locking the viewer to the record
+
+An item page shows one record's images in one window. Out of the box Mirador is
+a research *workspace* — it lets the reader close that window and open others —
+and its chrome says so: a filled, shadowed orange "+" at the top of the rail,
+and a close × on the only window, which leaves an empty workspace until reload.
+Three keys lock it down. Each is checked against Mirador **4.2.6**'s
+`src/config/settings.js` (and present in the bundle the module ships):
+
+| Key | Default | What `false` does |
+| --- | --- | --- |
+| `window.allowClose` | `true` | Removes the close × from the window top bar (and the minimal window), so the only window cannot be closed. |
+| `workspace.allowNewWindows` | `true` | Stops a IIIF resource dragged onto the viewer from opening a new window. **It does not hide the "+" button** — in 4.2.6 the key is read only by the workspace's drop handler. |
+| `workspaceControlPanel.enabled` | `true` | Removes the whole control rail: the "+" add-resources button, the window list, the workspace menu and options, and the rail's full-screen button. |
+
+**The trade-off is the last key.** It is the only setting that removes the "+",
+but it takes the rail's other controls with it:
+
+- *Full screen* — not needed: the window's own **Maximize** control (kept;
+  `window.allowMaximize` stays at its default `true`) is lifted to a full-page
+  overlay by `mirador-theme-sync.js`, which covers what the rail's full-screen
+  button did — and works on iOS, where element full screen does not exist.
+- *Workspace menu* — show/hide zoom controls (they show by default,
+  `workspace.showZoomControls: true`, so only the toggle goes), mosaic/elastic
+  arrangement and the window list (moot with one window), language (the
+  module already passes the site's), and Mirador's own theme switch (which
+  would fight the theme's light/dark sync anyway).
+- *Workspace options* — export/import of a workspace: a research-workspace
+  feature with no use on a record page.
+
+The `dl` and `share` plugins live in the window's own menu, not the rail, and
+are unaffected.
+
+So the recommended config sets all three, as pasted above. If a future page
+ever needs readers to compare records side by side, drop
+`workspaceControlPanel` (the rail returns, "+" included) and
+`workspace.allowNewWindows` from that site's or that item's config; keep
+`window.allowClose: false` either way.
+
+These are module settings, not theme code: paste the block into the global
+default (_Admin → Modules → Mirador_) or each site's JSON, then reload an item
+page to confirm the rail and the × are gone and Maximize still lifts the viewer.
 
 ## How the toggle works
 

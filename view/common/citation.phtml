@@ -73,7 +73,7 @@ $multiStyle = count($styles) > 1;
         <button type="button" class="citation__copy" data-citation-copy
             data-copy-label="<?php echo $escapeAttr($translate('Copy')); ?>"
             data-copied-label="<?php echo $escapeAttr($translate('Copied')); ?>"
-            data-error-label="<?php echo $escapeAttr($translate('Press Ctrl+C to copy')); ?>">
+            data-error-label="<?php echo $escapeAttr($translate('Copy failed. Text selected: press Ctrl+C or ⌘C.')); ?>">
             <span class="citation__copy-icon" aria-hidden="true"></span>
             <span class="citation__copy-label"><?php echo $escape($translate('Copy')); ?></span>
         </button>

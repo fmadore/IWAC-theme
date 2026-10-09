@@ -12,7 +12,7 @@
  *      the manifest carry the correct per-site name / start_url / scope without
  *      an Omeka route (themes can't register one).
  *   2. Capture `beforeinstallprompt`, suppress the browser's own mini-infobar,
- *      and reveal the masthead install button instead. The native prompt only
+ *      and reveal the footer install button instead. The native prompt only
  *      ever fires from a user click on that button.
  *   3. On iOS Safari (which never fires beforeinstallprompt and has no
  *      programmatic install) the same button reveals a short, dismissible

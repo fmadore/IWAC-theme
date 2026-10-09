@@ -90,8 +90,10 @@ $escapeAttr = $this->plugin('escapeHtmlAttr');
                         <?php // FrenchSpacing on the rendered text only — data-title above
                               // stays raw so the client title filter still matches what a
                               // reader types with an ordinary space. ?>
+                        <?php // lang: the title is in the record's language
+                              // (helper/ResourceLanguage.php), not the page's. ?>
                         <a href="<?php echo $escapeAttr($resourceUrl); ?>"
-                           class="linked-resources-table__title-link">
+                           class="linked-resources-table__title-link"<?php echo $this->ResourceLanguage($resource, true); ?>>
                             <?php echo $escape($this->FrenchSpacing($resourceTitle)); ?>
                         </a>
                     </td>

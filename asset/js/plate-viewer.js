@@ -97,7 +97,6 @@
                 previous: data.platePrevious || 'Previous image',
                 next: data.plateNext || 'Next image',
                 zoomIn: data.plateZoomIn || 'Zoom in',
-                zoomOut: data.plateZoomOut || 'Fit to screen',
                 tap: data.plateTap || 'Tap to enlarge',
                 // %1 is the current image's number, %2 the total.
                 position: data.platePosition || 'Image %1 of %2'
@@ -483,10 +482,10 @@
             const available = canZoom();
             viewer.zoomBtn.hidden = !available && !zoomed;
             viewer.hint.hidden = !available || zoomed || !hasRoomBelowPlate();
-            viewer.zoomBtn.setAttribute(
-                'aria-label',
-                zoomed ? strings.zoomOut : strings.zoomIn
-            );
+            // A toggle button keeps one name; aria-pressed carries the state.
+            // Flipping the label as well announced "Fit to screen, pressed" —
+            // the name of the action next to the state of the other one.
+            viewer.zoomBtn.setAttribute('aria-label', strings.zoomIn);
             viewer.zoomBtn.setAttribute('aria-pressed', zoomed ? 'true' : 'false');
         }
 

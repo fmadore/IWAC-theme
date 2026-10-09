@@ -252,7 +252,7 @@
             padding: 0;
 
             &::after {
-                @include icon-mask("../img/chevron-down.svg");
+                @include icon-mask("../img/chevron-down.svg", ButtonText);
                 content: "";
                 width: var(--text-xs);
                 height: var(--text-xs);

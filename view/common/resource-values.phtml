@@ -131,6 +131,22 @@ $countWords = static function (string $text): int {
 // U+202F narrow no-break space — locale-neutral digit grouping, as in the
 // homepage stat strip.
 $figureSep = "\xE2\x80\xAF";
+
+// The record's own prose — its full text and its descriptions — is written in
+// the record's language, but the corpus stores it untagged, so on the English
+// site a French transcript sat under <html lang="en-US"> and was read with
+// English rules (WCAG 3.1.2). Untagged values of these terms take the language
+// of the record's dcterms:language authority (helper/ResourceLanguage.php; ''
+// when unknown, ambiguous, or the page's own). A value's own tag always wins.
+//
+// The attribute goes on the text, not on the <dd>: the row also carries site
+// chrome — the "Read the full text" toggle, the annotation button — which is in
+// the page's language, not the record's.
+$recordProseTerms = ['bibo:content', 'dcterms:description'];
+$recordLang = $this->ResourceLanguage(isset($resource) && is_object($resource) ? $resource : null);
+if ($recordLang === $siteLang) {
+    $recordLang = '';
+}
 ?>
 
 <dl>
@@ -192,6 +208,7 @@ foreach ($values as $term => $propertyData):
             $valueType = $value->type();
             $valueLang = $value->lang();
             $valueAnnotation = $value->valueAnnotation();
+            $valueResource = null;
             $class = ['value'];
             if ('resource' == $valueType || strpos($valueType, 'resource') !== false) {
                 // The target can be null when the anonymous user can't see it.
@@ -225,6 +242,12 @@ foreach ($values as $term => $propertyData):
                     }
                 }
             }
+            // The record's language on its own untagged prose (see the note
+            // at the top of this file). The elements below already carry
+            // dir="auto", so this adds only lang.
+            $proseLangAttr = ($recordLang !== '' && !$valueLang && 'literal' === $valueType && in_array($term, $recordProseTerms, true))
+                ? ' lang="' . $escapeAttr($recordLang) . '"'
+                : '';
             ?>
             <?php // Only emit lang when set — lang="" resets the language to
                   // *unknown*, overriding the document language on every
@@ -240,7 +263,7 @@ foreach ($values as $term => $propertyData):
                     <?php echo $this->partial('common/ai-toc', ['text' => (string) $value->value()]); ?>
                 <?php elseif ($transcriptLede !== null): ?>
                     <div class="transcript">
-                        <div class="transcript__lede value-content" dir="auto"><?php echo nl2br($escape($transcriptLede)); ?></div>
+                        <div class="transcript__lede value-content" dir="auto"<?php echo $proseLangAttr; ?>><?php echo nl2br($escape($transcriptLede)); ?></div>
                         <details class="transcript__rest">
                             <summary class="transcript__toggle">
                                 <span class="transcript__toggle-label transcript__toggle-label--more"><?php
@@ -253,11 +276,35 @@ foreach ($values as $term => $propertyData):
                                     echo $escape($translate('Collapse the full text'));
                                 ?></span>
                             </summary>
-                            <div class="transcript__body value-content" dir="auto"><?php echo nl2br($escape($transcriptRest)); ?></div>
+                            <div class="transcript__body value-content" dir="auto"<?php echo $proseLangAttr; ?>><?php echo nl2br($escape($transcriptRest)); ?></div>
                         </details>
                     </div>
                 <?php else: ?>
-                    <span class="value-content" dir="auto"><?php echo $filterLocale ? $value->asHtml($lang) : $value->asHtml(); ?></span>
+                    <?php
+                    $valueHtml = $filterLocale ? $value->asHtml($lang) : $value->asHtml();
+                    // A linked resource renders through core's linkPretty('square'):
+                    // a centre-cropped 200px square, so a wide logo lost both
+                    // ends (the "Bibliothèque du Congrès" source mark read
+                    // "ARY"). The stylesheet already sizes these marks by
+                    // height with an auto width, so swap the uncropped medium
+                    // derivative into the rendered HTML. Done on asHtml()'s
+                    // output rather than by calling linkPretty('medium')
+                    // ourselves, so whatever modules add on rep.value.html
+                    // (and the value's own markup) is kept. The URL appears
+                    // attribute-escaped in the <img>; both spellings are tried.
+                    if ($valueResource && method_exists($valueResource, 'thumbnailDisplayUrl')) {
+                        $squareThumb = (string) $valueResource->thumbnailDisplayUrl('square');
+                        $mediumThumb = (string) $valueResource->thumbnailDisplayUrl('medium');
+                        if ($squareThumb !== '' && $mediumThumb !== '' && $squareThumb !== $mediumThumb) {
+                            $valueHtml = str_replace(
+                                [$escapeAttr($squareThumb), $squareThumb],
+                                [$escapeAttr($mediumThumb), $mediumThumb],
+                                $valueHtml
+                            );
+                        }
+                    }
+                    ?>
+                    <span class="value-content" dir="auto"<?php echo $proseLangAttr; ?>><?php echo $valueHtml; ?></span>
                 <?php endif; ?>
                 <?php if(!$value->isPublic()) : ?>
                     <span class="o-icon-private" role="img" title="<?php echo $this->escapeHtml($translate('Private')); ?>" aria-label="<?php echo $this->escapeHtml($translate('Private')); ?>"></span>
