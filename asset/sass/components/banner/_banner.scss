@@ -531,8 +531,6 @@
     // were four more rows of hero — ~1,000px of figures before the first
     // content on a 390px phone.
     &__substats {
-        --substat-cols: 3;
-
         display: flex;
         flex-wrap: wrap;
         gap: var(--space-1) var(--space-4);
@@ -546,29 +544,30 @@
 
         @media (min-width: $sm) {
             display: grid;
-            grid-template-columns: repeat(var(--substat-cols), minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: var(--space-5) var(--space-4);
             padding-block-start: 0;
             border-block-start: none;
         }
 
         @media (min-width: $md) {
-            --substat-cols: 6;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
 
             // Tier 1's gaps, so four-column rows share its rules' edges.
             gap: var(--space-5) var(--space-6);
             margin-block-start: var(--space-8);
         }
 
-        &--n1 { --substat-cols: 1; }
-        &--n2 { --substat-cols: 2; }
-        &--n4 { --substat-cols: 4; }
-        &--n7,
-        &--n8 { --substat-cols: 4; }
+        // Plain declarations rather than a custom property: a component
+        // parameter would join the published token vocabulary (tokens.json
+        // `names`). Below $sm the list is flex, so these only bite from $sm.
+        @each $count, $columns in (1: 1, 2: 2, 4: 4, 7: 4, 8: 4) {
+            &--n#{$count} { grid-template-columns: repeat($columns, minmax(0, 1fr)); }
+        }
 
         @media (min-width: $md) {
-            &--n3 { --substat-cols: 3; }
-            &--n5 { --substat-cols: 5; }
+            &--n3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            &--n5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
         }
 
         .banner__content--center & { text-align: center; }
