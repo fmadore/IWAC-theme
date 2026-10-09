@@ -32,9 +32,9 @@ msgstr "Contenu généré par IA — à vérifier avec la source originale."
 msgid "Advanced item search"
 msgstr ""
 
-#: view/common/footer.phtml:78
+#: view/common/footer.phtml:38
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
-msgstr ""
+msgstr "Pôle d’excellence Africa Multiple – Université de Bayreuth"
 
 #: view/common/linked-resources.phtml:139
 msgid "All"
@@ -70,9 +70,9 @@ msgstr "Langues disponibles"
 msgid "Back to top"
 msgstr "Haut de page"
 
-#: view/common/footer.phtml:71
+#: view/common/footer.phtml:36
 msgid "Berlin Senate Department"
-msgstr ""
+msgstr "Administration du Sénat de Berlin"
 
 #: view/common/breadcrumbs.phtml:66
 msgid "Breadcrumb"
@@ -210,7 +210,7 @@ msgstr "Accueil"
 msgid "How to cite this item"
 msgstr "Comment citer ce document"
 
-#: view/common/footer.phtml:167
+#: view/common/footer.phtml:231
 msgid "How to install this app"
 msgstr "Comment installer cette application"
 
@@ -226,7 +226,7 @@ msgstr "Visionneuse d’images"
 msgid "Index"
 msgstr "Index"
 
-#: view/common/footer.phtml:170
+#: view/common/footer.phtml:234
 msgid "Install app"
 msgstr "Installer l’application"
 
@@ -266,9 +266,9 @@ msgstr "Langues"
 msgid "Layout"
 msgstr "Affichage"
 
-#: view/common/footer.phtml:64
+#: view/common/footer.phtml:34
 msgid "Leibniz-Zentrum Moderner Orient"
-msgstr ""
+msgstr "Leibniz-Zentrum Moderner Orient"
 
 #: view/common/header.phtml:50
 msgid "Light theme"
@@ -366,7 +366,7 @@ msgstr "Pagination"
 msgid "Part of %s"
 msgstr "Fait partie de %s"
 
-#: view/common/footer.phtml:179
+#: view/common/footer.phtml:243
 msgid "Powered by Omeka S"
 msgstr ""
 
@@ -466,7 +466,7 @@ msgstr "Thème système"
 msgid "System theme active. Activate to switch to light mode."
 msgstr "Thème système actif. Activer pour passer au mode clair."
 
-#: view/common/footer.phtml:168
+#: view/common/footer.phtml:232
 msgid "Tap the Share icon, then “Add to Home Screen”."
 msgstr "Touchez l’icône Partager, puis « Sur l’écran d’accueil »."
 
@@ -522,9 +522,9 @@ msgstr "Afficher en plein écran"
 msgid "View full screen: %s"
 msgstr "Afficher en plein écran : %s"
 
-#: view/common/footer.phtml:85
+#: view/common/footer.phtml:40
 msgid "Volkswagen Foundation"
-msgstr ""
+msgstr "Fondation Volkswagen"
 
 #: view/omeka/site/item/search.phtml:29
 msgid "You are being redirected to the collection search."

@@ -777,6 +777,61 @@ namespace IwacThemeTest {
         same('', trim($fake->render('common/resource-page-block-layout/web-archive.phtml', ['resource' => $none])));
     });
 
+    test('the footer gathers childless menu entries into one column of links (T-23)', function () {
+        $menuHtml = '<ul class="navigation"><li><a href="/p/parcourir">Parcourir</a><ul><li><a href="/p/benin">Bénin</a></li></ul></li>'
+            . '<li><a href="/p/references">Références</a></li><li class="active"><a href="/p/index">Index</a></li>'
+            . '<li><a href="/p/expositions">Expositions</a><ul><li><a href="/p/hadj">Hadj</a></li></ul></li>'
+            . '<li><a href="/p/a-propos">À propos</a></li></ul>';
+        $site = new class($menuHtml) {
+            public function __construct(private string $html)
+            {
+            }
+
+            public function publicNav()
+            {
+                $html = $this->html;
+                return new class($html) {
+                    public function __construct(private string $html)
+                    {
+                    }
+
+                    public function menu()
+                    {
+                        return $this;
+                    }
+
+                    public function renderMenu($container, array $options): string
+                    {
+                        return $this->html;
+                    }
+                };
+            }
+        };
+        $html = (new FakeView(['footer_menu' => '1']))->render('common/footer.phtml', ['site' => $site]);
+        preg_match('/<div class="main-footer__col2">(.*?)<\/div>/s', $html, $col);
+        $menu = $col[1] ?? '';
+        // One links column, standing where Références stood, holding the three childless entries.
+        check(str_contains($menu, '<li class="main-footer__menu-links"><ul><li><a href="/p/references">Références</a></li><li class="active"><a href="/p/index">Index</a></li><li><a href="/p/a-propos">À propos</a></li></ul></li>'), 'childless entries not grouped: ' . $menu);
+        check(strpos($menu, 'Parcourir') < strpos($menu, 'main-footer__menu-links') && strpos($menu, 'main-footer__menu-links') < strpos($menu, 'Expositions'), 'column out of place');
+        same(1, substr_count($menu, 'Bénin'), 'nested entries kept as they were');
+    });
+
+    test('partner logos link in the page language where the partner has one, and say so where not (T-23)', function () {
+        $menuCalls = [];
+        $render = static function (string $locale) use (&$menuCalls): string {
+            $fake = new FakeView(['footer_site_info' => '<p>About</p>']);
+            $fake->helpers['lang'] = static fn (): string => $locale;
+            return $fake->render('common/footer.phtml', ['site' => fakeSite($menuCalls)]);
+        };
+        $french = $render('fr');
+        // No partner publishes French: English pages, marked hreflang="en"; the Senate is German only.
+        check(str_contains($french, 'href="https://www.zmo.de/en" hreflang="en"'), 'ZMO on the French site');
+        check(str_contains($french, 'href="https://www.berlin.de/sen/wgp/" hreflang="de"'), 'Senate is German');
+        $english = $render('en_US');
+        check(str_contains($english, 'href="https://www.zmo.de/en" target="_blank"'), 'no hreflang where it matches the page');
+        same(4, substr_count($english, 'class="main-footer__logo"'));
+    });
+
     test('social links are named with each network\'s own spelling', function () {
         $menuCalls = [];
         $fake = new FakeView([

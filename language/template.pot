@@ -34,7 +34,7 @@ msgstr ""
 msgid "Advanced item search"
 msgstr ""
 
-#: view/common/footer.phtml:78
+#: view/common/footer.phtml:38
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
 msgstr ""
 
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Back to top"
 msgstr ""
 
-#: view/common/footer.phtml:71
+#: view/common/footer.phtml:36
 msgid "Berlin Senate Department"
 msgstr ""
 
@@ -212,7 +212,7 @@ msgstr ""
 msgid "How to cite this item"
 msgstr ""
 
-#: view/common/footer.phtml:167
+#: view/common/footer.phtml:231
 msgid "How to install this app"
 msgstr ""
 
@@ -228,7 +228,7 @@ msgstr ""
 msgid "Index"
 msgstr ""
 
-#: view/common/footer.phtml:170
+#: view/common/footer.phtml:234
 msgid "Install app"
 msgstr ""
 
@@ -268,7 +268,7 @@ msgstr ""
 msgid "Layout"
 msgstr ""
 
-#: view/common/footer.phtml:64
+#: view/common/footer.phtml:34
 msgid "Leibniz-Zentrum Moderner Orient"
 msgstr ""
 
@@ -368,7 +368,7 @@ msgstr ""
 msgid "Part of %s"
 msgstr ""
 
-#: view/common/footer.phtml:179
+#: view/common/footer.phtml:243
 msgid "Powered by Omeka S"
 msgstr ""
 
@@ -468,7 +468,7 @@ msgstr ""
 msgid "System theme active. Activate to switch to light mode."
 msgstr ""
 
-#: view/common/footer.phtml:168
+#: view/common/footer.phtml:232
 msgid "Tap the Share icon, then “Add to Home Screen”."
 msgstr ""
 
@@ -524,7 +524,7 @@ msgstr ""
 msgid "View full screen: %s"
 msgstr ""
 
-#: view/common/footer.phtml:85
+#: view/common/footer.phtml:40
 msgid "Volkswagen Foundation"
 msgstr ""
 
