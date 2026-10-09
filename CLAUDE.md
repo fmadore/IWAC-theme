@@ -25,9 +25,11 @@ npm run check:tokens   # fast gate: fails if any var(--…) in asset/sass doesn'
 npm run build          # check:tokens → build:tokens → build:i18n → build:js → compile CSS
 npm run start          # compile once, then watch .scss and asset/js
 npm run bump -- patch  # write every version declaration (patch|minor|major|X.Y.Z)
-npm test               # JS behaviour (node:test + jsdom)
+npm test               # JS behaviour (node:test + jsdom), on pages rendered from the templates
 npm run test:minified  # the same suite against asset/js/dist/*.min.js
 npm run test:php       # view helpers + template regressions (plain PHP, no Composer)
+npm run build:fixtures # re-render test/fixtures/rendered/ after a template change (needs php)
+npm run check:fixtures # fail if a committed fixture differs from a fresh render
 npm run lint           # ESLint + Stylelint (correctness rules and the gotchas below)
 npm run check:audit    # npm audit at high+, minus the written exceptions (see below)
 phpstan analyse        # helpers at level 6 (CI installs phpstan via setup-php)
@@ -194,6 +196,26 @@ global the scripts share) survive; `npm run test:minified` proves it by running 
 whole behaviour suite against the twins. Vendored `*.min.js` (MiniMasonry) are not
 inputs and stay where they are. `citation.js` is enqueued by IWAC-SEO, not the theme,
 so `layout.phtml` swaps its src for the twin in the same pass that defers it.
+
+### The JS tests run on rendered templates — re-render after a template edit
+
+The DOM tests in `test/*.test.js` load whole pages from `test/fixtures/rendered/`
+(`fixtureDom('item.en')`, [test-support/fixtures.js](test-support/fixtures.js)), and
+those pages are the real templates — `layout.phtml` around item, item-set, browse and
+About-page content — rendered by
+[test/php/render-fixtures.php](test/php/render-fixtures.php) through FakeView, with
+[test/php/fake-omeka.php](test/php/fake-omeka.php) standing in for core and the modules.
+Through 2.24 each test typed its own HTML, so a renamed `data-*` hook, class or id in
+a `.phtml` passed both suites and broke the live page.
+
+So **after any edit under `view/`, run `npm run build:fixtures` and commit the
+diff** — it is the review copy of what the markup change did. A stale set fails
+`npm run check:fixtures` (CI's PHP job, both PHP versions) and, wherever `php` is on
+PATH, `npm test` itself. When a template needs data or a helper the fake does not
+supply, the renderer throws rather than rendering a silent blank: extend
+`fake-omeka.php` (keep it imitating what core or the module really prints) — never
+hand-edit a fixture. Module-owned markup the theme does not render (the Mirador block)
+is a copy in the renderer, and says so.
 
 ### Sass module system
 

@@ -122,7 +122,8 @@ Run these commands within the theme's root directory.
 * **npm run build:tokens**: Regenerates this theme's `tokens.json` and the docs tables from `_colors.scss`.
 * **npm run sync:tokens**: Explicitly regenerates tokens and copies them into checked-out sibling IwacSearch/IwacVisualizations repositories.
 * **npm run build:i18n**: Re-extracts `language/template.pot` from the templates, merges `fr.po`, and recompiles `fr.mo`.
-* **npm test** / **npm run check:js**: Runs the DOM interaction regressions and JavaScript syntax checks used by CI.
+* **npm test** / **npm run check:js**: Runs the DOM interaction regressions and JavaScript syntax checks used by CI. The DOM tests run on pages rendered from the theme's own templates (`test/fixtures/rendered/`).
+* **npm run build:fixtures** / **npm run check:fixtures**: Re-render those pages after a template change (needs a `php` binary), or fail if the committed ones are stale.
 * **npm run test:live**: Runs the opt-in Playwright smoke suite against `https://islam.zmo.de/s/westafrica` (override with `IWAC_LIVE_BASE_URL`). The scheduled GitHub workflow runs this weekly; it is intentionally separate from pull-request checks because it tests the deployed site.
 * **npm run build:images** / **npm run build:icons**: Regenerate the responsive banner variants and the PWA icon set.
 
