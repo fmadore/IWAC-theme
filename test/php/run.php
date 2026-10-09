@@ -851,6 +851,8 @@ namespace IwacThemeTest {
         $fake->helpers['headTitle'] = static fn () => $sink;
         $html = $fake->render('error/404.phtml', ['site' => $site]);
         check(str_contains($html, 'href="/s/westafrica/page/parcourir" class="error-page__button error-page__button--secondary"'), 'browse button not on the browse page');
+        // T-19: the 1.22:1 watermark numeral is decoration.
+        check(str_contains($html, '<span class="error-page__code" aria-hidden="true">404</span>'), '404 numeral exposed to AT');
 
         // A fresh view: SitePageBySlug memoises pages per site id, and both fakes are site 1.
         $other = new FakeView();

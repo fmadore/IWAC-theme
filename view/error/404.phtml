@@ -21,7 +21,10 @@ if (isset($site)) {
 
 <div class="error-page">
     <div class="error-page__content">
-        <span class="error-page__code">404</span>
+        <?php // Decoration (a 15%-opacity watermark, 1.22:1): hidden from assistive
+              // tech, which otherwise read it as low-contrast content. The h1 says
+              // what it means. ?>
+        <span class="error-page__code" aria-hidden="true">404</span>
         <h1 class="error-page__title"><?php echo $escHtml($translate('Page not found')); ?></h1>
         <p class="error-page__message">
             <?php echo $escHtml($translate('The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.')); ?>
