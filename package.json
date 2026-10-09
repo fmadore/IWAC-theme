@@ -20,10 +20,12 @@
     "check:audit": "node scripts/check-audit.js",
     "check:i18n": "node scripts/build-i18n.js --check",
     "check:tokens": "node scripts/check-token-usage.js",
+    "check:fixtures": "php test/php/render-fixtures.php --check",
     "build:tokens": "node scripts/build-tokens.js",
     "sync:tokens": "node scripts/build-tokens.js --sync-siblings",
     "build:i18n": "node scripts/build-i18n.js",
     "build:js": "node scripts/build-js.js",
+    "build:fixtures": "php test/php/render-fixtures.php",
     "build:images": "node scripts/gen-banner-images.js",
     "build:icons": "node scripts/gen-pwa-icons.js"
   },

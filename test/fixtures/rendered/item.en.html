@@ -1,0 +1,522 @@
+
+<!DOCTYPE html><html lang="en-US">	<head>
+				<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+																<script>window.__iwacOmekaEarly=window.Omeka;</script>
+		<script type="module">var e=window.__iwacOmekaEarly,o=window.Omeka;if(e&&o&&e!==o){for(var k in e){if(!(k in o)){o[k]=e[k];}}}</script>
+
+		<style type="text/css" media="screen">
+			:root {
+				/* Brand seeds; SCSS derives every primary/secondary variant via color-mix(in oklab, ...) */
+				--primary-base: #e64a19;
+				--secondary-base: #394f68;
+			}
+		</style>
+		
+		
+						<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fdfcfb">
+		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#110c08">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<meta name="apple-mobile-web-app-title" content="IWAC">
+				<link rel="icon" type="image/svg+xml" sizes="any" href="/themes/IWAC-theme/asset/img/pwa/favicon.svg">
+		<link rel="icon" type="image/png" sizes="32x32" href="/themes/IWAC-theme/asset/img/pwa/favicon-32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/themes/IWAC-theme/asset/img/pwa/favicon-16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/themes/IWAC-theme/asset/img/pwa/apple-touch-icon.png">
+		<script type="application/json" id="iwac-pwa-manifest">{"id":"/s/westafrica/","name":"Islam West Africa Collection","short_name":"IWAC","description":"The Islam West Africa Collection (IWAC) is an open-access digital database of archival documents, newspaper articles, Islamic publications and photographs on Islam and Muslims in West Africa.","start_url":"/s/westafrica/","scope":"/s/westafrica/","display":"standalone","display_override":["standalone","minimal-ui"],"orientation":"any","lang":"en-US","dir":"ltr","theme_color":"#fdfcfb","background_color":"#f7f5f3","categories":["education","books","news"],"prefer_related_applications":false,"icons":[{"src":"/themes/IWAC-theme/asset/img/pwa/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-maskable-192.png","sizes":"192x192","type":"image/png","purpose":"maskable"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-monochrome-512.png","sizes":"512x512","type":"image/png","purpose":"monochrome"}],"screenshots":[{"src":"/themes/IWAC-theme/asset/img/pwa/screenshot-wide.webp","sizes":"1280x720","type":"image/webp","form_factor":"wide","label":"Newspaper covers and archival documents from the collection"},{"src":"/themes/IWAC-theme/asset/img/pwa/screenshot-narrow.webp","sizes":"540x960","type":"image/webp","form_factor":"narrow","label":"Newspaper covers and archival documents from the collection"}],"shortcuts":[{"name":"Browse items","url":"/s/westafrica/page/browse","icons":[{"src":"/themes/IWAC-theme/asset/img/pwa/icon-192.png","sizes":"192x192","type":"image/png"}]},{"name":"Search","url":"/s/westafrica/search/everything","icons":[{"src":"/themes/IWAC-theme/asset/img/pwa/icon-192.png","sizes":"192x192","type":"image/png"}]}]}</script>
+			</head>
+
+	<body class="item resource show">		<script>
+		// Apply theme synchronously before first paint to prevent FOUC.
+		// Mirrors getMode()/resolveTheme() in js/theme-toggle.js.
+		(function () {
+			try {
+				var stored = localStorage.getItem('iwac-theme-preference');
+				var theme = (stored === 'light' || stored === 'dark')
+					? stored
+					: (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+				document.body.setAttribute('data-theme', theme);
+				document.body.setAttribute('data-theme-mode', (stored === 'light' || stored === 'dark') ? stored : 'system');
+			} catch (e) {}
+		})();
+		</script>
+		<a id="skipnav" href="#content">Skip to main content</a>
+
+		
+<header class="main-header">
+
+	
+		<div class="main-header__main-bar container">
+		<div class="main-header__site-title">
+						<a href="/s/westafrica"><span class="main-header__site-title-full">Islam West Africa Collection</span><span class="main-header__site-title-acronym" aria-hidden="true">IWAC</span></a>
+		</div>
+		<div class="main-header__tools">
+			<div class="main-header__search-form">
+				<form action="/s/westafrica/search/everything" method="get" data-iwac-header-search id="search-form" aria-label="Search" role="search">
+        <input type="text" id="fulltext-search" name="q" value="" placeholder="Search" aria-label="Search">
+    <button id="search-submit" type="submit" aria-label="Submit" title="Submit"></button>
+</form>
+			</div>
+			<div class="main-header__utilities">
+													
+<div class="language-switcher language-switcher--dropdown" data-language-switcher>
+    <button class="language-switcher__toggle" type="button" aria-expanded="false"
+        title="Change language">
+        <span class="language-switcher__icon" aria-hidden="true"></span>
+        <span class="sr-only">Language</span>
+        <span class="language-switcher__current-code">EN</span>
+    </button>
+    <ul class="language-switcher__list"
+        aria-label="Available languages">
+                    <li class="language-switcher__item language-switcher__item--active">
+                                    <span class="language-switcher__link language-switcher__link--current" aria-current="true">
+                        <span class="language-switcher__code">EN</span>
+                        <span class="language-switcher__label">English</span>
+                        <span class="language-switcher__check" aria-hidden="true">✓</span>
+                    </span>
+                            </li>
+                    <li class="language-switcher__item ">
+                                    <a href="/s/afrique_ouest/item/8558" class="language-switcher__link"
+                        hreflang="fr"
+                        lang="fr">
+                        <span class="language-switcher__code">FR</span>
+                        <span class="language-switcher__label">Français</span>
+                    </a>
+                            </li>
+            </ul>
+</div>												<button class="theme-toggle" data-theme-toggle type="button"
+					data-label-system="System theme active. Activate to switch to light mode."
+					data-label-light="Light theme active. Activate to switch to dark mode."
+					data-label-dark="Dark theme active. Activate to switch to system theme."
+					data-state-system="System theme"
+					data-state-light="Light theme"
+					data-state-dark="Dark theme"
+					aria-label="System theme active. Activate to switch to light mode.">
+										<span class="theme-toggle__icon theme-toggle__icon--auto" aria-hidden="true"></span>
+					<span class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true"></span>
+					<span class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true"></span>
+				</button>
+								<span class="sr-only" data-theme-status role="status" aria-live="polite"></span>
+
+							</div>
+			<button type="button" class="main-navigation__toggle" aria-expanded="false" aria-controls="menu-drawer">
+				<span class="sr-only">Open menu</span>
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+			</button>
+		</div>
+	</div>
+
+		<nav class="main-navigation" aria-label="Main navigation">
+		<div class="main-navigation__container container">
+			<ul class="navigation">
+    <li>
+        <a href="/s/westafrica/page/browse">Browse</a>
+        <ul>
+            <li>
+                <a href="/s/westafrica/page/benin">Benin</a>
+            </li>
+            <li>
+                <a href="/s/westafrica/page/burkina-faso">Burkina Faso</a>
+            </li>
+            <li>
+                <a href="/s/westafrica/page/cote-d-ivoire">Côte d&#039;Ivoire</a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a href="/s/westafrica/page/references">References</a>
+    </li>
+    <li>
+        <a href="/s/westafrica/page/index">Index</a>
+    </li>
+    <li>
+        <a href="/s/westafrica/page/exhibits">Exhibits</a>
+        <ul>
+            <li>
+                <a href="/s/westafrica/page/hajj-bf">Hajj in Burkina Faso</a>
+            </li>
+            <li>
+                <a href="/s/westafrica/page/secularism">Secularism</a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a href="/s/westafrica/page/about">About</a>
+        <ul>
+            <li>
+                <a href="/s/westafrica/page/why_newspapers">Why newspapers?</a>
+            </li>
+            <li>
+                <a href="/s/westafrica/page/team">Team</a>
+            </li>
+        </ul>
+    </li>
+</ul>		</div>
+	</nav>
+
+		<nav class="section-tabs" aria-label="Browse sections">
+		<div class="section-tabs__scroll container">
+			<ul class="navigation">
+    <li>
+        <a href="/s/westafrica/page/browse">Browse</a>
+    </li>
+    <li>
+        <a href="/s/westafrica/page/references">References</a>
+    </li>
+    <li>
+        <a href="/s/westafrica/page/index">Index</a>
+    </li>
+    <li>
+        <a href="/s/westafrica/page/exhibits">Exhibits</a>
+    </li>
+    <li>
+        <a href="/s/westafrica/page/about">About</a>
+    </li>
+</ul>		</div>
+	</nav>
+
+</header>
+
+<nav id="menu-drawer" class="menu-drawer" aria-hidden="true" inert style="display: none;"
+	aria-label="Site menu"
+	data-close-text="Close"
+	data-open-menu-text="Open menu"
+	data-show-submenu-text="show submenu for “%s”"
+>
+	<div class="wrap">
+
+		<div class="navigation-controls">
+			<button type="button"
+				id="menu-backer"
+				class="menu-backer is-empty"
+				aria-hidden="true"
+				tabindex="-1"
+				title="Close"
+			>
+                Close			</button>
+		</div><!-- .navigation-controls -->
+
+		<div id="menu-clones" class="menu-container">
+
+			
+		</div><!-- .menu-container -->
+
+	</div><!-- .wrap -->
+</nav><!-- menu-drawer -->
+
+		
+<div class="banner banner--compact" style="">
+
+            <div class="banner__media">
+                            <img src="/themes/IWAC-theme/asset/img/banner-strip-768.webp"
+             srcset="/themes/IWAC-theme/asset/img/banner-strip-768.webp 768w, /themes/IWAC-theme/asset/img/banner-strip-1400.webp 1400w"
+             sizes="50vw"
+             width="768"
+             height="123"
+             style="object-position: center center;"
+             role="presentation"
+             aria-hidden="true"
+             alt=""
+             fetchpriority="high">
+        </div>
+
+    </div>
+
+		<main id="content" class="container" tabindex="-1">
+			
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+        <span><a href="/s/westafrica">Home</a></span><span><a href="/s/westafrica/page/browse">Browse</a></span><span aria-current="page" lang="fr" dir="auto">La Tabaski à Ouagadougou</span>
+</nav>
+<p class="item-dateline">Article <span class="item-dateline__sep" aria-hidden="true">·</span> <a href="/s/westafrica/item-set/2200">Carrefour africain</a> <span class="item-dateline__sep" aria-hidden="true">·</span> April 9, 1966        <a class="item-dateline__cite" href="#how-to-cite" data-cite-jump hidden>Cite</a>
+    </p>
+<h1 lang="fr" dir="auto"><span class="title">La Tabaski à Ouagadougou</span></h1>
+
+
+<div class="regions-container regions-container--main">
+    
+            <div class="main-region">
+            <div class="metadata">
+                <div class="block resource-block block-mirador">
+    
+<div id="mirador-1" class="mirador viewer"></div>
+</div>
+
+
+<dl>
+        <div class="property" data-property-term="dcterms:type">
+        <dt>
+        Type                        </dt>
+                                            <dd class="value resource items">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/westafrica/item/67396"><span class="resource-name">Article de presse</span></a></span>
+                                                                            </dd>
+            </div>
+        <div class="property" data-property-term="dcterms:publisher">
+        <dt>
+        Publisher                        </dt>
+                                            <dd class="value resource item_sets">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/westafrica/item-set/2200"><img src="/files/medium/e5bc168e5a531b2f7de6b9b7779ecde47c5b7c83.jpg" alt=""><span class="resource-name">Carrefour africain</span></a></span>
+                                                                            </dd>
+            </div>
+        <div class="property" data-property-term="dcterms:date">
+        <dt>
+        Date                        </dt>
+                                            <dd class="value">
+                                                                                        <span class="value-content" dir="auto">April 9, 1966</span>
+                                                                            </dd>
+            </div>
+        <div class="property" data-property-term="dcterms:language">
+        <dt>
+        Language                        </dt>
+                                            <dd class="value resource items">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/westafrica/item/8355"><span class="resource-name">Français</span></a></span>
+                                                                            </dd>
+            </div>
+        <div class="property property--ai" data-property-term="bibo:shortDescription">
+        <dt>
+        Description                    <span class="property__ai-eu" role="img" aria-label="AI-generated content — verify against the original source." title="Generated by an AI model. Verify against the original source."></span>
+                        </dt>
+                                            <dd class="value" lang="en">
+                                                                                        <span class="value-content" dir="auto">Muslims in Haute-Volta celebrated Eid al-Adha, or Tabaski, on Saturday, April 2. In Ouagadougou, the head of state attended the main prayer at Place d’Armes, followed by the ritual sacrifice of a sheep by the capital’s chief imam.</span>
+                                                                                        <div class="annotation-btn">
+                        <button type="button" class="annotation-trigger" aria-expanded="false" aria-controls="value-annotation-106302" aria-label="Show annotation">
+                            <span class="o-icon-annotation" aria-hidden="true"></span>
+                        </button>
+                        <div id="value-annotation-106302" class="annotation-tooltip" role="region" aria-labelledby="value-annotation-106302-heading" aria-hidden="true">
+                            <div class="annotation-tooltip__wrapper">
+                                <p id="value-annotation-106302-heading" class="annotation-tooltip__heading">Value Annotations</p>
+                                
+<dl>
+        <div class="property" data-property-term="iwac:summaryModel">
+        <dt>
+        AI Model - Summary                        </dt>
+                                            <dd class="value resource items">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/westafrica/item/79610"><span class="resource-name">Gemini 2.5 Flash</span></a></span>
+                                                                            </dd>
+            </div>
+</dl>
+                            </div>
+                        </div>
+                    </div>
+                                            </dd>
+            </div>
+        <div class="property" data-property-term="dcterms:subject">
+        <dt>
+        Subject                        </dt>
+                                            <dd class="value resource items">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/westafrica/item/1301"><span class="resource-name">Tabaski</span></a></span>
+                                                                            </dd>
+            </div>
+        <div class="property" data-property-term="dcterms:spatial">
+        <dt>
+        Spatial Coverage                        </dt>
+                                            <dd class="value resource items">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/westafrica/item/1290"><span class="resource-name">Ouagadougou</span></a></span>
+                                                                            </dd>
+            </div>
+</dl>
+
+<section id="how-to-cite" class="citation" aria-labelledby="citation-heading-8558">
+    <h2 id="citation-heading-8558" class="citation__title">How to cite this item</h2>
+
+        <div class="citation__styles" role="tablist" aria-label="Citation style">
+                <button type="button" role="tab"
+            id="citation-tab-chicago-8558"
+            class="citation__style is-active"
+            data-citation-style="chicago"
+            aria-selected="true"
+            aria-controls="citation-panel-chicago-8558"
+            tabindex="0">Chicago</button>
+                <button type="button" role="tab"
+            id="citation-tab-apa-8558"
+            class="citation__style"
+            data-citation-style="apa"
+            aria-selected="false"
+            aria-controls="citation-panel-apa-8558"
+            tabindex="-1">APA</button>
+                <button type="button" role="tab"
+            id="citation-tab-mla-8558"
+            class="citation__style"
+            data-citation-style="mla"
+            aria-selected="false"
+            aria-controls="citation-panel-mla-8558"
+            tabindex="-1">MLA</button>
+            </div>
+    
+    <div class="citation__output">
+                <p role="tabpanel"            id="citation-panel-chicago-8558"
+            class="citation__text"
+            data-citation-panel="chicago"
+            aria-labelledby="citation-tab-chicago-8558"            >“La Tabaski à Ouagadougou.” <em>Carrefour africain</em>, April 9, 1966. <a href="https://islam.zmo.de/s/westafrica/item/8558">https://islam.zmo.de/s/westafrica/item/8558</a>.</p>
+                <p role="tabpanel"            id="citation-panel-apa-8558"
+            class="citation__text"
+            data-citation-panel="apa"
+            aria-labelledby="citation-tab-apa-8558"            hidden>La Tabaski à Ouagadougou. (1966, April 9). <em>Carrefour africain</em>. <a href="https://islam.zmo.de/s/westafrica/item/8558">https://islam.zmo.de/s/westafrica/item/8558</a></p>
+                <p role="tabpanel"            id="citation-panel-mla-8558"
+            class="citation__text"
+            data-citation-panel="mla"
+            aria-labelledby="citation-tab-mla-8558"            hidden>“La Tabaski à Ouagadougou.” <em>Carrefour africain</em>, 9 April 1966. <a href="https://islam.zmo.de/s/westafrica/item/8558">https://islam.zmo.de/s/westafrica/item/8558</a>.</p>
+            </div>
+
+    <div class="citation__actions">
+        <button type="button" class="citation__copy" data-citation-copy
+            data-copy-label="Copy"
+            data-copied-label="Copied"
+            data-error-label="Copy failed. Text selected: press Ctrl+C or ⌘C.">
+            <span class="citation__copy-icon" aria-hidden="true"></span>
+            <span class="citation__copy-label">Copy</span>
+        </button>
+
+                <div class="citation__downloads">
+            <span class="citation__downloads-label" id="citation-dl-8558">Download</span>
+            <ul class="citation__download-list" aria-labelledby="citation-dl-8558">
+                                <li>
+                    <a class="citation__download" href="https://islam.zmo.de/cite/8558/bibtex" download>BibTeX</a>
+                </li>
+                                <li>
+                    <a class="citation__download" href="https://islam.zmo.de/cite/8558/ris" download>RIS</a>
+                </li>
+                                <li>
+                    <a class="citation__download" href="https://islam.zmo.de/cite/8558/csljson" download>CSL JSON</a>
+                </li>
+                                                <li>
+                    <a class="citation__download" href="https://islam.zmo.de/unapi?id=https%3A%2F%2Fislam.zmo.de%2Fs%2Fwestafrica%2Fitem%2F8558&amp;format=rdf_zotero">Zotero RDF</a>
+                </li>
+                            </ul>
+        </div>
+            </div>
+
+    <p class="citation__status" role="status" aria-live="polite"></p>
+</section>
+            </div>
+        </div>
+    
+    </div>
+
+		</main>
+
+		
+<footer class="main-footer">
+
+				<div class="main-footer__top">
+			<div class="container main-footer__top-container ">
+
+								<div class="main-footer__col1">
+					<div class="main-footer__logos">
+												<a href="https://www.zmo.de/en" target="_blank" rel="noopener noreferrer">
+							<img src="/themes/IWAC-theme/asset/img/ZMO-logo.webp"
+								alt="Leibniz-Zentrum Moderner Orient"
+								class="main-footer__logo"
+								width="131" height="120"
+								loading="lazy" decoding="async" />
+						</a>
+												<a href="https://www.berlin.de/sen/wgp/" hreflang="de" target="_blank" rel="noopener noreferrer">
+							<img src="/themes/IWAC-theme/asset/img/senate-logo.webp"
+								alt="Berlin Senate Department"
+								class="main-footer__logo"
+								width="180" height="120"
+								loading="lazy" decoding="async" />
+						</a>
+												<a href="https://www.africamultiple.uni-bayreuth.de/en/index.html" target="_blank" rel="noopener noreferrer">
+							<img src="/themes/IWAC-theme/asset/img/uni-bayreuth-africa-multiple-logo.webp"
+								alt="Africa Multiple Cluster of Excellence - University of Bayreuth"
+								class="main-footer__logo"
+								width="231" height="120"
+								loading="lazy" decoding="async" />
+						</a>
+												<a href="https://www.volkswagenstiftung.de/en" target="_blank" rel="noopener noreferrer">
+							<img src="/themes/IWAC-theme/asset/img/VWST-logo.webp"
+								alt="Volkswagen Foundation"
+								class="main-footer__logo"
+								width="372" height="120"
+								loading="lazy" decoding="async" />
+						</a>
+											</div>
+
+					<div class="footer_site_info">
+													<p>An open-access digital database on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo.</p>											</div>
+				</div>
+
+								
+					<div class="main-footer__col2">
+						<ul class="navigation">
+    <li>
+        <a href="/s/westafrica/page/browse">Browse</a>
+        <ul>
+            <li>
+                <a href="/s/westafrica/page/benin">Benin</a>
+            </li>
+            <li>
+                <a href="/s/westafrica/page/burkina-faso">Burkina Faso</a>
+            </li>
+            <li>
+                <a href="/s/westafrica/page/cote-d-ivoire">Côte d'Ivoire</a>
+            </li>
+        </ul>
+    </li>
+    <li class="main-footer__menu-links"><ul><li>
+        <a href="/s/westafrica/page/references">References</a>
+    </li><li>
+        <a href="/s/westafrica/page/index">Index</a>
+    </li></ul></li>
+    
+    <li>
+        <a href="/s/westafrica/page/exhibits">Exhibits</a>
+        <ul>
+            <li>
+                <a href="/s/westafrica/page/hajj-bf">Hajj in Burkina Faso</a>
+            </li>
+            <li>
+                <a href="/s/westafrica/page/secularism">Secularism</a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a href="/s/westafrica/page/about">About</a>
+        <ul>
+            <li>
+                <a href="/s/westafrica/page/why_newspapers">Why newspapers?</a>
+            </li>
+            <li>
+                <a href="/s/westafrica/page/team">Team</a>
+            </li>
+        </ul>
+    </li>
+</ul>					</div>
+
+				
+								
+			</div>
+		</div>
+	
+		<div class="main-footer__bottom">
+		<div
+			class="container main-footer__bottom-container ">
+
+						
+						<div class="main-footer__install">
+								<button class="pwa-install" data-pwa-install type="button" hidden
+					data-label-ios="How to install this app"
+					data-hint-ios="Tap the Share icon, then “Add to Home Screen”.">
+					<span class="pwa-install__icon" aria-hidden="true"></span>
+					<span class="pwa-install__label">Install app</span>
+				</button>
+			</div>
+
+						<div class="main-footer__copyright">
+									Powered by Omeka S							</div>
+		</div>
+	</div>
+
+</footer>
+		<button type="button" id="back-to-top" class="back-to-top" aria-label="Back to top"></button>
+
+		<script src="/themes/IWAC-theme/asset/js/dist/utils.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/script.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/navigation.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/theme-toggle.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/pagination-scroll.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/mirador-theme-sync.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/pwa-install.min.js"></script>	</body>
+</html>

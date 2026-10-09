@@ -105,6 +105,14 @@ jobs:
       - name: Helper and template tests
         run: php test/php/run.php
 
+      # The pages the JS behaviour suite runs against, rendered from the
+      # templates by test/php/render-fixtures.php and committed. Fails when a
+      # template changed without `npm run build:fixtures` — the JS tests would
+      # otherwise keep passing against the old markup — and, on two PHP
+      # versions, when a render is not byte-for-byte the same on both.
+      - name: Rendered test fixtures are current
+        run: php test/php/render-fixtures.php --check
+
       # The view helpers, at level 6 against the stubbed Laminas base class
       # (phpstan.neon.dist). Installed by setup-php, so composer.json — which
       # ships in the release — stays free of dev dependencies.

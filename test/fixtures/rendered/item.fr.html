@@ -1,0 +1,522 @@
+
+<!DOCTYPE html><html lang="fr">	<head>
+				<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+																<script>window.__iwacOmekaEarly=window.Omeka;</script>
+		<script type="module">var e=window.__iwacOmekaEarly,o=window.Omeka;if(e&&o&&e!==o){for(var k in e){if(!(k in o)){o[k]=e[k];}}}</script>
+
+		<style type="text/css" media="screen">
+			:root {
+				/* Brand seeds; SCSS derives every primary/secondary variant via color-mix(in oklab, ...) */
+				--primary-base: #e64a19;
+				--secondary-base: #394f68;
+			}
+		</style>
+		
+		
+						<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fdfcfb">
+		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#110c08">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<meta name="apple-mobile-web-app-title" content="CIAO">
+				<link rel="icon" type="image/svg+xml" sizes="any" href="/themes/IWAC-theme/asset/img/pwa/favicon.svg">
+		<link rel="icon" type="image/png" sizes="32x32" href="/themes/IWAC-theme/asset/img/pwa/favicon-32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/themes/IWAC-theme/asset/img/pwa/favicon-16.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/themes/IWAC-theme/asset/img/pwa/apple-touch-icon.png">
+		<script type="application/json" id="iwac-pwa-manifest">{"id":"/s/afrique_ouest/","name":"Collection Islam Afrique de l’Ouest","short_name":"CIAO","description":"La Collection Islam Afrique de l’Ouest (CIAO) est une base de données numérique en libre accès de documents d’archives, d’articles de presse, de publications islamiques et de photographies sur l’islam et les musulmans en Afrique de l’Ouest.","start_url":"/s/afrique_ouest/","scope":"/s/afrique_ouest/","display":"standalone","display_override":["standalone","minimal-ui"],"orientation":"any","lang":"fr","dir":"ltr","theme_color":"#fdfcfb","background_color":"#f7f5f3","categories":["education","books","news"],"prefer_related_applications":false,"icons":[{"src":"/themes/IWAC-theme/asset/img/pwa/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-maskable-192.png","sizes":"192x192","type":"image/png","purpose":"maskable"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-monochrome-512.png","sizes":"512x512","type":"image/png","purpose":"monochrome"}],"screenshots":[{"src":"/themes/IWAC-theme/asset/img/pwa/screenshot-wide.webp","sizes":"1280x720","type":"image/webp","form_factor":"wide","label":"Unes de journaux et documents d’archives de la collection"},{"src":"/themes/IWAC-theme/asset/img/pwa/screenshot-narrow.webp","sizes":"540x960","type":"image/webp","form_factor":"narrow","label":"Unes de journaux et documents d’archives de la collection"}],"shortcuts":[{"name":"Parcourir les documents","url":"/s/afrique_ouest/page/parcourir","icons":[{"src":"/themes/IWAC-theme/asset/img/pwa/icon-192.png","sizes":"192x192","type":"image/png"}]},{"name":"Search","url":"/s/afrique_ouest/recherche/tout","icons":[{"src":"/themes/IWAC-theme/asset/img/pwa/icon-192.png","sizes":"192x192","type":"image/png"}]}]}</script>
+			</head>
+
+	<body class="item resource show">		<script>
+		// Apply theme synchronously before first paint to prevent FOUC.
+		// Mirrors getMode()/resolveTheme() in js/theme-toggle.js.
+		(function () {
+			try {
+				var stored = localStorage.getItem('iwac-theme-preference');
+				var theme = (stored === 'light' || stored === 'dark')
+					? stored
+					: (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+				document.body.setAttribute('data-theme', theme);
+				document.body.setAttribute('data-theme-mode', (stored === 'light' || stored === 'dark') ? stored : 'system');
+			} catch (e) {}
+		})();
+		</script>
+		<a id="skipnav" href="#content">Aller au contenu principal</a>
+
+		
+<header class="main-header">
+
+	
+		<div class="main-header__main-bar container">
+		<div class="main-header__site-title">
+						<a href="/s/afrique_ouest"><span class="main-header__site-title-full">Collection Islam Afrique de l’Ouest</span><span class="main-header__site-title-acronym" aria-hidden="true">CIAO</span></a>
+		</div>
+		<div class="main-header__tools">
+			<div class="main-header__search-form">
+				<form action="/s/afrique_ouest/recherche/tout" method="get" data-iwac-header-search id="search-form" aria-label="Search" role="search">
+        <input type="text" id="fulltext-search" name="q" value="" placeholder="Search" aria-label="Search">
+    <button id="search-submit" type="submit" aria-label="Submit" title="Submit"></button>
+</form>
+			</div>
+			<div class="main-header__utilities">
+													
+<div class="language-switcher language-switcher--dropdown" data-language-switcher>
+    <button class="language-switcher__toggle" type="button" aria-expanded="false"
+        title="Changer de langue">
+        <span class="language-switcher__icon" aria-hidden="true"></span>
+        <span class="sr-only">Langue</span>
+        <span class="language-switcher__current-code">FR</span>
+    </button>
+    <ul class="language-switcher__list"
+        aria-label="Langues disponibles">
+                    <li class="language-switcher__item ">
+                                    <a href="/s/westafrica/item/8558" class="language-switcher__link"
+                        hreflang="en-US"
+                        lang="en-US">
+                        <span class="language-switcher__code">EN</span>
+                        <span class="language-switcher__label">English</span>
+                    </a>
+                            </li>
+                    <li class="language-switcher__item language-switcher__item--active">
+                                    <span class="language-switcher__link language-switcher__link--current" aria-current="true">
+                        <span class="language-switcher__code">FR</span>
+                        <span class="language-switcher__label">Français</span>
+                        <span class="language-switcher__check" aria-hidden="true">✓</span>
+                    </span>
+                            </li>
+            </ul>
+</div>												<button class="theme-toggle" data-theme-toggle type="button"
+					data-label-system="Thème système actif. Activer pour passer au mode clair."
+					data-label-light="Thème clair actif. Activer pour passer au mode sombre."
+					data-label-dark="Thème sombre actif. Activer pour passer au thème système."
+					data-state-system="Thème système"
+					data-state-light="Thème clair"
+					data-state-dark="Thème sombre"
+					aria-label="Thème système actif. Activer pour passer au mode clair.">
+										<span class="theme-toggle__icon theme-toggle__icon--auto" aria-hidden="true"></span>
+					<span class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true"></span>
+					<span class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true"></span>
+				</button>
+								<span class="sr-only" data-theme-status role="status" aria-live="polite"></span>
+
+							</div>
+			<button type="button" class="main-navigation__toggle" aria-expanded="false" aria-controls="menu-drawer">
+				<span class="sr-only">Ouvrir le menu</span>
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+			</button>
+		</div>
+	</div>
+
+		<nav class="main-navigation" aria-label="Navigation principale">
+		<div class="main-navigation__container container">
+			<ul class="navigation">
+    <li>
+        <a href="/s/afrique_ouest/page/parcourir">Parcourir</a>
+        <ul>
+            <li>
+                <a href="/s/afrique_ouest/page/benin">Bénin</a>
+            </li>
+            <li>
+                <a href="/s/afrique_ouest/page/burkina-faso">Burkina Faso</a>
+            </li>
+            <li>
+                <a href="/s/afrique_ouest/page/cote-d-ivoire">Côte d&#039;Ivoire</a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a href="/s/afrique_ouest/page/references">Références</a>
+    </li>
+    <li>
+        <a href="/s/afrique_ouest/page/index">Index</a>
+    </li>
+    <li>
+        <a href="/s/afrique_ouest/page/expositions">Expositions</a>
+        <ul>
+            <li>
+                <a href="/s/afrique_ouest/page/hadj-bf">Hadj au Burkina Faso</a>
+            </li>
+            <li>
+                <a href="/s/afrique_ouest/page/laicite">Laïcité</a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a href="/s/afrique_ouest/page/a-propos">À propos</a>
+        <ul>
+            <li>
+                <a href="/s/afrique_ouest/page/pourquoi-les-journaux">Pourquoi les journaux?</a>
+            </li>
+            <li>
+                <a href="/s/afrique_ouest/page/equipe">Équipe</a>
+            </li>
+        </ul>
+    </li>
+</ul>		</div>
+	</nav>
+
+		<nav class="section-tabs" aria-label="Parcourir les sections">
+		<div class="section-tabs__scroll container">
+			<ul class="navigation">
+    <li>
+        <a href="/s/afrique_ouest/page/parcourir">Parcourir</a>
+    </li>
+    <li>
+        <a href="/s/afrique_ouest/page/references">Références</a>
+    </li>
+    <li>
+        <a href="/s/afrique_ouest/page/index">Index</a>
+    </li>
+    <li>
+        <a href="/s/afrique_ouest/page/expositions">Expositions</a>
+    </li>
+    <li>
+        <a href="/s/afrique_ouest/page/a-propos">À propos</a>
+    </li>
+</ul>		</div>
+	</nav>
+
+</header>
+
+<nav id="menu-drawer" class="menu-drawer" aria-hidden="true" inert style="display: none;"
+	aria-label="Menu du site"
+	data-close-text="Close"
+	data-open-menu-text="Ouvrir le menu"
+	data-show-submenu-text="afficher le sous-menu de « %s »"
+>
+	<div class="wrap">
+
+		<div class="navigation-controls">
+			<button type="button"
+				id="menu-backer"
+				class="menu-backer is-empty"
+				aria-hidden="true"
+				tabindex="-1"
+				title="Close"
+			>
+                Close			</button>
+		</div><!-- .navigation-controls -->
+
+		<div id="menu-clones" class="menu-container">
+
+			
+		</div><!-- .menu-container -->
+
+	</div><!-- .wrap -->
+</nav><!-- menu-drawer -->
+
+		
+<div class="banner banner--compact" style="">
+
+            <div class="banner__media">
+                            <img src="/themes/IWAC-theme/asset/img/banner-strip-768.webp"
+             srcset="/themes/IWAC-theme/asset/img/banner-strip-768.webp 768w, /themes/IWAC-theme/asset/img/banner-strip-1400.webp 1400w"
+             sizes="50vw"
+             width="768"
+             height="123"
+             style="object-position: center center;"
+             role="presentation"
+             aria-hidden="true"
+             alt=""
+             fetchpriority="high">
+        </div>
+
+    </div>
+
+		<main id="content" class="container" tabindex="-1">
+			
+<nav class="breadcrumbs" aria-label="Fil d’Ariane">
+        <span><a href="/s/afrique_ouest">Accueil</a></span><span><a href="/s/afrique_ouest/page/parcourir">Parcourir</a></span><span aria-current="page">La Tabaski à Ouagadougou</span>
+</nav>
+<p class="item-dateline">Article <span class="item-dateline__sep" aria-hidden="true">·</span> <a href="/s/afrique_ouest/item-set/2200">Carrefour africain</a> <span class="item-dateline__sep" aria-hidden="true">·</span> 9 avril 1966        <a class="item-dateline__cite" href="#how-to-cite" data-cite-jump hidden>Citer</a>
+    </p>
+<h1><span class="title">La Tabaski à Ouagadougou</span></h1>
+
+
+<div class="regions-container regions-container--main">
+    
+            <div class="main-region">
+            <div class="metadata">
+                <div class="block resource-block block-mirador">
+    
+<div id="mirador-1" class="mirador viewer"></div>
+</div>
+
+
+<dl>
+        <div class="property" data-property-term="dcterms:type">
+        <dt>
+        Type                        </dt>
+                                            <dd class="value resource items">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/afrique_ouest/item/67396"><span class="resource-name">Article de presse</span></a></span>
+                                                                            </dd>
+            </div>
+        <div class="property" data-property-term="dcterms:publisher">
+        <dt>
+        Publisher                        </dt>
+                                            <dd class="value resource item_sets">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/afrique_ouest/item-set/2200"><img src="/files/medium/e5bc168e5a531b2f7de6b9b7779ecde47c5b7c83.jpg" alt=""><span class="resource-name">Carrefour africain</span></a></span>
+                                                                            </dd>
+            </div>
+        <div class="property" data-property-term="dcterms:date">
+        <dt>
+        Date                        </dt>
+                                            <dd class="value">
+                                                                                        <span class="value-content" dir="auto">9 avril 1966</span>
+                                                                            </dd>
+            </div>
+        <div class="property" data-property-term="dcterms:language">
+        <dt>
+        Langue                        </dt>
+                                            <dd class="value resource items">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/afrique_ouest/item/8355"><span class="resource-name">Français</span></a></span>
+                                                                            </dd>
+            </div>
+        <div class="property property--ai" data-property-term="bibo:shortDescription">
+        <dt>
+        Description                    <span class="property__ai-eu" role="img" aria-label="Contenu généré par IA — à vérifier avec la source originale." title="Généré par un modèle d’IA. Vérifiez avec la source originale."></span>
+                        </dt>
+                                            <dd class="value" lang="fr">
+                                                                                        <span class="value-content" dir="auto">Les musulmans de Haute-Volta ont célébré l’Aïd al-Adha, ou Tabaski, le samedi 2 avril. À Ouagadougou, le chef de l’État a assisté à la grande prière sur la place d’Armes, suivie du sacrifice rituel d’un mouton par le grand imam de la capitale.</span>
+                                                                                        <div class="annotation-btn">
+                        <button type="button" class="annotation-trigger" aria-expanded="false" aria-controls="value-annotation-106303" aria-label="Afficher l’annotation">
+                            <span class="o-icon-annotation" aria-hidden="true"></span>
+                        </button>
+                        <div id="value-annotation-106303" class="annotation-tooltip" role="region" aria-labelledby="value-annotation-106303-heading" aria-hidden="true">
+                            <div class="annotation-tooltip__wrapper">
+                                <p id="value-annotation-106303-heading" class="annotation-tooltip__heading">Annotations de valeur</p>
+                                
+<dl>
+        <div class="property" data-property-term="iwac:summaryModel">
+        <dt>
+        AI Model - Summary                        </dt>
+                                            <dd class="value resource items">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/afrique_ouest/item/79610"><span class="resource-name">Gemini 2.5 Flash</span></a></span>
+                                                                            </dd>
+            </div>
+</dl>
+                            </div>
+                        </div>
+                    </div>
+                                            </dd>
+            </div>
+        <div class="property" data-property-term="dcterms:subject">
+        <dt>
+        Subject                        </dt>
+                                            <dd class="value resource items">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/afrique_ouest/item/1301"><span class="resource-name">Tabaski</span></a></span>
+                                                                            </dd>
+            </div>
+        <div class="property" data-property-term="dcterms:spatial">
+        <dt>
+        Spatial Coverage                        </dt>
+                                            <dd class="value resource items">
+                                                                                        <span class="value-content" dir="auto"><a class="resource-link" href="/s/afrique_ouest/item/1290"><span class="resource-name">Ouagadougou</span></a></span>
+                                                                            </dd>
+            </div>
+</dl>
+
+<section id="how-to-cite" class="citation" aria-labelledby="citation-heading-8558">
+    <h2 id="citation-heading-8558" class="citation__title">Comment citer ce document</h2>
+
+        <div class="citation__styles" role="tablist" aria-label="Style de citation">
+                <button type="button" role="tab"
+            id="citation-tab-chicago-8558"
+            class="citation__style is-active"
+            data-citation-style="chicago"
+            aria-selected="true"
+            aria-controls="citation-panel-chicago-8558"
+            tabindex="0">Chicago</button>
+                <button type="button" role="tab"
+            id="citation-tab-apa-8558"
+            class="citation__style"
+            data-citation-style="apa"
+            aria-selected="false"
+            aria-controls="citation-panel-apa-8558"
+            tabindex="-1">APA</button>
+                <button type="button" role="tab"
+            id="citation-tab-mla-8558"
+            class="citation__style"
+            data-citation-style="mla"
+            aria-selected="false"
+            aria-controls="citation-panel-mla-8558"
+            tabindex="-1">MLA</button>
+            </div>
+    
+    <div class="citation__output">
+                <p role="tabpanel"            id="citation-panel-chicago-8558"
+            class="citation__text"
+            data-citation-panel="chicago"
+            aria-labelledby="citation-tab-chicago-8558"            >« La Tabaski à Ouagadougou ». <em>Carrefour africain</em>, 9 avril 1966. <a href="https://islam.zmo.de/s/afrique_ouest/item/8558">https://islam.zmo.de/s/afrique_ouest/item/8558</a>.</p>
+                <p role="tabpanel"            id="citation-panel-apa-8558"
+            class="citation__text"
+            data-citation-panel="apa"
+            aria-labelledby="citation-tab-apa-8558"            hidden>La Tabaski à Ouagadougou. (1966, 9 avril). <em>Carrefour africain</em>. <a href="https://islam.zmo.de/s/afrique_ouest/item/8558">https://islam.zmo.de/s/afrique_ouest/item/8558</a></p>
+                <p role="tabpanel"            id="citation-panel-mla-8558"
+            class="citation__text"
+            data-citation-panel="mla"
+            aria-labelledby="citation-tab-mla-8558"            hidden>« La Tabaski à Ouagadougou ». <em>Carrefour africain</em>, 9 avril 1966. <a href="https://islam.zmo.de/s/afrique_ouest/item/8558">https://islam.zmo.de/s/afrique_ouest/item/8558</a>.</p>
+            </div>
+
+    <div class="citation__actions">
+        <button type="button" class="citation__copy" data-citation-copy
+            data-copy-label="Copier"
+            data-copied-label="Copié"
+            data-error-label="Échec de la copie. Texte sélectionné : appuyez sur Ctrl+C ou ⌘C.">
+            <span class="citation__copy-icon" aria-hidden="true"></span>
+            <span class="citation__copy-label">Copier</span>
+        </button>
+
+                <div class="citation__downloads">
+            <span class="citation__downloads-label" id="citation-dl-8558">Télécharger</span>
+            <ul class="citation__download-list" aria-labelledby="citation-dl-8558">
+                                <li>
+                    <a class="citation__download" href="https://islam.zmo.de/cite/8558/bibtex" download>BibTeX</a>
+                </li>
+                                <li>
+                    <a class="citation__download" href="https://islam.zmo.de/cite/8558/ris" download>RIS</a>
+                </li>
+                                <li>
+                    <a class="citation__download" href="https://islam.zmo.de/cite/8558/csljson" download>CSL JSON</a>
+                </li>
+                                                <li>
+                    <a class="citation__download" href="https://islam.zmo.de/unapi?id=https%3A%2F%2Fislam.zmo.de%2Fs%2Fafrique_ouest%2Fitem%2F8558&amp;format=rdf_zotero">Zotero RDF</a>
+                </li>
+                            </ul>
+        </div>
+            </div>
+
+    <p class="citation__status" role="status" aria-live="polite"></p>
+</section>
+            </div>
+        </div>
+    
+    </div>
+
+		</main>
+
+		
+<footer class="main-footer">
+
+				<div class="main-footer__top">
+			<div class="container main-footer__top-container ">
+
+								<div class="main-footer__col1">
+					<div class="main-footer__logos">
+												<a href="https://www.zmo.de/en" hreflang="en" target="_blank" rel="noopener noreferrer">
+							<img src="/themes/IWAC-theme/asset/img/ZMO-logo.webp"
+								alt="Leibniz-Zentrum Moderner Orient"
+								class="main-footer__logo"
+								width="131" height="120"
+								loading="lazy" decoding="async" />
+						</a>
+												<a href="https://www.berlin.de/sen/wgp/" hreflang="de" target="_blank" rel="noopener noreferrer">
+							<img src="/themes/IWAC-theme/asset/img/senate-logo.webp"
+								alt="Administration du Sénat de Berlin"
+								class="main-footer__logo"
+								width="180" height="120"
+								loading="lazy" decoding="async" />
+						</a>
+												<a href="https://www.africamultiple.uni-bayreuth.de/en/index.html" hreflang="en" target="_blank" rel="noopener noreferrer">
+							<img src="/themes/IWAC-theme/asset/img/uni-bayreuth-africa-multiple-logo.webp"
+								alt="Pôle d’excellence Africa Multiple – Université de Bayreuth"
+								class="main-footer__logo"
+								width="231" height="120"
+								loading="lazy" decoding="async" />
+						</a>
+												<a href="https://www.volkswagenstiftung.de/en" hreflang="en" target="_blank" rel="noopener noreferrer">
+							<img src="/themes/IWAC-theme/asset/img/VWST-logo.webp"
+								alt="Fondation Volkswagen"
+								class="main-footer__logo"
+								width="372" height="120"
+								loading="lazy" decoding="async" />
+						</a>
+											</div>
+
+					<div class="footer_site_info">
+													<p>Une base de données numérique en libre accès sur l’islam et les musulmans au Bénin, au Burkina Faso, en Côte d'Ivoire, au Niger, au Nigeria et au Togo.</p>											</div>
+				</div>
+
+								
+					<div class="main-footer__col2">
+						<ul class="navigation">
+    <li>
+        <a href="/s/afrique_ouest/page/parcourir">Parcourir</a>
+        <ul>
+            <li>
+                <a href="/s/afrique_ouest/page/benin">Bénin</a>
+            </li>
+            <li>
+                <a href="/s/afrique_ouest/page/burkina-faso">Burkina Faso</a>
+            </li>
+            <li>
+                <a href="/s/afrique_ouest/page/cote-d-ivoire">Côte d'Ivoire</a>
+            </li>
+        </ul>
+    </li>
+    <li class="main-footer__menu-links"><ul><li>
+        <a href="/s/afrique_ouest/page/references">Références</a>
+    </li><li>
+        <a href="/s/afrique_ouest/page/index">Index</a>
+    </li></ul></li>
+    
+    <li>
+        <a href="/s/afrique_ouest/page/expositions">Expositions</a>
+        <ul>
+            <li>
+                <a href="/s/afrique_ouest/page/hadj-bf">Hadj au Burkina Faso</a>
+            </li>
+            <li>
+                <a href="/s/afrique_ouest/page/laicite">Laïcité</a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a href="/s/afrique_ouest/page/a-propos">À propos</a>
+        <ul>
+            <li>
+                <a href="/s/afrique_ouest/page/pourquoi-les-journaux">Pourquoi les journaux?</a>
+            </li>
+            <li>
+                <a href="/s/afrique_ouest/page/equipe">Équipe</a>
+            </li>
+        </ul>
+    </li>
+</ul>					</div>
+
+				
+								
+			</div>
+		</div>
+	
+		<div class="main-footer__bottom">
+		<div
+			class="container main-footer__bottom-container ">
+
+						
+						<div class="main-footer__install">
+								<button class="pwa-install" data-pwa-install type="button" hidden
+					data-label-ios="Comment installer cette application"
+					data-hint-ios="Touchez l’icône Partager, puis « Sur l’écran d’accueil ».">
+					<span class="pwa-install__icon" aria-hidden="true"></span>
+					<span class="pwa-install__label">Installer l’application</span>
+				</button>
+			</div>
+
+						<div class="main-footer__copyright">
+									Powered by Omeka S							</div>
+		</div>
+	</div>
+
+</footer>
+		<button type="button" id="back-to-top" class="back-to-top" aria-label="Haut de page"></button>
+
+		<script src="/themes/IWAC-theme/asset/js/dist/utils.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/script.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/navigation.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/theme-toggle.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/pagination-scroll.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/mirador-theme-sync.min.js"></script>
+<script src="/themes/IWAC-theme/asset/js/dist/pwa-install.min.js"></script>	</body>
+</html>

@@ -1,0 +1,165 @@
+{
+    "item.en": {
+        "url": "/s/westafrica/item/8558",
+        "lang": "en-US",
+        "xhr": false,
+        "templates": [
+            "omeka/site/item/show.phtml",
+            "common/breadcrumbs.phtml",
+            "common/item-dateline.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/citation.phtml",
+            "layout/layout.phtml",
+            "common/header.phtml",
+            "common/search-form.phtml",
+            "common/language-switcher.phtml",
+            "common/menu-drawer.phtml",
+            "common/banner.phtml",
+            "common/footer.phtml"
+        ]
+    },
+    "item.fr": {
+        "url": "/s/afrique_ouest/item/8558",
+        "lang": "fr",
+        "xhr": false,
+        "templates": [
+            "omeka/site/item/show.phtml",
+            "common/breadcrumbs.phtml",
+            "common/item-dateline.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/citation.phtml",
+            "layout/layout.phtml",
+            "common/header.phtml",
+            "common/search-form.phtml",
+            "common/language-switcher.phtml",
+            "common/menu-drawer.phtml",
+            "common/banner.phtml",
+            "common/footer.phtml"
+        ]
+    },
+    "item-set.en": {
+        "url": "/s/westafrica/item-set/2200",
+        "lang": "en-US",
+        "xhr": false,
+        "templates": [
+            "omeka/site/item/browse.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/resource-page-block-layout/linked-resources.phtml",
+            "common/linked-resources.phtml",
+            "common/linked-resources-search.phtml",
+            "common/linked-resources-table.phtml",
+            "common/pagination.phtml",
+            "layout/layout.phtml",
+            "common/header.phtml",
+            "common/search-form.phtml",
+            "common/language-switcher.phtml",
+            "common/menu-drawer.phtml",
+            "common/banner.phtml",
+            "common/footer.phtml"
+        ]
+    },
+    "item-set.xhr-publisher.en": {
+        "url": "/s/westafrica/item-set/2200?resource_property=items%3A5-86",
+        "lang": "en-US",
+        "xhr": true,
+        "templates": [
+            "omeka/site/item/browse.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/resource-page-block-layout/linked-resources.phtml",
+            "common/linked-resources.phtml",
+            "common/linked-resources-search.phtml",
+            "common/linked-resources-table.phtml",
+            "common/pagination.phtml",
+            "layout/layout.phtml"
+        ]
+    },
+    "item-set.xhr-subject.en": {
+        "url": "/s/westafrica/item-set/2200?resource_property=items%3A3-86%2C329",
+        "lang": "en-US",
+        "xhr": true,
+        "templates": [
+            "omeka/site/item/browse.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/resource-page-block-layout/linked-resources.phtml",
+            "common/linked-resources.phtml",
+            "common/linked-resources-search.phtml",
+            "common/linked-resources-table.phtml",
+            "common/pagination.phtml",
+            "layout/layout.phtml"
+        ]
+    },
+    "item-set.xhr-page-2.en": {
+        "url": "/s/westafrica/item-set/2200?page=2",
+        "lang": "en-US",
+        "xhr": true,
+        "templates": [
+            "omeka/site/item/browse.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/resource-page-block-layout/linked-resources.phtml",
+            "common/linked-resources.phtml",
+            "common/linked-resources-search.phtml",
+            "common/linked-resources-table.phtml",
+            "common/pagination.phtml",
+            "layout/layout.phtml"
+        ]
+    },
+    "items-browse.en": {
+        "url": "/s/westafrica/item?sort_by=title&sort_order=asc",
+        "lang": "en-US",
+        "xhr": false,
+        "templates": [
+            "omeka/site/item/browse.phtml",
+            "common/resource-browse.phtml",
+            "common/browse-toggle.phtml",
+            "common/resource-card.phtml",
+            "common/pagination.phtml",
+            "layout/layout.phtml",
+            "common/header.phtml",
+            "common/search-form.phtml",
+            "common/language-switcher.phtml",
+            "common/menu-drawer.phtml",
+            "common/banner.phtml",
+            "common/footer.phtml"
+        ]
+    },
+    "page-about.en": {
+        "url": "/s/westafrica/page/about",
+        "lang": "en-US",
+        "xhr": false,
+        "templates": [
+            "common/block-layout/page-title.phtml",
+            "common/block-layout/asset.phtml",
+            "common/block-layout/item-carousel.phtml",
+            "layout/layout.phtml",
+            "common/header.phtml",
+            "common/search-form.phtml",
+            "common/language-switcher.phtml",
+            "common/menu-drawer.phtml",
+            "common/banner.phtml",
+            "common/footer.phtml"
+        ]
+    },
+    "page-about.fr": {
+        "url": "/s/afrique_ouest/page/a-propos",
+        "lang": "fr",
+        "xhr": false,
+        "templates": [
+            "common/block-layout/page-title.phtml",
+            "common/block-layout/asset.phtml",
+            "common/block-layout/item-carousel.phtml",
+            "layout/layout.phtml",
+            "common/header.phtml",
+            "common/search-form.phtml",
+            "common/language-switcher.phtml",
+            "common/menu-drawer.phtml",
+            "common/banner.phtml",
+            "common/footer.phtml"
+        ]
+    }
+}

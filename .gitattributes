@@ -83,6 +83,7 @@
 /asset/js/dist/**    linguist-generated
 /tokens.json         linguist-generated
 /language/fr.mo      linguist-generated
+/test/fixtures/rendered/** linguist-generated
 
 # ---------------------------------------------------------------------------
 # Line endings and binary safety
@@ -103,6 +104,9 @@
 /asset/js/dist/**      text eol=lf
 /tokens.json           text eol=lf
 /docs/DESIGN-SYSTEM.md text eol=lf
+# The pages test/php/render-fixtures.php renders for the JS suite. Its inputs
+# (view/**) check out CRLF on Windows; the renderer strips CR on the way out.
+/test/fixtures/rendered/** text eol=lf
 
 # ...and their INPUTS, where the output embeds the input's bytes. The source
 # maps in asset/js/dist/ carry each script verbatim as `sourcesContent`, so a
