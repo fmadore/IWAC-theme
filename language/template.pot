@@ -496,10 +496,6 @@ msgstr ""
 msgid "Title (Z-A)"
 msgstr ""
 
-#: view/common/menu-drawer.phtml:14
-msgid "Toggle submenu"
-msgstr ""
-
 #: view/common/banner.phtml:217
 msgid "Total pages"
 msgstr ""
@@ -556,7 +552,7 @@ msgstr ""
 msgid "of %s"
 msgstr ""
 
-#: view/common/menu-drawer.phtml:15
+#: view/common/menu-drawer.phtml:14
 msgid "show submenu for “%s”"
 msgstr ""
 
