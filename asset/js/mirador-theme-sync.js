@@ -145,6 +145,12 @@
      * landmark one can jump to) and the h1 a level-2 heading, below the
      * record title it belongs to.
      *
+     * ARIA in HTML allows no role on <main>, so axe reports aria-allowed-role
+     * (best practice) here instead. That is the chosen trade: browsers honour
+     * the override (Chrome's tree shows one `main` and `region "Workspace"`),
+     * and the element can't be retagged without breaking React. One
+     * conformance note beats two main landmarks for screen-reader users.
+     *
      * Mirador is React and may re-render or remount either element (the h1
      * remounts with the workspace), so a MutationObserver on the container
      * re-applies the attributes; each write is skipped when already in place,
