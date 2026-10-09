@@ -40,15 +40,23 @@ if ($showBody) {
         : $resource->displayDescription(null, $valueLang);
 }
 
+// With a heading, the thumbnail link is a second, mouse-only door to the same
+// record: out of the tab order, hidden from assistive tech, empty alt. It used
+// to repeat the title as its alt text, so every card was announced twice and
+// cost two tab stops (~50 for a page of 25). Without a heading the thumbnail
+// is the card's only link and keeps a name. Same pattern as index/search.
+$thumbnailIsSecondLink = $showHeading;
 $thumbnail = '';
 if ($showThumbnail) {
-    $primaryMedia = $resource->primaryMedia();
     $altText = '';
-    if ($primaryMedia) {
-        $altText = method_exists($primaryMedia, 'altText') ? (string) $primaryMedia->altText() : '';
-    }
-    if (!$altText) {
-        $altText = $resource->displayTitle(null, $valueLang);
+    if (!$thumbnailIsSecondLink) {
+        $primaryMedia = $resource->primaryMedia();
+        if ($primaryMedia) {
+            $altText = method_exists($primaryMedia, 'altText') ? (string) $primaryMedia->altText() : '';
+        }
+        if (!$altText) {
+            $altText = $resource->displayTitle(null, $valueLang);
+        }
     }
     $thumbnailAttribs = ['alt' => $altText, 'decoding' => 'async'];
     if (!$eager) {
@@ -71,7 +79,7 @@ if ($showHeading) {
 <li class="<?php echo $escape($liClass); ?> resource <?php echo $isGrid ? '' : 'media-object'; ?>">
     <?php if ($thumbnail): ?>
         <div class="resource__thumbnail <?php echo $decorationClass; ?>">
-            <?php echo $resource->linkRaw($thumbnail); ?>
+            <?php echo $resource->linkRaw($thumbnail, null, $thumbnailIsSecondLink ? ['tabindex' => '-1', 'aria-hidden' => 'true'] : []); ?>
         </div>
     <?php endif; ?>
 

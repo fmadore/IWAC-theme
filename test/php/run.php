@@ -1037,6 +1037,15 @@ namespace IwacThemeTest {
                 }
                 return '<a href="/item/8558"' . $attrs . '>' . htmlspecialchars((string) $text) . '</a>';
             }
+
+            public function linkRaw($html, $action = null, array $attributes = []): string
+            {
+                $attrs = '';
+                foreach ($attributes as $name => $value) {
+                    $attrs .= ' ' . $name . '="' . htmlspecialchars((string) $value) . '"';
+                }
+                return '<a href="/item/8558"' . $attrs . '>' . $html . '</a>';
+            }
         };
     }
 
@@ -1132,6 +1141,20 @@ namespace IwacThemeTest {
             'heading' => fakeValue('Al-Tabaski', null, 'ar'),
         ]);
         check(str_contains($tagged, '<a href="/item/8558" lang="ar" dir="auto">Al-Tabaski</a>'), "heading value's own tag lost");
+    });
+
+    test('a card with a heading links its thumbnail once, silently (T-12)', function () {
+        $fake = new FakeView();
+        $fake->helpers['thumbnail'] = static fn ($resource, $type, array $attrs = []): string => '<img alt="' . htmlspecialchars($attrs['alt'] ?? 'MISSING') . '">';
+        $vars = ['resource' => fakeRecord([]), 'isGrid' => true, 'valueLang' => null, 'liClass' => 'item',
+            'decorationClass' => '', 'bodyTerm' => null, 'bodyTruncate' => '', 'headingTerm' => ''];
+        $card = $fake->render('common/resource-card.phtml', $vars);
+        check(str_contains($card, '<a href="/item/8558" tabindex="-1" aria-hidden="true"><img alt=""></a>'), 'thumbnail link is not a silent duplicate: ' . $card);
+        same(1, substr_count($card, 'La Tabaski à Ouagadougou'), 'the title is announced once');
+
+        // Without a heading the thumbnail is the only link, so it keeps a name.
+        $bare = $fake->render('common/resource-card.phtml', ['showHeading' => false] + $vars);
+        check(str_contains($bare, '<a href="/item/8558"><img alt="La Tabaski à Ouagadougou"></a>'), 'lone thumbnail link lost its name');
     });
 
     test('untagged full text and descriptions take the record language; chrome does not', function () {
