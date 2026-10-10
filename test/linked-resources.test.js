@@ -136,6 +136,25 @@ test("the ledger's page 2 leaves the block on its own first page (regression: on
     dom.window.close();
 });
 
+test("each pager counts its own listing (regression: core's pagination helper is shared)", () => {
+    // Core hands every pagination() call one helper, configured by the browse
+    // controller for the ledger; the block configuring it with its own
+    // figures left the ledger printing the block's count and fragment.
+    // fake-omeka.php shares it the same way, so that shows up here.
+    const dom = fixtureDom('item-set.en');
+    const doc = dom.window.document;
+    const footer = (id) => doc.querySelector(`#${id} .linked-footer`);
+    assert.equal(footer('linked-resources').querySelector('.row-count').textContent, '1–25 of 26');
+    assert.equal(footer('item-set-resources').querySelector('.row-count').textContent, '1–5 of 25');
+    assert.equal(footer('item-set-resources').querySelector('.page-count').textContent, 'of 5');
+    assert.doesNotMatch(
+        footer('item-set-resources').querySelector('a.pagination-nav.next').getAttribute('href'),
+        /#/,
+        "the block's #resources-linked must not land on the ledger's links"
+    );
+    dom.window.close();
+});
+
 test('each root pages on its own, and Back and Forward restore each', async () => {
     const dom = fixtureDom('item-set.en');
     const { window } = dom;

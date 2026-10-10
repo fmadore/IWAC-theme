@@ -708,21 +708,54 @@ final class HtmlElement
 }
 
 /**
- * Core's pagination helper. Called with figures it describes that listing;
- * called bare it describes the page's own browse (the controller's paginator).
+ * Core's pagination helper — and, like core's, ONE instance per request.
+ * Laminas shares view helpers, so the paginator core's browse controller
+ * configures (its paginator() plugin calls this helper with the listing's
+ * figures before the view renders) is the same one every later
+ * pagination() call reads: called with figures, the helper reconfigures it
+ * for everything rendered after, and a fragment set on it sticks. Called
+ * bare, it prints whatever it was last given.
+ *
+ * This fake used to hand each figures-call a fresh object, so a template
+ * that configured the helper for its own listing could not be seen
+ * spoiling the page's — which the Linked resources block did to an item
+ * set's ledger until it stopped calling the helper.
  */
 final class Pagination
 {
-    private string $fragment = '';
+    private ?string $fragment = null;
 
-    public function __construct(private FakeView $view, private int $totalCount, private int $page, private int $perPage)
+    private ?int $totalCount = null;
+
+    private int $page = 1;
+
+    private int $perPage = 25;
+
+    public function __construct(private FakeView $view)
     {
     }
 
-    public function setFragment(string $fragment): self
+    /** Omeka\View\Helper\Pagination::__invoke(): each figure given replaces the paginator's. */
+    public function __invoke($partialName = null, $totalCount = null, $currentPage = null, $perPage = null): self
+    {
+        if ($totalCount !== null) {
+            $this->totalCount = (int) $totalCount;
+        }
+        if ($currentPage !== null) {
+            $this->page = (int) $currentPage;
+        }
+        if ($perPage !== null) {
+            $this->perPage = (int) $perPage;
+        }
+        if ($this->totalCount === null) {
+            throw new \LogicException('this page has no browse paginator, and pagination() was given no figures');
+        }
+        return $this;
+    }
+
+    public function setFragment($fragment): void
     {
         $this->fragment = $fragment;
-        return $this;
     }
 
     private function pageUrl(int $page): string
@@ -730,7 +763,7 @@ final class Pagination
         // Core keeps the query and sets page in it.
         $query = Request::$current->query;
         $query['page'] = $page;
-        return Request::$current->url($query, $this->fragment);
+        return Request::$current->url($query, (string) $this->fragment);
     }
 
     public function __toString(): string
@@ -799,6 +832,11 @@ function siteView(Request $request, array $page): FakeView
     $head = [];
     $inline = new InlineScript();
     $none = static fn (...$args): string => '';
+    // What core's browse controller does before the view renders.
+    $pagination = new Pagination($view);
+    if (isset($page['browse'])) {
+        $pagination(null, ...$page['browse']);
+    }
 
     $view->helpers = [
         // Laminas' partial(): a theme template, with only the variables passed —
@@ -853,12 +891,7 @@ function siteView(Request $request, array $page): FakeView
             }
             return $html;
         },
-        'pagination' => static function ($partialName = null, $totalCount = null, $currentPage = null, $perPage = null) use ($view, $page): Pagination {
-            if ($totalCount === null) {
-                [$totalCount, $currentPage, $perPage] = $page['browse'] ?? throw new \LogicException('this page has no browse paginator');
-            }
-            return new Pagination($view, (int) $totalCount, (int) $currentPage, (int) $perPage);
-        },
+        'pagination' => static fn (...$args): Pagination => $pagination(...$args),
         // Core's pageTitle(): level 0 feeds <title> and returns the text.
         'pageTitle' => static fn ($title, $level = 1): string => $level === 0
             ? htmlspecialchars((string) $title)
