@@ -283,6 +283,20 @@ for the three without one) to a BCP-47 tag, which goes on the h1, the current cr
 card titles and untagged full-text/description values. A multilingual record gets no tag
 rather than a guess.
 
+### Two listings on one page: separate query parameters, never core's shared pager
+
+The item-set page paginates its ledger with `?page=`, and the Linked resources block
+paged with `?page=` too, so turning the ledger moved the block onto its own (usually
+empty) page 2. Core's `pagination()` is also **one shared helper per request**, holding
+the paginator the browse controller configured for the page's own listing; the block
+called it with its figures, so the ledger rendered after it printed the block's count and
+fragment. Both were latent (the block isn't placed on item sets live) and surfaced in the
+rendered fixtures. The block now reads `lr_page` through the `LinkedResourcesPaging`
+helper — the one place its parameters are decided — and renders `common/pagination`
+itself with `$pageParam`; `linked-resources.js` composes each request from its own root's
+parameters (`data-query-params`) plus the address bar's for the other. A second paginated
+listing on any page needs the same: its own parameter, and never a call to core's helper.
+
 ### Read a module's rendered HTML before styling it
 
 Omeka modules ship their own markup and vendor CSS (tablesaw; RightsStatements inline-styles
