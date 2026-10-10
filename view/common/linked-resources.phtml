@@ -1,11 +1,32 @@
 <?php
 $this->inlineScript()->appendFile($this->assetUrl('js/dist/linked-resources.min.js'));
 
-// Set up pagination. The helper preserves current query params automatically,
-// so an active resource_property filter stays live across pages.
-$pagination = $this->pagination(null, $totalCount, $page, $perPage);
+// The block's state lives in its own query parameters — `lr_page` and core's
+// `resource_property`, never `page` (helper/LinkedResourcesPaging.php says
+// why). So its pager is rendered from common/pagination here, not through
+// core's pagination() helper, for two reasons:
+// - the helper writes `page` into every URL it builds, and its go-to-page
+//   form submits `page`;
+// - it is one shared instance per request, holding the paginator core's
+//   browse controller configured for the page's own listing. Calling it with
+//   this block's figures reconfigured that listing's pager too — on an item
+//   set's page the ledger, which renders after this block, printed the
+//   block's count, page total and #resources-linked fragment.
+// Every URL the block builds starts from the current query minus its own
+// page, so an active relation filter stays live across its pages and
+// whatever else the page carries (the ledger's page, its sort) rides along.
+$paging = $this->LinkedResourcesPaging($objectResource);
+$pageParam = $paging['param'];
+$filterParam = $paging['filter'];
 $fragment = 'resources-linked';
-$pagination->setFragment($fragment);
+$url = $this->plugin('url');
+$blockUrl = static fn (array $query): string => $url(null, [], ['query' => $query, 'fragment' => $fragment], true);
+$perPage = max(1, (int) $perPage);
+$totalCount = (int) $totalCount;
+$pageCount = max(1, (int) ceil($totalCount / $perPage));
+// As core's paginator does: the pager never names a page past the last.
+$currentPage = min(max(1, (int) $page), $pageCount);
+$pageUrl = static fn (int $n): string => $blockUrl($paging['query'] + [$pageParam => $n]);
 
 // Set up locale.
 $valueLang = null;
@@ -40,7 +61,10 @@ foreach ($resourcePropertiesAll as $type => $resourceProperties) {
     }
 }
 
-$baseUrl = $this->url(null, [], true);
+// A chip changes the filter and so starts the block over at its first page:
+// the current query without the block's page or filter, plus the chip's own.
+$chipQuery = $paging['query'];
+unset($chipQuery[$filterParam]);
 
 // The sort reorders the rows on screen — one page of a set that can run to
 // hundreds (241 on item/1023) — and resets on an AJAX page change, so it says
@@ -96,7 +120,8 @@ foreach ($subjectValues as $values) {
      data-no-results-text="<?php echo $this->escapeHtmlAttr($noResultsText); ?>"
      data-results-found-text="<?php echo $this->escapeHtmlAttr($resultsFoundText); ?>"
      data-page-results-text="<?php echo $this->escapeHtmlAttr($pageResultsText); ?>"
-     data-fragment="<?php echo $this->escapeHtmlAttr($fragment); ?>">
+     data-fragment="<?php echo $this->escapeHtmlAttr($fragment); ?>"
+     data-query-params="<?php echo $this->escapeHtmlAttr(implode(' ', $paging['params'])); ?>">
 
     <div class="linked-resources__controls">
         <?php echo $this->partial('common/linked-resources-search', [
@@ -126,7 +151,7 @@ foreach ($subjectValues as $values) {
         <span class="linked-resources__facets-label">
             <?php echo $this->escapeHtml($this->translate('Filter:')); ?>
         </span>
-        <a href="<?php echo $this->escapeHtmlAttr($baseUrl . '#' . $fragment); ?>"
+        <a href="<?php echo $this->escapeHtmlAttr($blockUrl($chipQuery)); ?>"
            class="linked-resources__facet<?php echo $isAllActive ? ' is-active' : ''; ?>"
            <?php echo $isAllActive ? 'aria-current="true"' : ''; ?>>
             <span class="linked-resources__facet-label"><?php echo $this->escapeHtml($this->translate('All')); ?></span>
@@ -135,7 +160,7 @@ foreach ($subjectValues as $values) {
         <?php foreach ($facetChips as $chip): ?>
             <?php
             $isActive = $resourceProperty === $chip['compound_id'];
-            $chipUrl = $baseUrl . '?' . http_build_query(['resource_property' => $chip['compound_id']]) . '#' . $fragment;
+            $chipUrl = $blockUrl($chipQuery + [$filterParam => $chip['compound_id']]);
             ?>
             <a href="<?php echo $this->escapeHtmlAttr($chipUrl); ?>"
                class="linked-resources__facet<?php echo $isActive ? ' is-active' : ''; ?>"
@@ -155,6 +180,29 @@ foreach ($subjectValues as $values) {
         'valueLang' => $valueLang,
     ]); ?>
 
-    <?php echo ($totalCount > $perPage) ? '<div class="linked-footer">' . $pagination . '</div>' : ''; ?>
+    <?php if ($totalCount > $perPage): ?>
+    <div class="linked-footer">
+        <?php // The variables core's pagination() helper passes, from this
+              // block's own figures and URLs, plus the parameter its
+              // go-to-page form writes and the ones that form must drop. ?>
+        <?php echo $this->partial('common/pagination', [
+            'totalCount' => $totalCount,
+            'perPage' => $perPage,
+            'currentPage' => $currentPage,
+            'previousPage' => $currentPage > 1 ? $currentPage - 1 : null,
+            'nextPage' => $currentPage < $pageCount ? $currentPage + 1 : null,
+            'pageCount' => $pageCount,
+            'query' => $this->params()->fromQuery(),
+            'firstPageUrl' => $pageUrl(1),
+            'previousPageUrl' => $pageUrl(max(1, $currentPage - 1)),
+            'nextPageUrl' => $pageUrl(min($pageCount, $currentPage + 1)),
+            'lastPageUrl' => $pageUrl($pageCount),
+            'pagelessUrl' => $blockUrl($paging['query']),
+            'offset' => ($currentPage - 1) * $perPage,
+            'pageParam' => $pageParam,
+            'dropParams' => $paging['drop'],
+        ]); ?>
+    </div>
+    <?php endif; ?>
 
 </div>

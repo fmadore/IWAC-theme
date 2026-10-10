@@ -6,6 +6,14 @@ $escapeAttr = $this->plugin('escapeHtmlAttr');
 // transcript toggle — "1–25 of 12 345", not "of 12345". Locale-neutral, and
 // never a comma a French reader would take for a decimal mark.
 $figure = static fn ($n): string => number_format((int) $n, 0, '.', "\u{202F}");
+// The query parameter the go-to-page form writes. Core's pagination() helper
+// renders this partial for the page's own listing, which pages through
+// `page`, and passes no $pageParam; the Linked resources block renders it
+// with `lr_page` (helper/LinkedResourcesPaging.php), so the two pagers an
+// item set's page can carry never write each other's parameter. $dropParams:
+// further parameters the form must not carry over from the current query.
+$pageParam = isset($pageParam) ? (string) $pageParam : 'page';
+$dropParams = isset($dropParams) ? array_values((array) $dropParams) : [];
 ?>
 <nav class="pagination" aria-label="<?php echo $escapeAttr($translate('Pagination')); ?>">
     <?php if ($totalCount): ?>
@@ -31,10 +39,10 @@ $figure = static fn ($n): string => number_format((int) $n, 0, '.', "\u{202F}");
                 <?php // No id on the input: two paginations can share a page
                       // (browse + linked resources); the wrapping label names it. ?>
                 <form class="pager" method="GET" action="">
-                    <?php echo $this->queryToHiddenInputs(['page']); ?>
+                    <?php echo $this->queryToHiddenInputs(array_merge([$pageParam], $dropParams)); ?>
                     <label>
                         <?php echo $escape($translate('Page')); ?>
-                        <input type="text" name="page" class="page-input-top" value="<?php echo $escapeAttr($currentPage); ?>" size="4" aria-label="<?php echo $escapeAttr($translate('Page')); ?>">
+                        <input type="text" name="<?php echo $escapeAttr($pageParam); ?>" class="page-input-top" value="<?php echo $escapeAttr($currentPage); ?>" size="4" aria-label="<?php echo $escapeAttr($translate('Page')); ?>">
                     </label>
                     <span class="page-count"><?php echo sprintf($escape($translate('of %s')), $figure($pageCount)); ?></span>
                     <button type="submit" class="pagination-nav gotopage-btn" aria-label="<?php echo $escapeAttr($translate('Go')); ?>"><span class="sr-only"><?php echo $escape($translate('Go')); ?></span></button>

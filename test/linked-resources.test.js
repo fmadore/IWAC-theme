@@ -73,20 +73,138 @@ test('latest linked-resource request wins and history tracks every root', async 
         `${subject.length} resources on this page`
     );
 
-    // The ledger pages on its own, leaving the block's filter as it is.
+    // The ledger pages on its own, leaving the block's filter as it is. Its
+    // Next link was rendered before the chip was used, so the request takes
+    // the filter from the address: a reload of the new URL shows both roots
+    // where they stand.
     const ledgerBefore = titles(doc.getElementById('item-set-resources'));
     doc.querySelector('#item-set-resources .linked-footer a.pagination-nav.next').click();
-    assert.equal(pending[2].url, fixtureUrl('item-set.xhr-page-2.en'));
-    respond(pending[2], 'item-set.xhr-page-2.en');
+    assert.equal(pending[2].url, fixtureUrl('item-set.xhr-page-2-subject.en'));
+    respond(pending[2], 'item-set.xhr-page-2-subject.en');
     await flush();
     await flush();
     const ledger = titles(doc.getElementById('item-set-resources'));
     assert.deepEqual(ledger, titlesIn(window, 'item-set.xhr-page-2.en', 'item-set-resources'));
     assert.notDeepEqual(ledger, ledgerBefore);
     assert.deepEqual(titles(doc.getElementById('linked-resources')), subject);
+    // ...and that URL renders the block as it is on screen.
+    assert.deepEqual(titlesIn(window, 'item-set.xhr-page-2-subject.en', 'linked-resources'), subject);
 
     assert.match(window.history.state.linkedResources['linked-resources'], /resource_property=items%3A3-86%2C329/);
-    assert.match(window.history.state.linkedResources['item-set-resources'], /page=2/);
+    assert.match(window.history.state.linkedResources['item-set-resources'], /[?&]page=2/);
+    assert.equal(window.location.href, fixtureUrl('item-set.xhr-page-2-subject.en'));
+
+    dom.window.close();
+});
+
+test("the ledger's page 2 leaves the block on its own first page (regression: one shared ?page=)", () => {
+    const dom = fixtureDom('item-set.en');
+    const { window } = dom;
+    const first = titlesIn(window, 'item-set.en', 'linked-resources');
+    assert.equal(first.length, 25, 'the block needs a page 2 for this test to mean anything');
+
+    // Through 2.24 the block read ?page= as well, so the ledger's page 2
+    // rendered the block's page 2 beside it — past the last row on most sets.
+    assert.deepEqual(titlesIn(window, 'item-set.xhr-page-2.en', 'linked-resources'), first);
+    // And the block's page 2 leaves the ledger on the page the address names.
+    assert.notDeepEqual(titlesIn(window, 'item-set.xhr-both-page-2.en', 'linked-resources'), first);
+    assert.deepEqual(
+        titlesIn(window, 'item-set.xhr-both-page-2.en', 'item-set-resources'),
+        titlesIn(window, 'item-set.xhr-page-2.en', 'item-set-resources')
+    );
+
+    // Each pager writes its own parameter and carries the other one along.
+    const doc = new window.DOMParser().parseFromString(fixtureHtml('item-set.xhr-page-2.en'), 'text/html');
+    const footer = (id) => doc.querySelector(`#${id} .linked-footer`);
+    const nextQuery = (id) => new URL(
+        footer(id).querySelector('a.pagination-nav.next').getAttribute('href'),
+        fixtureUrl('item-set.en')
+    ).searchParams;
+    assert.equal(nextQuery('linked-resources').get('lr_page'), '2');
+    assert.equal(nextQuery('linked-resources').get('page'), '2', "the ledger's page rides along");
+    assert.equal(nextQuery('item-set-resources').get('page'), '3');
+    assert.equal(nextQuery('item-set-resources').get('lr_page'), null);
+
+    const pageField = (id) => footer(id).querySelector('form.pager input[type="text"]');
+    const hidden = (id) => [...footer(id).querySelectorAll('form.pager input[type="hidden"]')]
+        .map((input) => `${input.name}=${input.value}`);
+    assert.deepEqual([pageField('linked-resources').name, pageField('linked-resources').value], ['lr_page', '1']);
+    assert.deepEqual(hidden('linked-resources'), ['page=2']);
+    assert.deepEqual([pageField('item-set-resources').name, pageField('item-set-resources').value], ['page', '2']);
+    assert.deepEqual(hidden('item-set-resources'), []);
+
+    dom.window.close();
+});
+
+test('each root pages on its own, and Back and Forward restore each', async () => {
+    const dom = fixtureDom('item-set.en');
+    const { window } = dom;
+    const doc = window.document;
+    window.IWACUtils = {
+        debounce: (callback) => callback,
+        onReady: (callback) => callback(),
+    };
+    window.requestIdleCallback = () => {};
+
+    const pending = [];
+    window.fetch = (url) => new Promise((resolve) => pending.push({ url: String(url), resolve }));
+    const requested = () => pending.map((request) => request.url);
+    const respond = async (name) => {
+        pending.shift().resolve({ ok: true, text: async () => fixtureHtml(name) });
+        await flush();
+        await flush();
+    };
+    // History traversal runs as a task after go() returns.
+    const traverse = async (delta) => {
+        window.history.go(delta);
+        await new Promise((resolve) => setTimeout(resolve, 20));
+    };
+    runAsset(dom, 'linked-resources.js');
+
+    const block = () => titles(doc.getElementById('linked-resources'));
+    const ledger = () => titles(doc.getElementById('item-set-resources'));
+    const next = (id) => doc.querySelector(`#${id} .linked-footer a.pagination-nav.next`).click();
+    const start = { block: block(), ledger: ledger() };
+    const page2 = {
+        block: titlesIn(window, 'item-set.xhr-both-page-2.en', 'linked-resources'),
+        ledger: titlesIn(window, 'item-set.xhr-page-2.en', 'item-set-resources'),
+    };
+    const both = fixtureUrl('item-set.xhr-both-page-2.en') + '#resources-linked';
+
+    next('item-set-resources');
+    assert.deepEqual(requested(), [fixtureUrl('item-set.xhr-page-2.en')]);
+    await respond('item-set.xhr-page-2.en');
+    assert.deepEqual([block(), ledger()], [start.block, page2.ledger]);
+
+    // The block's Next was rendered with the ledger on page 1; the request
+    // takes the ledger's page from the address instead.
+    next('linked-resources');
+    assert.deepEqual(requested(), [both]);
+    await respond('item-set.xhr-both-page-2.en');
+    assert.deepEqual([block(), ledger()], [page2.block, page2.ledger]);
+    assert.equal(window.location.href, both);
+
+    // Back undoes one root per entry, and only that one is fetched.
+    await traverse(-1);
+    assert.deepEqual(requested(), [fixtureUrl('item-set.en')]);
+    await respond('item-set.en');
+    assert.deepEqual([block(), ledger()], [start.block, page2.ledger]);
+
+    await traverse(-1);
+    assert.deepEqual(requested(), [fixtureUrl('item-set.en')]);
+    await respond('item-set.en');
+    assert.deepEqual([block(), ledger()], [start.block, start.ledger]);
+
+    // Forward redoes them in order.
+    await traverse(1);
+    assert.deepEqual(requested(), [fixtureUrl('item-set.xhr-page-2.en')]);
+    await respond('item-set.xhr-page-2.en');
+    assert.deepEqual([block(), ledger()], [start.block, page2.ledger]);
+
+    await traverse(1);
+    assert.deepEqual(requested(), [both]);
+    await respond('item-set.xhr-both-page-2.en');
+    assert.deepEqual([block(), ledger()], [page2.block, page2.ledger]);
 
     dom.window.close();
 });
@@ -105,16 +223,22 @@ function prefetchRun(saveData) {
         return new Promise(() => {});
     };
     runAsset(dom, 'linked-resources.js');
-    const next = window.document.querySelector('#item-set-resources .linked-footer a.next');
-    next.dispatchEvent(new window.MouseEvent('mouseenter'));
+    window.document.querySelectorAll('.linked-footer a.next').forEach((next) => {
+        next.dispatchEvent(new window.MouseEvent('mouseenter'));
+    });
     dom.window.close();
     return fetched;
 }
 
 test('the next page is warmed in idle time', () => {
-    // Once: hovering the link afterwards reuses the warmed request.
-    assert.deepEqual(prefetchRun(false), [fixtureUrl('item-set.xhr-page-2.en')]);
-    assert.deepEqual(prefetchRun(undefined), [fixtureUrl('item-set.xhr-page-2.en')]);
+    // Each root's, once: hovering the links afterwards reuses the warmed
+    // requests. The block's next page is its own (?lr_page=), not the ledger's.
+    const warmed = [
+        `${fixtureUrl('item-set.en')}?lr_page=2#resources-linked`,
+        fixtureUrl('item-set.xhr-page-2.en'),
+    ];
+    assert.deepEqual(prefetchRun(false), warmed);
+    assert.deepEqual(prefetchRun(undefined), warmed);
 });
 
 test('Save-Data turns off speculative page fetches', () => {

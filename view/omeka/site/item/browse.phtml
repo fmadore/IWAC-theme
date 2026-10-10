@@ -57,7 +57,11 @@ $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
     // same classes (the linked-resources CSS applies as-is) and the same
     // .linked-resources root, so linked-resources.js provides the client
     // title filter and AJAX pagination here too. The id differs from the
-    // linked-resources page block's so both can coexist on one page.
+    // linked-resources page block's so both can coexist on one page, and so
+    // does the query parameter each pages through: this ledger is core's
+    // browse, on `page`; the block is on `lr_page`. data-query-params names
+    // it, so linked-resources.js keeps each root's state in the address
+    // while the other one swaps.
     $noResultsText = $translate('No resources match your search.');
     $rows = [];
     foreach ($items as $item) {
@@ -68,7 +72,8 @@ $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
          class="linked-resources"
          data-no-results-text="<?php echo $escapeAttr($noResultsText); ?>"
          data-results-found-text="<?php echo $escapeAttr($translate('{count} resources found')); ?>"
-         data-page-results-text="<?php echo $escapeAttr($translate('{count} resources on this page')); ?>">
+         data-page-results-text="<?php echo $escapeAttr($translate('{count} resources on this page')); ?>"
+         data-query-params="page">
 
         <div class="linked-resources__controls">
             <?php echo $this->partial('common/linked-resources-search', [

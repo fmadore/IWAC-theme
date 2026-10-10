@@ -790,6 +790,65 @@ namespace IwacThemeTest {
         check(str_contains($html, 'value="41"'), 'page input value altered');
     });
 
+    test('the Linked resources block pages through lr_page, never the ledger\'s page (regression: shared ?page=)', function () {
+        $resource = static fn (string $name): object => new class($name) {
+            public function __construct(private string $name)
+            {
+            }
+
+            public function resourceName(): string
+            {
+                return $this->name;
+            }
+        };
+        $paging = static fn (string $name, array $query): array => (new FakeView([], [], $query))->helpers['LinkedResourcesPaging']($resource($name));
+
+        // On an item set's page, ?page= is the ledger's: never read, never dropped.
+        $set = $paging('item_sets', ['page' => '2', 'sort_by' => 'title']);
+        same(1, $set['page'], "the ledger's page 2 must not turn the block");
+        same(['page' => '2', 'sort_by' => 'title'], $set['query'], "the ledger's page rides along in the block's URLs");
+        same(['lr_page'], $set['drop']);
+        same(3, $paging('item_sets', ['page' => '2', 'lr_page' => '3'])['page']);
+
+        // Where the block is the only listing, a pre-rename ?page= still lands —
+        // and is dropped from the URLs it builds, lr_page winning when both are there.
+        foreach (['items', 'media'] as $name) {
+            $item = $paging($name, ['page' => '3', 'resource_property' => 'items:5-86']);
+            same(3, $item['page'], "$name: legacy ?page=");
+            same(['resource_property' => 'items:5-86'], $item['query'], "$name: retired page dropped, filter kept");
+            same(['lr_page', 'page'], $item['drop'], $name);
+            same(2, $paging($name, ['page' => '3', 'lr_page' => '2'])['page'], "$name: lr_page wins");
+        }
+
+        foreach (['abc', '0', '-4', ['2']] as $hostile) {
+            same(1, $paging('items', ['lr_page' => $hostile])['page'], 'lr_page=' . var_export($hostile, true));
+        }
+        same(['lr_page', 'resource_property'], $paging('items', [])['params'], 'the root names its state for linked-resources.js');
+    });
+
+    test('the pager form writes the parameter its caller names (default: page)', function () {
+        $skipped = [];
+        $render = static function (array $extra) use (&$skipped): string {
+            $fake = new FakeView();
+            $fake->helpers['hyperlink'] = static fn ($text, $url, array $attrs = []): string => '<a href="' . $url . '"></a>';
+            $fake->helpers['queryToHiddenInputs'] = static function (array $skip = []) use (&$skipped): string {
+                $skipped = $skip;
+                return '';
+            };
+            return $fake->render('common/pagination.phtml', $extra + [
+                'totalCount' => 60, 'offset' => 25, 'perPage' => 25, 'currentPage' => 2, 'pageCount' => 3,
+                'previousPageUrl' => '?p=1', 'nextPageUrl' => '?p=3',
+            ]);
+        };
+        // Core's pagination() helper passes no $pageParam: the page's own listing.
+        check(str_contains($render([]), 'name="page" class="page-input-top"'), 'default page field');
+        same(['page'], $skipped);
+        $block = $render(['pageParam' => 'lr_page', 'dropParams' => ['lr_page', 'page']]);
+        check(str_contains($block, 'name="lr_page" class="page-input-top"'), 'the block\'s page field');
+        check(!str_contains($block, 'name="page"'), 'the block\'s form must not write the ledger\'s page');
+        same(['lr_page', 'lr_page', 'page'], $skipped);
+    });
+
     test('asset images never take their alt text from the filename', function () {
         $fake = new FakeView();
         $fake->helpers['thumbnail'] = static fn ($asset, $type, array $attrs = []): string => '<img alt="' . htmlspecialchars($attrs['alt'] ?? 'MISSING') . '">';

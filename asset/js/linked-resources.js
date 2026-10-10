@@ -11,6 +11,15 @@
  * parse out the replacement root by id, and swap its inner HTML in place.
  * history.pushState keeps the URL bookmarkable.
  *
+ * Each root keeps its state in its own query parameters, named in its
+ * data-query-params (the block: lr_page and resource_property; the item-set
+ * ledger: page), so one URL renders both roots where they stand. A control's
+ * href was rendered with the query as it stood then, so once the other root
+ * has swapped it carries that root's old state — followed as-is, it would
+ * put the other root back on reload or Back. composeUrl() takes the swapping
+ * root's parameters from the control and every other root's from the
+ * current address.
+ *
  * Status strings arrive as data attributes on the root
  * (data-no-results-text / data-results-found-text), never as globals.
  */
@@ -42,6 +51,34 @@
     function saveData() {
         const connection = navigator.connection;
         return Boolean(connection && connection.saveData);
+    }
+
+    /** The query parameters a root keeps its state in. */
+    function rootParams(root) {
+        return (root.dataset.queryParams || '').split(/\s+/).filter(Boolean);
+    }
+
+    /**
+     * The URL a swap of `root` to `href` loads and records: `href`, with
+     * every other root's parameters as the current address has them. A
+     * parameter that already agrees is left alone, so the common case —
+     * nothing else has moved — returns `href` as it was (only resolved),
+     * and a warmed prefetch of it is found again.
+     */
+    function composeUrl(root, href) {
+        const target = new URL(href, window.location.href);
+        const current = new URLSearchParams(window.location.search);
+        document.querySelectorAll(ROOT_SELECTOR).forEach((other) => {
+            if (other === root) return;
+            rootParams(other).forEach((name) => {
+                const want = current.getAll(name);
+                const have = target.searchParams.getAll(name);
+                if (want.length === have.length && want.every((value, i) => value === have[i])) return;
+                target.searchParams.delete(name);
+                want.forEach((value) => target.searchParams.append(name, value));
+            });
+        });
+        return target.href;
     }
 
     function prefetch(url) {
@@ -104,7 +141,7 @@
         // so clicking the arrow reuses an already-fetched response.
         root.querySelectorAll('.linked-footer a.pagination-nav').forEach((a) => {
             a.addEventListener('click', handleAjaxLink);
-            const warm = () => prefetch(a.href);
+            const warm = () => prefetch(composeUrl(root, a.href));
             a.addEventListener('mouseenter', warm);
             a.addEventListener('focus', warm);
         });
@@ -121,7 +158,7 @@
         if (nextLink) {
             const schedule = window.requestIdleCallback
                 || ((cb) => window.setTimeout(cb, 500));
-            schedule(() => prefetch(nextLink.href));
+            schedule(() => prefetch(composeUrl(root, nextLink.href)));
         }
     }
 
@@ -220,7 +257,7 @@
         const root = link.closest(ROOT_SELECTOR);
         if (!root) return;
         e.preventDefault();
-        swapContent(root.id, link.href);
+        swapContent(root.id, composeUrl(root, link.href));
     }
 
     function handlePagerSubmit(e) {
@@ -237,7 +274,7 @@
         }
         const fragment = root.dataset.fragment ? `#${root.dataset.fragment}` : '';
         const url = `${window.location.pathname}?${params.toString()}${fragment}`;
-        swapContent(root.id, url);
+        swapContent(root.id, composeUrl(root, url));
     }
 
     async function swapContent(rootId, url, options) {

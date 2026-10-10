@@ -1,6 +1,12 @@
 <?php
+// The block pages through `lr_page`, never core's `page`: on an item set's
+// page `page` is the ledger's (omeka/site/item/browse.phtml), and sharing it
+// turned this block to its own page 2 — usually empty — whenever the ledger
+// moved. helper/LinkedResourcesPaging.php decides it, for this template and
+// common/linked-resources alike. Helper names are case-sensitive on the
+// server: this must match config/theme.ini's helpers[] spelling exactly.
 $options = [
-    'page' => $this->params()->fromQuery('page', 1),
+    'page' => $this->LinkedResourcesPaging($resource)['page'],
     'perPage' => 25,
     'resourceProperty' => $this->params()->fromQuery('resource_property'),
 ];

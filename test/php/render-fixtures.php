@@ -168,6 +168,19 @@ function records(string $locale): array
         [8648, 'Le grand imam reçu par le président Lamizana', '1969-01-18'],
         [8655, 'Construction d’une médersa à Dori', '1969-05-03'],
         [8661, 'Fin du Ramadan : la prière de l’Aïd', '1969-12-13'],
+        [8674, 'Ouverture d’une école coranique à Koudougou', '1970-01-24'],
+        [8681, 'Les pèlerins voltaïques de retour de La Mecque', '1970-03-21'],
+        [8689, 'Le mois de Ramadan à Ouagadougou', '1970-11-07'],
+        [8696, 'Assemblée générale de la communauté musulmane', '1971-01-16'],
+        [8702, 'Tabaski : la prière sur la place d’Armes', '1971-02-06'],
+        [8711, 'Une délégation voltaïque au congrès islamique de Dakar', '1971-04-17'],
+        [8719, 'La médersa de Bobo-Dioulasso a dix ans', '1971-06-26'],
+        [8724, 'Les imams de Ouahigouya en séminaire', '1971-09-11'],
+        [8733, 'Mawlid à Bobo-Dioulasso', '1971-05-08'],
+        [8740, 'Hadj : départ du premier contingent', '1972-01-08'],
+        [8748, 'Islam et éducation en milieu rural', '1972-03-04'],
+        [8755, 'La nouvelle mosquée de Fada N’Gourma', '1972-05-20'],
+        [8761, 'Fin du Ramadan à Dédougou', '1972-11-11'],
     ] as [$id, $title, $date]) {
         $articles[] = $id === 8558 ? $tabaski : $r('items', $id, $title, 'Article', substr(sha1($title), 0, 40))
             ->with('dcterms:title', [$title])
@@ -178,7 +191,11 @@ function records(string $locale): array
         ->with('dcterms:title', ['Carrefour africain'])
         ->with('dcterms:description', [new Value('Hebdomadaire d’information publié à Ouagadougou de 1959 à 1983.', 'fr')])
         ->with('dcterms:spatial', [Value::link($r('items', 1287, 'Burkina Faso', 'Place'))]);
-    foreach (array_slice($articles, 0, 3) as $article) {
+    // Every article names the periodical as its publisher: 25 of them, and
+    // the book below, make 26 linked resources — one more than the Linked
+    // resources block lists a page, so it has a pager of its own beside the
+    // ledger's (five a page).
+    foreach ($articles as $article) {
         $carrefour->linkedFrom('dcterms:publisher', $article);
     }
     $carrefour->linkedFrom('dcterms:subject', $r('items', 14022, 'Presse et islam en Haute-Volta (1959-1983)', 'Book')
@@ -330,8 +347,9 @@ function itemPage(string $locale): array
 
 /**
  * Carrefour africain's item-set page: its own Linked resources block (the
- * articles that name it) above the ledger of its items — the two
- * `.linked-resources` roots linked-resources.js keeps apart.
+ * articles that name it, 25 a page through ?lr_page=) above the ledger of its
+ * items (five a page through ?page=) — the two `.linked-resources` roots
+ * linked-resources.js keeps apart.
  */
 function itemSetPage(array $query = [], bool $xhr = false): array
 {
@@ -450,7 +468,14 @@ function fixtures(): array
         // facet chip or the ledger's pager is used on item-set.en.
         'item-set.xhr-publisher.en' => static fn () => itemSetPage(['resource_property' => 'items:5-86'], true),
         'item-set.xhr-subject.en' => static fn () => itemSetPage(['resource_property' => 'items:3-86,329'], true),
+        // The ledger's page 2. The block in it is still on its own first page.
         'item-set.xhr-page-2.en' => static fn () => itemSetPage(['page' => '2'], true),
+        // Once the other root has moved, a request also carries that root's
+        // state from the address, appended after the control's own: the
+        // ledger's Next after the Subject chip, the block's Next after the
+        // ledger's.
+        'item-set.xhr-page-2-subject.en' => static fn () => itemSetPage(['page' => '2', 'resource_property' => 'items:3-86,329'], true),
+        'item-set.xhr-both-page-2.en' => static fn () => itemSetPage(['lr_page' => '2', 'page' => '2'], true),
         'items-browse.en' => static fn () => itemsBrowsePage(),
         'page-about.en' => static fn () => aboutPage('en'),
         'page-about.fr' => static fn () => aboutPage('fr'),

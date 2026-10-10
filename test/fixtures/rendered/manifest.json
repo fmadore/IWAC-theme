@@ -109,6 +109,38 @@
             "layout/layout.phtml"
         ]
     },
+    "item-set.xhr-page-2-subject.en": {
+        "url": "/s/westafrica/item-set/2200?page=2&resource_property=items%3A3-86%2C329",
+        "lang": "en-US",
+        "xhr": true,
+        "templates": [
+            "omeka/site/item/browse.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/resource-page-block-layout/linked-resources.phtml",
+            "common/linked-resources.phtml",
+            "common/linked-resources-search.phtml",
+            "common/linked-resources-table.phtml",
+            "common/pagination.phtml",
+            "layout/layout.phtml"
+        ]
+    },
+    "item-set.xhr-both-page-2.en": {
+        "url": "/s/westafrica/item-set/2200?lr_page=2&page=2",
+        "lang": "en-US",
+        "xhr": true,
+        "templates": [
+            "omeka/site/item/browse.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/resource-page-block-layout/linked-resources.phtml",
+            "common/linked-resources.phtml",
+            "common/linked-resources-search.phtml",
+            "common/linked-resources-table.phtml",
+            "common/pagination.phtml",
+            "layout/layout.phtml"
+        ]
+    },
     "items-browse.en": {
         "url": "/s/westafrica/item?sort_by=title&sort_order=asc",
         "lang": "en-US",
