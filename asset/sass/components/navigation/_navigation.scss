@@ -164,8 +164,10 @@
                 // instead of the toggle sliding back over it: a negative
                 // margin put the toggle's first 12px under the link, and axe
                 // measured the clear target at 16px. The active marker ends
-                // at the label's text either way.
-                a {
+                // at the label's text either way. Child-scoped: a bare `a`
+                // also matched every dropdown link and, outranking the panel
+                // rule below, left long entries flush with the panel edge.
+                > a {
                     margin-inline-end: 0;
                     padding-inline-end: 0;
                 }
