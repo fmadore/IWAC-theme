@@ -254,16 +254,27 @@ Its label is `--ink-on-primary`, never `--white` — here and in both modules. D
 dark ink there (6.10:1). The light-only scans stayed green on that for every submit and
 IwacSearch's active tab until the token landed.
 
-### jQuery is deferred, so every external head script must be too
+### Head scripts are moved to the end of `<body>`, never deferred
 
-`layout.phtml` defers jQuery and Omeka's `global.js` (worth ~400ms of mobile FCP). A module
-script that stays synchronous then runs before jQuery exists: from 2.19 to the 2026-10
-fix, the Mapping module's `mapping-show.js` threw `$ is not defined` and every place
-record showed a 700px blank map, because the original measurement covered inline scripts
-and never a page with an external module script. The `DeferHeadScripts` helper now defers
-every external classic head script (not modules, JSON islands or `async`), which keeps
-document order, so modules run after jQuery. `e2e/live.spec.js` fails on any page error
-and samples a place record on both sites, which is the check that was missing.
+jQuery left the render path in 2.19 (worth ~400ms of mobile FCP). It went there by
+`defer`, and deferring cannot keep the order module scripts were written against: twice
+it broke every place record's map. 2.19–2.23 deferred only jQuery, so the Mapping
+module's synchronous `mapping-show.js` threw `$ is not defined`. 2.24 deferred every
+external head script, and that broke differently, because **an inline block cannot be
+deferred** (Mapping's inline credentials block ran before `mapping-basemap.js`:
+`MappingBasemap is not defined`) and **a deferred jQuery fires `ready` early**: it finds
+`readyState` already `interactive`, so `ready` goes on a timer instead of waiting for
+`DOMContentLoaded`, and that timer can land between two deferred scripts
+(`L.Control.FitBounds is not a constructor`, a blank map whenever it won the race).
+
+So `MoveBlockingHeadScripts` takes every parser-blocking script out of the `<head>` —
+jQuery, `global.js`, module scripts *and the inline blocks between them* — and
+`layout.phtml` prints them, in order and synchronously, at the end of `<body>` ahead of
+`inlineScript()`. Modules, `defer`/`async` scripts and data islands stay in the head.
+Don't reintroduce `defer` on jQuery: a test refuses it. `e2e/live.spec.js` fails on any
+page error and samples a place record on both sites. It caught both breakages, but only
+after the release was installed. Simulate a head change against live HTML before
+shipping it, by rewriting the document in a Playwright route.
 
 ### Icons are Lucide masks — and masks need a forced-colors colour
 

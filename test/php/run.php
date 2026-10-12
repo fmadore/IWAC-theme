@@ -116,51 +116,83 @@ namespace IwacThemeTest {
         same(['bibo:shortDescription', 'dcterms:tableOfContents'], $helper($onTemplate(21)));
     });
 
-    test('DeferHeadScripts defers every external classic script (regression: Mapping "$ is not defined")', function () {
-        // What headScript()->getContainer() holds: one stdClass per script.
+    test('MoveBlockingHeadScripts takes every parser-blocking script, inline ones in place (regression: Mapping "MappingBasemap is not defined")', function () {
+        // What headScript()->getContainer() holds: one stdClass per script, in
+        // the shape a live place record has — Mapping's inline credentials block
+        // sits between mapping-basemap.js and the scripts after it.
         $item = static fn (string $type, array $attributes, ?string $source = null) => (object) [
             'type' => $type,
             'attributes' => $attributes,
             'source' => $source,
         ];
         $container = new \ArrayObject([
-            'jquery' => $item('text/javascript', ['src' => '/application/asset/vendor/jquery/jquery.min.js', 'defer' => 'defer']),
-            'inline' => $item('text/javascript', [], 'window.Omeka=window.Omeka||{};'),
-            'leaflet' => $item('text/javascript', ['src' => '/modules/Mapping/asset/node_modules/leaflet/dist/leaflet.js']),
-            'mapping' => $item('text/javascript', ['src' => '/modules/Mapping/asset/js/mapping-show.js']),
-            'untyped' => $item('', ['src' => '/modules/Other/asset/js/other.js']),
-            'module' => $item('module', ['src' => '/modules/Mirador/asset/js/mirador-4.mjs']),
-            'async' => $item('text/javascript', ['src' => '/modules/Async/asset/js/a.js', 'async' => 'async']),
-            'ldjson' => $item('application/ld+json', [], '{"@context":"https://schema.org"}'),
-            'citation' => $item('text/javascript', ['src' => '/themes/IWAC-theme/asset/js/citation.js?v=2.23.0']),
-            'moduleCitation' => $item('text/javascript', ['src' => '/modules/Other/asset/js/citation.js']),
+            $item('text/javascript', ['src' => '/application/asset/vendor/jquery/jquery.min.js']),
+            $item('text/javascript', ['src' => '/application/asset/js/global.js']),
+            $item('text/javascript', ['src' => '/modules/Mapping/asset/js/mapping-basemap.js']),
+            $item('text/javascript', [], 'MappingBasemap.credentials.CartoDB.apikey = "";'),
+            $item('module', ['src' => '/modules/Mirador/asset/js/mirador-4.mjs']),
+            $item('text/javascript', ['src' => '/modules/Mapping/asset/js/mapping-show.js']),
+            $item('text/javascript', ['src' => '/modules/IwacSearch/asset/dist/header.js', 'defer' => 'defer']),
+            $item('text/javascript', ['src' => '/modules/Async/asset/js/a.js', 'async' => 'async']),
+            $item('text/javascript', ['async' => 'async'], 'window.inlineAsync = 1;'),
+            $item('application/ld+json', [], '{"@context":"https://schema.org"}'),
+            $item('', ['src' => '/modules/Other/asset/js/other.js']),
+            $item('text/javascript', ['src' => '/themes/IWAC-theme/asset/js/citation.js?v=2.23.0']),
+            $item('text/javascript', ['src' => '/modules/Other/asset/js/citation.js']),
+            'not a script',
         ]);
-        $defer = (new \OmekaTheme\Helper\DeferHeadScripts())->setView(new FakeView());
-        same(5, $defer($container), 'leaflet, mapping, untyped, citation and the module citation get deferred');
+        $label = static fn ($i): string => $i instanceof \stdClass ? ($i->attributes['src'] ?? $i->source) : $i;
+        $move = (new \OmekaTheme\Helper\MoveBlockingHeadScripts())->setView(new FakeView());
+        $moved = $move($container);
 
-        foreach (['jquery', 'leaflet', 'mapping', 'untyped', 'citation', 'moduleCitation'] as $key) {
-            same('defer', $container[$key]->attributes['defer'] ?? null, "$key should be deferred");
+        // Order is the whole point: the inline block travels between the two
+        // files it sat between, and nothing is reordered on either side.
+        same([
+            '/application/asset/vendor/jquery/jquery.min.js',
+            '/application/asset/js/global.js',
+            '/modules/Mapping/asset/js/mapping-basemap.js',
+            'MappingBasemap.credentials.CartoDB.apikey = "";',
+            '/modules/Mapping/asset/js/mapping-show.js',
+            'window.inlineAsync = 1;',
+            '/modules/Other/asset/js/other.js',
+            '/themes/IWAC-theme/asset/js/dist/citation.min.js?v=2.23.0',
+            '/modules/Other/asset/js/citation.js',
+        ], array_map($label, $moved));
+        same([
+            '/modules/Mirador/asset/js/mirador-4.mjs',
+            '/modules/IwacSearch/asset/dist/header.js',
+            '/modules/Async/asset/js/a.js',
+            '{"@context":"https://schema.org"}',
+            'not a script',
+        ], array_map($label, array_values($container->getArrayCopy())));
+        // Nothing moved is deferred: running synchronously is what keeps
+        // jQuery's ready waiting for DOMContentLoaded.
+        foreach ($moved as $script) {
+            check(empty($script->attributes['defer']), $label($script) . ' must not be deferred');
         }
-        foreach (['inline', 'module', 'async', 'ldjson'] as $key) {
-            check(!isset($container[$key]->attributes['defer']), "$key must not be deferred");
-        }
-        // Order is the whole point: the container is never reordered.
-        same(['jquery', 'inline', 'leaflet', 'mapping', 'untyped', 'module', 'async', 'ldjson', 'citation', 'moduleCitation'], array_keys($container->getArrayCopy()));
-        // The theme's citation.js is swapped for its minified twin; a module's is not.
-        same('/themes/IWAC-theme/asset/js/dist/citation.min.js?v=2.23.0', $container['citation']->attributes['src']);
-        same('/modules/Other/asset/js/citation.js', $container['moduleCitation']->attributes['src']);
-        // Idempotent: a second pass changes nothing.
-        same(0, $defer($container));
+        // Idempotent: a second pass finds nothing left to move.
+        same([], $move($container));
     });
 
-    test('the layout runs the head-script defer pass after view.layout', function () {
+    test('the layout moves the head scripts after view.layout and prints them ahead of the body scripts', function () {
         $layout = (string) file_get_contents(ROOT . '/view/layout/layout.phtml');
         $trigger = strpos($layout, "\$this->trigger('view.layout');");
-        $pass = strpos($layout, '$this->DeferHeadScripts($this->headScript()->getContainer())');
-        check($trigger !== false && $pass !== false, 'view.layout trigger or defer pass missing from layout.phtml');
-        check($pass > $trigger, 'the defer pass must run after modules enqueue on view.layout');
+        $pass = strpos($layout, '$bodyEndScripts = $this->MoveBlockingHeadScripts($this->headScript()->getContainer());');
+        $head = strpos($layout, '<?php echo $this->headScript(); ?>');
+        $headClose = strpos($layout, '</head>');
+        $restore = strpos($layout, '$this->headScript()->getContainer()->exchangeArray($bodyEndScripts);');
+        $footer = strpos($layout, "partial('common/footer')");
+        $inline = strpos($layout, 'echo $this->inlineScript()');
+        check($trigger !== false && $pass !== false, 'view.layout trigger or move pass missing from layout.phtml');
+        check($pass > $trigger, 'the move pass must run after modules enqueue on view.layout');
+        check($head !== false && $head > $pass && $head < $headClose, 'the <head> must print what the pass left in it');
+        check($restore !== false && $restore > $footer && $restore < $inline, 'the moved scripts must print after the content, ahead of inlineScript()');
+        $bodyEcho = strpos($layout, 'echo $this->headScript();', (int) $restore);
+        check($bodyEcho !== false && $bodyEcho < $inline, 'the moved scripts must be echoed before inlineScript()');
+        // A deferred jQuery fires `ready` before the deferred scripts behind it.
+        check(!preg_match("/prependFile\\([^;]*jquery\\.min\\.js[^;]*defer/", $layout), 'jQuery must not be deferred');
         $ini = (string) file_get_contents(ROOT . '/config/theme.ini');
-        check((bool) preg_match('/^helpers\[\] = "DeferHeadScripts"\r?$/m', $ini), 'DeferHeadScripts is not registered in theme.ini');
+        check((bool) preg_match('/^helpers\[\] = "MoveBlockingHeadScripts"\r?$/m', $ini), 'MoveBlockingHeadScripts is not registered in theme.ini');
     });
 
     // ---- Templates ----------------------------------------------------------

@@ -117,63 +117,24 @@ $this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
 // Besley (Clarendon) carries the masthead + headlines; three static faces
 // keep the request small. Source Serif 4 stays for long-form reading.
 $this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=besley:500,600,800|public-sans:ital,wght@0,400..700;1,400|source-serif-4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap');
-// jQuery + Omeka's global.js are DEFERRED, with a namespace bridge around them.
-//
-// They loaded render-blocking until 2.19, because deferring them (tried in
-// v2.6.14) threw "Omeka is not defined": core emits an *inline* jsTranslate
-// block that assigns `Omeka.jsTranslate = …` while the parser is still running,
-// so the `Omeka` global has to exist by then. That much was correct. What was
-// never checked is how wide the problem actually is — and measured across all
-// twelve live page types (homepage, item, browse, item-set, index, the two
-// dashboard pages, both languages), that inline jsTranslate assignment is the
-// ONLY parse-time reference to `Omeka` or `$` anywhere on the public site. No
-// inline script calls `$(…)` at all.
-//
-// So it is one problem, and the theme owns it: the theme is what calls
-// jsTranslate(). The bridge below is three tiny inline blocks:
-//
-//   1. before  — create the namespace so the inline assignment cannot throw;
-//   2. after   — keep a reference to whatever got attached to it;
-//   3. module  — re-attach those members once global.js has run.
-//
-// Step 3 is needed because global.js opens with `var Omeka = {…}`, a top-level
-// assignment that REPLACES the object rather than extending it, so anything the
-// parse-time blocks hung on it would otherwise be silently dropped. It merges
-// members instead of naming jsTranslate, so an inline block from some future
-// module survives the same way without another edit here.
-//
-// Blocks 2 and 3 are emitted as literal markup after `echo $this->headScript()`
-// (see <head> below) rather than through appendScript: that puts block 2 after
-// EVERY inline block any module contributed, so it captures their additions too,
-// and it pins block 3's `type="module"` instead of trusting the helper to render
-// an unusual type. The re-attach is an inline module rather than a file because
-// inline modules are deferred and execute in document order among the deferred
-// classic scripts — so it lands after global.js without costing a request.
-//
-// Ordering is safe on the other side too. global.js has exactly two top-level
-// statements, `var Omeka = {…}` and `$(document).ready(…)`; defer preserves
-// document order so jQuery is always there first, and ready callbacks fire on
-// DOMContentLoaded, which is after every deferred script has run.
-//
-// What that measurement missed is EXTERNAL module scripts. A classic script a
-// module enqueues through headScript() stayed synchronous, so it ran during
-// parsing, before the deferred jQuery: from 2.19 to 2.23 the Mapping module's
-// mapping-show.js threw "$ is not defined" and every place record showed a
-// 700px blank map. So deferring jQuery commits the theme to deferring every
-// external classic script in the <head> — the DeferHeadScripts pass below,
-// after view.layout has let every module enqueue. Deferred scripts run in
-// document order, so each still runs after jQuery and after whatever it was
-// enqueued behind. The live smoke suite (e2e/live.spec.js) fails on any page
-// error and samples a place record, which is how this would have been caught.
+// jQuery + Omeka's global.js are enqueued as ordinary synchronous head scripts,
+// and leave the <head> with every other parser-blocking script in the pass
+// below — they run at the end of <body>, in the order enqueued.
 //
 // Worth ~400ms of FCP on mobile: jquery.min.js alone is 31 KB of the ~68 KB of
 // render-blocking bytes, and it was finishing at 1075ms on a throttled Moto G4,
 // holding the theme's own stylesheet behind it.
-$deferAttr = ['defer' => 'defer'];
-$this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'), 'text/javascript', $deferAttr);
-$this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'), 'text/javascript', $deferAttr);
-// (1) Namespace must exist before core's inline jsTranslate block runs.
-$this->headScript()->appendScript('window.Omeka=window.Omeka||{};');
+//
+// They are NOT deferred, which is what 2.19–2.24 did. Deferring needed a
+// three-block bridge for core's inline `Omeka.jsTranslate = …` (an inline block
+// cannot be deferred, so it ran before global.js existed), then a pass deferring
+// every module script so mapping-show.js ran after jQuery — and still broke
+// Mapping, in the two ways helper/MoveBlockingHeadScripts.php describes: an
+// inline block ahead of the library it configures, and jQuery firing `ready`
+// before the deferred scripts behind it had run. Moving the scripts instead of
+// deferring them keeps document order whole, so none of that is needed.
+$this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'));
+$this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'));
 $this->jsTranslate();
 $this->trigger('view.layout');
 
@@ -203,24 +164,22 @@ try {
     // Non-fatal: if the placeholder shape changes upstream, keep the stylesheets.
 }
 
-// Defer every external classic script in the <head> — module scripts included —
-// so each runs after the deferred jQuery, in the order it was enqueued (see the
-// note beside the jQuery prependFile() above, and helper/DeferHeadScripts.php
-// for what is left alone and why). Done here rather than at each enqueue site
-// because the modules own those; this is the same "the theme knows what its own
-// <head> needs" pass as the dead-CSS filter above.
+// Take every parser-blocking script — jQuery, global.js, each module's classic
+// scripts and the inline blocks between them — out of the <head>, in order, to
+// print at the end of <body> (see the note beside the jQuery prependFile()
+// above, and helper/MoveBlockingHeadScripts.php for what stays and why). Done
+// here, after view.layout has let every module enqueue, rather than at each
+// enqueue site, because the modules own those; this is the same "the theme
+// knows what its own <head> needs" pass as the dead-CSS filter above.
 //
 // The pass also serves the theme's minified citation.js (asset/js/dist/, see
-// scripts/build-js.js) in place of the source file IWAC-SEO enqueues. That
-// script is the "How to cite" panel's progressive enhancement — vanilla
-// (IWACUtils.onReady, no jQuery) — so deferring it changes nothing but when it
-// runs, which is no longer before first paint.
+// scripts/build-js.js) in place of the source file IWAC-SEO enqueues.
+$bodyEndScripts = [];
 try {
-    $this->DeferHeadScripts($this->headScript()->getContainer());
+    $bodyEndScripts = $this->MoveBlockingHeadScripts($this->headScript()->getContainer());
 } catch (\Throwable $e) {
-    // Non-fatal for the theme's own scripts (slower, not broken). A module
-    // script that needs jQuery would throw again — the live smoke suite's
-    // page-error check is the net for that.
+    // Non-fatal: the container is only replaced once the pass has finished, so
+    // the scripts stay in the <head> — render-blocking again, but in order.
 }
 
 if ($userBar) {
@@ -269,12 +228,6 @@ if ($layoutIsHomepage) {
 		<?php echo $this->headLink(); ?>
 		<?php echo $this->headStyle(); ?>
 		<?php echo $this->headScript(); ?>
-		<?php // (2) and (3) of the Omeka namespace bridge — see the note beside the
-		      // headScript() calls above. (2) runs at parse time, after every inline
-		      // block in the <head>; (3) is a module, so it runs after the deferred
-		      // jQuery and global.js, whose `var Omeka = {…}` replaced the object. ?>
-		<script>window.__iwacOmekaEarly=window.Omeka;</script>
-		<script type="module">var e=window.__iwacOmekaEarly,o=window.Omeka;if(e&&o&&e!==o){for(var k in e){if(!(k in o)){o[k]=e[k];}}}</script>
 
 		<style type="text/css" media="screen">
 			:root {
@@ -386,6 +339,12 @@ if ($layoutIsHomepage) {
 		if (stripos($pageContent, 'mirador') !== false) {
 			$this->inlineScript()->prependFile($this->assetUrl('js/dist/mirador-theme-sync.min.js'));
 		}
+		// The head's parser-blocking scripts, taken out of the <head> by the
+		// MoveBlockingHeadScripts pass, run first: ahead of the body's own, as
+		// they did from the <head>. headScript() renders them so they are
+		// printed exactly as it printed them there.
+		$this->headScript()->getContainer()->exchangeArray($bodyEndScripts);
+		echo $this->headScript();
 		echo $this->inlineScript()
 			->prependFile($this->assetUrl('js/dist/pagination-scroll.min.js'))
 			->prependFile($this->assetUrl('js/dist/theme-toggle.min.js'))
