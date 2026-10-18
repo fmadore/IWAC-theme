@@ -1,6 +1,6 @@
 /**
- * Linked Resources - Client-side search/sort and AJAX-swapped
- * facet filtering and pagination.
+ * Linked Resources - AJAX-swapped search, sort, facet filtering and
+ * pagination.
  *
  * A root element is any `.linked-resources` container (the linked-resources
  * page block on item pages, the item-set ledger on item-set pages — both can
@@ -11,9 +11,15 @@
  * parse out the replacement root by id, and swap its inner HTML in place.
  * history.pushState keeps the URL bookmarkable.
  *
+ * The search and the sort run on the server, over every resource the root
+ * lists rather than the rows on screen: each root's `.linked-resources__query`
+ * is a plain GET form (it works without this script), which is submitted as
+ * the reader types or picks an order, and the answer swaps in like a page.
+ *
  * Each root keeps its state in its own query parameters, named in its
- * data-query-params (the block: lr_page and resource_property; the item-set
- * ledger: page), so one URL renders both roots where they stand. A control's
+ * data-query-params (the block: lr_page, resource_property, lr_q and
+ * lr_sort; the item-set ledger: page, its sort and its title row), so one
+ * URL renders both roots where they stand. A control's
  * href was rendered with the query as it stood then, so once the other root
  * has swapped it carries that root's old state — followed as-is, it would
  * put the other root back on reload or Back. composeUrl() takes the swapping
@@ -21,15 +27,17 @@
  * current address.
  *
  * Status strings arrive as data attributes on the root
- * (data-no-results-text / data-results-found-text), never as globals.
+ * (data-no-results-text / data-results-found-text / data-page-results-text,
+ * with the result count on data-total), never as globals.
  */
 (function () {
     'use strict';
 
     const ROOT_SELECTOR = '.linked-resources';
 
-    // Original row order per root id, for the "Default" sort reset.
-    const originalOrders = new Map();
+    // A one-letter title search matches nearly everything and costs a whole
+    // query; the search starts at two (or when the field is emptied).
+    const MIN_SEARCH = 2;
 
     // Cache of in-flight and completed prefetch promises keyed by URL, so
     // hovering a pagination link and then clicking it reuses the warmed request.
@@ -37,6 +45,9 @@
     const requestGenerations = new Map();
     const activeRequests = new Map();
     const currentUrls = new Map();
+    // Per root: whether its last history entry was a search ('query') or a
+    // page / relation change ('navigation').
+    const lastSwapKinds = new Map();
 
     function linkedResourceHistory() {
         const value = history.state && history.state.linkedResources;
@@ -102,34 +113,9 @@
     }
 
     function bindRoot(root) {
-        const searchInput = root.querySelector('.linked-resources__search-input');
-        const sortSelect = root.querySelector('.linked-resources__sort-select');
-        const tbody = root.querySelector('.linked-resources-table tbody');
-        const statusRegion = root.querySelector('.linked-resources__status');
-        const noResultsEl = root.querySelector('.linked-resources__no-results');
-
-        // Snapshot original row order for "Default" sort reset.
-        if (tbody) {
-            originalOrders.set(root.id, Array.from(tbody.querySelectorAll('tr')));
-        }
-
-        if (searchInput && tbody) {
-            const handleSearch = IWACUtils.debounce(
-                () => filterResources(root, tbody, searchInput, noResultsEl, statusRegion),
-                200
-            );
-            searchInput.addEventListener('input', handleSearch);
-            searchInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    searchInput.value = '';
-                    filterResources(root, tbody, searchInput, noResultsEl, statusRegion);
-                    searchInput.focus();
-                }
-            });
-        }
-
-        if (sortSelect && tbody) {
-            sortSelect.addEventListener('change', () => sortResources(root, tbody, sortSelect));
+        const form = root.querySelector('form.linked-resources__query');
+        if (form) {
+            bindQueryForm(root, form);
         }
 
         // AJAX: facet chips.
@@ -162,85 +148,74 @@
         }
     }
 
-    function filterResources(root, tbody, searchInput, noResultsEl, statusRegion) {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-        const rows = tbody.querySelectorAll('tr');
-        let visibleCount = 0;
+    /**
+     * The search form: submitted on a pause in typing, on a new order, on
+     * Enter, and emptied by Escape. The Apply button is only for readers
+     * without this script — a select cannot submit itself.
+     */
+    function bindQueryForm(root, form) {
+        const input = form.querySelector('.linked-resources__search-input');
+        const sortSelect = form.querySelector('.linked-resources__sort-select');
+        const apply = form.querySelector('.linked-resources__apply');
+        if (apply) apply.hidden = true;
 
-        rows.forEach((row) => {
-            const title = (row.dataset.title || '').toLowerCase();
-            const matches = !searchTerm || title.includes(searchTerm);
-            row.style.display = matches ? '' : 'none';
-            row.setAttribute('aria-hidden', String(!matches));
-            if (matches) visibleCount++;
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitQuery(form);
         });
 
-        if (noResultsEl) {
-            noResultsEl.hidden = !(searchTerm && visibleCount === 0);
-        }
-
-        announceStatus(root, statusRegion, searchTerm, visibleCount);
-    }
-
-    function sortResources(root, tbody, sortSelect) {
-        const sortValue = sortSelect.value;
-        let rows;
-
-        if (sortValue === 'default') {
-            rows = (originalOrders.get(root.id) || []).slice();
-        } else {
-            rows = Array.from(tbody.querySelectorAll('tr'));
-            rows.sort((a, b) => {
-                switch (sortValue) {
-                    case 'alpha-asc':
-                        return (a.dataset.title || '').localeCompare(
-                            b.dataset.title || '',
-                            undefined,
-                            { sensitivity: 'base' }
-                        );
-                    case 'alpha-desc':
-                        return (b.dataset.title || '').localeCompare(
-                            a.dataset.title || '',
-                            undefined,
-                            { sensitivity: 'base' }
-                        );
-                    case 'date-desc':
-                        return compareDates(b.dataset.date, a.dataset.date);
-                    case 'date-asc':
-                        return compareDates(a.dataset.date, b.dataset.date);
-                    default:
-                        return 0;
+        if (input) {
+            // What the form last asked the server for, so a pause that leaves
+            // the search as it was (a typed-then-erased letter) asks nothing.
+            form.dataset.submitted = input.value.trim();
+            const handleInput = IWACUtils.debounce(() => {
+                const value = input.value.trim();
+                if (value === form.dataset.submitted) return;
+                if (value !== '' && value.length < MIN_SEARCH) return;
+                submitQuery(form);
+            }, 300);
+            input.addEventListener('input', handleInput);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && input.value !== '') {
+                    e.preventDefault();
+                    input.value = '';
+                    submitQuery(form);
                 }
             });
         }
 
-        const fragment = document.createDocumentFragment();
-        rows.forEach((row) => fragment.appendChild(row));
-        tbody.appendChild(fragment);
-    }
-
-    function compareDates(dateA, dateB) {
-        const a = dateA ? new Date(dateA).getTime() : NaN;
-        const b = dateB ? new Date(dateB).getTime() : NaN;
-        const aNaN = Number.isNaN(a);
-        const bNaN = Number.isNaN(b);
-        if (aNaN && bNaN) return 0;
-        if (aNaN) return 1;
-        if (bNaN) return -1;
-        return a - b;
-    }
-
-    function announceStatus(root, statusRegion, searchTerm, visible) {
-        if (!statusRegion) return;
-        if (!searchTerm) {
-            statusRegion.textContent = '';
-        } else if (visible === 0) {
-            statusRegion.textContent = root.dataset.noResultsText || 'No resources found';
-        } else {
-            const message = (root.dataset.resultsFoundText || '{count} resources found')
-                .replace('{count}', visible);
-            statusRegion.textContent = message;
+        if (sortSelect) {
+            sortSelect.addEventListener('change', () => submitQuery(form));
         }
+    }
+
+    /**
+     * The URL the form would submit to: its fields, empty ones left out —
+     * and with them the hidden fields that only qualify an empty one
+     * (data-requires names it: the ledger's "title contains" row is three
+     * hidden fields around its text, meaningless without it).
+     */
+    function formUrl(form) {
+        const target = new URL(form.getAttribute('action') || window.location.href, window.location.href);
+        const params = new URLSearchParams();
+        const filled = (name) => [...form.elements].some((el) => el.name === name && el.value.trim() !== '');
+        for (const el of form.elements) {
+            if (!el.name || el.disabled || el.type === 'submit') continue;
+            const text = el.value.trim();
+            if (text === '') continue;
+            if (el.dataset.requires && !filled(el.dataset.requires)) continue;
+            params.append(el.name, text);
+        }
+        target.search = params.toString();
+        return target.href;
+    }
+
+    function submitQuery(form) {
+        const root = form.closest(ROOT_SELECTOR);
+        if (!root) return;
+        const input = form.querySelector('.linked-resources__search-input');
+        form.dataset.submitted = input ? input.value.trim() : '';
+        swapContent(root.id, composeUrl(root, formUrl(form)), { query: true });
     }
 
     // ---- AJAX swap ----------------------------------------------------------
@@ -281,6 +256,7 @@
         const root = document.getElementById(rootId);
         if (!root) return;
         const skipHistory = options && options.skipHistory;
+        const fromQuery = Boolean(options && options.query);
 
         const generation = (requestGenerations.get(rootId) || 0) + 1;
         requestGenerations.set(rootId, generation);
@@ -316,8 +292,20 @@
                 throw new Error(`Response did not contain #${rootId}`);
             }
 
+            const current = document.getElementById(rootId);
+            if (!current) return;
+            // Focus outlives the swap. A reader in the search field may have
+            // typed on while the request was out, and the response's field
+            // holds what was asked, not what is there now: keep their text
+            // and caret, and ask again if it moved on. A reader on the sort
+            // select stays on it.
+            const active = document.activeElement;
+            const activeId = active && active !== current && current.contains(active) && active.id ? active.id : null;
+            const liveInput = active && active.classList && active.classList.contains('linked-resources__search-input')
+                ? active
+                : null;
             const replacement = document.importNode(newRoot, true);
-            root.replaceWith(replacement);
+            current.replaceWith(replacement);
             currentUrls.set(rootId, url);
             if (!skipHistory) {
                 const linkedResources = Object.assign(
@@ -325,24 +313,61 @@
                     linkedResourceHistory(),
                     { [rootId]: url }
                 );
-                history.pushState(
-                    Object.assign({}, history.state, { linkedResources }),
-                    '',
-                    url
-                );
+                const state = Object.assign({}, history.state, { linkedResources });
+                // One entry per search, not one per pause in typing: a
+                // search or sort that follows another replaces it, so Back
+                // leaves the search rather than unpicking it letter by letter.
+                if (fromQuery && lastSwapKinds.get(rootId) === 'query') {
+                    history.replaceState(state, '', url);
+                } else {
+                    history.pushState(state, '', url);
+                }
+                lastSwapKinds.set(rootId, fromQuery ? 'query' : 'navigation');
             }
             bindRoot(replacement);
 
-            // The clicked control was destroyed by the swap — put keyboard
-            // focus back on the region so tabbing resumes in place, and let
-            // the live region announce the update.
-            replacement.setAttribute('tabindex', '-1');
-            replacement.focus({ preventScroll: true });
+            const refocus = activeId ? replacement.querySelector(`[id="${activeId}"]`) : null;
+            if (refocus) {
+                if (liveInput && refocus.classList.contains('linked-resources__search-input')) {
+                    const { selectionStart, selectionEnd } = liveInput;
+                    refocus.value = liveInput.value;
+                    refocus.focus({ preventScroll: true });
+                    try {
+                        refocus.setSelectionRange(selectionStart, selectionEnd);
+                    } catch {
+                        // Where an input type has no selection, the caret
+                        // simply lands at the end.
+                    }
+                    if (refocus.form && refocus.value.trim() !== refocus.form.dataset.submitted) {
+                        refocus.dispatchEvent(new Event('input'));
+                    }
+                } else {
+                    refocus.focus({ preventScroll: true });
+                }
+            } else {
+                // The clicked control was destroyed by the swap — put
+                // keyboard focus back on the region so tabbing resumes in
+                // place.
+                replacement.setAttribute('tabindex', '-1');
+                replacement.focus({ preventScroll: true });
+            }
+
+            // Let the live region announce the update: the search's result
+            // count after a search or a new order, the rows on screen after
+            // a page or a relation.
             const statusRegion = replacement.querySelector('.linked-resources__status');
             const rowCount = replacement.querySelectorAll('.linked-resources-table tbody tr').length;
             if (statusRegion) {
-                statusRegion.textContent = (replacement.dataset.pageResultsText || '{count} resources on this page')
-                    .replace('{count}', rowCount);
+                const total = Number(replacement.dataset.total);
+                if (fromQuery && rowCount === 0) {
+                    statusRegion.textContent = replacement.dataset.noResultsText || 'No resources found';
+                } else if (fromQuery) {
+                    statusRegion.textContent = (replacement.dataset.resultsFoundText || '{count} resources found')
+                        .replace('{count}', Number.isFinite(total) ? total : rowCount);
+                } else {
+                    statusRegion.textContent = (replacement.dataset.pageResultsText || '{count} resources on this page')
+                        .replace('{count}', rowCount);
+                }
             }
         } catch (err) {
             if (err.name === 'AbortError' || generation !== requestGenerations.get(rootId)) {
@@ -361,6 +386,7 @@
 
     function handlePopState(event) {
         if (!event.state || !event.state.linkedResources) return;
+        lastSwapKinds.clear();
         Object.entries(event.state.linkedResources).forEach(([rootId, url]) => {
             if (document.getElementById(rootId) && currentUrls.get(rootId) !== url) {
                 swapContent(rootId, url, { skipHistory: true });

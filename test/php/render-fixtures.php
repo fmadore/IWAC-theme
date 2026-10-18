@@ -308,7 +308,7 @@ function page(string $locale, array $paths, array $query, array $route, callable
         'alternates' => alternates($paths),
         'blocks' => $options['blocks'] ?? [],
         'browse' => $options['browse'] ?? null,
-    ]);
+    ] + (isset($options['itemSetSearch']) ? ['itemSetSearch' => $options['itemSetSearch']] : []));
     $xhr = (bool) ($options['xhr'] ?? false);
     if ($xhr) {
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'fetch';
@@ -351,21 +351,58 @@ function itemPage(string $locale): array
  * items (five a page through ?page=) — the two `.linked-resources` roots
  * linked-resources.js keeps apart.
  */
-function itemSetPage(array $query = [], bool $xhr = false): array
+/**
+ * IwacSearch's item-set surface, as its iwacItemSetSearch helper prints it
+ * (view/common/iwac-item-set-search.phtml around common/iwac-search-mount),
+ * bootstrap trimmed to the keys that differ from any page block. A copy: the
+ * theme does not render it.
+ */
+function itemSetSearchSurface(): string
+{
+    return <<<'HTML'
+        <section
+            class="iwac-search-block iwac-search-block--full iwac-search-block--item-set"
+            aria-label="Search the items in this set"
+        >
+            <noscript>
+                <p>
+                    Search requires JavaScript.
+                    <a href="/s/westafrica/item?item_set_id=2200">Browse the items instead.</a>
+                </p>
+            </noscript>
+            <div data-iwac-search-root data-iwac-block-id="set" class="iwac-search-block__root" id="iwac-search-root-set">
+                <div class="iwac-search-block__skeleton" aria-hidden="true"></div>
+            </div>
+            <script type="application/json" id="iwac-search-state-set">{"block_id":"set","mode":"full","locked_filters":"item_set_ids:=[2200]"}</script>
+        </section>
+        HTML;
+}
+
+function itemSetPage(array $query = [], bool $xhr = false, bool $setSearch = false): array
 {
     $records = records('en');
     $perPage = 5;
     $page = (int) ($query['page'] ?? 1);
+    // Core's browse narrows the set's items by the ledger's title search
+    // (?property[title][text]=), as the API does for any property row.
+    $articles = $records['articles'];
+    $title = $query['property']['title']['text'] ?? '';
+    if ($title !== '') {
+        $articles = array_values(array_filter(
+            $articles,
+            static fn (Resource $article): bool => str_contains(Api::fold($article->displayTitle()), Api::fold($title)),
+        ));
+    }
     return page('en', ['en' => '/s/westafrica/item-set/2200', 'fr' => '/s/afrique_ouest/item-set/2200'], $query, [],
         static fn (FakeView $view): string => $view->render('omeka/site/item/browse.phtml', [
             'itemSet' => $records['itemSet'],
-            'items' => array_slice($records['articles'], ($page - 1) * $perPage, $perPage),
+            'items' => array_slice($articles, ($page - 1) * $perPage, $perPage),
         ]),
         [
             'blocks' => ['main' => ['IwacThemeTest\Fixtures\valuesBlock', 'IwacThemeTest\Fixtures\linkedResourcesBlock']],
-            'browse' => [count($records['articles']), $page, $perPage],
+            'browse' => [count($articles), $page, $perPage],
             'xhr' => $xhr,
-        ],
+        ] + ($setSearch ? ['itemSetSearch' => itemSetSearchSurface()] : []),
     );
 }
 
@@ -464,17 +501,29 @@ function fixtures(): array
         'item.en' => static fn () => itemPage('en'),
         'item.fr' => static fn () => itemPage('fr'),
         'item-set.en' => static fn () => itemSetPage(),
+        // The same page where IwacSearch covers the set: its surface in place
+        // of the ledger.
+        'item-set.search.en' => static fn () => itemSetPage([], false, true),
         // What linked-resources.js fetches (X-Requested-With: fetch) when a
         // facet chip or the ledger's pager is used on item-set.en.
-        'item-set.xhr-publisher.en' => static fn () => itemSetPage(['resource_property' => 'items:5-86'], true),
-        'item-set.xhr-subject.en' => static fn () => itemSetPage(['resource_property' => 'items:3-86,329'], true),
+        'item-set.xhr-publisher.en' => static fn () => itemSetPage(['resource_property' => 'items:5'], true),
+        'item-set.xhr-subject.en' => static fn () => itemSetPage(['resource_property' => 'items:3'], true),
+        // ...and when a search is typed or an order picked: the block's form
+        // (its search, then its order — the select always has a value), and
+        // the ledger's title row.
+        'item-set.xhr-search.en' => static fn () => itemSetPage(['lr_q' => 'ramadan', 'lr_sort' => 'date-desc'], true),
+        'item-set.xhr-search-none.en' => static fn () => itemSetPage(['lr_q' => 'zzz', 'lr_sort' => 'date-desc'], true),
+        'item-set.xhr-sort-title.en' => static fn () => itemSetPage(['lr_sort' => 'title-asc'], true),
+        'item-set.xhr-ledger-search.en' => static fn () => itemSetPage(['property' => ['title' => [
+            'joiner' => 'and', 'property' => 'dcterms:title', 'type' => 'in', 'text' => 'ramadan',
+        ]]], true),
         // The ledger's page 2. The block in it is still on its own first page.
         'item-set.xhr-page-2.en' => static fn () => itemSetPage(['page' => '2'], true),
         // Once the other root has moved, a request also carries that root's
         // state from the address, appended after the control's own: the
         // ledger's Next after the Subject chip, the block's Next after the
         // ledger's.
-        'item-set.xhr-page-2-subject.en' => static fn () => itemSetPage(['page' => '2', 'resource_property' => 'items:3-86,329'], true),
+        'item-set.xhr-page-2-subject.en' => static fn () => itemSetPage(['page' => '2', 'resource_property' => 'items:3'], true),
         'item-set.xhr-both-page-2.en' => static fn () => itemSetPage(['lr_page' => '2', 'page' => '2'], true),
         'items-browse.en' => static fn () => itemsBrowsePage(),
         'page-about.en' => static fn () => aboutPage('en'),

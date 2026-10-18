@@ -308,6 +308,15 @@ itself with `$pageParam`; `linked-resources.js` composes each request from its o
 parameters (`data-query-params`) plus the address bar's for the other. A second paginated
 listing on any page needs the same: its own parameter, and never a call to core's helper.
 
+The same shared state bites through the API. `api()->search()` with `page`/`per_page`
+sets core's one `Omeka\Paginator` — the object `pagination()` renders — so the Linked
+resources block, which lists the items pointing at a record through an item search
+(`LinkedResourcesPaging::apiQuery()`), pages with `limit`/`offset`. That search is what
+lets its title search (`lr_q`) and sort (`lr_sort`) run over every linked item: core's
+`displaySubjectValues()` takes neither, and through 2.24 both only rearranged the 25 rows
+on screen. Core is still called, for one row, because it is the only public source of
+the relation chips.
+
 ### Read a module's rendered HTML before styling it
 
 Omeka modules ship their own markup and vendor CSS (tablesaw; RightsStatements inline-styles

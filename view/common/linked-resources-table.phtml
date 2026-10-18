@@ -5,8 +5,9 @@
  * Used by common/linked-resources.phtml (subject values on item pages,
  * with a Relation column) and omeka/site/item/browse.phtml (an item
  * set's items). Both render inside a `.linked-resources` root so
- * linked-resources.js provides the client title filter, sorting and
- * AJAX pagination.
+ * linked-resources.js provides the search, the sort and AJAX pagination —
+ * all of them asked of the server, so the rows here are already the ones
+ * and in the order the reader asked for.
  *
  * Expected variables:
  * - $rows: list of ['resource' => AbstractResourceEntityRepresentation,
@@ -48,22 +49,14 @@ $escapeAttr = $this->plugin('escapeHtmlAttr');
                 $resourceTitle = $resource->displayTitle(null, $valueLang);
                 $resourceUrl = $resource->url();
 
-                // Prefer dcterms:date, fall back to record created date.
-                //
                 // asHtml() hands the value to NumericDataTypes, which renders it
                 // in the site locale — the same formatter the dateline uses, so
                 // the page stops printing a third date format ("2022-11-16"
-                // under "28 DÉCEMBRE 2017"). The raw value stays on data-date,
-                // where linked-resources.js sorts it lexicographically and ISO
-                // is exactly what that wants.
+                // under "28 DÉCEMBRE 2017").
                 $displayDate = '';
-                $sortDate = '';
                 $dctermsDate = $resource->value('dcterms:date', ['default' => null]);
                 if ($dctermsDate) {
                     $displayDate = $dctermsDate->asHtml();
-                    $sortDate = (string) $dctermsDate;
-                } elseif ($resource->created()) {
-                    $sortDate = $resource->created()->format('c');
                 }
 
                 // '' when the resource has no thumbnail. Rendering the link
@@ -73,8 +66,7 @@ $escapeAttr = $this->plugin('escapeHtmlAttr');
                 $thumbnail = $this->thumbnail($resource, 'square', ['alt' => '', 'loading' => 'lazy', 'decoding' => 'async']);
                 ?>
                 <tr class="linked-resources-table__row"
-                    data-title="<?php echo $escapeAttr($resourceTitle); ?>"
-                    data-date="<?php echo $escapeAttr($sortDate); ?>">
+                    data-title="<?php echo $escapeAttr($resourceTitle); ?>">
                     <td class="linked-resources-table__cell linked-resources-table__cell--thumb">
                         <?php if ($thumbnail): ?>
                         <a href="<?php echo $escapeAttr($resourceUrl); ?>"
@@ -88,8 +80,7 @@ $escapeAttr = $this->plugin('escapeHtmlAttr');
                     <td class="linked-resources-table__cell linked-resources-table__cell--title"
                         data-label="<?php echo $escapeAttr($translate('Title')); ?>">
                         <?php // FrenchSpacing on the rendered text only — data-title above
-                              // stays raw so the client title filter still matches what a
-                              // reader types with an ordinary space. ?>
+                              // stays the raw title, the row's name for scripts and tests. ?>
                         <?php // lang: the title is in the record's language
                               // (helper/ResourceLanguage.php), not the page's. ?>
                         <a href="<?php echo $escapeAttr($resourceUrl); ?>"

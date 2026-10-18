@@ -1,14 +1,22 @@
 <?php
-// The block pages through `lr_page`, never core's `page`: on an item set's
-// page `page` is the ledger's (omeka/site/item/browse.phtml), and sharing it
-// turned this block to its own page 2 — usually empty — whenever the ledger
-// moved. helper/LinkedResourcesPaging.php decides it, for this template and
+// The block's state — its page (`lr_page`, never core's `page`), relation
+// filter, title search and sort — is decided in one place,
+// helper/LinkedResourcesPaging.php, for this template and
 // common/linked-resources alike. Helper names are case-sensitive on the
 // server: this must match config/theme.ini's helpers[] spelling exactly.
+//
+// Core is asked for one row only. displaySubjectValues() is still the entry
+// point because it is the only public source of the relation chips (which
+// properties point here, from which resource types) and of the native count;
+// the rows themselves are fetched by common/linked-resources — through the
+// API's item search, which can search and sort every linked item, or, for
+// media and item sets pointing here, through core's own paging. Asking core
+// for its usual 25 would hydrate 25 values nobody renders.
+$paging = $this->LinkedResourcesPaging($resource);
 $options = [
-    'page' => $this->LinkedResourcesPaging($resource)['page'],
-    'perPage' => 25,
-    'resourceProperty' => $this->params()->fromQuery('resource_property'),
+    'page' => 1,
+    'perPage' => 1,
+    'resourceProperty' => $paging['resourceProperty'],
 ];
 if ($this->siteSetting('exclude_resources_not_in_site')) {
     $options['siteId'] = $this->currentSite()->id();
