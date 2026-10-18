@@ -55,13 +55,29 @@ $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
     <?php
     // Ledger table mirroring the item pages' linked-resources section —
     // same classes (the linked-resources CSS applies as-is) and the same
-    // .linked-resources root, so linked-resources.js provides the client
-    // title filter and AJAX pagination here too. The id differs from the
-    // linked-resources page block's so both can coexist on one page, and so
-    // does the query parameter each pages through: this ledger is core's
-    // browse, on `page`; the block is on `lr_page`. data-query-params names
-    // it, so linked-resources.js keeps each root's state in the address
-    // while the other one swaps.
+    // .linked-resources root, so linked-resources.js provides the search
+    // and AJAX pagination here too. The id differs from the linked-resources
+    // page block's so both can coexist on one page, and so does the query
+    // parameter each pages through: this ledger is core's browse, on `page`;
+    // the block is on `lr_page`. data-query-params names this ledger's state,
+    // so linked-resources.js keeps each root's state in the address while the
+    // other one swaps.
+    //
+    // The title search is core's own browse query — one `property` row,
+    // "dcterms:title contains …" — so it searches every item in the set, not
+    // the five on screen, and core's search filters above name it. The row is
+    // keyed `title`, not 0, so it can never overwrite a property filter the
+    // reader arrived with.
+    $titleRow = 'property[title]';
+    $titleFields = [
+        $titleRow . '[joiner]' => 'and',
+        $titleRow . '[property]' => 'dcterms:title',
+        $titleRow . '[type]' => 'in',
+    ];
+    $titleQuery = $this->params()->fromQuery('property');
+    $titleSearch = is_array($titleQuery) && is_array($titleQuery['title'] ?? null) && is_string($titleQuery['title']['text'] ?? null)
+        ? (string) $titleQuery['title']['text']
+        : '';
     $noResultsText = $translate('No resources match your search.');
     $rows = [];
     foreach ($items as $item) {
@@ -70,20 +86,26 @@ $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
     ?>
     <div id="item-set-resources"
          class="linked-resources"
+         data-total="<?php echo $escapeAttr($this->pagination()->getPaginator()->getTotalCount()); ?>"
          data-no-results-text="<?php echo $escapeAttr($noResultsText); ?>"
          data-results-found-text="<?php echo $escapeAttr($translate('{count} resources found')); ?>"
          data-page-results-text="<?php echo $escapeAttr($translate('{count} resources on this page')); ?>"
-         data-query-params="page">
+         data-query-params="<?php echo $escapeAttr(implode(' ', array_merge(['page', 'sort_by', 'sort_order', $titleRow . '[text]'], array_keys($titleFields)))); ?>">
 
         <div class="linked-resources__controls">
             <?php echo $this->partial('common/linked-resources-search', [
-                'part' => 'field',
+                'part' => 'form',
+                'action' => $this->url(null, [], [], true),
                 'inputId' => 'item-set-resources-search',
-                'label' => $translate('Filter items on this page by title'),
+                'searchName' => $titleRow . '[text]',
+                'searchValue' => $titleSearch,
+                'label' => $translate('Search the items in this set by title'),
+                'skip' => ['page', $titleRow . '[text]'],
+                'hidden' => $titleFields,
             ]); ?>
         </div>
 
-        <?php echo $this->partial('common/linked-resources-search', ['part' => 'feedback', 'noResultsText' => $noResultsText]); ?>
+        <?php echo $this->partial('common/linked-resources-search', ['part' => 'feedback', 'noResults' => !$rows, 'noResultsText' => $noResultsText]); ?>
 
         <?php echo $this->partial('common/linked-resources-table', [
             'rows' => $rows,

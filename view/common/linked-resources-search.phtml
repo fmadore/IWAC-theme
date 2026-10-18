@@ -1,41 +1,95 @@
 <?php
 /**
- * The client-side title filter and its feedback, shared by the two
- * linked-resources ledgers (common/linked-resources.phtml on item pages,
+ * The title search (and, where the listing owns its order, the sort) and its
+ * feedback, shared by the two linked-resources ledgers
+ * (common/linked-resources.phtml on resource pages,
  * omeka/site/item/browse.phtml for an item set's items). linked-resources.js
  * binds them by class inside the `.linked-resources` root.
+ *
+ * Both search the server, never the rows on screen: the form is a plain GET
+ * form, so it works without JavaScript (Enter in the field, or the Apply
+ * button), and linked-resources.js submits it as the reader types and swaps
+ * the root in place. Through 2.24 both were client-side filters over the one
+ * page rendered — "Filter this page by title…" said so, and that was the
+ * problem.
  *
  * Both templates carried their own copy of this markup, and the copies had
  * already drifted (one escaped the icon URL, the other did not).
  *
  * Expected variables:
- * - $part:     'field' (the search input) or 'feedback' (status + no-results)
- * - $inputId:  id/name of the input ('field' only)
- * - $label:    the input's accessible name ('field' only)
- * - $noResultsText: the empty-state sentence ('feedback' only)
+ * - $part:        'form' (search field + optional sort) or 'feedback' (status + no-results)
+ * 'form' only:
+ * - $action:      the form's action — the page's path and the root's fragment
+ * - $inputId:     id of the search input
+ * - $searchName:  the query parameter the search writes
+ * - $searchValue: the current search
+ * - $label:       the input's accessible name
+ * - $skip:        query parameters the hidden inputs must not carry (the
+ *                 form's own fields, and the listing's page, which a new
+ *                 search resets)
+ * - $hidden:      optional name => value hidden inputs that qualify the
+ *                 search (sent only with a search)
+ * - $sortId, $sortName, $sortOptions (value => label), $sortValue: optional;
+ *                 no select is rendered without $sortOptions
+ * 'feedback' only:
+ * - $noResults:     whether the search found nothing
+ * - $noResultsText: the empty-state sentence
  */
 $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
 $escapeAttr = $this->plugin('escapeHtmlAttr');
-$part = isset($part) ? (string) $part : 'field';
+$part = isset($part) ? (string) $part : 'form';
 ?>
-<?php if ($part === 'field'): ?>
-<div class="linked-resources__search">
-    <img src="<?php echo $escapeAttr($this->assetUrl('img/search.svg')); ?>"
-         class="linked-resources__search-icon"
-         alt=""
-         aria-hidden="true">
-    <input type="search"
-           id="<?php echo $escapeAttr($inputId); ?>"
-           name="<?php echo $escapeAttr($inputId); ?>"
-           class="linked-resources__search-input"
-           placeholder="<?php echo $escapeAttr($translate('Filter this page by title…')); ?>"
-           aria-label="<?php echo $escapeAttr($label); ?>">
-</div>
+<?php if ($part === 'form'): ?>
+<form class="linked-resources__query" method="get" action="<?php echo $escapeAttr($action); ?>" role="search">
+    <?php // The rest of the page's state (the other listing's page, a relation
+          // filter) rides along, so a search moves only this listing. ?>
+    <?php echo $this->queryToHiddenInputs(array_merge($skip, array_keys($hidden ?? []))); ?>
+    <?php // data-requires: these qualify the search and mean nothing without
+          // it, so linked-resources.js leaves them out of an empty search's URL. ?>
+    <?php foreach ($hidden ?? [] as $name => $value): ?>
+        <input type="hidden" name="<?php echo $escapeAttr($name); ?>" value="<?php echo $escapeAttr($value); ?>" data-requires="<?php echo $escapeAttr($searchName); ?>">
+    <?php endforeach; ?>
+    <div class="linked-resources__search">
+        <img src="<?php echo $escapeAttr($this->assetUrl('img/search.svg')); ?>"
+             class="linked-resources__search-icon"
+             alt=""
+             aria-hidden="true">
+        <input type="search"
+               id="<?php echo $escapeAttr($inputId); ?>"
+               name="<?php echo $escapeAttr($searchName); ?>"
+               value="<?php echo $escapeAttr($searchValue); ?>"
+               class="linked-resources__search-input"
+               placeholder="<?php echo $escapeAttr($translate('Search by title…')); ?>"
+               autocomplete="off"
+               aria-label="<?php echo $escapeAttr($label); ?>">
+    </div>
+    <?php if (!empty($sortOptions)): ?>
+    <div class="linked-resources__sort">
+        <label for="<?php echo $escapeAttr($sortId); ?>" class="linked-resources__sort-label">
+            <?php echo $escape($translate('Sort by')); ?>
+        </label>
+        <select id="<?php echo $escapeAttr($sortId); ?>"
+                name="<?php echo $escapeAttr($sortName); ?>"
+                class="linked-resources__sort-select">
+            <?php foreach ($sortOptions as $value => $optionLabel): ?>
+                <option value="<?php echo $escapeAttr($value); ?>"<?php echo $value === $sortValue ? ' selected' : ''; ?>>
+                    <?php echo $escape($optionLabel); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <?php endif; ?>
+    <?php // Without JavaScript a select cannot submit itself; linked-resources.js
+          // hides this once it submits the form on every change. ?>
+    <button type="submit" class="linked-resources__apply"><?php echo $escape($translate('Apply')); ?></button>
+</form>
 <?php else: ?>
 <div class="linked-resources__status" role="status" aria-live="polite" aria-atomic="true"></div>
 
-<div class="linked-resources__no-results" hidden>
+<?php if (!empty($noResults)): ?>
+<div class="linked-resources__no-results">
     <p><?php echo $escape($noResultsText); ?></p>
 </div>
+<?php endif; ?>
 <?php endif; ?>

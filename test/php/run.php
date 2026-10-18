@@ -473,17 +473,48 @@ namespace IwacThemeTest {
         check(str_contains($explicit, '>Explicit</a>'), 'explicit heading overridden');
     });
 
-    test('the linked-resources filter field and feedback come from one partial (T-25)', function () {
-        $fake = new FakeView();
-        $field = $fake->render('common/linked-resources-search.phtml', [
-            'part' => 'field', 'inputId' => 'item-set-resources-search', 'label' => 'Filter items on this page by title',
+    test('the linked-resources search form and feedback come from one partial (T-25)', function () {
+        $fake = new FakeView([], [], ['page' => '2', 'resource_property' => 'items:3', 'lr_q' => 'old']);
+        $fake->helpers['queryToHiddenInputs'] = static function (array $skip = []) use ($fake): string {
+            $html = '';
+            foreach ($fake->query as $name => $value) {
+                if (!in_array($name, $skip, true)) {
+                    $html .= '<input type="hidden" name="' . $name . '" value="' . $value . '">';
+                }
+            }
+            return $html;
+        };
+        $form = $fake->render('common/linked-resources-search.phtml', [
+            'part' => 'form', 'action' => '/item/1#resources-linked', 'inputId' => 'linked-resources-search',
+            'searchName' => 'lr_q', 'searchValue' => 'Tabaski "1966"', 'label' => 'Search the linked resources by title',
+            'skip' => ['lr_page', 'page', 'lr_q', 'lr_sort'],
+            'sortId' => 'linked-resources-sort', 'sortName' => 'lr_sort', 'sortValue' => 'title-asc',
+            'sortOptions' => ['date-desc' => 'Newest first', 'title-asc' => 'Title (A-Z)'],
         ]);
-        check(str_contains($field, 'id="item-set-resources-search"') && str_contains($field, 'name="item-set-resources-search"'), 'input id/name');
-        check(str_contains($field, 'aria-label="Filter items on this page by title"'), 'input name');
-        check(str_contains($field, 'class="linked-resources__search-input"'), 'the class linked-resources.js binds');
-        $feedback = $fake->render('common/linked-resources-search.phtml', ['part' => 'feedback', 'noResultsText' => 'None <here>']);
+        check(str_contains($form, '<form class="linked-resources__query" method="get" action="/item/1#resources-linked" role="search">'), 'a GET form: it works without JavaScript');
+        check(str_contains($form, 'id="linked-resources-search"') && str_contains($form, 'name="lr_q"'), 'input id/name');
+        check(str_contains($form, 'value="Tabaski &quot;1966&quot;"'), 'the current search, escaped');
+        check(str_contains($form, 'aria-label="Search the linked resources by title"'), 'input name');
+        check(str_contains($form, 'class="linked-resources__search-input"'), 'the class linked-resources.js binds');
+        check(str_contains($form, '<option value="title-asc" selected>'), 'the current order is selected');
+        check(str_contains($form, 'name="resource_property" value="items:3"'), 'the relation filter rides along');
+        check(!str_contains($form, 'name="page"') && !str_contains($form, 'value="old"'), 'a new search resets the page and replaces the old search');
+        check(str_contains($form, '<button type="submit" class="linked-resources__apply">'), 'the no-JS submit');
+
+        // The ledger: no select, and hidden fields that qualify the search.
+        $ledger = $fake->render('common/linked-resources-search.phtml', [
+            'part' => 'form', 'action' => '/item-set/2', 'inputId' => 'item-set-resources-search',
+            'searchName' => 'property[title][text]', 'searchValue' => '', 'label' => 'Search the items in this set by title',
+            'skip' => ['page', 'property[title][text]'], 'hidden' => ['property[title][type]' => 'in'],
+        ]);
+        check(!str_contains($ledger, '<select'), 'no sort without options');
+        check(str_contains($ledger, 'name="property[title][type]" value="in" data-requires="property[title][text]"'), 'a qualifying field names the search it qualifies');
+
+        $feedback = $fake->render('common/linked-resources-search.phtml', ['part' => 'feedback', 'noResults' => true, 'noResultsText' => 'None <here>']);
         check(str_contains($feedback, 'class="linked-resources__status" role="status"'), 'status region');
         check(str_contains($feedback, '<p>None &lt;here&gt;</p>'), 'empty state escaped');
+        $found = $fake->render('common/linked-resources-search.phtml', ['part' => 'feedback', 'noResults' => false, 'noResultsText' => 'None']);
+        check(!str_contains($found, 'linked-resources__no-results'), 'no empty state when the search found rows');
         // Both ledgers use it, and neither keeps its own copy.
         foreach (['common/linked-resources.phtml', 'omeka/site/item/browse.phtml'] as $template) {
             $source = (string) file_get_contents(ROOT . '/view/' . $template);
@@ -855,7 +886,38 @@ namespace IwacThemeTest {
         foreach (['abc', '0', '-4', ['2']] as $hostile) {
             same(1, $paging('items', ['lr_page' => $hostile])['page'], 'lr_page=' . var_export($hostile, true));
         }
-        same(['lr_page', 'resource_property'], $paging('items', [])['params'], 'the root names its state for linked-resources.js');
+        same(['lr_page', 'resource_property', 'lr_q', 'lr_sort'], $paging('items', [])['params'], 'the root names its state for linked-resources.js');
+
+        // The search and the sort: normalised, never trusted.
+        $state = $paging('items', ['lr_q' => "  Côte \t d'Ivoire ", 'lr_sort' => 'title-desc', 'resource_property' => 'items:3-86']);
+        same("Côte d'Ivoire", $state['q'], 'whitespace collapsed');
+        same('title-desc', $state['sortKey']);
+        same('items:3-86', $state['resourceProperty']);
+        same(100, mb_strlen($paging('items', ['lr_q' => str_repeat('é', 300)])['q']), 'a search is cut at 100 characters');
+        foreach ([['lr_q' => ['x']], ['lr_sort' => 'id; DROP'], ['lr_sort' => ['date-asc']], ['resource_property' => ['items:3']]] as $hostile) {
+            $state = $paging('items', $hostile);
+            same(['', 'date-desc', null], [$state['q'], $state['sortKey'], $state['resourceProperty']], var_export($hostile, true));
+        }
+    });
+
+    test('the linked items are asked of the API over every row, never through the shared paginator', function () {
+        $class = \OmekaTheme\Helper\LinkedResourcesPaging::class;
+        $query = $class::apiQuery(1023, 0, '', 'date-desc', 3, 25);
+        same([[
+            'joiner' => 'and', 'property' => '', 'type' => 'res', 'text' => '1023',
+        ]], $query['property'], 'any property pointing at the record');
+        same(['dcterms:date', 'desc'], [$query['sort_by'], $query['sort_order']]);
+        same([25, 50], [$query['limit'], $query['offset']], 'limit/offset for page 3');
+        check(!isset($query['page']) && !isset($query['per_page']), "page/per_page reconfigure core's one Omeka\\Paginator — the ledger's pager");
+        check(!isset($query['site_id']), 'no site filter unless the site asks for one');
+
+        $query = $class::apiQuery(1023, 3, 'Ramadan', 'title-asc', 1, 25, 2);
+        same(3, $query['property'][0]['property'], 'one relation');
+        same(['joiner' => 'and', 'property' => 'dcterms:title', 'type' => 'in', 'text' => 'Ramadan'], $query['property'][1], 'the title search');
+        same(['title', 'asc', 0, 2], [$query['sort_by'], $query['sort_order'], $query['offset'], $query['site_id']]);
+        same(['dcterms:date', 'desc'], [$class::apiQuery(1, 0, '', 'bogus', 1, 25)['sort_by'], $class::apiQuery(1, 0, '', 'bogus', 1, 25)['sort_order']], 'an unknown order is the default');
+
+        same([3, 3, 0, 0], [$class::propertyId('3-86,329'), $class::propertyId('3'), $class::propertyId(''), $class::propertyId(null)]);
     });
 
     test('the pager form writes the parameter its caller names (default: page)', function () {

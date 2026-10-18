@@ -38,7 +38,7 @@ msgstr ""
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
 msgstr ""
 
-#: view/common/linked-resources.phtml:157
+#: view/common/linked-resources.phtml:229
 msgid "All"
 msgstr ""
 
@@ -48,6 +48,10 @@ msgstr ""
 
 #: view/common/banner.phtml:28
 msgid "An open-access collection of newspapers, Islamic publications, archives, audiovisual sources, and academic references on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo."
+msgstr ""
+
+#: view/common/linked-resources-search.phtml:85
+msgid "Apply"
 msgstr ""
 
 #: view/common/resource-page-block-layout/web-archive.phtml:79
@@ -148,7 +152,7 @@ msgstr ""
 msgid "Dark theme active. Activate to switch to system theme."
 msgstr ""
 
-#: view/common/linked-resources-table.phtml:111 view/common/linked-resources-table.phtml:40
+#: view/common/linked-resources-table.phtml:102 view/common/linked-resources-table.phtml:41
 msgid "Date"
 msgstr ""
 
@@ -164,23 +168,11 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: view/common/linked-resources.phtml:150
+#: view/common/linked-resources.phtml:222
 msgid "Filter by relation"
 msgstr ""
 
-#: view/omeka/site/item/browse.phtml:82
-msgid "Filter items on this page by title"
-msgstr ""
-
-#: view/common/linked-resources.phtml:130
-msgid "Filter linked resources on this page by title"
-msgstr ""
-
-#: view/common/linked-resources-search.phtml:32
-msgid "Filter this page by title…"
-msgstr ""
-
-#: view/common/linked-resources.phtml:152
+#: view/common/linked-resources.phtml:224
 msgid "Filter:"
 msgstr ""
 
@@ -240,7 +232,7 @@ msgstr ""
 msgid "Item set"
 msgstr ""
 
-#: view/common/block-layout/item-with-metadata.phtml:63 view/common/linked-resources.phtml:41 view/omeka/site/index/search.phtml:28 view/omeka/site/item-set/browse.phtml:7
+#: view/common/block-layout/item-with-metadata.phtml:63 view/common/linked-resources.phtml:56 view/omeka/site/index/search.phtml:28 view/omeka/site/item-set/browse.phtml:7
 msgid "Item sets"
 msgstr ""
 
@@ -248,7 +240,7 @@ msgstr ""
 msgid "Item: %s"
 msgstr ""
 
-#: view/common/banner.phtml:199 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:40 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:42
+#: view/common/banner.phtml:199 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:42
 msgid "Items"
 msgstr ""
 
@@ -276,7 +268,7 @@ msgstr ""
 msgid "Light theme active. Activate to switch to dark mode."
 msgstr ""
 
-#: view/common/resource-page-block-layout/linked-resources.phtml:28
+#: view/common/resource-page-block-layout/linked-resources.phtml:36
 msgid "Linked resources"
 msgstr ""
 
@@ -288,7 +280,7 @@ msgstr ""
 msgid "Main navigation"
 msgstr ""
 
-#: helper/ResourceTags.php:43 view/common/block-layout/item-with-metadata.phtml:73 view/common/linked-resources.phtml:42 view/common/resource-page-block-layout/media-list.phtml:8 view/omeka/site/index/search.phtml:29 view/omeka/site/media/browse.phtml:7
+#: helper/ResourceTags.php:43 view/common/block-layout/item-with-metadata.phtml:73 view/common/linked-resources.phtml:57 view/common/resource-page-block-layout/media-list.phtml:8 view/omeka/site/index/search.phtml:29 view/omeka/site/media/browse.phtml:7
 msgid "Media"
 msgstr ""
 
@@ -296,7 +288,7 @@ msgstr ""
 msgid "Media: %s"
 msgstr ""
 
-#: view/common/linked-resources.phtml:78
+#: view/common/linked-resources.phtml:182
 msgid "Newest first"
 msgstr ""
 
@@ -324,7 +316,7 @@ msgstr ""
 msgid "No pages found"
 msgstr ""
 
-#: view/common/linked-resources.phtml:82 view/omeka/site/item/browse.phtml:65
+#: view/common/linked-resources.phtml:188 view/omeka/site/item/browse.phtml:81
 msgid "No resources match your search."
 msgstr ""
 
@@ -332,7 +324,7 @@ msgstr ""
 msgid "No result found"
 msgstr ""
 
-#: view/common/linked-resources.phtml:79
+#: view/common/linked-resources.phtml:183
 msgid "Oldest first"
 msgstr ""
 
@@ -392,7 +384,7 @@ msgstr ""
 msgid "References"
 msgstr ""
 
-#: view/common/linked-resources-table.phtml:102 view/common/linked-resources-table.phtml:33
+#: view/common/linked-resources-table.phtml:34 view/common/linked-resources-table.phtml:93
 msgid "Relation"
 msgstr ""
 
@@ -404,12 +396,24 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
+#: view/common/linked-resources-search.phtml:63
+msgid "Search by title…"
+msgstr ""
+
 #: view/omeka/site/index/search.phtml:19
 msgid "Search results for “%s”"
 msgstr ""
 
 #: view/common/resource-browse.phtml:51 view/common/search-form.phtml:57 view/omeka/site/item/browse.phtml:49
 msgid "Search the collection"
+msgstr ""
+
+#: view/omeka/site/item/browse.phtml:102
+msgid "Search the items in this set by title"
+msgstr ""
+
+#: view/common/linked-resources.phtml:209
+msgid "Search the linked resources by title"
 msgstr ""
 
 #: view/common/resource-values.phtml:323
@@ -436,12 +440,8 @@ msgstr ""
 msgid "Something went wrong"
 msgstr ""
 
-#: view/common/linked-resources.phtml:135
-msgid "Sort the resources on this page"
-msgstr ""
-
-#: view/common/linked-resources.phtml:75
-msgid "Sort this page"
+#: view/common/linked-resources-search.phtml:70
+msgid "Sort by"
 msgstr ""
 
 #: view/common/block-layout/item-carousel.phtml:158
@@ -476,19 +476,19 @@ msgstr ""
 msgid "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable."
 msgstr ""
 
-#: view/common/linked-resources-table.phtml:26
+#: view/common/linked-resources-table.phtml:27
 msgid "Thumbnail"
 msgstr ""
 
-#: view/common/linked-resources-table.phtml:29 view/common/linked-resources-table.phtml:89
+#: view/common/linked-resources-table.phtml:30 view/common/linked-resources-table.phtml:81
 msgid "Title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:76
+#: view/common/linked-resources.phtml:184
 msgid "Title (A-Z)"
 msgstr ""
 
-#: view/common/linked-resources.phtml:77
+#: view/common/linked-resources.phtml:185
 msgid "Title (Z-A)"
 msgstr ""
 
@@ -500,7 +500,7 @@ msgstr ""
 msgid "Total words"
 msgstr ""
 
-#: view/common/linked-resources-table.phtml:107 view/common/linked-resources-table.phtml:37
+#: view/common/linked-resources-table.phtml:38 view/common/linked-resources-table.phtml:98
 msgid "Type"
 msgstr ""
 
@@ -552,10 +552,10 @@ msgstr ""
 msgid "show submenu for “%s”"
 msgstr ""
 
-#: view/common/linked-resources.phtml:83 view/omeka/site/item/browse.phtml:74
+#: view/common/linked-resources.phtml:189 view/omeka/site/item/browse.phtml:91
 msgid "{count} resources found"
 msgstr ""
 
-#: view/common/linked-resources.phtml:84 view/omeka/site/item/browse.phtml:75
+#: view/common/linked-resources.phtml:190 view/omeka/site/item/browse.phtml:92
 msgid "{count} resources on this page"
 msgstr ""

@@ -62,7 +62,7 @@
         ]
     },
     "item-set.xhr-publisher.en": {
-        "url": "/s/westafrica/item-set/2200?resource_property=items%3A5-86",
+        "url": "/s/westafrica/item-set/2200?resource_property=items%3A5",
         "lang": "en-US",
         "xhr": true,
         "templates": [
@@ -78,7 +78,71 @@
         ]
     },
     "item-set.xhr-subject.en": {
-        "url": "/s/westafrica/item-set/2200?resource_property=items%3A3-86%2C329",
+        "url": "/s/westafrica/item-set/2200?resource_property=items%3A3",
+        "lang": "en-US",
+        "xhr": true,
+        "templates": [
+            "omeka/site/item/browse.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/resource-page-block-layout/linked-resources.phtml",
+            "common/linked-resources.phtml",
+            "common/linked-resources-search.phtml",
+            "common/linked-resources-table.phtml",
+            "common/pagination.phtml",
+            "layout/layout.phtml"
+        ]
+    },
+    "item-set.xhr-search.en": {
+        "url": "/s/westafrica/item-set/2200?lr_q=ramadan&lr_sort=date-desc",
+        "lang": "en-US",
+        "xhr": true,
+        "templates": [
+            "omeka/site/item/browse.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/resource-page-block-layout/linked-resources.phtml",
+            "common/linked-resources.phtml",
+            "common/linked-resources-search.phtml",
+            "common/linked-resources-table.phtml",
+            "common/pagination.phtml",
+            "layout/layout.phtml"
+        ]
+    },
+    "item-set.xhr-search-none.en": {
+        "url": "/s/westafrica/item-set/2200?lr_q=zzz&lr_sort=date-desc",
+        "lang": "en-US",
+        "xhr": true,
+        "templates": [
+            "omeka/site/item/browse.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/resource-page-block-layout/linked-resources.phtml",
+            "common/linked-resources.phtml",
+            "common/linked-resources-search.phtml",
+            "common/linked-resources-table.phtml",
+            "common/pagination.phtml",
+            "layout/layout.phtml"
+        ]
+    },
+    "item-set.xhr-sort-title.en": {
+        "url": "/s/westafrica/item-set/2200?lr_sort=title-asc",
+        "lang": "en-US",
+        "xhr": true,
+        "templates": [
+            "omeka/site/item/browse.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "common/resource-page-block-layout/linked-resources.phtml",
+            "common/linked-resources.phtml",
+            "common/linked-resources-search.phtml",
+            "common/linked-resources-table.phtml",
+            "common/pagination.phtml",
+            "layout/layout.phtml"
+        ]
+    },
+    "item-set.xhr-ledger-search.en": {
+        "url": "/s/westafrica/item-set/2200?property%5Btitle%5D%5Bjoiner%5D=and&property%5Btitle%5D%5Bproperty%5D=dcterms%3Atitle&property%5Btitle%5D%5Btype%5D=in&property%5Btitle%5D%5Btext%5D=ramadan",
         "lang": "en-US",
         "xhr": true,
         "templates": [
@@ -110,7 +174,7 @@
         ]
     },
     "item-set.xhr-page-2-subject.en": {
-        "url": "/s/westafrica/item-set/2200?page=2&resource_property=items%3A3-86%2C329",
+        "url": "/s/westafrica/item-set/2200?page=2&resource_property=items%3A3",
         "lang": "en-US",
         "xhr": true,
         "templates": [

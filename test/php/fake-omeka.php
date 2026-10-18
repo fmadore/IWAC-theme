@@ -404,6 +404,16 @@ final class Resource
     /** @var list<array{0:string,1:Resource}> resources whose $term value points here */
     private array $subjects = [];
 
+    /**
+     * Every resource built, by site slug and id — what the fake API searches.
+     * records() builds a site's records afresh for each page, so the latest
+     * build of an id is the one a search finds, as it is the one the page
+     * renders.
+     *
+     * @var array<string, array<int, Resource>>
+     */
+    public static array $all = [];
+
     public function __construct(
         private Site $site,
         private string $resourceName,
@@ -413,6 +423,12 @@ final class Resource
         private ?string $thumbnail = null,
         private ?string $description = null,
     ) {
+        self::$all[$site->slug()][$id] = $this;
+    }
+
+    public function site(): Site
+    {
+        return $this->site;
     }
 
     /** @param list<Value|string> $values */
@@ -422,9 +438,17 @@ final class Resource
         return $this;
     }
 
+    /**
+     * $subject's $term value points here. The value is written on $subject
+     * too (unless it already carries it), because the API search core runs
+     * for the block reads the relation from the subject's own values.
+     */
     public function linkedFrom(string $term, Resource $subject): self
     {
         $this->subjects[] = [$term, $subject];
+        if (!array_filter($subject->value($term, ['all' => true]), fn (Value $v): bool => $v->valueResource() === $this)) {
+            $subject->values[$term][] = Value::link($this);
+        }
         return $this;
     }
 
@@ -535,35 +559,30 @@ final class Resource
 
     public function subjectValueTotalCount($property = null, $resourceType = null, $siteId = null): int
     {
-        return count($this->subjects);
+        return count($this->subjectRows($property === null ? null : (string) $property));
     }
 
-    /**
-     * Core's displaySubjectValues(): one page of the resources that point
-     * here, filtered by ?resource_property=, rendered through the theme's
-     * common/linked-resources.
-     */
-    public function displaySubjectValues(array $options = []): string
+    /** The subject values core pages through, in core's order (relation, then title). */
+    private function subjectRows(?string $propertyId): array
     {
-        $view = Request::$view;
-        $page = max(1, (int) ($options['page'] ?? 1));
-        $perPage = (int) ($options['perPage'] ?? 25);
-        $resourceProperty = $options['resourceProperty'] ?? null;
-        if (!$this->subjects) {
-            return '';
-        }
-        $properties = [];
-        foreach ($this->relations() as $term => [$compoundId]) {
-            [$label] = PROPERTIES[$term];
-            $properties[] = ['compound_id' => $compoundId, 'label' => $label, 'label_is_translatable' => true, 'term' => $term];
-        }
-        $subjects = array_values(array_filter(
+        $rows = array_values(array_filter(
             $this->subjects,
-            static fn (array $s): bool => !$resourceProperty || RELATIONS[$s[0]][0] === $resourceProperty,
+            static fn (array $s): bool => !$propertyId || RELATIONS[$s[0]][1] === (int) strtok($propertyId, '-'),
         ));
+        usort($rows, static fn (array $a, array $b): int => [RELATIONS[$a[0]][1], $a[1]->displayTitle()] <=> [RELATIONS[$b[0]][1], $b[1]->displayTitle()]);
+        return $rows;
+    }
+
+    /** Core's subjectValues(): one page, grouped by property label. */
+    public function subjectValues($page = null, $perPage = null, $propertyId = null, $resourceType = null, $siteId = null): array
+    {
+        $rows = $this->subjectRows($propertyId === null ? null : (string) $propertyId);
+        if ($page && $perPage) {
+            $rows = array_slice($rows, ((int) $page - 1) * (int) $perPage, (int) $perPage);
+        }
         $grouped = [];
-        foreach (array_slice($subjects, ($page - 1) * $perPage, $perPage) as [$term, $subject]) {
-            $grouped[$term][] = [
+        foreach ($rows as [$term, $subject]) {
+            $grouped[PROPERTIES[$term][0]][] = [
                 'val' => new class($subject) {
                     public function __construct(private Resource $subject)
                     {
@@ -578,23 +597,145 @@ final class Resource
                 'property_alternate_label' => null,
             ];
         }
-        return $view->partial('common/linked-resources', [
+        return $grouped;
+    }
+
+    /**
+     * Core's displaySubjectValues(): the relations pointing here, the active
+     * one parsed from ?resource_property=, its count and one page of it,
+     * handed to the theme's common/linked-resources.
+     */
+    public function displaySubjectValues(array $options = []): string
+    {
+        if (!$this->subjects) {
+            return '';
+        }
+        $properties = [];
+        foreach ($this->relations() as $term => [$compoundId, $propertyId]) {
+            [$label] = PROPERTIES[$term];
+            $properties[] = ['compound_id' => $compoundId, 'property_id' => $propertyId, 'label' => $label, 'label_is_translatable' => true, 'term' => $term];
+        }
+        // Core sorts them by property id.
+        usort($properties, static fn (array $a, array $b): int => $a['property_id'] <=> $b['property_id']);
+        $resourceProperty = $options['resourceProperty'] ?? 'items:';
+        [$resourceType, $propertyId] = explode(':', $resourceProperty) + [1 => ''];
+        $page = $options['page'] ?? null;
+        $perPage = $options['perPage'] ?? null;
+        return Request::$view->partial('common/linked-resources', [
             'objectResource' => $this,
-            'subjectValues' => array_values($grouped),
+            'subjectValues' => $this->subjectValues($page, $perPage, $propertyId, $resourceType),
             'page' => $page,
             'perPage' => $perPage,
-            'totalCount' => count($subjects),
+            'totalCount' => count($this->subjectRows($propertyId)),
             'resourceProperty' => $resourceProperty,
+            'propertyId' => $propertyId,
+            'resourceType' => $resourceType,
             'resourcePropertiesAll' => ['items' => $properties, 'item_sets' => [], 'media' => []],
         ]);
     }
 }
 
-/** Subject-value relations: term => [core's compound facet id, label]. */
+/**
+ * Subject-value relations: term => [core's compound facet id, property id].
+ * The ids are Dublin Core's in a stock Omeka install.
+ */
 const RELATIONS = [
-    'dcterms:publisher' => ['items:5-86'],
-    'dcterms:subject' => ['items:3-86,329'],
+    'dcterms:publisher' => ['items:5-86', 5],
+    'dcterms:subject' => ['items:3-86,329', 3],
 ];
+
+/**
+ * Core's api() helper, as far as the templates use it: an item search over
+ * the records the site has built, understanding the query
+ * LinkedResourcesPaging::apiQuery() writes — `res` (a value pointing at a
+ * resource, through one property id or any) and `in` on a term (a value
+ * containing the text, case- and accent-insensitive like the database
+ * collation), sort_by `title` or a term, limit and offset. Anything else in a
+ * query is refused rather than ignored, so a template asking for more than
+ * the fake answers fails here instead of rendering a plausible wrong page.
+ */
+final class Api
+{
+    public function search(string $resourceName, array $query = []): object
+    {
+        if ($resourceName !== 'items') {
+            throw new \LogicException("the fake API searches items only, not '$resourceName'");
+        }
+        $unknown = array_diff(array_keys($query), ['property', 'sort_by', 'sort_order', 'limit', 'offset', 'site_id']);
+        if ($unknown) {
+            throw new \LogicException('the fake API does not understand ' . implode(', ', $unknown));
+        }
+        $site = Request::$current->site->slug();
+        $items = array_values(array_filter(
+            Resource::$all[$site] ?? [],
+            static fn (Resource $r): bool => $r->resourceName() === 'items'
+                && array_reduce($query['property'] ?? [], static fn (bool $ok, array $row): bool => $ok && self::matches($r, $row), true),
+        ));
+        $sortBy = $query['sort_by'] ?? 'created';
+        $key = static fn (Resource $r): string => $sortBy === 'title'
+            ? self::fold($r->displayTitle())
+            : (string) ($r->value($sortBy, ['default' => null]) ?? '');
+        usort($items, static fn (Resource $a, Resource $b): int => [$key($a), $a->id()] <=> [$key($b), $b->id()]);
+        if (strtolower((string) ($query['sort_order'] ?? 'asc')) === 'desc') {
+            $items = array_reverse($items);
+        }
+        $total = count($items);
+        $items = array_slice($items, (int) ($query['offset'] ?? 0), isset($query['limit']) ? (int) $query['limit'] : null);
+        return new class($items, $total) {
+            public function __construct(private array $items, private int $total)
+            {
+            }
+
+            public function getContent(): array
+            {
+                return $this->items;
+            }
+
+            public function getTotalResults(): int
+            {
+                return $this->total;
+            }
+        };
+    }
+
+    private static function matches(Resource $resource, array $row): bool
+    {
+        $text = (string) $row['text'];
+        $property = $row['property'];
+        $terms = $property === '' ? array_keys(PROPERTIES) : [is_int($property) ? self::term($property) : $property];
+        foreach ($terms as $term) {
+            foreach ($resource->value($term, ['all' => true]) as $value) {
+                $hit = match ($row['type']) {
+                    'res' => $value->valueResource() && $value->valueResource()->id() === (int) $text,
+                    'in' => str_contains(self::fold((string) $value), self::fold($text)),
+                    default => throw new \LogicException("the fake API has no '{$row['type']}' query"),
+                };
+                if ($hit) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static function term(int $propertyId): string
+    {
+        foreach (RELATIONS as $term => [, $id]) {
+            if ($id === $propertyId) {
+                return $term;
+            }
+        }
+        throw new \LogicException("no fake property $propertyId");
+    }
+
+    /** utf8mb4_unicode_ci, near enough: lowercase, accents off. */
+    public static function fold(string $text): string
+    {
+        $text = mb_strtolower($text, 'UTF-8');
+        return strtr($text, ['à' => 'a', 'â' => 'a', 'ä' => 'a', 'ç' => 'c', 'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'î' => 'i', 'ï' => 'i', 'ô' => 'o', 'ö' => 'o', 'ù' => 'u', 'û' => 'u', 'ü' => 'u', '’' => "'"]);
+    }
+}
 
 /** An asset (page-block image), as core's thumbnail() and asset.phtml read it. */
 final class Asset
@@ -758,6 +899,21 @@ final class Pagination
         $this->fragment = $fragment;
     }
 
+    /** Core's Omeka\Stdlib\Paginator, read-only: what the browse controller configured. */
+    public function getPaginator(): object
+    {
+        return new class($this->totalCount) {
+            public function __construct(private ?int $totalCount)
+            {
+            }
+
+            public function getTotalCount(): int
+            {
+                return (int) $this->totalCount;
+            }
+        };
+    }
+
     private function pageUrl(int $page): string
     {
         // Core keeps the query and sets page in it.
@@ -882,16 +1038,20 @@ function siteView(Request $request, array $page): FakeView
             $src = $representation->thumbnailDisplayUrl($type);
             return $src ? '<img' . attributes($attributes + ['src' => $src]) . '>' : '';
         },
+        // Core's: every query parameter, nested ones flattened to their
+        // bracketed names, except those named.
         'queryToHiddenInputs' => static function (array $skip = []) use ($request): string {
             $html = '';
-            foreach ($request->query as $name => $value) {
+            foreach (array_filter(explode('&', http_build_query($request->query))) as $pair) {
+                [$name, $value] = array_map('urldecode', explode('=', $pair, 2) + [1 => '']);
                 if (!in_array($name, $skip, true)) {
-                    $html .= '<input type="hidden" name="' . htmlspecialchars($name) . '" value="' . htmlspecialchars((string) $value) . '">';
+                    $html .= '<input type="hidden" name="' . htmlspecialchars($name) . '" value="' . htmlspecialchars($value) . '">';
                 }
             }
             return $html;
         },
         'pagination' => static fn (...$args): Pagination => $pagination(...$args),
+        'api' => static fn (): Api => new Api(),
         // Core's pageTitle(): level 0 feeds <title> and returns the text.
         'pageTitle' => static fn ($title, $level = 1): string => $level === 0
             ? htmlspecialchars((string) $title)

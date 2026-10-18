@@ -36,7 +36,7 @@ msgstr ""
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
 msgstr "Pôle d’excellence Africa Multiple – Université de Bayreuth"
 
-#: view/common/linked-resources.phtml:157
+#: view/common/linked-resources.phtml:229
 msgid "All"
 msgstr "Tout"
 
@@ -47,6 +47,10 @@ msgstr "Une erreur s’est produite lors du traitement de votre demande. Veuille
 #: view/common/banner.phtml:28
 msgid "An open-access collection of newspapers, Islamic publications, archives, audiovisual sources, and academic references on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo."
 msgstr "Une collection en libre accès de journaux, de publications islamiques, d’archives, de sources audiovisuelles et de références scientifiques sur l’islam et les musulmans au Bénin, au Burkina Faso, en Côte d’Ivoire, au Niger, au Nigéria et au Togo."
+
+#: view/common/linked-resources-search.phtml:85
+msgid "Apply"
+msgstr "Appliquer"
 
 #: view/common/resource-page-block-layout/web-archive.phtml:79
 msgid "Archived web page"
@@ -146,7 +150,7 @@ msgstr "Thème sombre"
 msgid "Dark theme active. Activate to switch to system theme."
 msgstr "Thème sombre actif. Activer pour passer au thème système."
 
-#: view/common/linked-resources-table.phtml:111 view/common/linked-resources-table.phtml:40
+#: view/common/linked-resources-table.phtml:102 view/common/linked-resources-table.phtml:41
 msgid "Date"
 msgstr ""
 
@@ -162,23 +166,11 @@ msgstr "Télécharger"
 msgid "Error"
 msgstr "Erreur"
 
-#: view/common/linked-resources.phtml:150
+#: view/common/linked-resources.phtml:222
 msgid "Filter by relation"
 msgstr "Filtrer par relation"
 
-#: view/omeka/site/item/browse.phtml:82
-msgid "Filter items on this page by title"
-msgstr "Filtrer les contenus de cette page par titre"
-
-#: view/common/linked-resources.phtml:130
-msgid "Filter linked resources on this page by title"
-msgstr "Filtrer les ressources liées de cette page par titre"
-
-#: view/common/linked-resources-search.phtml:32
-msgid "Filter this page by title…"
-msgstr "Filtrer cette page par titre…"
-
-#: view/common/linked-resources.phtml:152
+#: view/common/linked-resources.phtml:224
 msgid "Filter:"
 msgstr "Filtrer :"
 
@@ -238,7 +230,7 @@ msgstr "Contenu"
 msgid "Item set"
 msgstr "Collection"
 
-#: view/common/block-layout/item-with-metadata.phtml:63 view/common/linked-resources.phtml:41 view/omeka/site/index/search.phtml:28 view/omeka/site/item-set/browse.phtml:7
+#: view/common/block-layout/item-with-metadata.phtml:63 view/common/linked-resources.phtml:56 view/omeka/site/index/search.phtml:28 view/omeka/site/item-set/browse.phtml:7
 msgid "Item sets"
 msgstr ""
 
@@ -246,7 +238,7 @@ msgstr ""
 msgid "Item: %s"
 msgstr "Document : %s"
 
-#: view/common/banner.phtml:199 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:40 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:42
+#: view/common/banner.phtml:199 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:42
 msgid "Items"
 msgstr ""
 
@@ -274,7 +266,7 @@ msgstr "Thème clair"
 msgid "Light theme active. Activate to switch to dark mode."
 msgstr "Thème clair actif. Activer pour passer au mode sombre."
 
-#: view/common/resource-page-block-layout/linked-resources.phtml:28
+#: view/common/resource-page-block-layout/linked-resources.phtml:36
 msgid "Linked resources"
 msgstr ""
 
@@ -286,7 +278,7 @@ msgstr ""
 msgid "Main navigation"
 msgstr "Navigation principale"
 
-#: helper/ResourceTags.php:43 view/common/block-layout/item-with-metadata.phtml:73 view/common/linked-resources.phtml:42 view/common/resource-page-block-layout/media-list.phtml:8 view/omeka/site/index/search.phtml:29 view/omeka/site/media/browse.phtml:7
+#: helper/ResourceTags.php:43 view/common/block-layout/item-with-metadata.phtml:73 view/common/linked-resources.phtml:57 view/common/resource-page-block-layout/media-list.phtml:8 view/omeka/site/index/search.phtml:29 view/omeka/site/media/browse.phtml:7
 msgid "Media"
 msgstr ""
 
@@ -294,7 +286,7 @@ msgstr ""
 msgid "Media: %s"
 msgstr "Média : %s"
 
-#: view/common/linked-resources.phtml:78
+#: view/common/linked-resources.phtml:182
 msgid "Newest first"
 msgstr "Plus récents d’abord"
 
@@ -322,7 +314,7 @@ msgstr "Diapositive suivante"
 msgid "No pages found"
 msgstr "Aucune page trouvée"
 
-#: view/common/linked-resources.phtml:82 view/omeka/site/item/browse.phtml:65
+#: view/common/linked-resources.phtml:188 view/omeka/site/item/browse.phtml:81
 msgid "No resources match your search."
 msgstr "Aucune ressource ne correspond à votre recherche."
 
@@ -330,7 +322,7 @@ msgstr "Aucune ressource ne correspond à votre recherche."
 msgid "No result found"
 msgstr "Aucun résultat trouvé"
 
-#: view/common/linked-resources.phtml:79
+#: view/common/linked-resources.phtml:183
 msgid "Oldest first"
 msgstr "Plus anciens d’abord"
 
@@ -390,7 +382,7 @@ msgstr "Lire le texte intégral — %s mots restants"
 msgid "References"
 msgstr "Références"
 
-#: view/common/linked-resources-table.phtml:102 view/common/linked-resources-table.phtml:33
+#: view/common/linked-resources-table.phtml:34 view/common/linked-resources-table.phtml:93
 msgid "Relation"
 msgstr "Relation"
 
@@ -402,6 +394,10 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
+#: view/common/linked-resources-search.phtml:63
+msgid "Search by title…"
+msgstr "Rechercher par titre…"
+
 #: view/omeka/site/index/search.phtml:19
 msgid "Search results for “%s”"
 msgstr "Résultats de recherche pour « %s »"
@@ -409,6 +405,14 @@ msgstr "Résultats de recherche pour « %s »"
 #: view/common/resource-browse.phtml:51 view/common/search-form.phtml:57 view/omeka/site/item/browse.phtml:49
 msgid "Search the collection"
 msgstr "Rechercher dans la collection"
+
+#: view/omeka/site/item/browse.phtml:102
+msgid "Search the items in this set by title"
+msgstr "Rechercher par titre parmi les contenus de cette collection"
+
+#: view/common/linked-resources.phtml:209
+msgid "Search the linked resources by title"
+msgstr "Rechercher par titre parmi les ressources liées"
 
 #: view/common/resource-values.phtml:323
 msgid "Show annotation"
@@ -434,13 +438,9 @@ msgstr "Diapositive %1$s sur %2$s"
 msgid "Something went wrong"
 msgstr "Une erreur s’est produite"
 
-#: view/common/linked-resources.phtml:135
-msgid "Sort the resources on this page"
-msgstr "Trier les ressources de cette page"
-
-#: view/common/linked-resources.phtml:75
-msgid "Sort this page"
-msgstr "Trier cette page"
+#: view/common/linked-resources-search.phtml:70
+msgid "Sort by"
+msgstr "Trier par"
 
 #: view/common/block-layout/item-carousel.phtml:158
 msgid "Start automatic slideshow"
@@ -474,19 +474,19 @@ msgstr "Toucher pour agrandir"
 msgid "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable."
 msgstr "La page que vous recherchez a peut-être été supprimée, renommée ou est temporairement indisponible."
 
-#: view/common/linked-resources-table.phtml:26
+#: view/common/linked-resources-table.phtml:27
 msgid "Thumbnail"
 msgstr "Vignette"
 
-#: view/common/linked-resources-table.phtml:29 view/common/linked-resources-table.phtml:89
+#: view/common/linked-resources-table.phtml:30 view/common/linked-resources-table.phtml:81
 msgid "Title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:76
+#: view/common/linked-resources.phtml:184
 msgid "Title (A-Z)"
 msgstr "Titre (A-Z)"
 
-#: view/common/linked-resources.phtml:77
+#: view/common/linked-resources.phtml:185
 msgid "Title (Z-A)"
 msgstr "Titre (Z-A)"
 
@@ -498,7 +498,7 @@ msgstr "Pages totales"
 msgid "Total words"
 msgstr "Mots totaux"
 
-#: view/common/linked-resources-table.phtml:107 view/common/linked-resources-table.phtml:37
+#: view/common/linked-resources-table.phtml:38 view/common/linked-resources-table.phtml:98
 msgid "Type"
 msgstr ""
 
@@ -550,10 +550,10 @@ msgstr "sur %s"
 msgid "show submenu for “%s”"
 msgstr "afficher le sous-menu de « %s »"
 
-#: view/common/linked-resources.phtml:83 view/omeka/site/item/browse.phtml:74
+#: view/common/linked-resources.phtml:189 view/omeka/site/item/browse.phtml:91
 msgid "{count} resources found"
 msgstr "{count} ressources trouvées"
 
-#: view/common/linked-resources.phtml:84 view/omeka/site/item/browse.phtml:75
+#: view/common/linked-resources.phtml:190 view/omeka/site/item/browse.phtml:92
 msgid "{count} resources on this page"
 msgstr "{count} ressources sur cette page"
