@@ -974,7 +974,8 @@ function resourcePageBlocks(FakeView $view, object $resource, array $blocks): ob
  * catalogue, and core's and the modules' helpers faked as above.
  *
  * @param array $page what the page definition supplies: themeSettings,
- *   siteSettings, lang, catalog, searchUrl, alternates, browse, blocks
+ *   siteSettings, lang, catalog, searchUrl, alternates, browse, blocks,
+ *   itemSetSearch (the IwacSearch surface's markup, when the module covers the set)
  */
 function siteView(Request $request, array $page): FakeView
 {
@@ -1083,13 +1084,22 @@ function siteView(Request $request, array $page): FakeView
         },
         'resourcePageBlocks' => static fn (object $resource, string $region = 'main') => resourcePageBlocks($view, $resource, $page['blocks'][$region] ?? []),
         // The modules both live sites run, by the helper names templates probe for.
-        'getHelperPluginManager' => static fn () => new class {
+        // iwacItemSetSearch only where the page definition supplies the
+        // surface: a page without it renders as on a site whose IwacSearch
+        // predates the helper, which is also how every fallback looks.
+        'getHelperPluginManager' => static fn () => new class(isset($page['itemSetSearch'])) {
+            public function __construct(private bool $itemSetSearch)
+            {
+            }
+
             public function has(string $name): bool
             {
-                return in_array($name, ['languageSwitcher', 'iwacSearchUrl'], true);
+                return in_array($name, ['languageSwitcher', 'iwacSearchUrl'], true)
+                    || ($name === 'iwacItemSetSearch' && $this->itemSetSearch);
             }
         },
         'iwacSearchUrl' => static fn (): string => $page['searchUrl'],
+        'iwacItemSetSearch' => static fn (object $itemSet): string => (string) ($page['itemSetSearch'] ?? ''),
         // Internationalisation: the module hands the theme's template its locale list.
         'languageSwitcher' => static fn (): string => $view->partial('common/language-switcher', [
             'site' => $request->site,

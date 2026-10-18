@@ -388,3 +388,26 @@ test('a search that finds nothing says so', async () => {
     assert.equal(root.querySelector('.linked-resources__status').textContent, 'No resources match your search.');
     dom.window.close();
 });
+
+test("where IwacSearch covers the set, its surface replaces the ledger and the block still works", async () => {
+    const dom = fixtureDom('item-set.search.en');
+    const { window } = dom;
+    const doc = window.document;
+    window.IWACUtils = { debounce: (callback) => callback, onReady: (callback) => callback() };
+    window.requestIdleCallback = () => {};
+    const pending = [];
+    window.fetch = (url) => new Promise((resolve) => pending.push({ url: String(url), resolve }));
+    runAsset(dom, 'linked-resources.js');
+
+    assert.equal(doc.getElementById('item-set-resources'), null, 'no ledger');
+    assert.ok(doc.querySelector('.item-set-items [data-iwac-search-root][data-iwac-block-id="set"]'), "the module's mount");
+    assert.equal(doc.querySelector('.item-set-items .browse-controls'), null, "core's sort and filters go with the ledger");
+    assert.deepEqual(Object.keys(window.history.state.linkedResources), ['linked-resources']);
+
+    const input = doc.querySelector('#linked-resources .linked-resources__search-input');
+    input.focus();
+    input.value = 'ramadan';
+    input.dispatchEvent(new window.Event('input'));
+    assert.equal(pending[0].url, fixtureUrl('item-set.xhr-search.en') + '#resources-linked');
+    dom.window.close();
+});

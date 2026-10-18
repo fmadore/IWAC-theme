@@ -308,7 +308,7 @@ function page(string $locale, array $paths, array $query, array $route, callable
         'alternates' => alternates($paths),
         'blocks' => $options['blocks'] ?? [],
         'browse' => $options['browse'] ?? null,
-    ]);
+    ] + (isset($options['itemSetSearch']) ? ['itemSetSearch' => $options['itemSetSearch']] : []));
     $xhr = (bool) ($options['xhr'] ?? false);
     if ($xhr) {
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'fetch';
@@ -351,7 +351,34 @@ function itemPage(string $locale): array
  * items (five a page through ?page=) — the two `.linked-resources` roots
  * linked-resources.js keeps apart.
  */
-function itemSetPage(array $query = [], bool $xhr = false): array
+/**
+ * IwacSearch's item-set surface, as its iwacItemSetSearch helper prints it
+ * (view/common/iwac-item-set-search.phtml around common/iwac-search-mount),
+ * bootstrap trimmed to the keys that differ from any page block. A copy: the
+ * theme does not render it.
+ */
+function itemSetSearchSurface(): string
+{
+    return <<<'HTML'
+        <section
+            class="iwac-search-block iwac-search-block--full iwac-search-block--item-set"
+            aria-label="Search the items in this set"
+        >
+            <noscript>
+                <p>
+                    Search requires JavaScript.
+                    <a href="/s/westafrica/item?item_set_id=2200">Browse the items instead.</a>
+                </p>
+            </noscript>
+            <div data-iwac-search-root data-iwac-block-id="set" class="iwac-search-block__root" id="iwac-search-root-set">
+                <div class="iwac-search-block__skeleton" aria-hidden="true"></div>
+            </div>
+            <script type="application/json" id="iwac-search-state-set">{"block_id":"set","mode":"full","locked_filters":"item_set_ids:=[2200]"}</script>
+        </section>
+        HTML;
+}
+
+function itemSetPage(array $query = [], bool $xhr = false, bool $setSearch = false): array
 {
     $records = records('en');
     $perPage = 5;
@@ -375,7 +402,7 @@ function itemSetPage(array $query = [], bool $xhr = false): array
             'blocks' => ['main' => ['IwacThemeTest\Fixtures\valuesBlock', 'IwacThemeTest\Fixtures\linkedResourcesBlock']],
             'browse' => [count($articles), $page, $perPage],
             'xhr' => $xhr,
-        ],
+        ] + ($setSearch ? ['itemSetSearch' => itemSetSearchSurface()] : []),
     );
 }
 
@@ -474,6 +501,9 @@ function fixtures(): array
         'item.en' => static fn () => itemPage('en'),
         'item.fr' => static fn () => itemPage('fr'),
         'item-set.en' => static fn () => itemSetPage(),
+        // The same page where IwacSearch covers the set: its surface in place
+        // of the ledger.
+        'item-set.search.en' => static fn () => itemSetPage([], false, true),
         // What linked-resources.js fetches (X-Requested-With: fetch) when a
         // facet chip or the ledger's pager is used on item-set.en.
         'item-set.xhr-publisher.en' => static fn () => itemSetPage(['resource_property' => 'items:5'], true),

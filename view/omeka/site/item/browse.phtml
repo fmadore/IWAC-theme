@@ -16,9 +16,6 @@ if (!isset($itemSet)) {
 $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
 $escapeAttr = $this->plugin('escapeHtmlAttr');
-// The ledger's client title filter and AJAX paging. No masonry or browse.js:
-// there is no card grid and no grid/list toggle on this page.
-$this->inlineScript()->appendFile($this->assetUrl('js/dist/linked-resources.min.js'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/resource-page-blocks.css', 'Omeka'));
 $this->htmlElement('body')->appendAttribute('class', 'item resource browse item-set');
 
@@ -31,6 +28,16 @@ $query['item_set_id'] = $itemSet->id();
 $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
     ? $this->iwacSearchUrl()
     : $this->url('site/resource', ['controller' => 'item', 'action' => 'search'], ['query' => $query], true);
+
+// The set's items through IwacSearch's Typesense surface — full-text search,
+// facets, sort and paging over the whole set — when the module is active and
+// its index covers this set. The helper returns '' otherwise (Typesense down,
+// an authority set the content index does not hold, a signed-in editor whose
+// count includes private items, any failure), and the page keeps the ledger
+// below: core's browse, which the controller has already run.
+$setSearch = $this->getHelperPluginManager()->has('iwacItemSetSearch')
+    ? (string) $this->iwacItemSetSearch($itemSet)
+    : '';
 ?>
 
 <?php echo $this->ResourceTags($itemSet); ?>
@@ -41,6 +48,18 @@ $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
 <div class="item-set-items">
     <h2><?php echo $escape($translate('Items')); ?></h2>
 
+    <?php if ($setSearch !== ''): ?>
+
+    <?php $this->trigger('view.browse.before'); ?>
+    <?php echo $setSearch; ?>
+
+    <?php else: ?>
+
+    <?php
+    // The ledger's search and AJAX paging. No masonry or browse.js: there is
+    // no card grid and no grid/list toggle on this page.
+    $this->inlineScript()->appendFile($this->assetUrl('js/dist/linked-resources.min.js'));
+    ?>
     <?php echo $this->searchFilters(); ?>
 
     <div class="browse-controls">
@@ -118,6 +137,8 @@ $collectionSearchUrl = $this->getHelperPluginManager()->has('iwacSearchUrl')
         </div>
 
     </div>
+
+    <?php endif; ?>
 </div>
 
 <?php $this->trigger('view.browse.after'); ?>
