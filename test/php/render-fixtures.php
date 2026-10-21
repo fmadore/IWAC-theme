@@ -494,6 +494,116 @@ function aboutPage(string $locale): array
     );
 }
 
+/** A page block attachment as core's Media embed block reads it. */
+function attachment(Resource $item, ?Resource $media, string $caption = ''): object
+{
+    return new class($item, $media, $caption) {
+        public function __construct(private Resource $item, private ?Resource $media, private string $caption)
+        {
+        }
+
+        public function item(): Resource
+        {
+            return $this->item;
+        }
+
+        public function media(): ?Resource
+        {
+            return $this->media;
+        }
+
+        public function caption(): string
+        {
+            return $this->caption;
+        }
+    };
+}
+
+/**
+ * Core's Media embed block (Omeka\Site\BlockLayout\Media::render()): the classes
+ * it builds from the block's options, then $template with the variables core
+ * hands every template of this block. $template is common/block-layout/file (the
+ * default) or a theme block template under common/block-template/.
+ *
+ * @param list<object> $attachments
+ */
+function mediaEmbedBlock(FakeView $view, string $template, array $attachments, array $data = []): string
+{
+    $classes = ['media-embed'];
+    $classes[] = ($data['layout'] ?? '') === 'horizontal' ? 'layout-horizontal' : 'layout-vertical';
+    $classes[] = ($data['media_display'] ?? '') === 'thumbnail' ? 'media-display-thumbnail' : 'media-display-embed';
+    $classes[] = count($attachments) > 3 ? 'multiple-attachments' : 'attachment-count-' . count($attachments);
+    return $view->partial($template, [
+        'block' => null,
+        'attachments' => $attachments,
+        'thumbnailType' => $data['thumbnail_type'] ?? 'square',
+        'link' => 'item',
+        'showTitleOption' => $data['show_title_option'] ?? 'item_title',
+        'classes' => $classes,
+        'mediaDisplay' => $data['media_display'] ?? null,
+    ]);
+}
+
+/**
+ * An exhibit page built the way the Hajj exhibit is: Media embed blocks of
+ * photographs, of embedded media and of academic references, three of them on
+ * the theme's "Masonry" template and the references once more on core's default
+ * horizontal layout. The photographs are the collection's own, with their real
+ * storage ids and shapes (600x800 portraits beside 800x600 landscapes); the
+ * references and their captions are the live exhibit's.
+ */
+function exhibitPage(): array
+{
+    $l = locales()['en'];
+    $site = $l['site'];
+    $photo = static function (int $id, string $title, string $hash) use ($site): Resource {
+        $item = new Resource($site, 'items', $id, $title, 'Image', $hash);
+        return (new Resource($site, 'media', $id + 50000, $title, null, $hash))->of($item);
+    };
+    $photos = [
+        [12296, 'Maison du Hadj', '117b4eb718c2f1c173173fb97b063a1d2af036cb', 'Lomé, 2019'],
+        [12278, 'Mosquée de l’Université de Lomé', '042cf16352b5e2a02014129e3a36af0b7618cddd', 'Lomé, 2021'],
+        [12291, 'Grande mosquée de Niamey', '9f09cda61d536ed970695bb675d1d2f8127fa5c3', 'Niamey, 2022'],
+        [12294, 'Mosquée Kadhafi', '1be6fde4e23aeda5d6155efe87e6cda5afa458d5', 'Lomé, 2019'],
+        [12254, 'Mosquée de Ganvié', 'd82bdc47b538148d6d839d690e4c4d496f083056', 'Ganvié, 2019'],
+        [12263, 'Ancienne mosquée centrale de Porto-Novo', '3f2983f488ac9313f42f4acf6d36d710b3320a6b', 'Porto-Novo, 2019'],
+    ];
+    $gallery = array_map(static function (array $p) use ($photo): object {
+        $media = $photo($p[0], $p[1], $p[2]);
+        return attachment($media->item(), $media, '<p>' . $p[3] . '</p>');
+    }, $photos);
+    $video = new Resource($site, 'items', 110621, 'Rencontre bilan de l’organisation du hadj 2026 de Excellences voyages avec ses pèlerins', 'Moving image');
+    $embeds = [
+        $gallery[0],
+        attachment($video, (new Resource($site, 'media', 160621, $video->displayTitle()))->of($video)->youtube('R3-2MuTCi7k'), '<p>CERFI TV, 2026</p>'),
+        $gallery[2],
+    ];
+    $references = array_map(
+        static fn (array $r): object => attachment(new Resource($site, 'items', $r[0], $r[1], 'Thesis'), null, '<p>' . $r[2] . '</p>'),
+        [
+            [15699, 'L’islam au Burkina Faso : problématique de l’organisation du hadj', 'Mahamoudou Oubda (2003)'],
+            [4966, 'L’administration coloniale française et les pèlerins de La Mecque : le cas des Voltaïques', 'Juliette Van Duc (1995)'],
+            [5076, 'Le pèlerinage des Voltaïque/Burkinabè aux Lieux saints de l’islam passé présent', 'Juliette Van Duc (1988)'],
+            [5033, 'Le pèlerinage des Voltaïques/Burkinabè aux lieux saints de l’islam, passé-présent : orientation générale de thèse', 'Juliette Van Duc (1991)'],
+            [5034, 'Quelques aperçus relatifs aux pèlerins de la Mecque : le cas des Voltaïques-Burkinabè', 'Juliette Van Duc (1993)'],
+        ],
+    );
+    $masonry = 'common/block-template/media-masonry';
+    return page('en', ['en' => '/s/westafrica/page/hajj-bf', 'fr' => '/s/afrique_ouest/page/hadj-bf'], [], ['page-slug' => 'hajj-bf'],
+        static function (FakeView $view) use ($site, $gallery, $embeds, $references, $masonry): string {
+            $view->htmlElement('body')->appendAttribute('class', 'page site-page-hajj-bf');
+            return blockGrid([
+                ['pageTitle', 12, $view->partial('common/block-layout/page-title', ['pageTitle' => $site->page('hajj-bf')->title()])],
+                ['html', 12, '<p>Trace the history of the hajj in Burkina Faso, from long overland journeys to state regulation and contemporary debates over the pilgrimage’s organisation.</p>'],
+                ['media', 12, mediaEmbedBlock($view, $masonry, $gallery, ['layout' => 'horizontal', 'media_display' => 'thumbnail', 'thumbnail_type' => 'large'])],
+                ['media', 12, mediaEmbedBlock($view, $masonry, $embeds, ['thumbnail_type' => 'large'])],
+                ['media', 12, mediaEmbedBlock($view, $masonry, $references, ['layout' => 'horizontal', 'media_display' => 'thumbnail'])],
+                ['media', 12, mediaEmbedBlock($view, 'common/block-layout/file', $references, ['layout' => 'horizontal', 'media_display' => 'thumbnail'])],
+            ]);
+        },
+    );
+}
+
 /** name => renderer. A test names the fixture; manifest.json says where it lives. */
 function fixtures(): array
 {
@@ -528,6 +638,7 @@ function fixtures(): array
         'items-browse.en' => static fn () => itemsBrowsePage(),
         'page-about.en' => static fn () => aboutPage('en'),
         'page-about.fr' => static fn () => aboutPage('fr'),
+        'page-exhibit.en' => static fn () => exhibitPage(),
     ];
 }
 

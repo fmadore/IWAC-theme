@@ -65,6 +65,29 @@
                     height: auto;
                     display: block;
                 }
+
+                // Stacked on a phone (below), the asset is no longer a column
+                // of the card, so it keeps its own width up to the card's:
+                // `width: 100%` there blew a 201px portrait up to 340.
+                @media (max-width: #{$md - 1px}) {
+                    inline-size: fit-content;
+
+                    img {
+                        width: auto;
+                        max-width: 100%;
+                    }
+                }
+            }
+
+            // A stacked asset sits where the editor aligned it.
+            @media (max-width: #{$md - 1px}) {
+                &.block-layout-alignment-block-left .asset {
+                    margin-inline-start: 0;
+                }
+
+                &.block-layout-alignment-block-right .asset {
+                    margin-inline-end: 0;
+                }
             }
         }
 
@@ -86,6 +109,26 @@
     &.block-group-grid:not(:has(.block-asset)) {
         // Pure grid container - inherits default styles
         display: grid;
+    }
+
+    // Phones: the group stacks, as the page around it already has. Core's
+    // page-grid.css turns `.page-layout-grid` into a plain block below 897px,
+    // but a block group copies that grid's twelve columns
+    // (`grid-template-columns: inherit`), so its blocks kept their spans on a
+    // phone: About's 3/12 asset beside 9/12 of text drew its photographs at
+    // 70px wide and clipped their captions. The second selector restates the
+    // rule above at its own specificity.
+    &.block-group-grid {
+        @media (max-width: #{$md - 1px}) {
+            &,
+            &:not(:has(.block-asset)) {
+                display: block;
+            }
+
+            > .block + .block {
+                margin-block-start: var(--space-4);
+            }
+        }
     }
 }
 

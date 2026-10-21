@@ -107,6 +107,12 @@ Maximum number of levels to show in the site's top navigation bar. Set to 0 to s
 - Layout for Browse Pages
 - Truncate Body Property
 
+### Building Pages
+Which page-block options to use for images and media — the **Masonry** template
+for Media embed blocks, Asset captions and alignment, image-beside-text block
+groups (stacked on phones), and the Item carousel options the theme honours — is
+in [`docs/PAGE-BLOCKS.md`](docs/PAGE-BLOCKS.md).
+
 ## Customizing the Theme
 
 If you want to customize the site with your own CSS, the [CSS Editor](https://omeka.org/s/modules/CSSEditor/) module allows site administrators to write style overrides.

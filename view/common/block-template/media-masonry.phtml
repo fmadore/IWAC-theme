@@ -1,0 +1,48 @@
+<?php
+/**
+ * Media embed, "Masonry" — a block template for core's Media embed block.
+ *
+ * Page editors pick it in the block's Template menu; config/theme.ini offers it
+ * as `block_templates.media.media-masonry`. Core's Media::render() hands this file
+ * the variables it hands its default template, so the markup is that template's:
+ * the theme's common/block-layout/file.phtml renders the cards, and this file
+ * changes only the wrapper's layout class and loads the script that packs them.
+ *
+ * WHY A TEMPLATE. The block's own Layout option is vertical or horizontal, and
+ * horizontal is a grid whose rows are as tall as their tallest card. A set of
+ * portrait and landscape photographs — or reference cards whose titles run one
+ * to four lines, as on the Hajj exhibit — leaves a hole under every short card.
+ * Masonry drops each card into the shortest column instead. It replaces the
+ * Layout option rather than combining with it, so `layout-horizontal` and
+ * `layout-vertical` are swapped for `layout-masonry` here, and no rule written
+ * against core's horizontal grid reaches this block.
+ *
+ * HOW IT DEGRADES. The stylesheet lays the cards out in CSS columns, which is
+ * already a wall but reads down each column. asset/js/media-masonry.js reads the
+ * same column width and gap from the stylesheet and hands them to MiniMasonry,
+ * which places the cards in the editor's order across the page.
+ *
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\SitePageBlockRepresentation $block
+ * @var \Omeka\Api\Representation\SiteBlockAttachmentRepresentation[] $attachments
+ * @var string $thumbnailType
+ * @var string $link
+ * @var string $showTitleOption
+ * @var string[] $classes
+ * @var string|null $mediaDisplay
+ */
+$this->inlineScript()->appendFile($this->assetUrl('js/minimasonry.min.js'));
+$this->inlineScript()->appendFile($this->assetUrl('js/dist/media-masonry.min.js'));
+
+$classes = array_values(array_diff($classes ?? [], ['layout-horizontal', 'layout-vertical']));
+$classes[] = 'layout-masonry';
+
+echo $this->partial('common/block-layout/file', [
+    'block' => $block,
+    'attachments' => $attachments,
+    'thumbnailType' => $thumbnailType,
+    'link' => $link,
+    'showTitleOption' => $showTitleOption,
+    'classes' => $classes,
+    'mediaDisplay' => $mediaDisplay,
+]);

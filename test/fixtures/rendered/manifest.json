@@ -279,5 +279,22 @@
             "common/banner.phtml",
             "common/footer.phtml"
         ]
+    },
+    "page-exhibit.en": {
+        "url": "/s/westafrica/page/hajj-bf",
+        "lang": "en-US",
+        "xhr": false,
+        "templates": [
+            "common/block-layout/page-title.phtml",
+            "common/block-template/media-masonry.phtml",
+            "common/block-layout/file.phtml",
+            "layout/layout.phtml",
+            "common/header.phtml",
+            "common/search-form.phtml",
+            "common/language-switcher.phtml",
+            "common/menu-drawer.phtml",
+            "common/banner.phtml",
+            "common/footer.phtml"
+        ]
     }
 }

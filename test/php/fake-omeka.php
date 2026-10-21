@@ -404,6 +404,12 @@ final class Resource
     /** @var list<array{0:string,1:Resource}> resources whose $term value points here */
     private array $subjects = [];
 
+    /** A media's item: set by of(). */
+    private ?Resource $parent = null;
+
+    /** A YouTube media's video id: set by youtube(). */
+    private ?string $youtubeId = null;
+
     /**
      * Every resource built, by site slug and id — what the fake API searches.
      * records() builds a site's records afresh for each page, so the latest
@@ -532,9 +538,64 @@ final class Resource
         return null;
     }
 
+    /** This media belongs to $item (what a media's item() returns). */
+    public function of(Resource $item): self
+    {
+        $this->parent = $item;
+        return $this;
+    }
+
+    /** This media was ingested from YouTube: core renders it with the Youtube renderer. */
+    public function youtube(string $id): self
+    {
+        $this->youtubeId = $id;
+        return $this;
+    }
+
     public function item(): ?Resource
     {
-        return null;
+        return $this->parent;
+    }
+
+    public function renderer(): string
+    {
+        return $this->youtubeId === null ? 'file' : 'youtube';
+    }
+
+    public function originalUrl(): ?string
+    {
+        return $this->thumbnail === null ? null : '/files/original/' . $this->thumbnail . '.jpg';
+    }
+
+    /**
+     * Core's media view helper: the renderer's markup in
+     * `<div class="media-render {renderer}">`. A file media goes through
+     * ThumbnailRenderer — the thumbnail, linked to the original, the item or the
+     * media as $options['link'] says, titled with the media's title. A YouTube
+     * media goes through the Youtube renderer: a 420x315 iframe on the embed URL.
+     */
+    public function render(array $options = []): string
+    {
+        if ($this->youtubeId !== null) {
+            $html = sprintf(
+                '<iframe width="420" height="315" src="https://www.youtube.com/embed/%s" title="%s" frameborder="0" allowfullscreen></iframe>',
+                htmlspecialchars($this->youtubeId),
+                htmlspecialchars($this->title),
+            );
+        } else {
+            $src = $this->thumbnailDisplayUrl($options['thumbnailType'] ?? 'large');
+            $html = $src === null ? '' : '<img src="' . htmlspecialchars($src) . '" alt="">';
+            $url = match ($options['link'] ?? 'original') {
+                'original' => $this->originalUrl(),
+                'item' => $this->parent?->url(),
+                'media' => $this->url(),
+                default => null,
+            };
+            if ($url !== null && $html !== '') {
+                $html = sprintf('<a href="%s" title="%s">%s</a>', htmlspecialchars($url), htmlspecialchars($this->title), $html);
+            }
+        }
+        return sprintf('<div class="media-render %s">%s</div>', $this->renderer(), $html);
     }
 
     public function thumbnailDisplayUrl(string $type): ?string
@@ -796,7 +857,11 @@ final class HeadContainer
     }
 }
 
-/** inlineScript(): the body-end scripts, which the fixtures keep as a record of what a page loads. */
+/**
+ * inlineScript(): the body-end scripts, which the fixtures keep as a record of
+ * what a page loads. Like Laminas' HeadScript, a file already queued is not
+ * queued again — a page with three blocks on one template loads its script once.
+ */
 final class InlineScript
 {
     /** @var list<string> */
@@ -804,13 +869,17 @@ final class InlineScript
 
     public function prependFile(string $src): self
     {
-        array_unshift($this->files, $src);
+        if (!in_array($src, $this->files, true)) {
+            array_unshift($this->files, $src);
+        }
         return $this;
     }
 
     public function appendFile(string $src): self
     {
-        $this->files[] = $src;
+        if (!in_array($src, $this->files, true)) {
+            $this->files[] = $src;
+        }
         return $this;
     }
 
@@ -1034,7 +1103,19 @@ function siteView(Request $request, array $page): FakeView
         'url' => static fn ($route = null, array $params = [], $options = [], $reuse = false): string => is_array($options)
             ? $request->url($options['query'] ?? [], (string) ($options['fragment'] ?? ''))
             : $request->url(),
-        'hyperlink' => static fn ($text, $url, array $attributes = []): string => '<a href="' . htmlspecialchars((string) $url) . '"' . attributes($attributes) . '>' . htmlspecialchars((string) $text) . '</a>',
+        // Core's Hyperlink: invoked it escapes the text; raw() takes HTML (a
+        // thumbnail, in the Media embed block's thumbnail display).
+        'hyperlink' => new class {
+            public function __invoke($text, $url, array $attributes = []): string
+            {
+                return $this->raw(htmlspecialchars((string) $text), $url, $attributes);
+            }
+
+            public function raw($html, $url, array $attributes = []): string
+            {
+                return '<a href="' . htmlspecialchars((string) $url) . '"' . attributes($attributes) . '>' . $html . '</a>';
+            }
+        },
         'thumbnail' => static function ($representation, string $type, array $attributes = []): string {
             $src = $representation->thumbnailDisplayUrl($type);
             return $src ? '<img' . attributes($attributes + ['src' => $src]) . '>' : '';

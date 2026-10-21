@@ -6,6 +6,57 @@
 // Responsive grid layout - cards adapt to their natural content height
 // ==========================================================================
 
+// The card a media embed sits on. The thumbnail display has always used it;
+// the masonry template uses it for embedded media too, where a bare player
+// beside a carded photograph reads as a hole in the wall.
+@mixin media-card {
+    width: 100%;
+    background: var(--panel-bg);
+    border: var(--panel-border);
+    box-shadow: var(--panel-shadow);
+    border-radius: var(--radius-md);
+    padding: 0;
+    overflow: hidden;
+    @include card-hover;
+
+    h3 {
+        color: var(--ink);
+        font-family: $font__body;
+        font-weight: 600;
+        font-size: var(--text-base);
+        line-height: var(--line-height-snug);
+        margin: var(--space-4);
+        margin-block-end: var(--space-2);
+
+        // Ink at rest, primary only on hover — never primary
+        // heading text (principle 5).
+        a {
+            @include title-link;
+            font-weight: inherit;
+        }
+    }
+
+    .caption {
+        margin: var(--space-4);
+        margin-block-start: 0;
+        font-size: var(--text-sm);
+        color: var(--muted);
+        line-height: var(--line-height-normal);
+
+        p {
+            margin: 0;
+        }
+    }
+
+    img {
+        max-height: none;
+        height: auto;
+        width: 100%;
+        object-fit: cover;
+        display: block;
+    }
+}
+
 .media-embed {
     // Override Omeka's layout-horizontal grid
     &.layout-horizontal {
@@ -39,64 +90,102 @@
         margin-block-end: var(--space-12);
 
         .item.resource {
-            width: 100%;
-            background: var(--panel-bg);
-            border: var(--panel-border);
-            box-shadow: var(--panel-shadow);
-            border-radius: var(--radius-md);
-            padding: 0;
-            overflow: hidden;
-            @include card-hover;
-            
+            @include media-card;
+
             // Image link container
             > a:first-child {
                 display: block;
                 width: 100%;
                 overflow: hidden;
-                
+
                 img {
                     width: 100%;
                     height: auto;
                     display: block;
                 }
             }
+        }
+    }
+}
 
-            h3 {
-                color: var(--ink);
-                font-family: $font__body;
-                font-weight: 600;
-                font-size: var(--text-base);
-                line-height: var(--line-height-snug);
-                margin: var(--space-4);
-                margin-block-end: var(--space-2);
-                
-                // Ink at rest, primary only on hover — never primary
-                // heading text (principle 5).
-                a {
-                    @include title-link;
-                    font-weight: inherit;
-                }
-            }
+// ==========================================================================
+// Masonry — the "Masonry" block template
+// (view/common/block-template/media-masonry.phtml). The cards are the ones
+// above; this decides only where they sit.
+//
+// The stylesheet owns both measurements, and media-masonry.js reads them
+// resolved to px: a column at least 15rem wide — four across the 1300px
+// content column, three on a small laptop, two on a tablet, one on a phone,
+// the steps .layout-horizontal takes at its breakpoints — and the --space-6
+// gutter. Without the script they lay the cards out as CSS columns; with it,
+// [data-masonry-ready] hands placement to MiniMasonry, which positions every
+// card absolutely and sets the wall's height.
+// ==========================================================================
 
-            .caption {
-                margin: var(--space-4);
-                margin-block-start: 0;
-                font-size: var(--text-sm);
-                color: var(--muted);
-                line-height: var(--line-height-normal);
-                
-                p {
-                    margin: 0;
-                }
-            }
+.media-embed.layout-masonry {
+    column-width: 15rem;
+    column-gap: var(--space-6);
+    margin-block-end: var(--space-12);
 
-            img {
-                max-height: none;
-                height: auto;
-                width: 100%;
-                object-fit: cover;
-                display: block;
-            }
+    > .item.resource {
+        display: block;
+        width: 100%;
+        margin: 0 0 var(--space-6);
+        break-inside: avoid;
+    }
+
+    &[data-masonry-ready] {
+        position: relative;
+        column-width: auto;
+
+        > .item.resource {
+            position: absolute;
+            margin: 0;
+        }
+    }
+
+    // Embedded media fill their card. Core's file renderer links a thumbnail;
+    // the YouTube renderer prints a fixed 420x315 iframe.
+    .media-render {
+        img,
+        video,
+        audio {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            border: 0;
+        }
+
+        > a {
+            display: block;
+        }
+    }
+
+    &.media-display-embed .item.resource {
+        @include media-card;
+    }
+}
+
+@media print {
+    // MiniMasonry's absolute positions are inline styles, and a page break
+    // through an absolutely positioned wall drops cards. Paper gets the
+    // stylesheet's columns back.
+    .media-embed.layout-masonry[data-masonry-ready] {
+        height: auto !important;
+        column-width: 15rem;
+
+        > .item.resource {
+            position: static;
+            width: 100% !important;
+            transform: none !important;
+            margin: 0 0 var(--space-6);
         }
     }
 }
