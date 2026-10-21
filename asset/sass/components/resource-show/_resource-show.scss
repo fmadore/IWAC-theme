@@ -176,11 +176,20 @@ body.item-set {
             // them left image-only rows (dcterms:rights) empty and stripped
             // the item-set logos — but constrained to a quiet mark sitting
             // on the text line, not the old 60px card thumb.
+            //
+            // The block margin is the mark's leading. At 36px it is taller
+            // than the 25.5px text line, so it IS the line box, and with no
+            // margin two image values wrapped onto consecutive lines (a phone,
+            // an item set with two sources) sat edge to edge. --space-1 is the
+            // text line's own half-leading (0.25em at 17px), so an image row
+            // keeps a text row's rhythm and stacked marks part by --space-2,
+            // the clearance the mark already keeps from its label.
             > dd a img {
                 display: inline-block;
                 height: 2.25rem;
                 width: auto;
                 max-width: 10rem;
+                margin-block: var(--space-1);
                 margin-inline-end: var(--space-2);
                 vertical-align: middle;
                 border-radius: var(--radius-sm);
