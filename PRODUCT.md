@@ -86,9 +86,10 @@ the press register grounded in the collection's own material.
   "Change to Lucide Icons", Jan 2026): it converted the set **in place and kept the old
   Bootstrap-Icon filenames**, so `list-ul.svg` holds Lucide's *list* and `grid-fill.svg`
   its *layout-grid*. A filename here is not evidence of provenance — open the file and
-  read the `class="lucide …"` attribute. Eleven older masks are still Bootstrap-drawn
-  from before the switch (quote, clipboard, check2, book, bookmark, camera, newspaper,
-  file-earmark-text, box-arrow-up-right, arrow-up, arrow-down); converging them is open.
+  read the `class="lucide …"` attribute. The last eleven Bootstrap-drawn masks (quote,
+  clipboard, check2, book, bookmark, camera, newspaper, file-earmark-text,
+  box-arrow-up-right, arrow-up, arrow-down) were converted the same way in 2.27, so
+  every UI mask is Lucide; IwacVisualizations and IwacSearch draw the same set inline.
   The theme toggle, language switcher, PWA install control and generic error page
   were inline Bootstrap SVGs until 2.24 and are masks now (`contrast`, `sun`, `moon`,
   `translate`, `download`, `triangle-alert`). The one deliberate exception is the
