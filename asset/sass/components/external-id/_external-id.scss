@@ -1,0 +1,57 @@
+@use "../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// External identifiers — a DOI or a Wikidata entity on a record
+//
+//   [doi] 10.48734/akofena.n018.vol.1.13.2025 ↗
+//   [||||] Q141697087 ↗
+//
+// Printed by common/resource-values.phtml for the values that
+// helper/ExternalIdentifier.php recognises. The scheme's own mark leads, in
+// the muted ink of a label (never its brand colour: one quiet glyph, like the
+// AI mark); the identifier is an ordinary link; the arrow says it leaves the
+// site. The marks are the two schemes' official logos, single-colour from
+// Simple Icons (CC0) — brand marks stay the brand's own, not Lucide glyphs.
+// IwacSearch draws the same two files on its result cards.
+// ==========================================================================
+
+.ext-id {
+    // A DOI has no break opportunity of its own and runs past a phone's
+    // value column.
+    overflow-wrap: anywhere;
+
+    &__mark {
+        color: var(--muted);
+        margin-inline-end: 0.4em;
+        vertical-align: -0.1em;
+    }
+
+    &--doi &__mark {
+        @include icon-mask("../img/doi.svg", LinkText);
+        width: 1em;
+        height: 1em;
+    }
+
+    // The barcode is cropped to its own box (24 × 14.834), so it sits on the
+    // text line at x-height-ish instead of floating in a square.
+    &--wikidata &__mark {
+        @include icon-mask("../img/wikidata.svg", LinkText);
+        height: 0.75em;
+        aspect-ratio: 24 / 14.834;
+        vertical-align: 0;
+    }
+
+    &::after {
+        @include icon-mask("../img/box-arrow-up-right.svg", LinkText);
+        content: "";
+        width: 0.75em;
+        height: 0.75em;
+        margin-inline-start: 0.3em;
+        opacity: 0.7;
+        transition: opacity var(--transition-fast);
+    }
+
+    &:hover::after {
+        opacity: 1;
+    }
+}

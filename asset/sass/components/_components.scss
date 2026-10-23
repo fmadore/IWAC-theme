@@ -44,6 +44,10 @@
 --------------------------------------------- */
 @forward "error-page/error-page";
 
+/* External identifiers (DOI, Wikidata) on resource values
+--------------------------------------------- */
+@forward "external-id/external-id";
+
 /* Linked Resources
 --------------------------------------------- */
 @forward "linked-resources/linked-resources";

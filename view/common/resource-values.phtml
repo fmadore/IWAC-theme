@@ -227,6 +227,9 @@ foreach ($values as $term => $propertyData):
             // The AI table of contents is a deterministic per-article index; parse
             // it into structured markup (common/ai-toc) instead of a raw text dump.
             $isAiTocValue = $isAiGenerated && 'dcterms:tableOfContents' === $term && 'literal' === $valueType;
+            // A DOI or a Wikidata entity: printed with its scheme's mark and
+            // the canonical link (helper/ExternalIdentifier.php).
+            $externalId = $this->ExternalIdentifier($value, $term);
             // Long OCR body: fold everything past the opening extract into a
             // <details> (see the note at the top of this file).
             $transcriptLede = null;
@@ -279,6 +282,12 @@ foreach ($values as $term => $propertyData):
                             <div class="transcript__body value-content" dir="auto"<?php echo $proseLangAttr; ?>><?php echo nl2br($escape($transcriptRest)); ?></div>
                         </details>
                     </div>
+                <?php elseif ($externalId !== null): ?>
+                    <?php // The mark is the scheme's name ("Wikidata Q141697087"):
+                          // the label alone would leave a bare QID in the link's
+                          // accessible name. The identifier is machine text, so
+                          // it is kept left-to-right and out of page translation. ?>
+                    <span class="value-content"><a class="uri-value-link ext-id ext-id--<?php echo $escapeAttr($externalId['scheme']); ?>" href="<?php echo $escapeAttr($externalId['url']); ?>" target="_blank" rel="noopener" dir="ltr"><span class="ext-id__mark" role="img" aria-label="<?php echo $escapeAttr($externalId['label']); ?>" title="<?php echo $escapeAttr($externalId['label']); ?>"></span><span class="ext-id__id" translate="no"><?php echo $escape($externalId['id']); ?></span></a></span>
                 <?php else: ?>
                     <?php
                     $valueHtml = $filterLocale ? $value->asHtml($lang) : $value->asHtml();

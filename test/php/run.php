@@ -1465,6 +1465,104 @@ namespace IwacThemeTest {
         check(!str_contains($onFrench, 'lang="fr"'), 'redundant lang on the French site');
     });
 
+    /** A URI value as core models it: the address, plus an optional label. */
+    function fakeUri(string $uri, string $label = ''): object
+    {
+        return new class($uri, $label) {
+            public function __construct(private string $uri, private string $label)
+            {
+            }
+
+            public function type(): string
+            {
+                return 'uri';
+            }
+
+            public function uri(): string
+            {
+                return $this->uri;
+            }
+
+            public function value(): string
+            {
+                return $this->label;
+            }
+
+            public function lang(): string
+            {
+                return '';
+            }
+
+            public function valueResource()
+            {
+                return null;
+            }
+
+            public function valueAnnotation()
+            {
+                return null;
+            }
+
+            public function isPublic(): bool
+            {
+                return true;
+            }
+
+            /** Core's Uri data type: the label (else the address) in a link. */
+            public function asHtml($lang = null): string
+            {
+                $text = $this->label !== '' ? $this->label : $this->uri;
+                return '<a class="uri-value-link" target="_blank" href="' . htmlspecialchars($this->uri) . '">' . htmlspecialchars($text) . '</a>';
+            }
+        };
+    }
+
+    test('ExternalIdentifier reads a Wikidata entity or a DOI, and nothing else', function () {
+        $id = (new FakeView())->helpers['ExternalIdentifier'];
+        $wikidata = ['scheme' => 'wikidata', 'id' => 'Q141697087', 'url' => 'https://www.wikidata.org/wiki/Q141697087', 'label' => 'Wikidata'];
+        same($wikidata, $id(fakeUri('https://www.wikidata.org/wiki/Q141697087', 'Q141697087'), 'dcterms:identifier'));
+        // Every spelling lands on the one canonical page, whatever the label.
+        same($wikidata, $id(fakeUri('http://www.wikidata.org/entity/Q141697087', 'Wikidata')));
+        same($wikidata, $id(fakeUri('https://m.wikidata.org/wiki/q141697087')));
+        // A property or a lexeme is not an entity the collection reconciles to.
+        same(null, $id(fakeUri('https://www.wikidata.org/wiki/Property:P31')));
+
+        $doi = ['scheme' => 'doi', 'id' => '10.48734/akofena.n018.vol.1.13.2025', 'url' => 'https://doi.org/10.48734/akofena.n018.vol.1.13.2025', 'label' => 'DOI'];
+        same($doi, $id(fakeUri('https://doi.org/10.48734/akofena.n018.vol.1.13.2025', '10.48734/akofena.n018.vol.1.13.2025'), 'bibo:doi'));
+        same($doi, $id(fakeUri('http://dx.doi.org/10.48734/akofena.n018.vol.1.13.2025')));
+        // A typed DOI on bibo:doi, bare or prefixed; the same text elsewhere is just text.
+        same($doi, $id(fakeValue('10.48734/akofena.n018.vol.1.13.2025'), 'bibo:doi'));
+        same($doi, $id(fakeValue('doi: 10.48734/akofena.n018.vol.1.13.2025'), 'bibo:doi'));
+        same(null, $id(fakeValue('10.48734/akofena.n018.vol.1.13.2025'), 'dcterms:identifier'));
+        // An encoded DOI reads decoded, and only path-breaking characters are re-escaped.
+        $sici = $id(fakeUri('https://doi.org/10.1002/%28SICI%291097-4571%28199806%2949%3A8%3C693%3A%3AAID-ASI4%3E3.0.CO%3B2-0'));
+        same('10.1002/(SICI)1097-4571(199806)49:8<693::AID-ASI4>3.0.CO;2-0', $sici['id']);
+        same('https://doi.org/10.1002/(SICI)1097-4571(199806)49:8%3C693::AID-ASI4%3E3.0.CO;2-0', $sici['url']);
+
+        same(null, $id(fakeUri('https://example.org/10.1234/x')));
+        same(null, $id(fakeValue('iwac-index-0000001'), 'dcterms:identifier'));
+    });
+
+    test('a DOI or Wikidata value carries its mark; other links keep core markup', function () {
+        $values = valueRows([
+            'bibo:doi' => ['doi', [fakeUri('https://doi.org/10.48734/akofena.n018.vol.1.13.2025', '10.48734/akofena.n018.vol.1.13.2025')], null],
+            'dcterms:identifier' => ['Identifier', [
+                fakeUri('https://www.wikidata.org/wiki/Q216920', 'Q216920'),
+                fakeValue('iwac-index-0000001'),
+            ], null],
+            'fabio:hasURL' => ['URL', [fakeUri('https://example.org/article', 'Article')], null],
+        ]);
+        $html = (new FakeView())->render('common/resource-values.phtml', ['values' => $values, 'resource' => null]);
+
+        check(str_contains($html, '<a class="uri-value-link ext-id ext-id--doi" href="https://doi.org/10.48734/akofena.n018.vol.1.13.2025" target="_blank" rel="noopener" dir="ltr"><span class="ext-id__mark" role="img" aria-label="DOI" title="DOI"></span><span class="ext-id__id" translate="no">10.48734/akofena.n018.vol.1.13.2025</span></a>'), 'DOI link');
+        check(str_contains($html, 'class="uri-value-link ext-id ext-id--wikidata" href="https://www.wikidata.org/wiki/Q216920"'), 'Wikidata link');
+        check(str_contains($html, 'aria-label="Wikidata"'), 'the scheme must name the Wikidata link');
+        // The IWAC key beside it, and an ordinary URL, are untouched.
+        check(str_contains($html, '<span class="value-content" dir="auto">iwac-index-0000001</span>'), 'literal identifier changed');
+        check(str_contains($html, '<span class="value-content" dir="auto"><a class="uri-value-link" target="_blank" href="https://example.org/article">Article</a></span>'), 'plain URI lost core markup');
+        same(2, substr_count($html, 'ext-id__mark'), 'one mark per recognised identifier');
+    });
+
     // ---- Run ----------------------------------------------------------------
 
     $failed = 0;

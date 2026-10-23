@@ -94,7 +94,10 @@ the press register grounded in the collection's own material.
   were inline Bootstrap SVGs until 2.24 and are masks now (`contrast`, `sun`, `moon`,
   `translate`, `download`, `triangle-alert`). The one deliberate exception is the
   footer's seven brand marks (`footer.phtml`), still inlined: brand marks stay each
-  platform's own official logo, not a system glyph. FontAwesome and flag-icon are
+  platform's own official logo, not a system glyph. The same rule covers the two
+  identifier marks, `doi.svg` and `wikidata.svg` (single-colour, from Simple Icons,
+  CC0): masks inked `--muted`, drawn before a DOI or Wikidata value on the item page
+  (`components/external-id`) and on IwacSearch's result cards, which carry a copy. FontAwesome and flag-icon are
   absent — since 2.24 the layout no longer loads Omeka's `iconfonts.css` at all, and
   the `o-icon-*` classes core emits on public pages are re-drawn as masks in
   `base/elements/_icons.scss`.
