@@ -278,17 +278,31 @@ function linkedResourcesBlock(FakeView $view, Resource $resource): string
 
 /**
  * Core's page-block grid (omeka/site/page/show.phtml), which wraps each
- * block's own template: [layout, grid span, html].
+ * block's own template: [layout, grid span, html, the classes the block's
+ * Layout panel adds — its alignment, a block group's grid].
  *
- * @param list<array{0:string,1:int,2:string}> $blocks
+ * @param list<array{0:string,1:int,2:string,3?:string}> $blocks
  */
 function blockGrid(array $blocks): string
 {
     $html = "<div class=\"blocks\">\n    <div class=\"blocks-inner page-layout-grid grid-template-columns-12\" style=\"column-gap: 10px; row-gap: 10px;\">";
-    foreach ($blocks as [$layout, $span, $content]) {
-        $html .= sprintf('<div class="block block-%s grid-position-auto grid-span-%d" style="">%s</div>', $layout, $span, $content);
+    return $html . blocks($blocks) . "</div>\n</div>\n";
+}
+
+/**
+ * The blocks of a page grid or of a block group, each in core's wrapper.
+ *
+ * @param list<array{0:string,1:int,2:string,3?:string}> $blocks
+ */
+function blocks(array $blocks): string
+{
+    $html = '';
+    foreach ($blocks as $block) {
+        [$layout, $span, $content] = $block;
+        $classes = trim(sprintf('block block-%s grid-position-auto grid-span-%d %s', $layout, $span, $block[3] ?? ''));
+        $html .= sprintf('<div class="%s" style="">%s</div>', $classes, $content);
     }
-    return $html . "</div>\n</div>\n";
+    return $html;
 }
 
 // ---- Pages --------------------------------------------------------------------
@@ -597,7 +611,13 @@ function exhibitPage(): array
                 ['html', 12, '<p>Trace the history of the hajj in Burkina Faso, from long overland journeys to state regulation and contemporary debates over the pilgrimage’s organisation.</p>'],
                 ['media', 12, mediaEmbedBlock($view, $masonry, $gallery, ['layout' => 'horizontal', 'media_display' => 'thumbnail', 'thumbnail_type' => 'large'])],
                 ['media', 12, mediaEmbedBlock($view, $masonry, $embeds, ['thumbnail_type' => 'large'])],
-                ['media', 12, mediaEmbedBlock($view, $masonry, $references, ['layout' => 'horizontal', 'media_display' => 'thumbnail'])],
+                // "Further references" as the live page sets it: in a block
+                // group under its heading, aligned centre. Core turns that
+                // alignment into rules that shrink a block to its content.
+                ['blockGroup', 12, blocks([
+                    ['html', 12, '<h2>Further references</h2>'],
+                    ['media', 12, mediaEmbedBlock($view, $masonry, $references, ['layout' => 'horizontal', 'media_display' => 'thumbnail']), 'block-layout-alignment-block-center block-layout-alignment-text-center'],
+                ]), 'block-group-grid'],
                 ['media', 12, mediaEmbedBlock($view, 'common/block-layout/file', $references, ['layout' => 'horizontal', 'media_display' => 'thumbnail'])],
             ]);
         },

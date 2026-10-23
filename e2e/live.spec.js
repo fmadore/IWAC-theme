@@ -231,3 +231,28 @@ test('a place record draws its map', async ({ page }) => {
     await expect(map).toHaveClass(/leaflet-container/);
     await expect(map.locator('.leaflet-tile').first()).toBeAttached();
 });
+
+// 2.26 shipped the Masonry template and the jsdom suite passed it: jsdom lays
+// nothing out. On the live exhibit the block's "centre" alignment shrank it to
+// one 240px column, and all five references stood in a strip down the page.
+test('a masonry wall fills its row with columns', async ({ page }) => {
+    test.skip(site().lang !== 'en', 'only the English Hajj exhibit uses the Masonry template');
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('page/hajj-bf', { waitUntil: 'load' });
+    const wall = page.locator('.media-embed.layout-masonry[data-masonry-ready]').first();
+    await expect(wall).toBeAttached();
+    const { columns, cards, wallWidth, rowWidth } = await wall.evaluate((el) => {
+        const lefts = [...el.children].map((card) => Math.round(card.getBoundingClientRect().left));
+        const row = el.parentElement.parentElement;
+        const style = getComputedStyle(row);
+        return {
+            columns: new Set(lefts).size,
+            cards: lefts.length,
+            wallWidth: el.getBoundingClientRect().width,
+            rowWidth: row.clientWidth - parseFloat(style.paddingInlineStart) - parseFloat(style.paddingInlineEnd),
+        };
+    });
+    expect(cards).toBeGreaterThan(1);
+    expect(columns).toBeGreaterThan(1);
+    expect(Math.abs(wallWidth - rowWidth)).toBeLessThanOrEqual(1);
+});

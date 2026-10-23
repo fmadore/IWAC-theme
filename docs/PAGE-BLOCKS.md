@@ -38,6 +38,10 @@ running left to right.
 - Masonry replaces the Layout option: columns are at least 240px wide, so a
   block shows four across the page on a desktop, three on a small laptop, two
   on a tablet and one on a phone.
+- A Masonry block always fills the width its grid span gives it: the Layout
+  panel's **Alignment** (left, centre, right) is ignored, because it would
+  shrink the block to a single column. **Text alignment** is honoured inside
+  each card.
 - It works with both displays. With **Embed media**, videos keep a 16:9 frame
   and every medium sits on the same card as a thumbnail would.
 - A block with fewer cards than columns is centred, at the same card width.
