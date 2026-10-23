@@ -94,7 +94,7 @@ msgstr "Parcourir les sections"
 msgid "Change language"
 msgstr "Changer de langue"
 
-#: view/common/citation.phtml:45
+#: view/common/citation.phtml:51
 msgid "Citation style"
 msgstr "Style de citation"
 
@@ -122,15 +122,15 @@ msgstr "La collection en un coup d’œil"
 msgid "Continue to search"
 msgstr "Continuer vers la recherche"
 
-#: view/common/citation.phtml:75
+#: view/common/citation.phtml:81
 msgid "Copied"
 msgstr "Copié"
 
-#: view/common/citation.phtml:74 view/common/citation.phtml:78
+#: view/common/citation.phtml:80 view/common/citation.phtml:84
 msgid "Copy"
 msgstr "Copier"
 
-#: view/common/citation.phtml:76
+#: view/common/citation.phtml:82
 msgid "Copy failed. Text selected: press Ctrl+C or ⌘C."
 msgstr "Échec de la copie. Texte sélectionné : appuyez sur Ctrl+C ou ⌘C."
 
@@ -158,7 +158,7 @@ msgstr ""
 msgid "Document types"
 msgstr "Types de documents"
 
-#: view/common/citation.phtml:83
+#: view/common/citation.phtml:89
 msgid "Download"
 msgstr "Télécharger"
 
@@ -194,9 +194,13 @@ msgstr ""
 msgid "Home"
 msgstr "Accueil"
 
-#: view/common/citation.phtml:42
+#: view/common/citation.phtml:41
 msgid "How to cite this item"
 msgstr "Comment citer ce document"
+
+#: view/common/citation.phtml:40
+msgid "How to cite this page"
+msgstr "Comment citer cette page"
 
 #: view/common/footer.phtml:231
 msgid "How to install this app"

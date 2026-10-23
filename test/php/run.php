@@ -704,6 +704,25 @@ namespace IwacThemeTest {
         }
     });
 
+    test('the citation panel names its subject: an item, or a page for a webpage record', function () {
+        $fake = new FakeView();
+        $citation = static fn (string $kind): array => [
+            'record' => ['id' => 11, 'kind' => $kind],
+            'defaultStyle' => 'chicago',
+            'styles' => ['chicago' => ['label' => 'Chicago', 'html' => 'Madore, Frédérick. “Hadj au Burkina Faso.”']],
+            'downloads' => [['label' => 'BibTeX', 'url' => 'https://islam.zmo.de/cite/page/11/bibtex']],
+            'zoteroRdf' => null,
+        ];
+
+        $page = $fake->render('common/citation.phtml', ['citation' => $citation('webpage')]);
+        check(str_contains($page, '>How to cite this page</h2>'), 'a webpage record is headed as a page');
+        check(str_contains($page, 'href="https://islam.zmo.de/cite/page/11/bibtex"'), 'the page downloads are linked');
+        check(!str_contains($page, 'Zotero RDF'), 'a page offers no Zotero RDF link');
+
+        $item = $fake->render('common/citation.phtml', ['citation' => $citation('newspaper')]);
+        check(str_contains($item, '>How to cite this item</h2>'), 'any other kind is headed as an item');
+    });
+
     test('web archive block: h2 section head, player sized by the stylesheet', function () {
         $fake = new FakeView();
         $sink = new class {

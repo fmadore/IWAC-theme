@@ -1,6 +1,9 @@
 <?php
 /**
- * "How to cite" panel — theme UI for the item-page citation tools (issue #7).
+ * "How to cite" panel — theme UI for the item-page citation tools (issue #7),
+ * and for static pages (online exhibits) through IWAC-SEO's "How to cite this
+ * page" page block, which hands over the same view-model with a record of kind
+ * `webpage`. The kind only changes the heading's noun.
  *
  * The IWAC-SEO module owns the citation contract (the resource-class → kind map,
  * the Chicago/APA/MLA formatting, the export serialisers) and exposes it through
@@ -33,13 +36,16 @@ $styles     = $citation['styles'];
 $downloads  = $citation['downloads'] ?? [];
 $zoteroRdf  = $citation['zoteroRdf'] ?? null;
 $multiStyle = count($styles) > 1;
+$heading    = ($citation['record']['kind'] ?? '') === 'webpage'
+    ? $translate('How to cite this page')
+    : $translate('How to cite this item');
 ?>
 <?php // `id="how-to-cite"` is a stable, term-independent anchor: it makes the panel
       // linkable from anywhere on the page (the dateline's CITE jump uses it) and
       // shareable as a deep link. The block sits wherever the admin-configured
       // resource-page stack puts it, so the theme cannot move it — it can name it. ?>
 <section id="how-to-cite" class="citation" aria-labelledby="citation-heading-<?php echo $recordId; ?>">
-    <h2 id="citation-heading-<?php echo $recordId; ?>" class="citation__title"><?php echo $escape($translate('How to cite this item')); ?></h2>
+    <h2 id="citation-heading-<?php echo $recordId; ?>" class="citation__title"><?php echo $escape($heading); ?></h2>
 
     <?php if ($multiStyle): ?>
     <div class="citation__styles" role="tablist" aria-label="<?php echo $escapeAttr($translate('Citation style')); ?>">

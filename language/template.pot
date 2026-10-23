@@ -96,7 +96,7 @@ msgstr ""
 msgid "Change language"
 msgstr ""
 
-#: view/common/citation.phtml:45
+#: view/common/citation.phtml:51
 msgid "Citation style"
 msgstr ""
 
@@ -124,15 +124,15 @@ msgstr ""
 msgid "Continue to search"
 msgstr ""
 
-#: view/common/citation.phtml:75
+#: view/common/citation.phtml:81
 msgid "Copied"
 msgstr ""
 
-#: view/common/citation.phtml:74 view/common/citation.phtml:78
+#: view/common/citation.phtml:80 view/common/citation.phtml:84
 msgid "Copy"
 msgstr ""
 
-#: view/common/citation.phtml:76
+#: view/common/citation.phtml:82
 msgid "Copy failed. Text selected: press Ctrl+C or ⌘C."
 msgstr ""
 
@@ -160,7 +160,7 @@ msgstr ""
 msgid "Document types"
 msgstr ""
 
-#: view/common/citation.phtml:83
+#: view/common/citation.phtml:89
 msgid "Download"
 msgstr ""
 
@@ -196,8 +196,12 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: view/common/citation.phtml:42
+#: view/common/citation.phtml:41
 msgid "How to cite this item"
+msgstr ""
+
+#: view/common/citation.phtml:40
+msgid "How to cite this page"
 msgstr ""
 
 #: view/common/footer.phtml:231
