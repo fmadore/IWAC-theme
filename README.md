@@ -43,7 +43,7 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 ## Requirements
 
 - **Omeka S**: 4.2.0 or higher
-- **PHP**: 8.1 or higher
+- **PHP**: 8.4 or higher
 - **Node.js**: 24.15 or higher on an even-numbered release line (for builds and tests; CI uses Node 24.18.1)
 
 ### Optional Modules
@@ -133,7 +133,7 @@ Run these commands within the theme's root directory.
 * **npm run test:live**: Runs the opt-in Playwright smoke suite against `https://islam.zmo.de/s/westafrica` (override with `IWAC_LIVE_BASE_URL`). The scheduled GitHub workflow runs this weekly; it is intentionally separate from pull-request checks because it tests the deployed site.
 * **npm run build:images** / **npm run build:icons**: Regenerate the responsive banner variants and the PWA icon set.
 
-GitHub's quality workflow also validates Composer metadata and lints every PHP helper and template on PHP 8.5, matching production, plus PHP 8.1, the theme's declared minimum.
+GitHub's quality workflow also validates Composer metadata and lints every PHP helper and template on PHP 8.5, matching production, plus PHP 8.4, the theme's declared minimum.
 
 ### Sass Module System
 
