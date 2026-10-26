@@ -10,14 +10,4 @@
 //
 // Keyed by the GitHub advisory id, the last segment of the advisory's URL.
 
-module.exports = {
-    'GHSA-vfj7-8cjw-p6xm': {
-        package: 'braces',
-        since: '2026-10-05',
-        reason:
-            'Stack exhaustion on deeply nested brace patterns. No braces release fixes it — 3.0.3 is the latest and ' +
-            'is in range — and every path to it is build tooling: micromatch under stylelint (17.16.0, the latest, ' +
-            'still depends on it) and chokidar / findup-sync under gulp 5. The only patterns those expand are the ' +
-            'globs this repository writes; nothing reaches them from a request, and none of it ships in the release archive.',
-    },
-};
+module.exports = {};
