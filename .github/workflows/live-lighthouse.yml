@@ -27,6 +27,15 @@ on:
     # Monday, an hour before the live smoke suite, so the two never load the
     # server at once.
     - cron: '20 4 * * 1'
+  # A pull request that changes the runner, its pages or its baseline runs it
+  # once, so a new page is seen to measure (a page with no baseline only
+  # warns) before it is merged. Nothing else in a pull request moves these
+  # figures, so nothing else triggers it — and it is not a required check.
+  pull_request:
+    paths:
+      - .github/workflows/live-lighthouse.yml
+      - scripts/check-lighthouse-live.js
+      - e2e/lighthouse-baseline.json
 
 permissions:
   contents: read
