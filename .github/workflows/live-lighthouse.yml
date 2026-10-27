@@ -1,0 +1,73 @@
+name: Live site Lighthouse
+
+# Lighthouse 13 against the pages readers load on the English site — home,
+# /search, /search/everything, the collection-overview block page and an
+# article record — three runs each, mobile with simulated slow 4G. The median
+# of each figure is held against e2e/lighthouse-baseline.json by
+# scripts/check-lighthouse-live.js (its header has the rules and the measured
+# tolerances).
+#
+# This is what the modules' fixture-based Lighthouse budgets cannot see: the
+# server's response time, the jsDelivr delivery of ECharts and MapLibre, this
+# theme's stylesheet and webfonts, and the real data payloads. So it measures
+# the deployed site, not this tree, and runs on a schedule rather than on pull
+# requests: a red run is an alert to look at the reports, not a merge gate.
+#
+# Re-baseline from several runs, never one: download the `lighthouse-live`
+# artifacts of the last few runs and pool them with
+# `npm run test:live:lighthouse -- --baseline-from=<dir>` (see the README).
+# The artifacts are kept 90 days for that reason.
+#
+# No PageSpeed Insights key: Lighthouse drives its own Chromium. PSI would add
+# only CrUX field data.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Monday, an hour before the live smoke suite, so the two never load the
+    # server at once.
+    - cron: '20 4 * * 1'
+
+permissions:
+  contents: read
+
+# Queued, not cancelled: two runs at once would load the server for each other
+# and time each other's responses.
+concurrency:
+  group: live-site-lighthouse
+  cancel-in-progress: false
+
+jobs:
+  lighthouse:
+    name: Lighthouse, median of three runs per page
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # The Chromium the locked @playwright/test pins, not the runner image's
+      # Chrome, so an image update cannot move the scores under an unchanged
+      # site. A Playwright upgrade changes it; the run then warns to re-baseline.
+      - run: npx playwright install --with-deps chromium
+
+      - run: npm run test:live:lighthouse
+        env:
+          IWAC_LIVE_BASE_URL: https://islam.zmo.de/s/westafrica
+
+      - name: Keep the reports and every run's figures
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lighthouse-live
+          path: test-results/lighthouse-live/
+          retention-days: 90
+          if-no-files-found: ignore
