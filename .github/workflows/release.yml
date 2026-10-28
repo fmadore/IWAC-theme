@@ -19,7 +19,10 @@ name: Release
 #            uploads it as a run artifact. npm ci and the build run here, with
 #            no write token in reach (persist-credentials: false).
 #   publish  needs both, holds `contents: write`, and does nothing but
-#            download that artifact and attach it to the release.
+#            download that artifact and attach it to the release. A release
+#            it has to create gets that version's CHANGELOG.md section as its
+#            notes (extracted by the build job), or GitHub's generated notes
+#            with a warning when the version has none.
 #
 # Workflow inputs reach shell steps through `env:`, never interpolated into
 # `run:`. Actions are pinned to commit SHAs; Dependabot keeps the pins current.
@@ -111,7 +114,7 @@ jobs:
       - name: Committed build artifacts must be current
         run: |
           npm run build
-          git diff --exit-code
+          node scripts/check-generated.js --strict
 
       # The theme directory name is the Omeka S theme id. Sites at islam.zmo.de
       # are configured against "IWAC-theme", so the archive must extract to a
@@ -133,7 +136,8 @@ jobs:
 
           # Everything Omeka needs to load the theme.
           for f in config/theme.ini theme.jpg asset/css/style.css language/fr.mo \
-                   view/layout/layout.phtml helper/BrowseLayout.php LICENSE README.md; do
+                   view/layout/layout.phtml helper/BrowseLayout.php LICENSE README.md \
+                   CHANGELOG.md; do
             grep -qx "IWAC-theme/$f" /tmp/list || { echo "::error::missing $f"; exit 1; }
           done
 
@@ -185,22 +189,38 @@ jobs:
           # land, which is why both offenders were sitting there.
           if [ -n "$(comm -23 \
                 <(sed -n 's|^IWAC-theme/\([^/][^/]*\)$|\1|p' /tmp/list | sort -u) \
-                <(printf '%s\n' CITATION.cff LICENSE README.md composer.json theme.jpg tokens.json | sort))" ]; then
+                <(printf '%s\n' CHANGELOG.md CITATION.cff LICENSE README.md composer.json theme.jpg tokens.json | sort))" ]; then
             echo "::error::unclassified file(s) at the archive root:"
             comm -23 \
               <(sed -n 's|^IWAC-theme/\([^/][^/]*\)$|\1|p' /tmp/list | sort -u) \
-              <(printf '%s\n' CITATION.cff LICENSE README.md composer.json theme.jpg tokens.json | sort)
+              <(printf '%s\n' CHANGELOG.md CITATION.cff LICENSE README.md composer.json theme.jpg tokens.json | sort)
             echo "::error::either export-ignore it in .gitattributes or add it to this allowlist"
             exit 1
           fi
 
           echo "$(wc -l < /tmp/list) files, $(du -h "$NAME" | cut -f1)"
 
+      # The notes of a release the publish job has to create: this version's
+      # CHANGELOG.md section as committed at the tag (`npm run bump` promoted
+      # [Unreleased] into it). Extracted here, where the tree is checked out,
+      # so the write-token job runs no repository code. An empty file means
+      # "no section": publish falls back to generated notes and says so.
+      - name: Extract this version's CHANGELOG.md notes
+        env:
+          VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          if ! node scripts/changelog-section.js "$VERSION" > release-notes.md; then
+            : > release-notes.md
+            echo "::warning::CHANGELOG.md has no section for $VERSION — a new release would get generated notes"
+          fi
+
       - name: Upload the archive as a run artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ steps.zip.outputs.name }}
-          path: ${{ steps.zip.outputs.name }}
+          path: |
+            ${{ steps.zip.outputs.name }}
+            release-notes.md
           retention-days: 14
           if-no-files-found: error
 
@@ -224,8 +244,13 @@ jobs:
         run: |
           set -euo pipefail
           test -f "$NAME"
+          # An existing release keeps its notes and just gets the archive.
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "$NAME" --clobber
+          elif [ -s release-notes.md ]; then
+            gh release create "$TAG" "$NAME" --title "$TAG" --notes-file release-notes.md --verify-tag
+            echo "::notice::Published $TAG with its CHANGELOG.md notes."
           else
+            echo "::warning::CHANGELOG.md has no section for $TAG — the release gets generated notes instead."
             gh release create "$TAG" "$NAME" --title "$TAG" --generate-notes --verify-tag
           fi

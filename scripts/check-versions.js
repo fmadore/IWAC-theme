@@ -11,7 +11,10 @@
 // commit that introduces it rather than at the next release — or, as with
 // package-lock.json, four releases later.
 
-const { readAll, readReleaseDate } = require('./lib/versions');
+const fs = require('node:fs');
+const path = require('node:path');
+const { ROOT, readAll, readReleaseDate } = require('./lib/versions');
+const { changelogSection } = require('./lib/changelog');
 
 const expected = process.argv[2] ? process.argv[2].replace(/^v/, '') : null;
 const declarations = readAll();
@@ -41,6 +44,14 @@ if (problems.length) {
     for (const problem of problems) console.error(`  - ${problem}`);
     console.error('\n  Fix with:  npm run bump -- <version>');
     process.exit(1);
+}
+
+// Not a failure — release.yml falls back to generated notes — but a version
+// with no CHANGELOG.md section was bumped without notes, and saying so here is
+// cheaper than finding out from the published release.
+if (!changelogSection(fs.readFileSync(path.join(ROOT, 'CHANGELOG.md'), 'utf8'), reference)) {
+    const message = `CHANGELOG.md has no notes for ${reference}; a release would get generated notes`;
+    console.warn(process.env.GITHUB_ACTIONS ? `::warning file=CHANGELOG.md::${message}` : `! ${message}`);
 }
 
 const suffix = expected ? ` (matches tag v${expected})` : '';

@@ -49,12 +49,20 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   against the real Omeka and Laminas classes. IWAC's PHPStan ran against a one-class
   stub, which is why its helpers had to type Omeka representations as `object`.
 
-- [ ] **4. CHANGELOG.md is the release-notes source.** DRE-theme keeps a Keep a
+- [x] **4. CHANGELOG.md is the release-notes source.** DRE-theme keeps a Keep a
   Changelog file, lints it, and `release.yml` publishes that version's section as the
   release notes, falling back to generated notes with a warning. IWAC's release notes
   were GitHub's generated commit list — useful to a maintainer, opaque to a site
   admin. `npm run bump` now promotes `## [Unreleased]` the same way it writes the
   version everywhere else.
+  *Landed:* CHANGELOG.md backfilled for 2.25.0–2.30.1 from the commits (the GitHub
+  notes for those tags were generated and say nothing), older history pointed at GitHub
+  Releases; `scripts/lib/changelog.js` + `scripts/changelog-section.js` (port of DRE's
+  `changelog-section.mjs`) and `test/changelog.test.js`; `npm run bump` promotes
+  `[Unreleased]`; `check:versions` warns when the current version has no section;
+  `release.yml` extracts the notes in the read-only build job and publishes them with
+  `--notes-file`, falling back to `--generate-notes` with a warning; CHANGELOG.md is on
+  the archive's root allowlist and required-files list.
 
 - [ ] **5. Replace gulp with a plain Node build script.** DRE-theme dropped gulp in
   v2.32 for `scripts/build-css.mjs` (the `sass` JS API → PostCSS), plus a

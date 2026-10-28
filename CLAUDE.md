@@ -93,6 +93,18 @@ both sides:
 The release itself is still `git tag vX.Y.Z && git push origin vX.Y.Z`: pushing to
 `master` deploys nothing, because the live sites install the release ZIP.
 
+### CHANGELOG.md is the release notes — write the entry with the change
+
+Add a line under `## [Unreleased]` in the commit that makes a user-visible or tooling
+change (Keep a Changelog types: Added, Changed, Deprecated, Removed, Fixed, Security;
+written for a site admin, not as a commit log). `npm run bump` promotes `[Unreleased]`
+to `## [X.Y.Z] - YYYY-MM-DD` and moves the link references
+([scripts/lib/changelog.js](scripts/lib/changelog.js)); `release.yml` publishes that
+section as the notes of a release it creates, and falls back to GitHub's generated
+notes with a warning when the version has none. `check:versions` warns about the same
+gap, and `test/changelog.test.js` keeps the file's shape. CHANGELOG.md ships in the
+release ZIP.
+
 ### Design tokens are machine-checked — never hand-maintain a list
 
 `scripts/build-tokens.js` reads the variable files and writes `tokens.json`; with

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 
-// Writes every version declaration at once, and stamps CITATION.cff's release
-// date. This is the only supported way to bump the theme.
+// Writes every version declaration at once, stamps CITATION.cff's release
+// date, and promotes CHANGELOG.md's [Unreleased] notes to a dated section for
+// the new version. This is the only supported way to bump the theme.
 //
 //     npm run bump -- patch          # 2.14.1 -> 2.14.2
 //     npm run bump -- minor          # 2.14.1 -> 2.15.0
@@ -19,6 +20,7 @@ const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 
 const { ROOT, readAll, writeOwned, writeReleaseDate } = require('./lib/versions');
+const { changelogSection, promoteUnreleased } = require('./lib/changelog');
 
 /**
  * Today, local time, as YYYY-MM-DD. Assembled from the parts rather than
@@ -64,6 +66,21 @@ npm(['version', spec, '--no-git-tag-version', '--allow-same-version']);
 const version = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version;
 const written = writeOwned(version);
 writeReleaseDate(date);
+
+// CHANGELOG.md: [Unreleased] becomes `## [version] - date`, the notes
+// release.yml publishes. A no-op when the version already has a section (a
+// re-run), and a warning rather than a failure when there is nothing
+// unreleased: the release then falls back to generated notes.
+const changelogPath = path.join(ROOT, 'CHANGELOG.md');
+const changelogBefore = fs.readFileSync(changelogPath, 'utf8');
+const changelogAfter = promoteUnreleased(changelogBefore, version, date);
+if (changelogAfter !== changelogBefore.replace(/\r\n/g, '\n')) {
+    fs.writeFileSync(changelogPath, changelogAfter);
+    written.push('CHANGELOG.md');
+} else if (!changelogSection(changelogBefore, version)) {
+    console.warn(`\n! CHANGELOG.md has nothing under [Unreleased] and no section for ${version}: `
+        + 'the release will fall back to generated notes. Write the notes, then run the bump again.');
+}
 
 console.log(`\n✓ bumped to ${version}, released ${date}`);
 for (const { label, version: value } of readAll()) {
