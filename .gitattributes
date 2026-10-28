@@ -72,6 +72,9 @@
 # status tracked in a GitHub issue. Same category as /ROADMAP.md above.
 /docs/IMPECCABLE-ROADMAP.md export-ignore
 
+# Same category: the 2026-10 plan for adopting DRE-theme's tooling.
+/docs/CROSS-THEME-ROADMAP-2026-10.md export-ignore
+
 # Gettext sources — only the compiled .mo is loaded at runtime
 /language/*.pot export-ignore
 /language/*.po  export-ignore
