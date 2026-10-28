@@ -123,8 +123,8 @@ For advanced CSS and Sass users, this theme includes variables and mixins for ma
 
 Run these commands within the theme's root directory.
 
-* **npm run start**: Compiles once, then watches the Sass (and `_colors.scss` token changes) and recompiles on save.
-* **npm run build**: Full production build — validates token usage, regenerates `tokens.json` + the DESIGN-SYSTEM.md tables (`build:tokens`), regenerates the i18n catalog (`build:i18n`), then compiles the CSS. Always use this (never bare `gulp css`) so the generated artifacts can't drift.
+* **npm run start**: Compiles once, then watches: any `.scss` recompiles the CSS, a variable file or `layout.phtml` also regenerates `tokens.json`, and `asset/js/*.js` rebuilds the minified twins. A compile error is reported and the last good stylesheet kept.
+* **npm run build**: Full production build — validates token usage, regenerates `tokens.json` + the DESIGN-SYSTEM.md tables (`build:tokens`), regenerates the i18n catalog (`build:i18n`), then compiles the CSS (`build:css`: `scripts/build-css.js`, Sass → autoprefixer → cssnano). Always use this so the generated artifacts can't drift.
 * **npm run build:tokens**: Regenerates this theme's `tokens.json` and the docs tables from `_colors.scss`.
 * **npm run sync:tokens**: Explicitly regenerates tokens and copies them into checked-out sibling IwacSearch/IwacVisualizations repositories.
 * **npm run build:i18n**: Re-extracts `language/template.pot` from the templates, merges `fr.po`, and recompiles `fr.mo`.

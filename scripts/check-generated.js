@@ -37,7 +37,7 @@ const STRICT = process.argv.includes('--strict') || Boolean(process.env.GITHUB_A
 const GROUPS = [
     {
         outputs: ['asset/css/'],
-        inputs: ['asset/sass/', 'package.json', 'package-lock.json', 'scripts/build-css.js', 'gulpfile.js'],
+        inputs: ['asset/sass/', 'package.json', 'package-lock.json', 'scripts/build-css.js'],
         rebuild: 'npm run build',
     },
     {

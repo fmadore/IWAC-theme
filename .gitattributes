@@ -34,7 +34,6 @@
 # Node build toolchain — the theme ships compiled CSS, never builds on the server
 /package.json         export-ignore
 /package-lock.json    export-ignore
-/gulpfile.js          export-ignore
 /.nvmrc               export-ignore
 /scripts/             export-ignore
 

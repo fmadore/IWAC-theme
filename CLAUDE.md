@@ -4,7 +4,7 @@
 
 IWAC-theme — an Omeka S 4.2+ theme (fork of Freedom) for the **Islam West Africa
 Collection**, a francophone West African digital collection at ZMO Berlin. PHP templates
-(`view/`), Sass on the modern module system (`asset/sass/`), Gulp build, vanilla JS.
+(`view/`), Sass on the modern module system (`asset/sass/`), a plain Node build (`scripts/`), vanilla JS.
 
 Live: [EN](https://islam.zmo.de/s/westafrica/) · [FR](https://islam.zmo.de/s/afrique_ouest/)
 
@@ -22,8 +22,9 @@ values — `tokens.json` stays normative; when tokens change, refresh `DESIGN.md
 
 ```bash
 npm run check:tokens   # fast gate: fails if any var(--…) in asset/sass doesn't resolve
-npm run build          # check:tokens → build:tokens → build:i18n → build:js → compile CSS
-npm run start          # compile once, then watch .scss and asset/js
+npm run build          # check:tokens → build:tokens → build:i18n → build:js → build:css
+npm run build:css      # just the stylesheet: sass → autoprefixer → cssnano (scripts/build-css.js)
+npm run start          # compile once, then watch: .scss → CSS, variables/layout.phtml → tokens, asset/js → dist
 npm run bump -- patch  # write every version declaration (patch|minor|major|X.Y.Z)
 npm test               # JS behaviour (node:test + jsdom), on pages rendered from the templates
 npm run test:minified  # the same suite against asset/js/dist/*.min.js
@@ -237,6 +238,16 @@ supply, the renderer throws rather than rendering a silent blank: extend
 `fake-omeka.php` (keep it imitating what core or the module really prints) — never
 hand-edit a fixture. Module-owned markup the theme does not render (the Mirador block)
 is a copy in the renderer, and says so.
+
+### The CSS build is `scripts/build-css.js` — no gulp
+
+Sass' JS API with `style: 'expanded'`, then PostCSS (autoprefixer + cssnano). Gulp went
+in 2026-10: gulp-sass v6 passed `outputStyle: 'compressed'` to an API whose option is
+`style`, so the gulpfile's compression was a silent no-op and cssnano did all the
+minifying — the switch was byte-identical. Don't "fix" it to `style: 'compressed'`:
+Sass then emits a U+FEFF BOM instead of `@charset`, and a BOM anywhere but byte 0 kills
+the rule it lands on (DRE-theme lost its whole spacing scale that way).
+`npm run start` survives a compile error and keeps the last good stylesheet.
 
 ### Sass module system
 

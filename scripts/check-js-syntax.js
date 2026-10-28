@@ -7,7 +7,6 @@ const { spawnSync } = require('node:child_process');
 
 const ROOT = path.join(__dirname, '..');
 const files = [
-    path.join(ROOT, 'gulpfile.js'),
     path.join(ROOT, 'playwright.config.js'),
 ];
 
