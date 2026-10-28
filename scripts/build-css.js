@@ -8,7 +8,8 @@
  *
  * Each entry point (an asset/sass/*.scss that is not a `_partial`) goes
  * through the `sass` JS API, then PostCSS with autoprefixer (browserslist from
- * package.json) and cssnano, and lands in asset/css/<name>.css.
+ * package.json) and cssnano, and lands in asset/css/<name>.css as
+ * `@charset`, the entry's header comment, then the rules.
  *
  * WHY NOT GULP. Gulp contributed glob expansion and a watcher, and cost a
  * plugin layer that hid what the compiler was asked to do: gulp-sass v6 sends
@@ -53,6 +54,33 @@ function entries(root) {
 }
 
 /**
+ * The entry's leading `/* … *\/` comment — style.scss's theme header (name,
+ * version, Omeka and PHP floors), which `npm run bump` keeps current. cssnano
+ * strips every ordinary comment, so until 2026-10 the shipped stylesheet
+ * carried no header at all; it is put back here, after `@charset`, which
+ * must stay the first thing in the file. null when the entry has none.
+ */
+function leadingComment(source) {
+    const match = source.replace(/^\uFEFF/, '').match(/^\s*(\/\*[\s\S]*?\*\/)/);
+    return match ? match[1].replace(/\r\n/g, '\n') : null;
+}
+
+/**
+ * `@charset "UTF-8";`, the entry's header comment, then the minified rules.
+ * Any BOM or `@charset` the pipeline left at the start is removed first, so
+ * neither can end up after the header — the mid-file BOM that cost DRE-theme
+ * 63 declarations (scripts/check-compiled-css.js).
+ */
+function withHeader(css, source, name) {
+    const header = leadingComment(source);
+    const rules = css.replace(/^\uFEFF/, '').replace(/^@charset "UTF-8";\s*/i, '');
+    if (/@charset/i.test(rules) || rules.includes('\uFEFF')) {
+        throw new Error(`CSS build: ${name} has a @charset or BOM after its first rule`);
+    }
+    return `@charset "UTF-8";\n${header ? `${header}\n` : ''}${rules}`;
+}
+
+/**
  * Compile every entry, then write. Nothing is written until everything has
  * compiled, so a Sass error leaves the last successful build intact; each
  * file is written to a temporary name and renamed into place.
@@ -84,7 +112,7 @@ async function buildCss(root = ROOT) {
             cssnano({ preset: 'default' }),
         ]).process(compiled.css, { from, to, map: false });
         for (const warning of result.warnings()) console.warn(warning.toString());
-        outputs.push({ to, css: result.css });
+        outputs.push({ to, css: withHeader(result.css, fs.readFileSync(from, 'utf8'), name) });
     }
 
     fs.mkdirSync(path.join(root, 'asset', 'css'), { recursive: true });
@@ -205,7 +233,7 @@ function watchSources(root = ROOT, {
     return close;
 }
 
-module.exports = { buildCss, watchSources, entries };
+module.exports = { buildCss, watchSources, entries, withHeader };
 
 if (require.main === module) {
     const args = process.argv.slice(2);

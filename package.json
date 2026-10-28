@@ -4,7 +4,7 @@
   "description": "Islam West Africa Collection Theme - A customized Omeka S theme for the IWAC digital collection.",
   "scripts": {
     "start": "node scripts/build-css.js --watch",
-    "build": "npm run check:tokens && npm run build:tokens && npm run build:i18n && npm run build:js && npm run build:css",
+    "build": "npm run check:tokens && npm run build:tokens && npm run build:i18n && npm run build:js && npm run build:css && npm run check:css",
     "build:css": "node scripts/build-css.js",
     "test": "node scripts/run-tests.js",
     "test:minified": "node scripts/run-tests.js --minified",
@@ -24,6 +24,7 @@
     "check:fixtures": "php test/php/render-fixtures.php --check",
     "check:php": "node scripts/check-php.js",
     "check:generated": "node scripts/check-generated.js",
+    "check:css": "node scripts/check-compiled-css.js",
     "build:tokens": "node scripts/build-tokens.js",
     "sync:tokens": "node scripts/build-tokens.js --sync-siblings",
     "build:i18n": "node scripts/build-i18n.js",

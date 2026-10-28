@@ -17,7 +17,7 @@ create.
 - **Development.** `npm run verify` runs locally exactly what the Quality workflow's frontend job runs, and the workflow now calls it. A stale generated file is reported by name with the command that rebuilds it. `npm run check:php` runs the PHP syntax, `theme.ini`, helper-test and fixture checks, and says so when it has to skip for want of a `php` binary.
 - **CI.** Every GitHub Action is pinned to its latest release by commit SHA, with one pin per action across all workflows. Dependabot proposes updates weekly, holds new npm releases back for five days, and groups action updates into one pull request.
 
-- **Build.** Gulp is gone: `scripts/build-css.js` compiles the stylesheet through Sass, autoprefixer and cssnano directly, and `npm run start` watches without it. The compiled stylesheet is byte-for-byte the same.
+- **Build.** Gulp is gone: `scripts/build-css.js` compiles the stylesheet through Sass, autoprefixer and cssnano directly, and `npm run start` watches without it. The compiled stylesheet's rules are byte-for-byte the same; it now opens with the theme header (name, version, Omeka and PHP requirements), which the old build stripped, and `npm run build` checks the compiled file for a stray byte-order mark, a misplaced `@charset`, a stale version and undefined custom properties.
 
 ### Added
 

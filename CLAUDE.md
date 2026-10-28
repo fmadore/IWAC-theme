@@ -249,6 +249,13 @@ Sass then emits a U+FEFF BOM instead of `@charset`, and a BOM anywhere but byte 
 the rule it lands on (DRE-theme lost its whole spacing scale that way).
 `npm run start` survives a compile error and keeps the last good stylesheet.
 
+The output is `@charset "UTF-8";`, then `style.scss`'s header comment (cssnano strips
+comments, so the script puts it back — the shipped stylesheet now says which version it
+is), then the rules. `npm run check:css` (the last step of `npm run build`) asserts that
+shape on the artifact: `@charset` first and only once, no U+FEFF anywhere, the header's
+`Version` equal to theme.ini's (a stylesheet not rebuilt after `npm run bump`), no
+selector with a control character, no `var()` without a fallback that nothing defines.
+
 ### Sass module system
 
 `@use` / `@forward` only — never `@import`. `@forward` rules must come before any other

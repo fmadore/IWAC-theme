@@ -39,7 +39,7 @@ test('the build compiles entry points only, prefixes, minifies and keeps @charse
     assert.ok(css.startsWith('@charset "UTF-8";'), css.slice(0, 40));
     assert.match(css, /\.sample\{color:red;-webkit-user-select:none;user-select:none\}/);
     assert.match(css, /content:"é"/);
-    assert.ok(!css.includes('﻿'), 'no BOM — expanded output announces Unicode with @charset');
+    assert.ok(!css.includes('\uFEFF'), 'no BOM — expanded output announces Unicode with @charset');
     assert.equal(fs.existsSync(path.join(f.root, 'asset/css/_not-an-entry.css')), false);
 });
 
@@ -100,5 +100,48 @@ test('watch mode rebuilds on a nested partial, survives an error and notices ato
         await waitFor(() => builds > previous && /color:(blue|#00f)/.test(css), 'rebuild after an atomic save');
     } finally {
         close();
+    }
+});
+
+// scripts/check-compiled-css.js, run against a built scratch tree.
+const { spawnSync } = require('node:child_process');
+const CHECK = path.join(__dirname, '..', 'scripts', 'check-compiled-css.js');
+const runCheck = (root) => spawnSync(process.execPath, [CHECK, `--root=${root}`], { encoding: 'utf8' });
+
+function withHeader(t) {
+    const f = fixture(t);
+    fs.mkdirSync(path.join(f.root, 'config'));
+    fs.writeFileSync(path.join(f.root, 'config/theme.ini'), '[info]\nname = "Fixture"\nversion = "1.2.3"\n');
+    const entry = path.join(f.root, 'asset/sass/style.scss');
+    fs.writeFileSync(entry, `/*\nTheme Name: Fixture\nAuthor: Frédérick\nVersion: 1.2.3\n*/\n${fs.readFileSync(entry, 'utf8')}`);
+    return f;
+}
+
+test('the build puts the entry header after @charset, and the integrity check accepts it', async (t) => {
+    const f = withHeader(t);
+    await buildCss(f.root);
+    const css = fs.readFileSync(f.output, 'utf8');
+    assert.ok(css.startsWith('@charset "UTF-8";\n/*\nTheme Name: Fixture\nAuthor: Frédérick\nVersion: 1.2.3\n*/\n.sample{'), css.slice(0, 120));
+    const result = runCheck(f.root);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+});
+
+test('the integrity check refuses a mid-file BOM, a late @charset, a stale header and an undefined var()', async (t) => {
+    const f = withHeader(t);
+    await buildCss(f.root);
+    const good = fs.readFileSync(f.output, 'utf8');
+    const cases = [
+        [good.replace('*/\n.sample', '*/\n\uFEFF.sample'), /U\+FEFF BOM/],
+        [good.replace('.sample{', '@charset "UTF-8";.sample{'), /@charset after the start/],
+        [good.replace('Version: 1.2.3', 'Version: 1.2.2'), /header says Version 1\.2\.2, config\/theme\.ini says 1\.2\.3/],
+        [good.replace(/^@charset "UTF-8";\n\/\*[\s\S]*?\*\/\n/, '@charset "UTF-8";'), /header comment/],
+        [good.replace('color:red', 'color:var(--nowhere)'), /var\(--nowhere\) has no definition/],
+        ['', /empty/],
+    ];
+    for (const [css, message] of cases) {
+        fs.writeFileSync(f.output, css);
+        const result = runCheck(f.root);
+        assert.equal(result.status, 1, `expected a failure matching ${message}`);
+        assert.match(result.stderr, message);
     }
 });

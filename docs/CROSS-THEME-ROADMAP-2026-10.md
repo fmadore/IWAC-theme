@@ -64,12 +64,20 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   `--notes-file`, falling back to `--generate-notes` with a warning; CHANGELOG.md is on
   the archive's root allowlist and required-files list.
 
-- [ ] **5. Replace gulp with a plain Node build script.** DRE-theme dropped gulp in
+- [x] **5. Replace gulp with a plain Node build script.** DRE-theme dropped gulp in
   v2.32 for `scripts/build-css.mjs` (the `sass` JS API → PostCSS), plus a
   compiled-CSS integrity check born from a mid-file BOM that silently dropped 63
   declarations. gulp contributed only glob expansion and a watcher, and gulp-sass v6
   silently ignored `outputStyle: 'compressed'`. IWAC does the same in CommonJS, keeping
   cssnano so the output is byte-identical.
+  *Landed:* `scripts/build-css.js` (+ `--watch`) and `test/build-css.test.js`; gulp,
+  gulp-sass, gulp-postcss removed, postcss a direct dependency. The stylesheet was
+  byte-identical (`cmp`) to the gulp build. One deliberate change in a second commit:
+  cssnano had always stripped `style.scss`'s header, so the shipped CSS carried no
+  version; the build now prepends it after `@charset` (+611 bytes, rules unchanged), and
+  `scripts/check-compiled-css.js` (`npm run check:css`, end of `npm run build`) asserts
+  `@charset` first and once, no BOM, the header present and current, no dead selector,
+  no unresolvable `var()`.
 
 - [ ] **6. Move logic out of the heaviest templates into tested helpers.** DRE-theme
   moved resource grouping, hierarchy trees, record apparatus and card data into
