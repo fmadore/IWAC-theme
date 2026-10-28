@@ -25,13 +25,21 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   setup-php 2.40.0, upload-artifact v7.0.2, download-artifact v8.0.2); Dependabot
   weekly, 5-day npm cooldown, grouped actions.
 
-- [ ] **2. `npm run verify` is the CI contract.** DRE-theme's `verify` runs locally
+- [x] **2. `npm run verify` is the CI contract.** DRE-theme's `verify` runs locally
   exactly what its CSS job runs, and its CI job calls `npm run verify` instead of
   restating a step list, so "it passed locally" and "it passed in CI" mean the same
   thing. Its stale-CSS check tells a contributor which generated file is stale (and
   only warns while the matching inputs are still uncommitted), and its PHP check skips
   with a clear message when no `php` is on PATH but is fatal under `--require` in CI.
   IWAC's Quality job was a nine-step list that nobody ran locally as a unit.
+  *Landed:* `npm run verify` (package.json) chains the frontend job's steps;
+  `scripts/check-generated.js` replaces `git diff --exit-code` (names the stale artifact
+  and its rebuild command; strict under `CI`/`GITHUB_ACTIONS`, a reminder locally when
+  the artifact's inputs are uncommitted too); `scripts/check-php.js` runs `php -l`, the
+  theme.ini parse, `test:php` and `check:fixtures`, skipping without PHP unless
+  `--require`. build.yml's frontend job runs `npm run verify` (with `IWAC_SKIP_PHP=1`:
+  the runner's preinstalled PHP is below the floor) and its PHP matrix job runs
+  `check-php.js --require`.
 
 - [ ] **3. Test against the real Omeka S release.** DRE-theme downloads the official
   Omeka S 4.2.1 zip (SHA-256 verified), installs the theme and asks Omeka's own theme

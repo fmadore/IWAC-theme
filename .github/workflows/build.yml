@@ -42,35 +42,37 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npm run check:js
-      # ESLint (correctness rules) + Stylelint (bug-catching rules, plus the
-      # CLAUDE.md gotchas: no @import, no color-mix in srgb, no outline:none).
-      - run: npm run lint
 
-      # Catches a version declaration drifting on the commit that drifts it,
-      # rather than at the next release — or, as with package-lock.json's two
-      # copies, four releases later.
-      - run: npm run check:versions
-
-      - run: npm test
-      # The same behaviour suite against asset/js/dist/*.min.js — what pages
-      # actually load. Proves minification kept every global the scripts
-      # publish and read (IWACUtils, the PWA island, …).
-      - run: npm run test:minified
-      # Before the build rewrites them: a stale twin shows in the diff below,
-      # but a MISSING one (a new source whose .min.js was never committed)
-      # would be an untracked file that `git diff` cannot see.
-      - run: npm run check:js-dist
-      - run: npm run build
-
-      - name: Generated artifacts must match the committed ones
-        run: git diff --exit-code
-
-      # Last, because it is the one step a third party can turn red overnight:
-      # placed before the diff, a new advisory skipped the artifact check on
-      # every push until it was dealt with. Exceptions, each with its reason,
-      # are in scripts/lib/audit-exceptions.js.
-      - run: npm run check:audit
+      # The same command a contributor runs before pushing (package.json), so
+      # "green locally" and "green here" mean one thing. In order:
+      #   check:js         node --check over every script
+      #   lint             ESLint + Stylelint (correctness rules, plus the
+      #                    CLAUDE.md gotchas: no @import, no color-mix in
+      #                    srgb, no outline:none)
+      #   check:versions   every version declaration agrees, on the commit
+      #                    that drifts one rather than at the next release
+      #   test             the behaviour suite on the rendered fixtures
+      #   test:minified    the same suite against asset/js/dist/*.min.js —
+      #                    what pages load; proves minification kept every
+      #                    global the scripts publish and read
+      #   check:js-dist    before the build rewrites them: a MISSING twin
+      #                    would be an untracked file a diff cannot see
+      #   build            tokens, i18n, JS twins, CSS
+      #   check:generated  the build changed nothing: any difference names
+      #                    the stale artifact and the command that fixes it
+      #                    (strict here, because GITHUB_ACTIONS is set)
+      #   check:php        skipped in this job (IWAC_SKIP_PHP): the runner
+      #                    image's PHP is below the theme's floor, and the PHP
+      #                    job below runs it with --require on 8.4 and 8.5
+      #   check:audit      last, because it is the one step a third party can
+      #                    turn red overnight; placed before the artifact
+      #                    check, a new advisory hid it on every push.
+      #                    Exceptions, each with its reason, are in
+      #                    scripts/lib/audit-exceptions.js.
+      - name: npm run verify
+        env:
+          IWAC_SKIP_PHP: '1'
+        run: npm run verify
 
   php:
     name: PHP ${{ matrix.php }} syntax and Composer
@@ -93,25 +95,17 @@ jobs:
 
       - run: composer validate --strict --no-check-publish
 
-      - name: PHP syntax check (templates and helpers)
-        run: find view helper -type f \( -name '*.phtml' -o -name '*.php' \) -print0 | xargs -0 -n1 php -l
-
-      - name: Validate theme configuration
-        run: php -r 'if (false === parse_ini_file("config/theme.ini", true, INI_SCANNER_RAW)) { exit(1); }'
-
-      # Behaviour, not just syntax: the view helpers, and template logic that
-      # has broken before (a cleared footer-depth field 500ing every page,
-      # duplicate annotation ids). Plain PHP — no Composer install needed.
-      - name: Helper and template tests
-        run: php test/php/run.php
-
-      # The pages the JS behaviour suite runs against, rendered from the
-      # templates by test/php/render-fixtures.php and committed. Fails when a
-      # template changed without `npm run build:fixtures` — the JS tests would
-      # otherwise keep passing against the old markup — and, on two PHP
-      # versions, when a render is not byte-for-byte the same on both.
-      - name: Rendered test fixtures are current
-        run: php test/php/render-fixtures.php --check
+      # Plain Node built-ins, so no `npm ci`: the runner's preinstalled Node
+      # is enough. --require makes a missing PHP fatal (locally it skips).
+      #   1. php -l over every template and helper
+      #   2. config/theme.ini parses as Omeka parses it (INI_SCANNER_RAW)
+      #   3. test/php/run.php — the view helpers, and template logic that has
+      #      broken before (a cleared footer-depth field 500ing every page,
+      #      duplicate annotation ids)
+      #   4. the rendered fixtures the JS suite runs on are current — and, on
+      #      two PHP versions, byte-for-byte the same on both
+      - name: PHP syntax, theme.ini, helper tests and rendered fixtures
+        run: node scripts/check-php.js --require
 
       # The view helpers, at level 6 against the stubbed Laminas base class
       # (phpstan.neon.dist). Installed by setup-php, so composer.json — which

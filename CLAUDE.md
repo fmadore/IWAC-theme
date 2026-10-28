@@ -32,8 +32,17 @@ npm run build:fixtures # re-render test/fixtures/rendered/ after a template chan
 npm run check:fixtures # fail if a committed fixture differs from a fresh render
 npm run lint           # ESLint + Stylelint (correctness rules and the gotchas below)
 npm run check:audit    # npm audit at high+, minus the written exceptions (see below)
+npm run check:php      # php -l, theme.ini parse, test:php, check:fixtures (skips without php)
+npm run verify         # the whole CI frontend contract, in CI's order — run before pushing
 phpstan analyse        # helpers at level 6 (CI installs phpstan via setup-php)
 ```
+
+`npm run verify` is the Quality workflow's frontend job: the workflow calls it rather
+than restating a step list, so a green `verify` locally means a green job. It ends with
+`check:generated`, which names any committed artifact the build changed (locally it only
+reminds you when the matching sources are uncommitted too; in CI any change fails), and
+`check:php`, which skips with a message when `php` is not on PATH — CI's PHP job runs it
+with `--require`. A new CI check goes into `verify`, not into the workflow.
 
 Match the command to the change. `npm run build` regenerates `tokens.json` **and** the
 i18n catalogue, so on a PHP- or JS-only edit it produces unrelated diffs — `check:tokens`

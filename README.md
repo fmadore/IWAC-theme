@@ -132,8 +132,10 @@ Run these commands within the theme's root directory.
 * **npm run build:fixtures** / **npm run check:fixtures**: Re-render those pages after a template change (needs a `php` binary), or fail if the committed ones are stale.
 * **npm run test:live**: Runs the opt-in Playwright smoke suite against `https://islam.zmo.de/s/westafrica` (override with `IWAC_LIVE_BASE_URL`). The scheduled GitHub workflow runs this weekly; it is intentionally separate from pull-request checks because it tests the deployed site.
 * **npm run build:images** / **npm run build:icons**: Regenerate the responsive banner variants and the PWA icon set.
+* **npm run verify**: Everything the Quality workflow's frontend job runs, in the same order — `check:js`, `lint`, `check:versions`, `npm test`, `test:minified`, `check:js-dist`, `build`, `check:generated` (names any generated file the build changed), `check:php` and `check:audit`. Run it before pushing; the workflow calls this same script.
+* **npm run check:php**: `php -l` over every template and helper, the `theme.ini` parse, `test:php` and `check:fixtures`. Without a `php` on PATH it skips with a message saying so; CI runs it with `--require`, where a missing PHP is fatal.
 
-GitHub's quality workflow also validates Composer metadata and lints every PHP helper and template on PHP 8.5, matching production, plus PHP 8.4, the theme's declared minimum.
+GitHub's quality workflow runs `npm run verify`, then `check:php --require` on PHP 8.5, matching production, and PHP 8.4, the theme's declared minimum, plus Composer validation and PHPStan.
 
 ### Sass Module System
 

@@ -22,13 +22,16 @@
     "check:i18n": "node scripts/build-i18n.js --check",
     "check:tokens": "node scripts/check-token-usage.js",
     "check:fixtures": "php test/php/render-fixtures.php --check",
+    "check:php": "node scripts/check-php.js",
+    "check:generated": "node scripts/check-generated.js",
     "build:tokens": "node scripts/build-tokens.js",
     "sync:tokens": "node scripts/build-tokens.js --sync-siblings",
     "build:i18n": "node scripts/build-i18n.js",
     "build:js": "node scripts/build-js.js",
     "build:fixtures": "php test/php/render-fixtures.php",
     "build:images": "node scripts/gen-banner-images.js",
-    "build:icons": "node scripts/gen-pwa-icons.js"
+    "build:icons": "node scripts/gen-pwa-icons.js",
+    "verify": "npm run check:js && npm run lint && npm run check:versions && npm test && npm run test:minified && npm run check:js-dist && npm run build && npm run check:generated && npm run check:php && npm run check:audit"
   },
   "repository": {
     "type": "git",
