@@ -42,7 +42,7 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 
 ## Requirements
 
-- **Omeka S**: 4.2.0 or higher
+- **Omeka S**: 4.2.1 or higher
 - **PHP**: 8.4 or higher
 - **Node.js**: 24.15 or higher on an even-numbered release line (for builds and tests; CI uses Node 24.18.1)
 

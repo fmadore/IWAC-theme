@@ -11,7 +11,7 @@ Process document, not product: export-ignored like `ROADMAP.md`.
 
 ## Items
 
-- [ ] **1. Consistency fixes.** The PHP floor was stated three ways (composer.json
+- [x] **1. Consistency fixes.** The PHP floor was stated three ways (composer.json
   `^8.4`, the stylesheet banner `^8.1`, CI testing 8.4/8.5); the Omeka constraint said
   `^4.2.0` while both installs run 4.2.1; the workflows pinned two different
   `actions/setup-node` releases and an old `setup-php`. DRE-theme pins every action to
@@ -19,6 +19,11 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   compromised or broken publish has time to be yanked before it is proposed. IWAC
   states one PHP floor, one Omeka floor and one pin per action, and adopts the same
   Dependabot schedule.
+  *Landed:* banner `Requires PHP: ^8.4` (composer.json and CI already said 8.4/8.5);
+  `omeka_version_constraint = "^4.2.1"` in theme.ini, the banner and README; every
+  action pinned to its latest release by SHA (checkout v7.0.1, setup-node v7.1.0,
+  setup-php 2.40.0, upload-artifact v7.0.2, download-artifact v8.0.2); Dependabot
+  weekly, 5-day npm cooldown, grouped actions.
 
 - [ ] **2. `npm run verify` is the CI contract.** DRE-theme's `verify` runs locally
   exactly what its CSS job runs, and its CI job calls `npm run verify` instead of
