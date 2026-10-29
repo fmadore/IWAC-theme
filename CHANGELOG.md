@@ -16,7 +16,6 @@ create.
 - **Requirements.** The theme now declares Omeka S 4.2.1 as its minimum (it was 4.2.0); both IWAC sites run 4.2.1. The stylesheet header states the same PHP floor as `composer.json`, PHP 8.4.
 - **Development.** `npm run verify` runs locally exactly what the Quality workflow's frontend job runs, and the workflow now calls it. A stale generated file is reported by name with the command that rebuilds it. `npm run check:php` runs the PHP syntax, `theme.ini`, helper-test and fixture checks, and says so when it has to skip for want of a `php` binary.
 - **CI.** Every GitHub Action is pinned to its latest release by commit SHA, with one pin per action across all workflows. Dependabot proposes updates weekly, holds new npm releases back for five days, and groups action updates into one pull request.
-
 - **Build.** Gulp is gone: `scripts/build-css.js` compiles the stylesheet through Sass, autoprefixer and cssnano directly, and `npm run start` watches without it. The compiled stylesheet's rules are byte-for-byte the same; it now opens with the theme header (name, version, Omeka and PHP requirements), which the old build stripped, and `npm run build` checks the compiled file for a stray byte-order mark, a misplaced `@charset`, a stale version and undefined custom properties.
 - **Compatibility testing.** CI installs the theme into the official Omeka S 4.2.1 release and has Omeka's own theme manager discover it and load its view helpers on PHP 8.5, with every deprecation treated as an error; the release workflow does the same with the release ZIP itself. PHPStan now checks the helpers against the real Omeka classes, at level 7 instead of 6.
 - **Webfonts are self-hosted.** Besley, Public Sans and Source Serif 4 are served from the theme's own `asset/fonts/` (the same families, weights, styles and optical-size axis as before, latin and latin-ext) instead of a render-blocking stylesheet from fonts.bunny.net. Pages make no third-party request for fonts, and the two faces above the fold (body text and the masthead) are preloaded. The SIL Open Font Licence texts ship beside the files. `asset/css/fonts.css` holds the same `@font-face` rules on their own, for pages that render without the theme (published in `tokens.json` as `fontsCss`; the Bunny URL stays in `fontsUrl`, deprecated).
@@ -24,6 +23,10 @@ create.
 ### Added
 
 - **This changelog.** It ships in the theme ZIP, and a release's GitHub notes are now its section here instead of a generated list of pull requests. `npm run bump` dates the *Unreleased* notes for the new version.
+
+### Fixed
+
+- With browser storage unavailable (a private window, blocked site data), the theme button went from system to light and then stayed on light; it now cycles through light, dark and system as usual for the rest of the visit.
 
 ## [2.30.1] - 2026-10-27
 

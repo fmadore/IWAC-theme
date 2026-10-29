@@ -123,6 +123,29 @@ test('the theme toggle cycles system → light → dark → system, persisting a
     dom.window.close();
 });
 
+test('without storage the toggle still cycles through all three modes (regression: stuck on light)', () => {
+    // What utils.js's safe store does where storage throws: reads come back
+    // empty, writes are dropped.
+    const dom = fixtureDom('item.en');
+    dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
+    dom.window.IWACUtils = {
+        onReady: (callback) => callback(),
+        localStore: { get: () => null, set: () => false, remove: () => false },
+    };
+    runAsset(dom, 'theme-toggle.js');
+    const { body } = dom.window.document;
+    const button = dom.window.document.querySelector('[data-theme-toggle]');
+    const modes = [];
+    for (let i = 0; i < 4; i++) {
+        button.click();
+        modes.push(body.dataset.themeMode);
+    }
+    assert.deepEqual(modes, ['light', 'dark', 'system', 'light']);
+    assert.equal(body.dataset.theme, 'light');
+
+    dom.window.close();
+});
+
 /** The item browse (grid by default, ?sort_by=title) with browse.js and a fake MiniMasonry. */
 function browsed(prepare = () => {}) {
     const dom = fixtureDom('items-browse.en');

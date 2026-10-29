@@ -28,10 +28,17 @@
             : 'light';
     }
 
+    // The mode this page shows. Read from storage once, then kept here: where
+    // storage is unavailable (a private window, blocked site data) every read
+    // came back empty, so the cycle restarted from "system" on each click and
+    // never got past light.
+    let currentMode = null;
+
     /**
      * The user's explicit choice. No stored value = follow the system.
      */
     function getMode() {
+        if (currentMode) return currentMode;
         const stored = IWACUtils.localStore.get(STORAGE_KEY);
         return (stored === 'light' || stored === 'dark') ? stored : 'system';
     }
@@ -63,6 +70,7 @@
      * so we stay silent on initial load and passive system-preference changes).
      */
     function applyMode(mode, announce) {
+        currentMode = mode;
         document.body.setAttribute(THEME_ATTRIBUTE, resolveTheme(mode));
         document.body.setAttribute(MODE_ATTRIBUTE, mode);
         updateToggleButton(mode, announce);
