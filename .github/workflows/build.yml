@@ -18,6 +18,15 @@ on:
 permissions:
   contents: read
 
+env:
+  # The Omeka S release the omeka-compatibility job installs the theme into.
+  # Keep it equal to OMEKA_S_VERSION in release.yml; live-smoke.yml warns when
+  # a newer one exists.
+  OMEKA_S_VERSION: 4.2.1
+  # The release asset's published digest:
+  #   gh api repos/omeka/omeka-s/releases/tags/v<version> --jq '.assets[].digest'
+  OMEKA_S_SHA256: cc27d1c7aca0209523d19aa285f4a08e29e34950dcc446951a7c1311de348e82
+
 # The event is part of the group: when release.yml calls this workflow, the
 # github context is the caller's, and a release rebuilt by hand runs on a
 # branch ref — without the event name, the next push to that branch would
@@ -75,7 +84,7 @@ jobs:
         run: npm run verify
 
   php:
-    name: PHP ${{ matrix.php }} syntax and Composer
+    name: PHP ${{ matrix.php }} syntax, tests and Composer
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -91,7 +100,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: none
-          tools: composer:v2, phpstan:2
+          tools: composer:v2
 
       - run: composer validate --strict --no-check-publish
 
@@ -107,8 +116,55 @@ jobs:
       - name: PHP syntax, theme.ini, helper tests and rendered fixtures
         run: node scripts/check-php.js --require
 
-      # The view helpers, at level 6 against the stubbed Laminas base class
-      # (phpstan.neon.dist). Installed by setup-php, so composer.json — which
-      # ships in the release — stays free of dev dependencies.
-      - name: PHPStan
-        run: phpstan analyse --no-progress
+  # The theme inside the real Omeka S release, not beside a fake: Omeka's own
+  # theme manager discovers and parses it, the helpers load the way Omeka
+  # registers them, and PHPStan checks them against the real Omeka and Laminas
+  # classes. PHP 8.5, production's version, with every deprecation an error.
+  # (A job name cannot read `env`; the version is in the step names.)
+  omeka-compatibility:
+    name: Omeka S release + PHP 8.5
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      # PHPStan is installed by setup-php, so composer.json — which ships in
+      # the release — stays free of dev dependencies.
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: '8.5'
+          coverage: none
+          extensions: mbstring, pdo_mysql, pdo_sqlite, xml
+          tools: phpstan:2.3.3
+
+      - name: Download official Omeka S ${{ env.OMEKA_S_VERSION }} release (SHA-256 verified)
+        run: |
+          mkdir -p "$RUNNER_TEMP/omeka"
+          curl -fsSL "https://github.com/omeka/omeka-s/releases/download/v$OMEKA_S_VERSION/omeka-s-$OMEKA_S_VERSION.zip" -o "$RUNNER_TEMP/omeka.zip"
+          echo "$OMEKA_S_SHA256  $RUNNER_TEMP/omeka.zip" | sha256sum --check --strict
+          unzip -q "$RUNNER_TEMP/omeka.zip" -d "$RUNNER_TEMP/omeka"
+          OMEKA_ROOT="$(find "$RUNNER_TEMP/omeka" -maxdepth 2 -name bootstrap.php -printf '%h\n' -quit)"
+          test -n "$OMEKA_ROOT"
+          echo "OMEKA_ROOT=$OMEKA_ROOT" >> "$GITHUB_ENV"
+
+      # The directory name is the Omeka theme id; the live sites are
+      # configured against IWAC-theme (release.yml's archive prefix).
+      - name: Install the theme into Omeka as themes/IWAC-theme
+        run: |
+          mkdir -p "$OMEKA_ROOT/themes/IWAC-theme"
+          rsync -a --exclude='.git' --exclude='node_modules' ./ "$OMEKA_ROOT/themes/IWAC-theme/"
+
+      - name: Omeka S ${{ env.OMEKA_S_VERSION }} discovers the theme and loads its helpers
+        env:
+          OMEKA_PATH: ${{ env.OMEKA_ROOT }}
+        run: php -d error_reporting=E_ALL -d display_errors=1 test/php/omeka-compatibility.php
+
+      # The view helpers against the real Omeka S and Laminas classes, for PHP
+      # 8.4 through 8.5 (phpstan.neon.dist).
+      - name: Static analysis of the view helpers (PHPStan)
+        env:
+          OMEKA_PATH: ${{ env.OMEKA_ROOT }}
+        run: phpstan analyse --no-progress --error-format=github --memory-limit=1G

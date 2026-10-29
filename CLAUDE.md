@@ -35,7 +35,8 @@ npm run lint           # ESLint + Stylelint (correctness rules and the gotchas b
 npm run check:audit    # npm audit at high+, minus the written exceptions (see below)
 npm run check:php      # php -l, theme.ini parse, test:php, check:fixtures (skips without php)
 npm run verify         # the whole CI frontend contract, in CI's order — run before pushing
-phpstan analyse        # helpers at level 6 (CI installs phpstan via setup-php)
+OMEKA_PATH=… php phpstan.phar analyse            # helpers at level 7, against real Omeka (below)
+OMEKA_PATH=… php test/php/omeka-compatibility.php # Omeka's theme manager on themes/IWAC-theme
 ```
 
 `npm run verify` is the Quality workflow's frontend job: the workflow calls it rather
@@ -44,6 +45,31 @@ than restating a step list, so a green `verify` locally means a green job. It en
 reminds you when the matching sources are uncommitted too; in CI any change fails), and
 `check:php`, which skips with a message when `php` is not on PATH — CI's PHP job runs it
 with `--require`. A new CI check goes into `verify`, not into the workflow.
+
+PHPStan and the Omeka discovery test need an unpacked **official Omeka S 4.2.1** —
+CI's `omeka-compatibility` job (build.yml) downloads it and checks its SHA-256; the
+helpers are analysed against the real `Omeka\`/`Laminas\` classes, not a stub. Locally,
+in a scratch directory outside the repo:
+
+```bash
+curl -fsSLO https://github.com/omeka/omeka-s/releases/download/v4.2.1/omeka-s-4.2.1.zip
+echo "cc27d1c7aca0209523d19aa285f4a08e29e34950dcc446951a7c1311de348e82  omeka-s-4.2.1.zip" | sha256sum -c
+unzip -q omeka-s-4.2.1.zip                  # → omeka-s/
+curl -fsSLO https://github.com/phpstan/phpstan/releases/download/2.3.3/phpstan.phar
+# from the theme root:
+OMEKA_PATH=/scratch/omeka-s php /scratch/phpstan.phar analyse
+# the discovery test reads OMEKA_PATH/themes/IWAC-theme, so copy the tree there first
+OMEKA_PATH=/scratch/omeka-s php test/php/omeka-compatibility.php
+```
+
+The helpers' PHPDoc names the real representation classes (`SiteRepresentation`,
+`AbstractResourceEntityRepresentation`, …) while the native types stay `object`:
+`test/php/run.php` passes small fakes, so the `method_exists()` guards stay and
+`treatPhpDocTypesAsCertain` is off. Level 8 would need a null check around every
+`getView()`. `release.yml` runs the discovery test again on the **unpacked release ZIP**,
+so an export-ignore mistake fails the release. A newer Omeka S release shows up as a
+warning in the weekly live-smoke run; bump `OMEKA_S_VERSION` + `OMEKA_S_SHA256` in
+build.yml and release.yml together.
 
 Match the command to the change. `npm run build` regenerates `tokens.json` **and** the
 i18n catalogue, so on a PHP- or JS-only edit it produces unrelated diffs — `check:tokens`

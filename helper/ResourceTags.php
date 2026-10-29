@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace OmekaTheme\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
+use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 
 class ResourceTags extends AbstractHelper
 {
@@ -11,7 +12,7 @@ class ResourceTags extends AbstractHelper
     /**
      * Returns a Resource Tag HTML.
      *
-     * @param object $resource The resource to add a tag to.
+     * @param AbstractResourceEntityRepresentation|null $resource The resource to add a tag to.
      * @return string
      */
     public function __invoke(?object $resource): string

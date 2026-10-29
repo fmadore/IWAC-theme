@@ -20,6 +20,29 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # Advisory only: CI and the release archive are tested against the Omeka
+      # S release pinned as OMEKA_S_VERSION in build.yml/release.yml. This says
+      # when upstream has moved on, so the pin (and its SHA-256) get updated
+      # deliberately rather than discovered from a failing install.
+      - name: Omeka S release check
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pinned="$(sed -n 's/^  OMEKA_S_VERSION: *//p' .github/workflows/build.yml)"
+          packaged="$(sed -n 's/^  OMEKA_S_VERSION: *//p' .github/workflows/release.yml)"
+          if [ "$pinned" != "$packaged" ]; then
+            echo "::warning::OMEKA_S_VERSION differs: build.yml tests $pinned, release.yml packages against $packaged."
+          fi
+          latest="$(gh api repos/omeka/omeka-s/releases/latest --jq .tag_name)"
+          latest="${latest#v}"
+          newest="$(printf '%s\n%s\n' "$pinned" "$latest" | sort -V | tail -1)"
+          if [ "$latest" != "$pinned" ] && [ "$newest" = "$latest" ]; then
+            echo "::warning::Omeka S $latest is available; CI and the release archive still test $pinned. Update OMEKA_S_VERSION and OMEKA_S_SHA256 in build.yml and release.yml (and omeka_version_constraint if the range changes)."
+          else
+            echo "Omeka S $pinned is the latest release."
+          fi
+
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc

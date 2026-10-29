@@ -1,7 +1,7 @@
 <?php
 /**
  * The one Laminas class the theme's view helpers extend, stubbed so the PHP
- * tests (test/php/run.php) and PHPStan (phpstan.neon.dist) need nothing but a
+ * tests (test/php/run.php) need nothing but a
  * PHP binary — no Composer install, no Omeka checkout.
  */
 declare(strict_types=1);

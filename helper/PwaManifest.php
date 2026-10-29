@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace OmekaTheme\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
+use Omeka\Api\Representation\SiteRepresentation;
 
 final class PwaManifest extends AbstractHelper
 {
@@ -11,7 +12,7 @@ final class PwaManifest extends AbstractHelper
      * The web-app manifest for $site, as the JSON-ready array layout.phtml
      * emits into its data island.
      *
-     * @param object $site the SiteRepresentation
+     * @param SiteRepresentation $site
      * @return array<string, mixed>
      */
     public function __invoke(object $site): array

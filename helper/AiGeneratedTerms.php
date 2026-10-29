@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace OmekaTheme\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
+use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 
 final class AiGeneratedTerms extends AbstractHelper
 {
@@ -13,7 +14,10 @@ final class AiGeneratedTerms extends AbstractHelper
         21 => ['dcterms:tableOfContents'],
     ];
 
-    /** @return list<string> */
+    /**
+     * @param AbstractResourceEntityRepresentation|null $resource
+     * @return list<string>
+     */
     public function __invoke(?object $resource = null): array
     {
         $terms = self::ALWAYS_GENERATED;
@@ -22,7 +26,7 @@ final class AiGeneratedTerms extends AbstractHelper
         }
 
         $template = $resource->resourceTemplate();
-        $templateId = $template ? $template->id() : null;
+        $templateId = $template ? (int) $template->id() : null;
         if ($templateId !== null && isset(self::GENERATED_BY_TEMPLATE[$templateId])) {
             $terms = array_merge($terms, self::GENERATED_BY_TEMPLATE[$templateId]);
         }

@@ -15,8 +15,12 @@ name: Release
 #            had never passed.
 #   build    a read-only job: asserts the tag is on the default branch and
 #            agrees with every version declaration, rebuilds and diffs the
-#            committed artifacts, assembles and verifies the archive, and
-#            uploads it as a run artifact. npm ci and the build run here, with
+#            committed artifacts, assembles and verifies the archive, installs
+#            the UNPACKED archive into the official Omeka S release and has
+#            Omeka's theme manager discover it (build.yml's omeka-compatibility
+#            job tests the working tree, which has files the archive does not —
+#            so an export-ignore mistake would otherwise reach the live site
+#            untested), and uploads it as a run artifact. npm ci and the build run here, with
 #            no write token in reach (persist-credentials: false).
 #   publish  needs both, holds `contents: write`, and does nothing but
 #            download that artifact and attach it to the release. A release
@@ -37,6 +41,15 @@ on:
 
 permissions:
   contents: read
+
+env:
+  # The Omeka S release the packaged theme is installed into. Keep
+  # it equal to OMEKA_S_VERSION in build.yml; live-smoke.yml warns when
+  # a newer one exists.
+  OMEKA_S_VERSION: 4.2.1
+  # The release asset's published digest:
+  #   gh api repos/omeka/omeka-s/releases/tags/v<version> --jq '.assets[].digest'
+  OMEKA_S_SHA256: cc27d1c7aca0209523d19aa285f4a08e29e34950dcc446951a7c1311de348e82
 
 concurrency:
   group: release-${{ github.event.inputs.tag || github.ref }}
@@ -199,6 +212,31 @@ jobs:
           fi
 
           echo "$(wc -l < /tmp/list) files, $(du -h "$NAME" | cut -f1)"
+
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: '8.5'
+          coverage: none
+          extensions: mbstring, pdo_mysql, pdo_sqlite, xml
+
+      # The artefact people install, through Omeka's own theme manager: the
+      # same test build.yml runs on the working tree, here on the unpacked
+      # ZIP, so anything export-ignore removed by mistake (a helper, a
+      # template, theme.ini) fails the release.
+      - name: Omeka S ${{ env.OMEKA_S_VERSION }} discovers the packaged theme
+        env:
+          NAME: ${{ steps.zip.outputs.name }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/omeka" "$RUNNER_TEMP/pkg"
+          curl -fsSL "https://github.com/omeka/omeka-s/releases/download/v$OMEKA_S_VERSION/omeka-s-$OMEKA_S_VERSION.zip" -o "$RUNNER_TEMP/omeka.zip"
+          echo "$OMEKA_S_SHA256  $RUNNER_TEMP/omeka.zip" | sha256sum --check --strict
+          unzip -q "$RUNNER_TEMP/omeka.zip" -d "$RUNNER_TEMP/omeka"
+          OMEKA_ROOT="$(find "$RUNNER_TEMP/omeka" -maxdepth 2 -name bootstrap.php -printf '%h\n' -quit)"
+          test -n "$OMEKA_ROOT"
+          unzip -q "$NAME" -d "$RUNNER_TEMP/pkg"
+          mkdir -p "$OMEKA_ROOT/themes"
+          cp -r "$RUNNER_TEMP/pkg/IWAC-theme" "$OMEKA_ROOT/themes/IWAC-theme"
+          OMEKA_PATH="$OMEKA_ROOT" php -d error_reporting=E_ALL -d display_errors=1 test/php/omeka-compatibility.php
 
       # The notes of a release the publish job has to create: this version's
       # CHANGELOG.md section as committed at the tag (`npm run bump` promoted

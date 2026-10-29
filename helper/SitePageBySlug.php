@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace OmekaTheme\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
+use Omeka\Api\Representation\SitePageRepresentation;
+use Omeka\Api\Representation\SiteRepresentation;
 use Throwable;
 
 /**
@@ -22,13 +24,13 @@ use Throwable;
  */
 final class SitePageBySlug extends AbstractHelper
 {
-    /** @var array<int,array<string,object>> slug => page representation, per site id */
+    /** @var array<int,array<string,SitePageRepresentation>> slug => page, per site id */
     private array $pagesBySite = [];
 
     /**
      * @param list<string> $slugs candidates, in order of preference
-     * @param object|null  $site  defaults to the current site
-     * @return object|null the matching SitePageRepresentation
+     * @param SiteRepresentation|null $site defaults to the current site
+     * @return SitePageRepresentation|null
      */
     public function __invoke(array $slugs, ?object $site = null): ?object
     {

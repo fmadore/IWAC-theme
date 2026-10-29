@@ -18,6 +18,7 @@ create.
 - **CI.** Every GitHub Action is pinned to its latest release by commit SHA, with one pin per action across all workflows. Dependabot proposes updates weekly, holds new npm releases back for five days, and groups action updates into one pull request.
 
 - **Build.** Gulp is gone: `scripts/build-css.js` compiles the stylesheet through Sass, autoprefixer and cssnano directly, and `npm run start` watches without it. The compiled stylesheet's rules are byte-for-byte the same; it now opens with the theme header (name, version, Omeka and PHP requirements), which the old build stripped, and `npm run build` checks the compiled file for a stray byte-order mark, a misplaced `@charset`, a stale version and undefined custom properties.
+- **Compatibility testing.** CI installs the theme into the official Omeka S 4.2.1 release and has Omeka's own theme manager discover it and load its view helpers on PHP 8.5, with every deprecation treated as an error; the release workflow does the same with the release ZIP itself. PHPStan now checks the helpers against the real Omeka classes, at level 7 instead of 6.
 
 ### Added
 

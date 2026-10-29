@@ -135,7 +135,7 @@ Run these commands within the theme's root directory.
 * **npm run verify**: Everything the Quality workflow's frontend job runs, in the same order — `check:js`, `lint`, `check:versions`, `npm test`, `test:minified`, `check:js-dist`, `build`, `check:generated` (names any generated file the build changed), `check:php` and `check:audit`. Run it before pushing; the workflow calls this same script.
 * **npm run check:php**: `php -l` over every template and helper, the `theme.ini` parse, `test:php` and `check:fixtures`. Without a `php` on PATH it skips with a message saying so; CI runs it with `--require`, where a missing PHP is fatal.
 
-GitHub's quality workflow runs `npm run verify`, then `check:php --require` on PHP 8.5, matching production, and PHP 8.4, the theme's declared minimum, plus Composer validation and PHPStan.
+GitHub's quality workflow runs `npm run verify`, then `check:php --require` on PHP 8.5, matching production, and PHP 8.4, the theme's declared minimum, plus Composer validation. A third job installs the theme into the official Omeka S 4.2.1 release (SHA-256 verified) on PHP 8.5, has Omeka's own theme manager discover it and load its helpers with every deprecation an error, and runs PHPStan (level 7) on the helpers against the real Omeka and Laminas classes; the release workflow repeats the discovery test on the unpacked release ZIP.
 
 ### Sass Module System
 

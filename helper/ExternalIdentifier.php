@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace OmekaTheme\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
+use Omeka\Api\Representation\ValueRepresentation;
 
 /**
  * Recognises the two external identifiers the collection links out to — a DOI
@@ -30,7 +31,10 @@ final class ExternalIdentifier extends AbstractHelper
 
     private const DOI_LITERAL = '~^(?:doi:\s*)?(10\.[0-9]{4,9}/\S+)$~i';
 
-    /** @return array{scheme:'doi'|'wikidata', id:string, url:string, label:string}|null */
+    /**
+     * @param ValueRepresentation $value
+     * @return array{scheme:'doi'|'wikidata', id:string, url:string, label:string}|null
+     */
     public function __invoke(object $value, string $term = ''): ?array
     {
         $type = method_exists($value, 'type') ? (string) $value->type() : '';

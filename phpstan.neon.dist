@@ -1,17 +1,37 @@
-# PHPStan over the theme's view helpers — the PHP with real logic in it.
-# Templates are not analysed: every line of them calls Omeka through the view
-# renderer's magic __call, which no stub set short of Omeka itself resolves,
-# so they are covered behaviourally by test/php/run.php instead.
+# PHPStan over the theme's view helpers — the PHP with real logic in it —
+# against the real Omeka S and Laminas classes.
 #
-# CI runs this through setup-php's `tools: phpstan`; locally, any phpstan 2.x
-# binary: `phpstan analyse`.
+# OMEKA_PATH must point at an unpacked official Omeka S release, whose Composer
+# autoloader resolves Omeka\ and Laminas\ the way production does. CI's
+# omeka-compatibility job downloads 4.2.1 (SHA-256 verified). Locally:
 #
-# Level 6: every helper passes. From 7 up the findings are all "undefined
-# method on object" — the helpers take Omeka representations typed as
-# `object`, and naming their methods would mean stubbing Omeka.
+#   OMEKA_PATH=/path/to/omeka-s php phpstan.phar analyse
+#
+# (CLAUDE.md, Build, says where to get both.) Templates are not analysed:
+# every line of them calls Omeka through the view renderer's magic __call, so
+# they are covered behaviourally by test/php/run.php and the rendered fixtures.
 parameters:
-    level: 6
+    # 7: every call on a representation is checked against the real class.
+    # 8 fails only because AbstractHelper::getView() is nullable (~20 sites).
+    level: 7
+    # The theme's PHP floor (composer.json) through production's 8.5.
+    phpVersion:
+        min: 80400
+        max: 80599
     paths:
         - helper
+    # The helpers' PHPDoc names the Omeka representations they are given, so
+    # every method call is checked against the real class. The native types
+    # stay `object` on purpose: templates hand over whatever the view holds,
+    # and test/php/run.php passes small fakes, so the helpers keep their
+    # method_exists() / null guards — which PHPStan would otherwise call dead.
+    treatPhpDocTypesAsCertain: false
     bootstrapFiles:
-        - test/php/stubs.php
+        - test/php/phpstan-bootstrap.php
+    ignoreErrors:
+        # View helpers are reached through PhpRenderer's plugin broker
+        # (__call), which AbstractHelper::getView() types as the bare
+        # RendererInterface.
+        -
+            message: '#^Call to an undefined method Laminas\\View\\Renderer\\RendererInterface::[A-Za-z]+\(\)\.$#'
+            identifier: method.notFound

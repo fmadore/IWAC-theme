@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace OmekaTheme\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
+use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 
 /**
  * Where the Linked resources block keeps its state in the query string — the
@@ -94,6 +95,8 @@ class LinkedResourcesPaging extends AbstractHelper
      *   - query:  the current query without `drop` — the base of every block
      *             URL, so the rest of the page's state (the ledger's page, its
      *             sort, the block's own search) rides along unchanged
+     *
+     * @param AbstractResourceEntityRepresentation $resource
      */
     public function __invoke(object $resource): array
     {

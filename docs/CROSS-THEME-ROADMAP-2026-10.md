@@ -41,13 +41,27 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   the runner's preinstalled PHP is below the floor) and its PHP matrix job runs
   `check-php.js --require`.
 
-- [ ] **3. Test against the real Omeka S release.** DRE-theme downloads the official
+- [x] **3. Test against the real Omeka S release.** DRE-theme downloads the official
   Omeka S 4.2.1 zip (SHA-256 verified), installs the theme and asks Omeka's own theme
   manager to discover and parse it with deprecations as errors — once on the working
   tree, and again in `release.yml` on the unpacked release zip, so an export-ignore
   mistake fails the release instead of the live site. Its PHPStan analyses the helpers
   against the real Omeka and Laminas classes. IWAC's PHPStan ran against a one-class
   stub, which is why its helpers had to type Omeka representations as `object`.
+  *Landed:* `test/php/omeka-compatibility.php` (DRE's discovery test plus what
+  `MvcListeners` does at render time: each `helpers[]` file exists with theme.ini's
+  exact spelling, defines `OmekaTheme\Helper\<Name>`, is a Laminas helper) and
+  `test/php/phpstan-bootstrap.php`; build.yml's `omeka-compatibility` job (Omeka 4.2.1
+  zip, SHA-256 checked, installed as `themes/IWAC-theme`, PHP 8.5, PHPStan 2.3.3);
+  release.yml repeats discovery on the unpacked ZIP; live-smoke warns on a newer Omeka.
+  PHPStan runs at **level 7** (6 → 7 clean once the helpers' PHPDoc names
+  `SiteRepresentation`, `SitePageRepresentation`, `AbstractResourceEntityRepresentation`,
+  `ValueRepresentation`). Native types stay `object`: the PHP tests pass fakes, so
+  `treatPhpDocTypesAsCertain: false` keeps the defensive guards from reading as dead
+  code. Level 8 fails only on `getView()` being nullable (~20 call sites) — left.
+  Verified locally: Omeka 4.2.1 zip (digest OK) + phpstan.phar 2.3.3 (release digest
+  OK): `[OK] No errors`; discovery test 48 checks passed, and fails as expected on a
+  `^4.3.0` constraint and a lowercased helper filename.
 
 - [x] **4. CHANGELOG.md is the release-notes source.** DRE-theme keeps a Keep a
   Changelog file, lints it, and `release.yml` publishes that version's section as the

@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace OmekaTheme\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
+use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
+use Omeka\Api\Representation\ValueRepresentation;
 use Throwable;
 
 /**
@@ -58,7 +60,7 @@ final class ResourceLanguage extends AbstractHelper
     private array $authorityCodes = [];
 
     /**
-     * @param object|null $resource an item or media representation
+     * @param AbstractResourceEntityRepresentation|null $resource an item or media representation
      * @param bool $asAttribute return ` lang="…" dir="auto"` (or '') instead of the code
      */
     public function __invoke(?object $resource, bool $asAttribute = false): string
@@ -78,6 +80,7 @@ final class ResourceLanguage extends AbstractHelper
      *
      *     $this->plugin('ResourceLanguage')->attributes($item)  // ['lang' => 'fr', 'dir' => 'auto'], or []
      *
+     * @param AbstractResourceEntityRepresentation|null $resource
      * @return array<string,string>
      */
     public function attributes(?object $resource): array
@@ -127,6 +130,7 @@ final class ResourceLanguage extends AbstractHelper
         return is_iterable($values) ? $values : [];
     }
 
+    /** @param ValueRepresentation|null $value a dcterms:language value */
     private function valueCode(mixed $value): string
     {
         if (!is_object($value)) {
@@ -143,6 +147,7 @@ final class ResourceLanguage extends AbstractHelper
         return $this->literalCode(method_exists($value, 'value') ? (string) $value->value() : '');
     }
 
+    /** @param AbstractResourceEntityRepresentation $authority the linked language authority */
     private function authorityCode(object $authority): string
     {
         $alternatives = $authority->value('dcterms:alternative', ['all' => true]);
