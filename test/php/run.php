@@ -116,6 +116,126 @@ namespace IwacThemeTest {
         same(['bibo:shortDescription', 'dcterms:tableOfContents'], $helper($onTemplate(21)));
     });
 
+    // ---- ResourceValues: the rules behind common/resource-values ----------
+
+    $langValue = static fn (?string $lang, string $text = '') => new class($lang, $text) {
+        public function __construct(private ?string $lang, public string $text)
+        {
+        }
+
+        public function lang(): ?string
+        {
+            return $this->lang;
+        }
+    };
+
+    test('ResourceValues compares languages by primary subtag', function () {
+        $rv = \OmekaTheme\Helper\ResourceValues::class;
+        same('en', $rv::primarySubtag('en-US'));
+        same('en', $rv::primarySubtag('EN_us'));
+        same('fr', $rv::primarySubtag(' fr '));
+        same('', $rv::primarySubtag(null));
+        same('', $rv::primarySubtag(''));
+        // Untagged values count as the site's language; others by subtag.
+        check($rv::inSiteLanguage('', 'en'), 'untagged kept');
+        check($rv::inSiteLanguage('en-GB', 'en'), 'en-GB on an en site');
+        check(!$rv::inSiteLanguage('fr', 'en'), 'fr on an en site');
+    });
+
+    test('ResourceValues narrows only translation-pair properties, and only when the site language is there', function () use ($langValue) {
+        $rv = \OmekaTheme\Helper\ResourceValues::class;
+        $pair = [$langValue('fr', 'Résumé'), $langValue('en', 'Summary'), $langValue(null, 'Neutral')];
+
+        [$kept, $narrowed] = $rv::preferSiteLanguage($pair, 'en', 'bibo:shortDescription');
+        same(['Summary', 'Neutral'], array_values(array_map(static fn ($v) => $v->text, $kept)));
+        check($narrowed, 'narrowed flag');
+        // Keys survive, as array_filter keeps them (the template iterates them).
+        same([1, 2], array_keys($kept));
+
+        // A property that is not a translation pair keeps every language.
+        [$all, $narrowedDesc] = $rv::preferSiteLanguage($pair, 'en', 'dcterms:description');
+        same(3, count($all));
+        check(!$narrowedDesc, 'description is not narrowed');
+
+        // No value in the site language: nothing is dropped.
+        [$frOnly, $narrowedFr] = $rv::preferSiteLanguage([$langValue('fr')], 'en', 'bibo:shortDescription');
+        same(1, count($frOnly));
+        check(!$narrowedFr, 'lone French lede kept');
+
+        // Nothing to compare against outside a site request.
+        same([$pair, false], $rv::preferSiteLanguage($pair, '', 'bibo:shortDescription'));
+
+        // Only untagged and site-language values when they are all there is.
+        [, $already] = $rv::preferSiteLanguage([$langValue('en'), $langValue(null)], 'en', 'bibo:shortDescription');
+        check(!$already, 'nothing dropped, so nothing narrowed');
+
+        // Core's filter_locale_values, by subtag.
+        same([1, 2], array_keys($rv::filterToSiteLanguage($pair, 'en')));
+    });
+
+    test('ResourceValues labels, language chips and prose language', function () {
+        $rv = \OmekaTheme\Helper\ResourceValues::class;
+        same('Description', $rv::displayLabel('DescriptionAI', true));
+        same('Summary', $rv::displayLabel('Summary AI ', true));
+        same('DescriptionAI', $rv::displayLabel('DescriptionAI', false));
+        same('Raid', $rv::displayLabel('Raid', true), 'a label not ending in AI is unchanged');
+
+        check($rv::showLanguageChip(true, 'fr', false, false, 'en'), 'a French value on the English site');
+        check(!$rv::showLanguageChip(false, 'fr', false, false, 'en'), 'show_locale_label off');
+        check(!$rv::showLanguageChip(true, '', false, false, 'en'), 'untagged');
+        check(!$rv::showLanguageChip(true, 'fr', true, false, 'en'), 'parsed AI table of contents');
+        check(!$rv::showLanguageChip(true, 'en-US', false, true, 'en'), 'narrowed: the chip repeats <html lang>');
+        check($rv::showLanguageChip(true, 'fr', false, true, 'en'), 'narrowed, but another language');
+
+        same('fr', $rv::proseLang('fr', null, 'literal', 'bibo:content'));
+        same('fr', $rv::proseLang('fr', '', 'literal', 'dcterms:description'));
+        same('', $rv::proseLang('fr', 'en', 'literal', 'bibo:content'), "the value's own tag wins");
+        same('', $rv::proseLang('fr', null, 'uri', 'bibo:content'), 'only literals');
+        same('', $rv::proseLang('fr', null, 'literal', 'dcterms:title'), 'only the record prose terms');
+        same('', $rv::proseLang('', null, 'literal', 'bibo:content'), 'unknown record language');
+    });
+
+    test('ResourceValues folds a transcript only past the threshold, at a line break', function () {
+        $rv = \OmekaTheme\Helper\ResourceValues::class;
+        $short = str_repeat('mot ', 1999) . 'fin'; // 7,999 characters
+        same(null, $rv::transcript('bibo:content', 'literal', $short));
+        $long = str_repeat("Ligne de texte numérisé.\n", 400); // well over 8,000 bytes
+        same(null, $rv::transcript('dcterms:description', 'literal', $long), 'another property');
+        same(null, $rv::transcript('bibo:content', 'uri', $long), 'not a literal');
+
+        [$lede, $rest, $words] = $rv::transcript('bibo:content', 'literal', $long);
+        check(strlen($lede) <= $rv::TRANSCRIPT_LEDE_MAX + 200, 'lede inside its window');
+        check(str_ends_with($lede, 'numérisé.'), 'cut at a line break, never mid-word: ' . substr($lede, -20));
+        same($long, $lede . "\n" . $rest, 'nothing lost or duplicated');
+        same($rv::countWords($rest), $words);
+
+        // No break opportunity anywhere: a character-wise cut, never inside
+        // a multibyte character.
+        $unbroken = str_repeat('é', 9000);
+        [$ledeU, $restU] = $rv::transcript('bibo:content', 'literal', $unbroken);
+        same(1200, mb_strlen($ledeU));
+        check(mb_check_encoding($ledeU, 'UTF-8') && mb_check_encoding($restU, 'UTF-8'), 'valid UTF-8 on both sides');
+
+        same("12\u{202F}345", $rv::formatCount(12345));
+    });
+
+    test('ResourceValues swaps a square thumbnail for the medium one, escaped or not', function () {
+        $rv = \OmekaTheme\Helper\ResourceValues::class;
+        $escape = static fn ($s): string => htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
+        $resource = new class {
+            public function thumbnailDisplayUrl(string $type): string
+            {
+                return "/files/{$type}/logo.png?a=1&b=2";
+            }
+        };
+        $html = '<img src="/files/square/logo.png?a=1&amp;b=2"> /files/square/logo.png?a=1&b=2';
+        same('<img src="/files/medium/logo.png?a=1&amp;b=2"> /files/medium/logo.png?a=1&b=2',
+            $rv::mediumThumbnails($html, $resource, $escape));
+        same($html, $rv::mediumThumbnails($html, null, $escape), 'no linked resource');
+        same($html, $rv::mediumThumbnails($html, new class {
+        }, $escape), 'a resource without thumbnails');
+    });
+
     test('MoveBlockingHeadScripts takes every parser-blocking script, inline ones in place (regression: Mapping "MappingBasemap is not defined")', function () {
         // What headScript()->getContainer() holds: one stdClass per script, in
         // the shape a live place record has — Mapping's inline credentials block

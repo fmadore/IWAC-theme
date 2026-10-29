@@ -4,149 +4,20 @@ $escape = $this->plugin('escapeHtml');
 $escapeAttr = $this->plugin('escapeHtmlAttr');
 $decoration = $this->themeSetting('image_decoration');
 
-if ($this->status()->isSiteRequest()) {
-    $labelInfo = $this->siteSetting('property_label_information');
-    $showLocale = (bool) $this->siteSetting('show_locale_label', true);
-    $filterLocale = $this->siteSetting('filter_locale_values');
-    $lang = $this->lang();
-    $showValueAnnotations = (bool) $this->siteSetting('show_value_annotations', false);
-} else {
-    $labelInfo = $this->setting('property_label_information');
-    $showLocale = true;
-    $filterLocale = false;
-    $lang = null;
-    $showValueAnnotations = true;
-}
-// Compare languages by primary subtag, never by full string. Value tags in
-// this collection are bare ("fr", "en"), but lang() returns whatever the site
-// locale is set to — "fr" on the French site and "en-US" on the English one —
-// so core's exact strcasecmp can't match an "en" value against "en-US". BCP 47
-// subtags are hyphen-separated; Omeka stores the locale with an underscore.
-$primarySubtag = static function ($valueLang): string {
-    $valueLang = strtolower(trim((string) $valueLang));
-    if ($valueLang === '') {
-        return '';
-    }
-    return explode('-', str_replace('_', '-', $valueLang))[0];
-};
-$siteLang = $primarySubtag($lang);
+// Which values show, in which language, under which label, and how a long
+// transcript folds: helper/ResourceValues.php, where each rule is documented
+// and tested (test/php/run.php). This template is the markup.
+$rv = \OmekaTheme\Helper\ResourceValues::class;
 
-$filterLocaleCallback = function ($value) use ($primarySubtag, $siteLang) {
-    $valueLang = $primarySubtag($value->lang());
-    return $valueLang === '' || $valueLang === $siteLang;
-};
-
-// Properties whose values are translations of one another rather than distinct
-// data: the AI lede carries one "fr" and one "en" rendering of the same
-// summary, so printing both on a monolingual site doubles the row for no gain.
-// Narrow these to the site's language whenever they *have* a value in it.
-//
-// Scoped to a named list on purpose. Other properties also come in fr/en pairs
-// (dcterms:description, dcterms:alternative), but there a second language can
-// be genuine source metadata rather than a translation, so they keep every
-// value. Add a term here only when its values are known to be translations.
-//
-// Deliberately not Omeka's `filter_locale_values` site setting either: that one
-// drops every non-matching value across every property, which would silently
-// hide French-only source metadata on the English site.
-$localePreferredTerms = ['bibo:shortDescription'];
-
-// Untagged (language-neutral) values are always kept; a property with no value
-// in the site language keeps all of them. The one thing this drops is a value
-// in a third language sitting alongside a site-language sibling — no such pair
-// exists in the corpus today (only "fr" and "en" tags are in use).
-$preferSiteLangValues = function (array $propertyValues) use ($primarySubtag, $siteLang) {
-    if ($siteLang === '') {
-        return $propertyValues;
-    }
-    $hasSiteLang = false;
-    foreach ($propertyValues as $value) {
-        if ($primarySubtag($value->lang()) === $siteLang) {
-            $hasSiteLang = true;
-            break;
-        }
-    }
-    if (!$hasSiteLang) {
-        return $propertyValues;
-    }
-    return array_filter($propertyValues, function ($value) use ($primarySubtag, $siteLang) {
-        $valueLang = $primarySubtag($value->lang());
-        return $valueLang === '' || $valueLang === $siteLang;
-    });
-};
-
-// Properties whose values are produced by an AI pipeline (LLM summary,
-// generated abstract, etc.) — get explicit provenance markup (the EU
-// "AI GENERATED" label) so readers can distinguish computational
-// artefacts from human-authored metadata. Per "computational honesty."
-//
-// bibo:shortDescription (the "DescriptionAI" lede) is AI-generated wherever
-// it appears. Some terms are only AI-generated under a specific resource
-// template — e.g. the table of contents is auto-summarised per page for the
-// periodical issues on template 21, whereas a ToC on another template could
-// be human-authored — so those are gated by template id.
-$aiGeneratedTerms = $this->AiGeneratedTerms(isset($resource) && is_object($resource) ? $resource : null);
-
-// ---------------------------------------------------------------------------
-// Long transcripts (`bibo:content`) get progressive disclosure.
-//
-// A twelve-page issue's OCR is dumped as one unbroken run: item/24073 measures
-// 41,881 characters and 23,256px — 85% of the whole page — with no collapse and
-// no anchors, which pushes the "How to cite" panel 27 viewports down and offers
-// the reader nothing to navigate by. Above the threshold the value renders as an
-// opening extract plus a native <details> holding the remainder.
-//
-// <details>, not JS: the full text stays in the DOM for crawlers, for Ctrl+F
-// (Chrome auto-expands a closed <details> on find-in-page) and for print, and
-// the control is keyboard-operable with no script at all.
-//
-// 8,000 characters is an order of magnitude above a press article in this
-// corpus (item/74601 runs 2,631) and far below an issue transcript, so a piece
-// the reader actually came to read is never folded away. The lede is cut at the
-// last line break inside the first 1,200 characters — always an ASCII byte, so
-// the UTF-8 split is safe.
-$transcriptTerm = 'bibo:content';
-$transcriptCollapseMin = 8000;
-$transcriptLedeMax = 1200;
-
-$splitTranscript = static function (string $text) use ($transcriptLedeMax): array {
-    $window = substr($text, 0, $transcriptLedeMax + 200);
-    $cut = strrpos($window, "\n");
-    if ($cut === false || $cut < (int) ($transcriptLedeMax / 3)) {
-        $cut = strrpos($window, ' ');
-    }
-    if ($cut === false) {
-        // No break opportunity at all in the window — not a shape OCR
-        // produces, but a byte cut here could land mid-codepoint, so fall
-        // back to a character-wise cut.
-        return [mb_substr($text, 0, $transcriptLedeMax), ltrim(mb_substr($text, $transcriptLedeMax))];
-    }
-    return [rtrim(substr($text, 0, $cut)), ltrim(substr($text, $cut))];
-};
-
-$countWords = static function (string $text): int {
-    return preg_match_all('/\S+/u', $text) ?: 0;
-};
-
-// U+202F narrow no-break space — locale-neutral digit grouping, as in the
-// homepage stat strip.
-$figureSep = "\xE2\x80\xAF";
-
-// The record's own prose — its full text and its descriptions — is written in
-// the record's language, but the corpus stores it untagged, so on the English
-// site a French transcript sat under <html lang="en-US"> and was read with
-// English rules (WCAG 3.1.2). Untagged values of these terms take the language
-// of the record's dcterms:language authority (helper/ResourceLanguage.php; ''
-// when unknown, ambiguous, or the page's own). A value's own tag always wins.
-//
-// The attribute goes on the text, not on the <dd>: the row also carries site
-// chrome — the "Read the full text" toggle, the annotation button — which is in
-// the page's language, not the record's.
-$recordProseTerms = ['bibo:content', 'dcterms:description'];
-$recordLang = $this->ResourceLanguage(isset($resource) && is_object($resource) ? $resource : null);
-if ($recordLang === $siteLang) {
-    $recordLang = '';
-}
+$context = $this->ResourceValues(isset($resource) && is_object($resource) ? $resource : null);
+$labelInfo = $context['labelInfo'];
+$showLocale = $context['showLocale'];
+$filterLocale = $context['filterLocale'];
+$lang = $context['lang'];
+$showValueAnnotations = $context['showValueAnnotations'];
+$siteLang = $context['siteLang'];
+$aiGeneratedTerms = $context['aiGeneratedTerms'];
+$recordLang = $context['recordLang'];
 ?>
 
 <dl>
@@ -160,16 +31,10 @@ foreach ($values as $term => $propertyData):
     }
     $propertyValues = $propertyData['values'];
     if ($filterLocale) {
-        $propertyValues = array_filter($propertyValues, $filterLocaleCallback);
+        $propertyValues = $rv::filterToSiteLanguage($propertyValues, $siteLang);
     }
-    // True once the property has been narrowed to the site's language, which
-    // makes every surviving language tag on it redundant with <html lang>.
-    $narrowedToSiteLang = false;
-    if (in_array($term, $localePreferredTerms, true)) {
-        $preferred = $preferSiteLangValues($propertyValues);
-        $narrowedToSiteLang = count($preferred) !== count($propertyValues);
-        $propertyValues = $preferred;
-    }
+    // $narrowedToSiteLang: every surviving language tag repeats <html lang>.
+    [$propertyValues, $narrowedToSiteLang] = $rv::preferSiteLanguage($propertyValues, $siteLang, $term);
     if (!$propertyValues) {
         continue;
     }
@@ -185,10 +50,7 @@ foreach ($values as $term => $propertyData):
     ?>
     <?php
     $isAiGenerated = in_array($term, $aiGeneratedTerms, true);
-    // The EU "AI GENERATED" label already signals provenance, so strip a
-    // trailing "AI" from the field label (e.g. "DescriptionAI" → "Description")
-    // to avoid the doubled "AI … AI GENERATED" reading.
-    $displayLabel = $isAiGenerated ? preg_replace('/\s*AI\s*$/i', '', $propertyLabel) : $propertyLabel;
+    $displayLabel = $rv::displayLabel((string) $propertyLabel, $isAiGenerated);
     ?>
     <div class="property<?php echo $isAiGenerated ? ' property--ai' : ''; ?>" data-property-term="<?php echo $escape($term); ?>">
         <dt>
@@ -230,27 +92,16 @@ foreach ($values as $term => $propertyData):
             // A DOI or a Wikidata entity: printed with its scheme's mark and
             // the canonical link (helper/ExternalIdentifier.php).
             $externalId = $this->ExternalIdentifier($value, $term);
-            // Long OCR body: fold everything past the opening extract into a
-            // <details> (see the note at the top of this file).
-            $transcriptLede = null;
-            $transcriptRest = null;
-            $transcriptRestWords = 0;
-            if ($transcriptTerm === $term && 'literal' === $valueType) {
-                $transcriptText = (string) $value->value();
-                if (strlen($transcriptText) > $transcriptCollapseMin) {
-                    [$transcriptLede, $transcriptRest] = $splitTranscript($transcriptText);
-                    $transcriptRestWords = $countWords($transcriptRest);
-                    if ($transcriptRest === '') {
-                        $transcriptLede = null;
-                    }
-                }
-            }
-            // The record's language on its own untagged prose (see the note
-            // at the top of this file). The elements below already carry
-            // dir="auto", so this adds only lang.
-            $proseLangAttr = ($recordLang !== '' && !$valueLang && 'literal' === $valueType && in_array($term, $recordProseTerms, true))
-                ? ' lang="' . $escapeAttr($recordLang) . '"'
-                : '';
+            // Long OCR body: an opening extract, the rest in a <details>.
+            $transcript = 'literal' === $valueType && $rv::TRANSCRIPT_TERM === $term
+                ? $rv::transcript($term, $valueType, (string) $value->value())
+                : null;
+            // The record's language on its own untagged prose. The elements
+            // below already carry dir="auto", so this adds only lang. It goes
+            // on the text, not the <dd>: the row also carries site chrome (the
+            // full-text toggle, the annotation button) in the page's language.
+            $proseLang = $rv::proseLang($recordLang, $valueLang, (string) $valueType, $term);
+            $proseLangAttr = $proseLang !== '' ? ' lang="' . $escapeAttr($proseLang) . '"' : '';
             ?>
             <?php // Only emit lang when set — lang="" resets the language to
                   // *unknown*, overriding the document language on every
@@ -259,12 +110,13 @@ foreach ($values as $term => $propertyData):
                 <?php // On a narrowed property the chip would just restate
                       // <html lang>; everywhere else it still marks a value
                       // that departs from the page language, so it stays. ?>
-                <?php if ($showLocale && $valueLang && !$isAiTocValue && !($narrowedToSiteLang && $primarySubtag($valueLang) === $siteLang)) : ?>
+                <?php if ($rv::showLanguageChip($showLocale, $valueLang, $isAiTocValue, $narrowedToSiteLang, $siteLang)) : ?>
                     <span class="language"><?php echo $escape($valueLang); ?></span>
                 <?php endif; ?>
                 <?php if ($isAiTocValue): ?>
                     <?php echo $this->partial('common/ai-toc', ['text' => (string) $value->value()]); ?>
-                <?php elseif ($transcriptLede !== null): ?>
+                <?php elseif ($transcript !== null): ?>
+                    <?php [$transcriptLede, $transcriptRest, $transcriptRestWords] = $transcript; ?>
                     <div class="transcript">
                         <div class="transcript__lede value-content" dir="auto"<?php echo $proseLangAttr; ?>><?php echo nl2br($escape($transcriptLede)); ?></div>
                         <details class="transcript__rest">
@@ -272,7 +124,7 @@ foreach ($values as $term => $propertyData):
                                 <span class="transcript__toggle-label transcript__toggle-label--more"><?php
                                     echo $escape(sprintf(
                                         $translate('Read the full text — %s more words'),
-                                        number_format($transcriptRestWords, 0, '.', $figureSep)
+                                        $rv::formatCount($transcriptRestWords)
                                     ));
                                 ?></span>
                                 <span class="transcript__toggle-label transcript__toggle-label--less"><?php
@@ -291,27 +143,9 @@ foreach ($values as $term => $propertyData):
                 <?php else: ?>
                     <?php
                     $valueHtml = $filterLocale ? $value->asHtml($lang) : $value->asHtml();
-                    // A linked resource renders through core's linkPretty('square'):
-                    // a centre-cropped 200px square, so a wide logo lost both
-                    // ends (the "Bibliothèque du Congrès" source mark read
-                    // "ARY"). The stylesheet already sizes these marks by
-                    // height with an auto width, so swap the uncropped medium
-                    // derivative into the rendered HTML. Done on asHtml()'s
-                    // output rather than by calling linkPretty('medium')
-                    // ourselves, so whatever modules add on rep.value.html
-                    // (and the value's own markup) is kept. The URL appears
-                    // attribute-escaped in the <img>; both spellings are tried.
-                    if ($valueResource && method_exists($valueResource, 'thumbnailDisplayUrl')) {
-                        $squareThumb = (string) $valueResource->thumbnailDisplayUrl('square');
-                        $mediumThumb = (string) $valueResource->thumbnailDisplayUrl('medium');
-                        if ($squareThumb !== '' && $mediumThumb !== '' && $squareThumb !== $mediumThumb) {
-                            $valueHtml = str_replace(
-                                [$escapeAttr($squareThumb), $squareThumb],
-                                [$escapeAttr($mediumThumb), $mediumThumb],
-                                $valueHtml
-                            );
-                        }
-                    }
+                    // Core's linkPretty('square') crops a wide logo to its middle;
+                    // show the uncropped medium derivative instead.
+                    $valueHtml = $rv::mediumThumbnails((string) $valueHtml, $valueResource, $escapeAttr);
                     ?>
                     <span class="value-content" dir="auto"<?php echo $proseLangAttr; ?>><?php echo $valueHtml; ?></span>
                 <?php endif; ?>
