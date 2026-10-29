@@ -11,6 +11,8 @@ create.
 
 ## [Unreleased]
 
+## [2.31.2] - 2026-10-29
+
 ### Fixed
 
 - **Enlarged text on phones.** At 150 % text and above the masthead row (wordmark, search, language, theme, menu) no longer fitted a phone, and the page scrolled sideways by up to 131px. Where the row stops fitting, the search box now takes a full-width row of its own under the other controls; the masthead follows the text size, not just the screen width, so at the default size every phone keeps the single row. Headings also break a word longer than the line: at 200 % "Ouagadougou" alone was wider than the screen.
@@ -111,7 +113,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.31.1...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.31.2...HEAD
+[2.31.2]: https://github.com/fmadore/IWAC-theme/compare/v2.31.1...v2.31.2
 [2.31.1]: https://github.com/fmadore/IWAC-theme/compare/v2.31.0...v2.31.1
 [2.31.0]: https://github.com/fmadore/IWAC-theme/compare/v2.30.1...v2.31.0
 [2.30.1]: https://github.com/fmadore/IWAC-theme/compare/v2.30.0...v2.30.1
