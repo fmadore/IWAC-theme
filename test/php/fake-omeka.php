@@ -1116,9 +1116,17 @@ function siteView(Request $request, array $page): FakeView
                 return '<a href="' . htmlspecialchars((string) $url) . '"' . attributes($attributes) . '>' . $html . '</a>';
             }
         },
+        // Core's Thumbnail helper always prints an alt: the caller's, else the
+        // representation's thumbnailAltText() — empty for media without alt
+        // text, which is most of this corpus.
         'thumbnail' => static function ($representation, string $type, array $attributes = []): string {
             $src = $representation->thumbnailDisplayUrl($type);
-            return $src ? '<img' . attributes($attributes + ['src' => $src]) . '>' : '';
+            if (!$src) {
+                return '';
+            }
+            $attributes['src'] = $src;
+            $attributes['alt'] ??= method_exists($representation, 'thumbnailAltText') ? (string) $representation->thumbnailAltText() : '';
+            return '<img' . attributes($attributes) . '>';
         },
         // Core's: every query parameter, nested ones flattened to their
         // bracketed names, except those named.

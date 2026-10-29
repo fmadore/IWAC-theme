@@ -30,7 +30,18 @@ if (isset($alignmentClass)) {
                         default:
                             throw new \InvalidArgumentException(sprintf('Invalid link type "%s"', $link));
                     }
-                    echo $hyperlink->raw($this->thumbnail($media, $thumbnailType), $url);
+                    // Core's thumbnail() takes its alt from the media's alt
+                    // text, which most of this corpus lacks, so the link's only
+                    // content was an alt="" image: a link with no name. When the
+                    // title below links the same item, the image link is a
+                    // duplicate for the pointer and is taken out of the keyboard
+                    // and accessibility trees (as the carousel's plate is);
+                    // otherwise it is named after what it opens.
+                    $duplicatesTitle = $link === 'item' && $showTitleOption === 'item_title';
+                    $linkAttributes = $duplicatesTitle
+                        ? ['tabindex' => '-1', 'aria-hidden' => 'true']
+                        : ['aria-label' => $link === 'item' ? $item->displayTitle() : $media->displayTitle()];
+                    echo $hyperlink->raw($this->thumbnail($media, $thumbnailType), $url, $linkAttributes);
                 } else {
                     echo $media->render([
                         'thumbnailType' => $thumbnailType,

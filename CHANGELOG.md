@@ -27,6 +27,7 @@ create.
 ### Fixed
 
 - With browser storage unavailable (a private window, blocked site data), the theme button went from system to light and then stayed on light; it now cycles through light, dark and system as usual for the rest of the visit.
+- On a page's Media block showing thumbnails, an image without alt text made its link nameless for screen readers. When the title below links to the same item, the image link is now skipped by keyboard and screen readers (it only duplicates the title); otherwise it is named after what it opens.
 
 ## [2.30.1] - 2026-10-27
 
