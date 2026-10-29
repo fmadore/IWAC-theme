@@ -207,4 +207,74 @@ class LinkedResourcesPaging extends AbstractHelper
     {
         return (int) strtok((string) $compound, '-');
     }
+
+    /**
+     * Pages a listing of $total rows needs: at least one, so an empty result
+     * still has a page 1. The block clamps a stale or narrowed ?lr_page= to
+     * it, as core's paginator does.
+     */
+    public static function pageCount(int $total, int $perPage): int
+    {
+        return max(1, (int) ceil($total / max(1, $perPage)));
+    }
+
+    /**
+     * The relation chips, from core's displaySubjectValues() relation list
+     * ($resourcePropertiesAll: type => list of resource-template properties).
+     *
+     * Item relations filter the item search, which knows a property, not the
+     * resource-template property core's compound id also names — so there is
+     * one chip per property, carrying every distinct label the templates give
+     * it ("Author / Director"), with the plain "items:<property>" id core also
+     * accepts. Media and item-set relations keep core's compound ids.
+     *
+     * @param array<string, list<array<string, mixed>>|null> $resourcePropertiesAll
+     * @param callable(string): string $translate
+     * @param array<string, string> $typeLabels resource type => its translated name
+     * @param bool $searching the active relation is one items hold
+     * @param int $activeProperty its property id (0 = all)
+     * @param mixed $resourceProperty core's active compound id, for the others
+     * @return array<string, array{compound_id: string, labels: list<string>, type_label: string, active: bool}>
+     */
+    public static function facetChips(
+        array $resourcePropertiesAll,
+        callable $translate,
+        array $typeLabels,
+        bool $searching,
+        int $activeProperty,
+        mixed $resourceProperty
+    ): array {
+        $chips = [];
+        foreach ($resourcePropertiesAll as $type => $resourceProperties) {
+            if (!$resourceProperties) {
+                continue;
+            }
+            foreach ($resourceProperties as $rp) {
+                $label = $rp['label_is_translatable'] ? $translate($rp['label']) : $rp['label'];
+                if ($type === 'items') {
+                    $key = 'items:' . (int) $rp['property_id'];
+                    if (isset($chips[$key])) {
+                        if (!in_array($label, $chips[$key]['labels'], true)) {
+                            $chips[$key]['labels'][] = $label;
+                        }
+                        continue;
+                    }
+                    $chips[$key] = [
+                        'compound_id' => $key,
+                        'labels' => [$label],
+                        'type_label' => $typeLabels[$type],
+                        'active' => $searching && $activeProperty === (int) $rp['property_id'],
+                    ];
+                } else {
+                    $chips[$rp['compound_id']] = [
+                        'compound_id' => $rp['compound_id'],
+                        'labels' => [$label],
+                        'type_label' => $typeLabels[$type] ?? $type,
+                        'active' => $resourceProperty === $rp['compound_id'],
+                    ];
+                }
+            }
+        }
+        return $chips;
+    }
 }

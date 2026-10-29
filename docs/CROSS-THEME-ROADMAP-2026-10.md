@@ -93,12 +93,28 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   `@charset` first and once, no BOM, the header present and current, no dead selector,
   no unresolvable `var()`.
 
-- [ ] **6. Move logic out of the heaviest templates into tested helpers.** DRE-theme
+- [x] **6. Move logic out of the heaviest templates into tested helpers.** DRE-theme
   moved resource grouping, hierarchy trees, record apparatus and card data into
   helpers with PHP tests. IWAC's `resource-values.phtml` (language filtering,
   translation pairs, AI provenance, transcript disclosure) and `hierarchy-public.phtml`
   (recursive closures, API searches, a keyword→category table) carried the same kind of
   logic in closures nobody could test.
+  *Landed:* `ResourceValues` (language matching by primary subtag, translation-pair
+  narrowing, AI label, language chip, record-prose `lang`, transcript fold, medium
+  thumbnail swap) and `HierarchyTree` (id collection for two batched API reads,
+  node resolution with privacy/site membership/links, count parsing, category table,
+  cover) — both registered in theme.ini with exact casing, templates reduced to markup.
+  Of the other three: `linked-resources.phtml`'s chip merging and page clamp went to
+  `LinkedResourcesPaging::facetChips()` / `pageCount()`; the CSS-length guard that
+  `banner.phtml` and `layout.phtml` each carried became the `CssLength` helper.
+  `item-carousel.phtml` was left: its slide building is presentation (title option,
+  caption, image), with no rule worth a unit test. 13 new PHP tests (42 → 55). The
+  17 rendered fixtures pass without regeneration; the hierarchy template, which no
+  fixture renders, was compared byte-for-byte before/after through a new FakeView
+  harness (identical modulo the working copy's CRLF line endings) that is now a
+  template test. PHPStan level 7 clean; Omeka discovery 60 checks.
+  Found on the way: Omeka loads theme helpers on demand, so static calls on helper
+  classes are only safe after the helper was fetched — documented in CLAUDE.md.
 
 - [ ] **7. Self-host the webfonts.** DRE-theme serves woff2 from `asset/fonts/` with
   `@font-face` in Sass and preloads the two critical faces. IWAC loaded a

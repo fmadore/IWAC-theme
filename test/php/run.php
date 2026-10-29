@@ -236,6 +236,324 @@ namespace IwacThemeTest {
         }, $escape), 'a resource without thumbnails');
     });
 
+    // ---- The Hierarchy module's public block --------------------------------
+
+    /**
+     * A FakeView able to render hierarchy/common/block-layout/hierarchy-public
+     * — the module's API, its hierarchyHelper and core's url() stood in by
+     * plain objects — and the variables the module passes it. Item set 3 is
+     * not in the site, 4 does not exist (private to this visitor).
+     *
+     * @return array{0: FakeView, 1: array<string,mixed>, 2: object}
+     */
+    function hierarchyFixture(array $siteSettings = [], string $label = 'Collections'): array
+    {
+        $fake = new FakeView([], $siteSettings + ['hierarchy_show_label' => true]);
+        $itemSet = static fn (int $id, string $title, string $thumb = '') => new class($id, $title, $thumb) {
+            public function __construct(private int $id, private string $title, private string $thumb)
+            {
+            }
+
+            public function id(): int
+            {
+                return $this->id;
+            }
+
+            public function displayTitle($default = null, $lang = null): string
+            {
+                return $this->title;
+            }
+
+            public function thumbnailDisplayUrl(string $type): ?string
+            {
+                return $this->thumb === '' ? null : "/files/{$type}/{$this->thumb}";
+            }
+        };
+        $sets = [
+            1 => $itemSet(1, 'Fraternité Matin', 'fm.jpg'),
+            2 => $itemSet(2, 'Photographies du Bénin'),
+            3 => $itemSet(3, 'Not on this site'),
+            5 => $itemSet(5, 'Références & notices'),
+        ];
+        $grouping = static fn (int $id) => new class($id) {
+            public function __construct(private int $id)
+            {
+            }
+
+            public function id(): int
+            {
+                return $this->id;
+            }
+        };
+        $api = new class($sets, $grouping) {
+            /** @var list<array{0:string,1:array}> */
+            public array $searches = [];
+
+            public function __construct(private array $sets, private $grouping)
+            {
+            }
+
+            public function search(string $resource, array $query)
+            {
+                $this->searches[] = [$resource, $query];
+                $content = $resource === 'item_sets'
+                    ? array_values(array_intersect_key($this->sets, array_flip($query['id'])))
+                    : array_map($this->grouping, $query['id']);
+                return new class($content) {
+                    public function __construct(private array $content)
+                    {
+                    }
+
+                    public function getContent(): array
+                    {
+                        return $this->content;
+                    }
+                };
+            }
+        };
+        $fake->helpers['api'] = static fn () => $api;
+        $fake->helpers['currentSite'] = static fn () => new class {
+            public function slug(): string
+            {
+                return 'westafrica';
+            }
+
+            public function siteItemSets(): array
+            {
+                return array_map(static fn (int $id) => new class($id) {
+                    public function __construct(private int $id)
+                    {
+                    }
+
+                    public function itemSet()
+                    {
+                        return new class($this->id) {
+                            public function __construct(private int $id)
+                            {
+                            }
+
+                            public function id(): int
+                            {
+                                return $this->id;
+                            }
+                        };
+                    }
+                }, [1, 2, 4, 5]);
+            }
+        };
+        $fake->helpers['hierarchyHelper'] = static fn () => new class {
+            public function itemSetCount($grouping, $all): ?string
+            {
+                return [10 => ' (1,234 items)', 11 => ' (56 items)', 12 => null, 13 => ' (7 items)', 20 => ' (89 items)'][$grouping->id()] ?? null;
+            }
+        };
+        $fake->helpers['url'] = static fn (string $route, array $params = []): string => '/s/' . $params['site-slug']
+            . ($route === 'site/hierarchy' ? '/hierarchy/' . $params['grouping-id'] : '/item-set/' . $params['id']);
+        $fake->helpers['translatePlural'] = static fn (string $one, string $many, $n): string => $n == 1 ? $one : $many;
+
+        $hierarchy = new class($label) {
+            public function __construct(private string $label)
+            {
+            }
+
+            public function getLabel(): string
+            {
+                return $this->label;
+            }
+        };
+        $node = static fn (array $data, array $children = []): array => ['data' => $data, 'children' => $children];
+        $hierarchyData = [
+            $node(['groupingID' => 10, 'label' => 'Presse'], [
+                $node(['groupingID' => 11, 'itemSet' => 1], [
+                    $node(['groupingID' => 12, 'itemSet' => 3]),
+                    $node(['groupingID' => 13, 'label' => 'Suppléments'], [
+                        $node(['groupingID' => 14, 'itemSet' => 4]),
+                    ]),
+                ]),
+                $node(['groupingID' => 15, 'itemSet' => 2]),
+                $node(['groupingID' => 16, 'label' => 'privateHGset']),
+                $node([]),
+            ]),
+            $node(['groupingID' => 20, 'itemSet' => 5]),
+        ];
+        return [$fake, ['hierarchy' => $hierarchy, 'hierarchyData' => $hierarchyData, 'allGroupings' => ['all']], $api];
+    }
+
+    test('HierarchyTree classifies a card by its label, then its section, specific keywords first', function () {
+        $tree = \OmekaTheme\Helper\HierarchyTree::class;
+        same('photo', $tree::categoryFor('Photographies du Bénin'));
+        same('reference', $tree::categoryFor('Références & notices'));
+        same('document', $tree::categoryFor('Documents divers'));
+        same('publication', $tree::categoryFor('Publication islamique'));
+        // "journal religieux" is a publication, though "journal" alone is press.
+        same('publication', $tree::categoryFor('Journal religieux'));
+        same('newspaper', $tree::categoryFor('Journal officiel'));
+        // Nothing in the node's own label: the section decides.
+        same('photo', $tree::categoryFor('Fonds Dupont', 'Photographies'));
+        // Unmatched anywhere: the collection's bulk.
+        same('newspaper', $tree::categoryFor('Fraternité Matin'));
+        same('newspaper', $tree::categoryFor(''));
+    });
+
+    test('HierarchyTree reads the module count back out of its formatted string', function () {
+        $tree = \OmekaTheme\Helper\HierarchyTree::class;
+        same(1234, $tree::parseCount(' (1,234 items)'));
+        same(1234, $tree::parseCount(' (1 234 éléments)'));
+        same(7, $tree::parseCount('(7 items)'));
+        same(null, $tree::parseCount(null));
+        same(null, $tree::parseCount(''));
+        same(null, $tree::parseCount('(no items)'));
+    });
+
+    test('HierarchyTree collects every id once, depth first, for two batched API reads', function () {
+        [, $vars] = hierarchyFixture();
+        same([[1, 3, 4, 2, 5], [10, 11, 12, 13, 14, 15, 16, 20]],
+            \OmekaTheme\Helper\HierarchyTree::collectIds($vars['hierarchyData']));
+        same([[], []], \OmekaTheme\Helper\HierarchyTree::collectIds([['data' => []]]));
+    });
+
+    test('HierarchyTree resolves privacy, labels and links from the site and its settings', function () {
+        $tree = \OmekaTheme\Helper\HierarchyTree::class;
+        $set = static fn (int $id) => new class($id) {
+            public function __construct(private int $id)
+            {
+            }
+
+            public function id(): int
+            {
+                return $this->id;
+            }
+
+            public function displayTitle($default = null, $lang = null): string
+            {
+                return "Set {$this->id}" . ($lang ? ' [' . implode(',', $lang) . ']' : '');
+            }
+        };
+        $context = static fn (array $overrides = []): array => $overrides + [
+            'itemSets' => [1 => $set(1), 3 => $set(3)],
+            'groupings' => [7 => (object) ['id' => 7]],
+            'siteItemSetIds' => [1],
+            'linkItemSet' => false,
+            'valueLang' => null,
+            'translate' => static fn (string $s): string => "t($s)",
+            'count' => static fn (object $grouping): ?int => 42,
+            'url' => static fn (string $route, array $params): string => $route . '?' . http_build_query($params),
+        ];
+        $node = static fn (array $data): array => ['data' => $data];
+
+        $inSite = $tree::resolveNode($node(['groupingID' => 7, 'itemSet' => 1]), $context());
+        same('Set 1', $inSite['label']);
+        same(42, $inSite['count']);
+        same(false, $inSite['private']);
+        same('site/hierarchy?grouping-id=7', $inSite['url'], 'links to the grouping by default');
+
+        $linked = $tree::resolveNode($node(['groupingID' => 7, 'itemSet' => 1]), $context(['linkItemSet' => true]));
+        same('site/resource-id?controller=item-set&id=1', $linked['url'], 'hierarchy_link_itemSet links the item set');
+
+        $otherSite = $tree::resolveNode($node(['groupingID' => 7, 'itemSet' => 3]), $context());
+        same([null, true, null, 't([Untitled])'], [$otherSite['itemSet'], $otherSite['private'], $otherSite['url'], $otherSite['label']],
+            "another site's item set is private and unlinked");
+        same(false, $tree::resolveNode($node(['itemSet' => 3]), $context(['siteItemSetIds' => []]))['private'],
+            'a site with no item sets assigned admits every set');
+
+        $missing = $tree::resolveNode($node(['groupingID' => 7, 'itemSet' => 99]), $context());
+        same(true, $missing['private'], 'an item set the visitor cannot see');
+
+        $marked = $tree::resolveNode($node(['groupingID' => 7, 'label' => 'privateHGset']), $context());
+        same(['t((Private))', true, null], [$marked['label'], $marked['private'], $marked['url']]);
+
+        $labelled = $tree::resolveNode($node(['groupingID' => 8, 'label' => 'Presse']), $context());
+        same(['Presse', null, 'site/hierarchy?grouping-id=8'], [$labelled['label'], $labelled['count'], $labelled['url']],
+            'a labelled grouping links even without an item set; no count without a grouping representation');
+
+        same(null, $tree::resolveNode($node([]), $context())['url'], 'an empty node is an unlinked "[Untitled]"');
+        same('Set 1 [en,]', $tree::resolveNode($node(['itemSet' => 1]), $context(['valueLang' => ['en', '']]))['label'],
+            'filter_locale_values passes the language to displayTitle');
+    });
+
+    test('the hierarchy block renders sections, cards and chips from one batched read per kind', function () {
+        [$fake, $vars, $api] = hierarchyFixture();
+        $html = $fake->render('hierarchy/common/block-layout/hierarchy-public.phtml', $vars);
+        same([['item_sets', ['id' => [1, 3, 4, 2, 5]]], ['hierarchy_grouping', ['id' => [10, 11, 12, 13, 14, 15, 16, 20]]]],
+            $api->searches, 'two API reads for the whole tree');
+        check(str_contains($html, '<h2 class="hierarchy-block__label">Collections</h2>'), 'block label');
+        check(str_contains($html, '<h3 class="hierarchy-section__title">Presse</h3><span class="hierarchy-section__count">1' . "\u{202F}" . '234 items</span>'),
+            'section head under the h2, its count grouped with U+202F');
+        check(str_contains($html, '<li class="hierarchy-card hierarchy-card--newspaper"><a class="hierarchy-card__link" href="/s/westafrica/hierarchy/11"><span class="hierarchy-card__media" aria-hidden="true"><img src="/files/square/fm.jpg"'),
+            'a card with its cover, linked to its grouping');
+        check(str_contains($html, '<li class="hierarchy-card hierarchy-card--photo hierarchy-card--no-thumb">'), 'category from the label, icon without a cover');
+        check(str_contains($html, 'hierarchy-card--private hierarchy-card--no-thumb hierarchy-card--nolink"><span class="hierarchy-card__link hierarchy-card__link--disabled">'),
+            'a private grouping is an unlinked card');
+        check(str_contains($html, '<ul class="hierarchy-card__children hierarchy-card__children--nested">'), 'nested chips');
+        check(str_contains($html, '<section class="hierarchy-section hierarchy-section--leaf"><ul class="hierarchy-cards hierarchy-cards--single"><li class="hierarchy-card hierarchy-card--reference'),
+            'a top-level leaf is a one-card section, classified by its own label');
+
+        [$unlabelled, $vars2] = hierarchyFixture([], '');
+        $flat = $unlabelled->render('hierarchy/common/block-layout/hierarchy-public.phtml', $vars2);
+        check(!str_contains($flat, '<h2 class="hierarchy-block__label">') && str_contains($flat, '<h2 class="hierarchy-section__title">Presse</h2>'),
+            'without a rendered block label, section heads are h2 (no skipped level)');
+
+        [$linking, $vars3] = hierarchyFixture(['hierarchy_link_itemSet' => true]);
+        check(str_contains($linking->render('hierarchy/common/block-layout/hierarchy-public.phtml', $vars3), 'href="/s/westafrica/item-set/1"'),
+            'hierarchy_link_itemSet links cards to their item set');
+    });
+
+    test('LinkedResourcesPaging merges item relations into one chip per property, and keeps core ids for the rest', function () {
+        $paging = \OmekaTheme\Helper\LinkedResourcesPaging::class;
+        $relations = [
+            'items' => [
+                ['property_id' => 2, 'compound_id' => '2-5', 'label' => 'Author', 'label_is_translatable' => false],
+                ['property_id' => 2, 'compound_id' => '2-9', 'label' => 'Director', 'label_is_translatable' => false],
+                ['property_id' => 2, 'compound_id' => '2-12', 'label' => 'Author', 'label_is_translatable' => false],
+                ['property_id' => 7, 'compound_id' => '7', 'label' => 'Subject', 'label_is_translatable' => true],
+            ],
+            'item_sets' => [],
+            'media' => [
+                ['property_id' => 3, 'compound_id' => '3-1', 'label' => 'Depicts', 'label_is_translatable' => false],
+            ],
+            'site_pages' => [
+                ['property_id' => 4, 'compound_id' => '4', 'label' => 'Cites', 'label_is_translatable' => false],
+            ],
+        ];
+        $translate = static fn (string $s): string => "t($s)";
+        $types = ['items' => 'Items', 'item_sets' => 'Item sets', 'media' => 'Media'];
+
+        $chips = $paging::facetChips($relations, $translate, $types, true, 7, 'items:7');
+        // A plain numeric compound id becomes an int key, as it always did.
+        same(['items:2', 'items:7', '3-1', 4], array_keys($chips));
+        same(['Author', 'Director'], $chips['items:2']['labels'], 'labels merged, each once');
+        same(['t(Subject)'], $chips['items:7']['labels'], 'translatable labels translated');
+        same([false, true], [$chips['items:2']['active'], $chips['items:7']['active']]);
+        same(['Media', 'site_pages'], [$chips['3-1']['type_label'], $chips['4']['type_label']], 'an unknown type names itself');
+
+        // A media relation is active by core's compound id; no item chip is.
+        $media = $paging::facetChips($relations, $translate, $types, false, 0, '3-1');
+        same([false, false, true], [$media['items:2']['active'], $media['items:7']['active'], $media['3-1']['active']]);
+        same([], $paging::facetChips(['items' => null, 'media' => []], $translate, $types, false, 0, null));
+    });
+
+    test('LinkedResourcesPaging counts pages, never fewer than one', function () {
+        $paging = \OmekaTheme\Helper\LinkedResourcesPaging::class;
+        same(1, $paging::pageCount(0, 25));
+        same(1, $paging::pageCount(25, 25));
+        same(2, $paging::pageCount(26, 25));
+        same(10, $paging::pageCount(241, 25));
+        same(5, $paging::pageCount(5, 0), 'a zero page size cannot divide by zero');
+    });
+
+    test('CssLength admits one plain length and nothing that could carry more CSS', function () {
+        $css = \OmekaTheme\Helper\CssLength::class;
+        foreach (['400px' => '400px', ' 50vh ' => '50vh', '32rem' => '32rem', '.5em' => '.5em', '60svh' => '60svh', '-1px' => '-1px', '100%' => '100%'] as $in => $out) {
+            same($out, $css::parse($in), "accepts '$in'");
+        }
+        foreach (['', '400', 'px', '10px; background: url(https://x.test/a.png)', '10px}body{', 'calc(100vh - 2rem)', '1e3px', '10 px', '10PX'] as $bad) {
+            same(null, $css::parse($bad), "refuses '$bad'");
+        }
+        same(null, $css::parse(null));
+        same(null, $css::parse(['400px']));
+        same('400px', (new FakeView())->CssLength('400px'), 'registered under its exact name');
+    });
+
     test('MoveBlockingHeadScripts takes every parser-blocking script, inline ones in place (regression: Mapping "MappingBasemap is not defined")', function () {
         // What headScript()->getContainer() holds: one stdClass per script, in
         // the shape a live place record has — Mapping's inline credentials block

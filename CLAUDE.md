@@ -86,6 +86,20 @@ case-sensitive on the Linux server; only the class name is not. So `helpers[] =
 that renders it — and "fixing" it by lowercasing `theme.ini` just moves the failure to a
 `require_once` fatal that is invisible on a case-insensitive dev filesystem.
 
+### Template logic lives in helpers — and a helper's statics need the helper loaded
+
+Rules a template applies (which values show, how a tree resolves, what a setting may
+contain) go in a `helper/` class as pure static methods with tests in
+`test/php/run.php`; the template keeps the markup. `ResourceValues`, `HierarchyTree`,
+`LinkedResourcesPaging::facetChips()` and `CssLength` are the pattern.
+
+Omeka requires a theme helper's file **on demand**, the first time `$this->Name()` (or
+`$this->plugin('Name')`) fetches it — not at bootstrap. So a template may call
+`\OmekaTheme\Helper\Name::staticMethod()` only after something in that request has
+fetched `Name`; the templates above invoke the helper first for that reason. FakeView
+and the Omeka discovery test require every helper eagerly, so neither would catch the
+mistake: it would be a `Class not found` on the live site.
+
 ### An unfixable advisory gets an exception with a reason, not a weaker gate
 
 `npm run check:audit` fails on any high or critical advisory not listed in

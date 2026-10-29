@@ -4,196 +4,26 @@ $translatePlural = $this->plugin('translatePlural');
 $escape      = $this->plugin('escapeHtml');
 $escapeAttr  = $this->plugin('escapeHtmlAttr');
 
-$filterLocale = (bool) $this->siteSetting('filter_locale_values');
-$lang         = $this->lang();
-$valueLang    = $filterLocale ? [$lang, ''] : null;
-$linkItemSet  = (bool) $this->siteSetting('hierarchy_link_itemSet');
 $showLabel    = (bool) $this->siteSetting('hierarchy_show_label');
 // Counts group their thousands with U+202F, the theme's locale-neutral
 // grouping (pagination, the hero figures): number_format()'s default comma
 // reads as a decimal mark to a French reader ("1,234" = one point two three).
 $formatCount = static fn ($n): string => number_format((int) $n, 0, '.', "\u{202F}");
 
-$site     = $this->currentSite();
-$siteSlug = $site->slug();
-
-$siteItemSetArray = [];
-foreach ($site->siteItemSets() as $siteItemSet) {
-    $siteItemSetArray[] = $siteItemSet->itemSet()->id();
-}
-
-// ---------------------------------------------------------------------------
-// Prefetch: a hierarchy of N nodes used to trigger up to 2 API reads PER card
-// (item set + grouping), and top-level leaves resolved twice. Collect every id
-// up front, fetch each set in one API search, and memoize resolved nodes.
-// ---------------------------------------------------------------------------
-$itemSetIds = [];
-$groupingIds = [];
-$collectIds = function (array $grouping) use (&$collectIds, &$itemSetIds, &$groupingIds) {
-    $data = $grouping['data'] ?? [];
-    if (!empty($data['itemSet'])) {
-        $itemSetIds[$data['itemSet']] = true;
-    }
-    if (!empty($data['groupingID'])) {
-        $groupingIds[$data['groupingID']] = true;
-    }
-    foreach ($grouping['children'] ?? [] as $child) {
-        $collectIds($child);
-    }
-};
-foreach ($hierarchyData as $topLevel) {
-    $collectIds($topLevel);
-}
-
-$itemSetMap = [];
-if ($itemSetIds) {
-    try {
-        foreach ($this->api()->search('item_sets', ['id' => array_keys($itemSetIds)])->getContent() as $set) {
-            $itemSetMap[$set->id()] = $set;
-        }
-    } catch (\Throwable $e) {
-        error_log('[IWAC theme] Unable to preload hierarchy item sets: ' . $e->getMessage());
-    }
-}
-
-$groupingMap = [];
-if ($groupingIds) {
-    try {
-        foreach ($this->api()->search('hierarchy_grouping', ['id' => array_keys($groupingIds)])->getContent() as $g) {
-            $groupingMap[$g->id()] = $g;
-        }
-    } catch (\Throwable $e) {
-        error_log('[IWAC theme] Unable to preload hierarchy groupings: ' . $e->getMessage());
-    }
-}
-
-$resolveCache = [];
+// Every node resolved — label, link, count, privacy, cover, category,
+// children — by helper/HierarchyTree.php, which batches the API reads and is
+// tested in test/php/run.php. What follows is markup.
+$tree = $this->HierarchyTree($hierarchyData, $allGroupings);
 
 /**
- * Resolve a grouping node into a normalized structure used by the card renderer.
- *
- * @return array{label:string,url:?string,itemSet:?object,count:?int,private:bool}
- */
-$resolve = function (array $grouping) use (
-    $siteItemSetArray, $valueLang, $allGroupings, $siteSlug,
-    $linkItemSet, $translate, $itemSetMap, $groupingMap, &$resolveCache
-) {
-    $data        = $grouping['data'] ?? [];
-    $groupingID  = $data['groupingID'] ?? null;
-    $itemSetId   = $data['itemSet']    ?? null;
-    $customLabel = $data['label']      ?? '';
-
-    $cacheKey = $groupingID . '|' . $itemSetId . '|' . $customLabel;
-    if (isset($resolveCache[$cacheKey])) {
-        return $resolveCache[$cacheKey];
-    }
-
-    $itemSet = null;
-    $private = false;
-
-    if ($itemSetId) {
-        $itemSet = $itemSetMap[$itemSetId] ?? null;
-        if (!$itemSet) {
-            // Not found or not visible to this user.
-            $private = true;
-        } elseif ($siteItemSetArray && !in_array($itemSet->id(), $siteItemSetArray, true)) {
-            $itemSet = null;
-            $private = true;
-        }
-    }
-
-    $label = $customLabel;
-    if ($label === 'privateHGset') {
-        $label   = $translate('(Private)');
-        $private = true;
-    }
-    if ($label === '') {
-        $label = $itemSet
-            ? $itemSet->displayTitle(null, $valueLang)
-            : $translate('[Untitled]');
-    }
-
-    // Resolve item count via the module's view helper (returns a formatted
-    // string like " (131 items)" or null) and parse out the integer.
-    // NOTE: parsing the module's translated format string is fragile — if the
-    // module ever changes it, counts silently disappear (they don't break).
-    $count = null;
-    if ($groupingID && isset($groupingMap[$groupingID])) {
-        try {
-            $formatted = $this->hierarchyHelper()->itemSetCount($groupingMap[$groupingID], $allGroupings);
-            if ($formatted && preg_match('/(\d[\d\s,\.]*)/', $formatted, $m)) {
-                $count = (int) preg_replace('/\D+/', '', $m[1]);
-            }
-        } catch (\Throwable $e) {
-            error_log('[IWAC theme] Unable to resolve hierarchy item count: ' . $e->getMessage());
-        }
-    }
-
-    $url = null;
-    if (!$private) {
-        if ($itemSet && $linkItemSet) {
-            $url = $this->url('site/resource-id', [
-                'site-slug'  => $siteSlug,
-                'controller' => 'item-set',
-                'id'         => $itemSet->id(),
-            ]);
-        } elseif (($itemSet || $customLabel !== '') && $groupingID) {
-            $url = $this->url('site/hierarchy', [
-                'site-slug'   => $siteSlug,
-                'grouping-id' => $groupingID,
-            ]);
-        }
-    }
-
-    return $resolveCache[$cacheKey] = compact('label', 'url', 'itemSet', 'count', 'private');
-};
-
-/**
- * Build an SVG thumbnail URL for an item set (falls back to null).
- */
-$thumbUrl = function ($itemSet): ?string {
-    if (!$itemSet) {
-        return null;
-    }
-    // Prefer the small square thumbnail — it's already cropped and fast to load.
-    return $itemSet->thumbnailDisplayUrl('square')
-        ?: $itemSet->thumbnailDisplayUrl('medium');
-};
-
-/**
- * Category inference from a label. Checks the node's own label first, then
- * falls back to the parent section label. Returns one of the keys in $icons.
- * Order matters: more specific keywords win over generic ones.
- */
-$categoryFor = function (string $nodeLabel, ?string $parentLabel = null): string {
-    $haystack = mb_strtolower($nodeLabel . ' | ' . ($parentLabel ?? ''));
-    $rules = [
-        'photo'       => ['photograph', 'photo', 'fotograf', 'image'],
-        'reference'   => ['référence', 'reference', 'referências', 'referencias', 'notices', 'bibliograph', 'authority'],
-        'document'    => ['documents divers', 'document', 'documenti', 'archive', 'archivio'],
-        'publication' => ['publication islamique', 'publicaciones', 'revue', 'magazine', 'bulletin', 'journal religieux'],
-        'newspaper'   => ['journal', 'journaux', 'article de presse', 'articles de journaux', 'press', 'presse', 'news', 'prensa'],
-    ];
-    foreach ($rules as $key => $needles) {
-        foreach ($needles as $needle) {
-            if (str_contains($haystack, $needle)) {
-                return $key;
-            }
-        }
-    }
-    return 'newspaper';
-};
-
-/**
- * Render a single card for a grouping node (with optional children list).
+ * A card's children, as a chip list (nested chips indent).
  */
 $renderChildren = function (array $children, int $depth = 0) use (
-    &$renderChildren, $resolve, $escape, $escapeAttr, $formatCount
+    &$renderChildren, $escape, $escapeAttr, $formatCount
 ) {
     $nestedClass = $depth > 0 ? ' hierarchy-card__children--nested' : '';
     echo '<ul class="hierarchy-card__children' . $nestedClass . '">';
-    foreach ($children as $child) {
-        $childNode = $resolve($child);
+    foreach ($children as $childNode) {
         $chipOpen = $childNode['url']
             ? '<a class="hierarchy-card__child" href="' . $escapeAttr($childNode['url']) . '">'
             : '<span class="hierarchy-card__child hierarchy-card__child--disabled">';
@@ -204,22 +34,19 @@ $renderChildren = function (array $children, int $depth = 0) use (
             echo '<span class="hierarchy-card__child-count">' . $escape($formatCount($childNode['count'])) . '</span>';
         }
         echo $chipClose;
-        if (!empty($child['children'])) {
-            $renderChildren($child['children'], $depth + 1);
+        if (!empty($childNode['children'])) {
+            $renderChildren($childNode['children'], $depth + 1);
         }
         echo '</li>';
     }
     echo '</ul>';
 };
 
-$renderCard = function (array $grouping, ?string $parentLabel = null) use (
-    $resolve, $thumbUrl, $categoryFor, $renderChildren,
-    $escape, $escapeAttr, $translate, $translatePlural, $formatCount
+$renderCard = function (array $node) use (
+    $renderChildren, $escape, $escapeAttr, $translate, $translatePlural, $formatCount
 ) {
-    $node  = $resolve($grouping);
-    $thumb = $thumbUrl($node['itemSet']);
-    $hasChildren = !empty($grouping['children']);
-    $category = $categoryFor($node['label'], $parentLabel);
+    $thumb = $node['thumbnail'];
+    $category = $node['category'];
 
     $classes = ['hierarchy-card', 'hierarchy-card--' . $category];
     if ($node['private'])   $classes[] = 'hierarchy-card--private';
@@ -261,8 +88,8 @@ $renderCard = function (array $grouping, ?string $parentLabel = null) use (
     echo $close;
 
     // Nested children render as a subtle chip list inside the card.
-    if ($hasChildren) {
-        $renderChildren($grouping['children']);
+    if (!empty($node['children'])) {
+        $renderChildren($node['children']);
     }
 
     echo '</li>';
@@ -277,16 +104,13 @@ $renderCard = function (array $grouping, ?string $parentLabel = null) use (
 // actually rendered: "show label" on a hierarchy with no label printed no h2,
 // and the h3 section heads skipped a level.
 $sectionHeadingLevel = ($showLabel && $hierarchy->getLabel()) ? 3 : 2;
-$renderSection = function (array $grouping) use ($resolve, $renderCard, $escape, $translatePlural, $sectionHeadingLevel, $formatCount) {
-    $node = $resolve($grouping);
-    $hasChildren = !empty($grouping['children']);
-
-    if (!$hasChildren) {
+$renderSection = function (array $node) use ($renderCard, $escape, $translatePlural, $sectionHeadingLevel, $formatCount) {
+    if (empty($node['children'])) {
         // Leaf at the top level — render as a single card in a one-up grid
         // so visual rhythm matches sibling sections.
         echo '<section class="hierarchy-section hierarchy-section--leaf">';
         echo '<ul class="hierarchy-cards hierarchy-cards--single">';
-        $renderCard($grouping);
+        $renderCard($node);
         echo '</ul>';
         echo '</section>';
         return;
@@ -302,8 +126,8 @@ $renderSection = function (array $grouping) use ($resolve, $renderCard, $escape,
     echo '</header>';
 
     echo '<ul class="hierarchy-cards">';
-    foreach ($grouping['children'] as $child) {
-        $renderCard($child, $node['label']);
+    foreach ($node['children'] as $child) {
+        $renderCard($child);
     }
     echo '</ul>';
     echo '</section>';
@@ -318,7 +142,7 @@ $renderSection = function (array $grouping) use ($resolve, $renderCard, $escape,
     <?php endif; ?>
 
     <div class="hierarchy-block__body">
-        <?php foreach ($hierarchyData as $topLevel): ?>
+        <?php foreach ($tree as $topLevel): ?>
             <?php $renderSection($topLevel); ?>
         <?php endforeach; ?>
     </div>

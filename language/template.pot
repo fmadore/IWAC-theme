@@ -12,13 +12,13 @@ msgstr ""
 msgid "%1$s–%2$s of %3$s"
 msgstr ""
 
-#: view/hierarchy/common/block-layout/hierarchy-public.phtml:253 view/hierarchy/common/block-layout/hierarchy-public.phtml:299
+#: view/hierarchy/common/block-layout/hierarchy-public.phtml:123 view/hierarchy/common/block-layout/hierarchy-public.phtml:80
 msgid "%s item"
 msgid_plural "%s items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: view/hierarchy/common/block-layout/hierarchy-public.phtml:107
+#: helper/HierarchyTree.php:166
 msgid "(Private)"
 msgstr ""
 
@@ -38,7 +38,7 @@ msgstr ""
 msgid "Africa Multiple Cluster of Excellence - University of Bayreuth"
 msgstr ""
 
-#: view/common/linked-resources.phtml:229
+#: view/common/linked-resources.phtml:201
 msgid "All"
 msgstr ""
 
@@ -60,11 +60,11 @@ msgid_plural "Archived web pages"
 msgstr[0] ""
 msgstr[1] ""
 
-#: view/common/banner.phtml:225
+#: view/common/banner.phtml:223
 msgid "Archives consulted"
 msgstr ""
 
-#: view/common/banner.phtml:227
+#: view/common/banner.phtml:225
 msgid "Audiovisual minutes"
 msgstr ""
 
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Available languages"
 msgstr ""
 
-#: view/layout/layout.phtml:319
+#: view/layout/layout.phtml:321
 msgid "Back to top"
 msgstr ""
 
@@ -116,7 +116,7 @@ msgstr ""
 msgid "Collapse the full text"
 msgstr ""
 
-#: view/common/banner.phtml:256
+#: view/common/banner.phtml:254
 msgid "Collection at a glance"
 msgstr ""
 
@@ -136,11 +136,11 @@ msgstr ""
 msgid "Copy failed. Text selected: press Ctrl+C or ⌘C."
 msgstr ""
 
-#: view/common/banner.phtml:274
+#: view/common/banner.phtml:272
 msgid "Corpus in depth"
 msgstr ""
 
-#: view/common/banner.phtml:209
+#: view/common/banner.phtml:207
 msgid "Countries"
 msgstr ""
 
@@ -156,7 +156,7 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: view/common/banner.phtml:226
+#: view/common/banner.phtml:224
 msgid "Document types"
 msgstr ""
 
@@ -168,11 +168,11 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: view/common/linked-resources.phtml:222
+#: view/common/linked-resources.phtml:194
 msgid "Filter by relation"
 msgstr ""
 
-#: view/common/linked-resources.phtml:224
+#: view/common/linked-resources.phtml:196
 msgid "Filter:"
 msgstr ""
 
@@ -216,7 +216,7 @@ msgstr ""
 msgid "Image viewer"
 msgstr ""
 
-#: view/common/banner.phtml:200
+#: view/common/banner.phtml:198
 msgid "Index"
 msgstr ""
 
@@ -224,7 +224,7 @@ msgstr ""
 msgid "Install app"
 msgstr ""
 
-#: view/common/banner.phtml:101
+#: view/common/banner.phtml:99
 msgid "Introduction"
 msgstr ""
 
@@ -244,7 +244,7 @@ msgstr ""
 msgid "Item: %s"
 msgstr ""
 
-#: view/common/banner.phtml:199 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:49
+#: view/common/banner.phtml:197 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:49
 msgid "Items"
 msgstr ""
 
@@ -252,7 +252,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: view/common/banner.phtml:228
+#: view/common/banner.phtml:226
 msgid "Languages"
 msgstr ""
 
@@ -292,7 +292,7 @@ msgstr ""
 msgid "Media: %s"
 msgstr ""
 
-#: view/common/linked-resources.phtml:182
+#: view/common/linked-resources.phtml:154
 msgid "Newest first"
 msgstr ""
 
@@ -300,7 +300,7 @@ msgstr ""
 msgid "Newspaper covers and archival documents from the collection"
 msgstr ""
 
-#: view/common/banner.phtml:207
+#: view/common/banner.phtml:205
 msgid "Newspapers"
 msgstr ""
 
@@ -320,7 +320,7 @@ msgstr ""
 msgid "No pages found"
 msgstr ""
 
-#: view/common/linked-resources.phtml:188 view/omeka/site/item/browse.phtml:100
+#: view/common/linked-resources.phtml:160 view/omeka/site/item/browse.phtml:100
 msgid "No resources match your search."
 msgstr ""
 
@@ -328,7 +328,7 @@ msgstr ""
 msgid "No result found"
 msgstr ""
 
-#: view/common/linked-resources.phtml:183
+#: view/common/linked-resources.phtml:155
 msgid "Oldest first"
 msgstr ""
 
@@ -376,7 +376,7 @@ msgstr ""
 msgid "Previous slide"
 msgstr ""
 
-#: view/common/resource-values.phtml:153 view/hierarchy/common/block-layout/hierarchy-public.phtml:257
+#: view/common/resource-values.phtml:153 view/hierarchy/common/block-layout/hierarchy-public.phtml:84
 msgid "Private"
 msgstr ""
 
@@ -384,7 +384,7 @@ msgstr ""
 msgid "Read the full text — %s more words"
 msgstr ""
 
-#: view/common/banner.phtml:221
+#: view/common/banner.phtml:219
 msgid "References"
 msgstr ""
 
@@ -416,7 +416,7 @@ msgstr ""
 msgid "Search the items in this set by title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:209
+#: view/common/linked-resources.phtml:181
 msgid "Search the linked resources by title"
 msgstr ""
 
@@ -432,7 +432,7 @@ msgstr ""
 msgid "Site pages"
 msgstr ""
 
-#: view/layout/layout.phtml:295
+#: view/layout/layout.phtml:297
 msgid "Skip to main content"
 msgstr ""
 
@@ -488,19 +488,19 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: view/common/linked-resources.phtml:184
+#: view/common/linked-resources.phtml:156
 msgid "Title (A-Z)"
 msgstr ""
 
-#: view/common/linked-resources.phtml:185
+#: view/common/linked-resources.phtml:157
 msgid "Title (Z-A)"
 msgstr ""
 
-#: view/common/banner.phtml:217
+#: view/common/banner.phtml:215
 msgid "Total pages"
 msgstr ""
 
-#: view/common/banner.phtml:216
+#: view/common/banner.phtml:214
 msgid "Total words"
 msgstr ""
 
@@ -544,7 +544,7 @@ msgstr ""
 msgid "Zoom in"
 msgstr ""
 
-#: view/common/resource-card.phtml:31 view/hierarchy/common/block-layout/hierarchy-public.phtml:113
+#: helper/HierarchyTree.php:170 view/common/resource-card.phtml:31
 msgid "[Untitled]"
 msgstr ""
 
@@ -556,10 +556,10 @@ msgstr ""
 msgid "show submenu for “%s”"
 msgstr ""
 
-#: view/common/linked-resources.phtml:189 view/omeka/site/item/browse.phtml:110
+#: view/common/linked-resources.phtml:161 view/omeka/site/item/browse.phtml:110
 msgid "{count} resources found"
 msgstr ""
 
-#: view/common/linked-resources.phtml:190 view/omeka/site/item/browse.phtml:111
+#: view/common/linked-resources.phtml:162 view/omeka/site/item/browse.phtml:111
 msgid "{count} resources on this page"
 msgstr ""
