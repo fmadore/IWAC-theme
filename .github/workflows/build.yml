@@ -109,14 +109,19 @@ jobs:
       # need live outside the cache and are installed on every run.
       - name: Resolve the Playwright version
         id: playwright
-        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+        # Playwright downloads browser builds per OS release, so the cache is
+        # keyed on it too: when ubuntu-latest moves to a new release, browsers
+        # cached on the old one fail to launch (missing shared libraries).
+        run: |
+          echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+          . /etc/os-release && echo "os=$ID-$VERSION_ID" >> "$GITHUB_OUTPUT"
 
       - name: Cache Playwright browsers
         id: playwright-cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}-chromium-firefox-webkit
+          key: playwright-${{ steps.playwright.outputs.os }}-${{ steps.playwright.outputs.version }}-chromium-firefox-webkit
 
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
