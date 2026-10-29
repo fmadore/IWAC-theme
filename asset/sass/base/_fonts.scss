@@ -1,0 +1,162 @@
+// ==========================================================================
+// Self-hosted webfonts
+//
+// Served from the theme's own origin. They used to come from a render-blocking
+// fonts.bunny.net stylesheet plus a preconnect: a third-party request on every
+// first visit, on the critical path, for a site whose privacy story is that
+// visitors' IPs go nowhere else. Same families, axes, weights and styles as
+// that request loaded:
+//
+//   Besley          500, 600, 800 (static)             masthead, headlines
+//   Public Sans     400–700 (variable wght), italic 400 body and UI
+//   Source Serif 4  400–600 (variable wght + opsz),     long-form reading
+//                   italic 400
+//
+// The woff2 files in asset/fonts/ are the latin and latin-ext subsets from the
+// npm registry's @fontsource/besley 5.3.0, @fontsource-variable/public-sans
+// 5.3.0 and @fontsource-variable/source-serif-4 5.3.1 (the "opsz" files, which
+// carry both the wght and opsz axes, so font-optical-sizing works as it did).
+// Their SIL Open Font Licences ship beside them (asset/fonts/OFL-*.txt). The
+// browser fetches a latin-ext file only when a glyph in its unicode-range is
+// painted. A variable file whose descriptor names one weight (the italics)
+// serves that weight only — what the old request loaded — so a bold italic is
+// synthesised exactly as before.
+//
+// Two places depend on these rules:
+//   - layout.phtml preloads the two above-the-fold faces (Public Sans latin
+//     normal, Besley latin 800 — the masthead on every page); rename a file
+//     and update the preload in the same commit.
+//   - scripts/build-tokens.js reads the families, weights and styles from the
+//     @font-face rules in this file into tokens.json `fonts`, which
+//     check:tokens enforces (a font-weight the theme does not load fails).
+//
+// asset/sass/fonts.scss compiles these same rules on their own into
+// asset/css/fonts.css, for pages that render without the theme's stylesheet
+// (IwacVisualizations' embeds; tokens.json `fontsCss`).
+// ==========================================================================
+
+@font-face {
+    font-family: "Besley";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../fonts/besley-latin-500-normal.woff2") format("woff2");
+    unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+    font-family: "Besley";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../fonts/besley-latin-ext-500-normal.woff2") format("woff2");
+    unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "Besley";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../fonts/besley-latin-600-normal.woff2") format("woff2");
+    unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+    font-family: "Besley";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../fonts/besley-latin-ext-600-normal.woff2") format("woff2");
+    unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "Besley";
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url("../fonts/besley-latin-800-normal.woff2") format("woff2");
+    unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+    font-family: "Besley";
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url("../fonts/besley-latin-ext-800-normal.woff2") format("woff2");
+    unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "Public Sans";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("../fonts/public-sans-latin-wght-normal.woff2") format("woff2");
+    unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+    font-family: "Public Sans";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("../fonts/public-sans-latin-ext-wght-normal.woff2") format("woff2");
+    unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "Public Sans";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/public-sans-latin-wght-italic.woff2") format("woff2");
+    unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+    font-family: "Public Sans";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/public-sans-latin-ext-wght-italic.woff2") format("woff2");
+    unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "Source Serif 4";
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url("../fonts/source-serif-4-latin-opsz-normal.woff2") format("woff2");
+    unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+    font-family: "Source Serif 4";
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url("../fonts/source-serif-4-latin-ext-opsz-normal.woff2") format("woff2");
+    unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+    font-family: "Source Serif 4";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/source-serif-4-latin-opsz-italic.woff2") format("woff2");
+    unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+    font-family: "Source Serif 4";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/source-serif-4-latin-ext-opsz-italic.woff2") format("woff2");
+    unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}

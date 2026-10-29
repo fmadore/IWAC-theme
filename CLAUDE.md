@@ -161,8 +161,9 @@ that disagrees. Change a guard rule here, never in a module's copy. It publishes
 | `names` | the full custom-property vocabulary |
 | `public` | the subset modules may consume: everything declared in `abstracts/variables/` (component parameters like `--plate-*` are not) |
 | `deprecated` | retired name → replacement, from `// deprecated: --x` markers on declaration lines |
-| `fonts` | the weights each font token actually loads, parsed from layout.phtml's webfont URL |
-| `fontsUrl` | that webfont stylesheet URL itself, for routes that render without the theme (IwacVisualizations' embeds) |
+| `fonts` | the weights each font token actually loads, parsed from the self-hosted `@font-face` rules (`asset/sass/base/_fonts.scss`) |
+| `fontsCss` | `asset/css/fonts.css`, theme-relative: those `@font-face` rules alone, for routes that render without the theme (IwacVisualizations' embeds) |
+| `fontsUrl` | **deprecated** — the equivalent Bunny Fonts stylesheet the theme loaded until 2026-10; kept because IwacVisualizations' embed reads it, and refused by the build if it stops matching `fonts` |
 | `themed` | the tokens the dark blocks redeclare — what the guard's `scope` rule reads to decide whether a module composition must also live on `body` |
 | `breakpoints` | the six media-query widths |
 | `series` | the ordered categorical chart palette (`--series-1 … --series-20`), light + dark, with the theme-driven lead slots marked |
@@ -171,7 +172,7 @@ that disagrees. Change a guard rule here, never in a module's copy. It publishes
 - A wrong or invented token name is caught by `npm run check:tokens`. Run it; don't
   reason about it from memory. It also refuses a deprecated name (the numeric
   `--space-N` scale is canonical; the size-name aliases are deprecated) and a font
-  weight layout.phtml does not load (Besley is 500/600/800 only).
+  weight the theme does not load (Besley is 500/600/800 only).
 - **Adding a token is a cross-repo change**: `npm run sync:tokens`, then rebuild both modules.
 - Never hand-edit `tokens.json` or the `<!-- BEGIN GENERATED -->` tables in
   [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md).
@@ -295,6 +296,18 @@ is), then the rules. `npm run check:css` (the last step of `npm run build`) asse
 shape on the artifact: `@charset` first and only once, no U+FEFF anywhere, the header's
 `Version` equal to theme.ini's (a stylesheet not rebuilt after `npm run bump`), no
 selector with a control character, no `var()` without a fallback that nothing defines.
+
+### Webfonts are self-hosted — and preloaded un-versioned
+
+`asset/fonts/*.woff2` (latin + latin-ext subsets from @fontsource, OFL texts beside
+them) and the `@font-face` rules in `asset/sass/base/_fonts.scss`, which compile into
+`style.css` and, alone, into `asset/css/fonts.css`. `layout.phtml` preloads the two
+faces above the fold (Public Sans latin, Besley latin 800) with `crossorigin` and an
+**un-versioned** `assetUrl(…, null, false, false)`: the preload has to match the bare
+`url()` in the stylesheet exactly, or the browser downloads the face twice. Renaming a
+woff2 means updating the preload in the same commit. No `fonts.bunny.net` request is
+left; adding a family or weight starts in `_fonts.scss`, and `fonts` in `tokens.json`
+follows it.
 
 ### Sass module system
 

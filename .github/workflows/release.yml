@@ -150,7 +150,8 @@ jobs:
           # Everything Omeka needs to load the theme.
           for f in config/theme.ini theme.jpg asset/css/style.css language/fr.mo \
                    view/layout/layout.phtml helper/BrowseLayout.php LICENSE README.md \
-                   CHANGELOG.md; do
+                   CHANGELOG.md asset/css/fonts.css asset/fonts/besley-latin-800-normal.woff2 \
+                   asset/fonts/public-sans-latin-wght-normal.woff2 asset/fonts/OFL-Besley.txt; do
             grep -qx "IWAC-theme/$f" /tmp/list || { echo "::error::missing $f"; exit 1; }
           done
 

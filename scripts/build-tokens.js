@@ -57,7 +57,7 @@ const LAYOUT_SCSS = path.join(VARS_DIR, '_layout.scss');
 const BREAKPOINTS_SCSS = path.join(VARS_DIR, '_breakpoints.scss');
 const TOKENS_OUT = path.join(THEME_ROOT, 'tokens.json');
 const DESIGN_DOC = path.join(THEME_ROOT, 'docs', 'DESIGN-SYSTEM.md');
-const LAYOUT_PHTML = path.join(THEME_ROOT, 'view', 'layout', 'layout.phtml');
+const FONTS_SCSS = path.join(THEME_ROOT, 'asset', 'sass', 'base', '_fonts.scss');
 const PACKAGE_JSON = path.join(THEME_ROOT, 'package.json');
 // The module guard's rule engine. It is published beside tokens.json for the
 // same reason tokens.json is: the two modules used to carry 621- and 701-line
@@ -484,24 +484,52 @@ function collectPublicNames() {
 /**
  * The font weights the theme actually LOADS, per font token.
  *
- * The webfont request in layout.phtml is the truth about which weights exist:
- * Besley ships 500/600/800 only, so `font-weight: 700` on a `--font-headings`
- * element does not render 700 — the browser's matching picks 800 — and a
- * stylesheet that says 700 is describing a face nobody sees.
- * IwacVisualizations' section heading said exactly that. Publishing the loaded
- * axes lets every guard compare a declared weight against a real one.
+ * The @font-face rules are the truth about which weights exist: Besley ships
+ * 500/600/800 only, so `font-weight: 700` on a `--font-headings` element does
+ * not render 700 — the browser's matching picks 800 — and a stylesheet that
+ * says 700 is describing a face nobody sees. IwacVisualizations' section
+ * heading said exactly that. Publishing the loaded axes lets every guard
+ * compare a declared weight against a real one.
  *
- * Parsed from the Bunny/Google Fonts `family=` syntax:
- *   besley:500,600,800
- *   public-sans:ital,wght@0,400..700;1,400
- * and keyed by the font token whose FIRST family matches the slug. A stack
- * that starts with a system font (--font-mono) loads nothing and is omitted.
+ * Read from asset/sass/base/_fonts.scss (self-hosted since 2026-10; until then
+ * this parsed the Bunny Fonts URL in layout.phtml): each @font-face's family,
+ * style and weight (`500`, or a variable range `400 700`), deduplicated across
+ * the latin / latin-ext subsets, keyed by the font token whose FIRST family
+ * is that family. A stack that starts with a system font (--font-mono) loads
+ * nothing and is omitted.
  *
  * @returns {Record<string, {family: string, normal: number[][], italic: number[][]}>}
  */
 function collectFonts(values) {
-    const layout = fs.readFileSync(LAYOUT_PHTML, 'utf8');
-    const m = layout.match(/fonts\.(?:bunny\.net|googleapis\.com)\/css2?\?family=([^&'"]+)/);
+    return fontsByToken(parseFontFaces(fs.readFileSync(FONTS_SCSS, 'utf8')), values);
+}
+
+/**
+ * Every @font-face in a stylesheet, as family (lower-cased) → loaded weight
+ * ranges per style, in order of first appearance.
+ */
+function parseFontFaces(css) {
+    const byFamily = {};
+    for (const [, body] of css.replace(/\/\/[^\n]*|\/\*[\s\S]*?\*\//g, '').matchAll(/@font-face\s*\{([^}]*)\}/g)) {
+        const decl = (name) => body.match(new RegExp(`(?:^|;|\\s)${name}\\s*:\\s*([^;]+);`))?.[1].trim();
+        const family = (decl('font-family') || '').replace(/^["']|["']$/g, '');
+        if (!family) continue;
+        const style = decl('font-style') === 'italic' ? 'italic' : 'normal';
+        const [lo, hi = lo] = (decl('font-weight') || '400').split(/\s+/).map(Number);
+        const entry = (byFamily[family.toLowerCase()] ??= { family, normal: [], italic: [] });
+        if (!entry[style].some(([a, b]) => a === lo && b === hi)) entry[style].push([lo, hi]);
+    }
+    return byFamily;
+}
+
+/**
+ * The Bunny/Google Fonts `family=` syntax, parsed to the same shape:
+ *   besley:500,600,800
+ *   public-sans:ital,wght@0,400..700;1,400
+ * keyed by slug ("public-sans"). Only used to keep LEGACY_FONTS_URL honest.
+ */
+function parseFontsUrl(url) {
+    const m = url.match(/[?&]family=([^&]+)/);
     if (!m) return {};
     const bySlug = {};
     for (const spec of m[1].split('|')) {
@@ -532,29 +560,50 @@ function collectFonts(values) {
         }
         bySlug[slug.toLowerCase()] = entry;
     }
+    return bySlug;
+}
+
+/** Faces keyed by family (or slug) → keyed by the font token that leads with it. */
+function fontsByToken(faces, values) {
     const out = {};
     for (const token of Object.keys(values).filter((k) => /^--font-/.test(k)).sort()) {
         const first = values[token].split(',')[0].trim().replace(/^["']|["']$/g, '');
-        const slug = first.toLowerCase().replace(/\s+/g, '-');
-        if (bySlug[slug]) out[token] = { family: first, ...bySlug[slug] };
+        const face = faces[first.toLowerCase()] || faces[first.toLowerCase().replace(/\s+/g, '-')];
+        if (face) out[token] = { family: first, normal: face.normal, italic: face.italic };
     }
     return out;
 }
 
 /**
- * The webfont stylesheet URL layout.phtml requests, verbatim.
- *
- * `fonts` above says which weights that request loads; this is the request.
- * IwacVisualizations' embed routes render without the theme's layout, so they
- * loaded no webfonts at all, and their text fell down the font stacks to
- * whatever the reader's device had (review V-03). Publishing the URL lets the
- * embed emit the theme's own <link> instead of a hand-copied one that would
- * drift from it.
+ * `fontsUrl` — the Bunny Fonts stylesheet for the same families, axes and
+ * weights. The theme no longer requests it (2026-10: self-hosted), but
+ * IwacVisualizations' embed layout emits whatever this key holds, and its
+ * EmbedBrand only accepts a fonts.bunny.net URL; changing the key's meaning
+ * under it would silently drop the embed's fonts. So it stays, as the
+ * deprecated equivalent of `fontsCss` (below), and the build refuses to
+ * publish it if it ever stops describing exactly the @font-face set.
  */
-function collectFontsUrl() {
-    const layout = fs.readFileSync(LAYOUT_PHTML, 'utf8');
-    const m = layout.match(/https:\/\/fonts\.(?:bunny\.net|googleapis\.com)\/css2?\?[^'"\s]+/);
-    return m ? m[0] : null;
+const LEGACY_FONTS_URL = 'https://fonts.bunny.net/css?family=besley:500,600,800|public-sans:ital,wght@0,400..700;1,400|source-serif-4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap';
+
+/**
+ * `fontsCss` — the theme's own webfont stylesheet, as a path relative to the
+ * theme directory: asset/css/fonts.css, compiled from the same _fonts.scss
+ * partial as style.css (its url()s are relative, so it works wherever the
+ * theme is served). For routes that render without the theme's stylesheet.
+ */
+const FONTS_CSS = 'asset/css/fonts.css';
+
+function checkLegacyFontsUrl(values) {
+    const fromFaces = collectFonts(values);
+    const fromUrl = fontsByToken(parseFontsUrl(LEGACY_FONTS_URL), values);
+    const strip = (fonts) => JSON.stringify(Object.fromEntries(Object.entries(fonts)
+        .map(([token, { normal, italic }]) => [token, { normal, italic }])));
+    if (strip(fromFaces) !== strip(fromUrl)) {
+        throw new Error('build-tokens: LEGACY_FONTS_URL no longer loads the same faces as asset/sass/base/_fonts.scss.\n'
+            + `  @font-face: ${strip(fromFaces)}\n  fontsUrl:   ${strip(fromUrl)}\n`
+            + '  Update the URL with the @font-face set, or retire `fontsUrl` once no module reads it.');
+    }
+    return LEGACY_FONTS_URL;
 }
 
 /** Map of `--type-*` → the semantic token it references (for the docs table). */
@@ -760,7 +809,7 @@ function main() {
 
     const tokens = {
         _comment: 'GENERATED by IWAC-theme/scripts/build-tokens.js from asset/sass/abstracts/variables/*.scss — do not edit by hand. Run `npm run build:tokens` in the IWAC-theme repo. `light`/`dark` are the OKLCH colour tokens resolved to sRGB hex; `values` is every token resolved to its literal CSS value (type, spacing, shadows, fonts, motion); `breakpoints` are the '
-            + Object.keys(breakpoints).length + ' media-query widths; `series` is the ordered categorical chart palette (`series.light[i]` is `--series-{i+1}`, same hexes as `light`/`dark`, in palette order); `names` is every token the theme defines, `public` the subset a module may consume, `deprecated` maps a retired name to its replacement, `themed` lists the tokens the dark blocks redeclare (they flip on <body>), `fonts` lists the weights each font token actually loads, and `fontsUrl` is the webfont stylesheet that loads them. Fallbacks (var(--t, <fallback>), FALLBACK_*) must equal the LIGHT value.',
+            + Object.keys(breakpoints).length + ' media-query widths; `series` is the ordered categorical chart palette (`series.light[i]` is `--series-{i+1}`, same hexes as `light`/`dark`, in palette order); `names` is every token the theme defines, `public` the subset a module may consume, `deprecated` maps a retired name to its replacement, `themed` lists the tokens the dark blocks redeclare (they flip on <body>), `fonts` lists the weights each font token actually loads (from the self-hosted @font-face rules), `fontsCss` is the theme-relative path of a stylesheet holding only those @font-face rules (asset/css/fonts.css, for pages that render without the theme), and `fontsUrl` (deprecated) is an equivalent Bunny Fonts stylesheet kept for consumers that still read it. Fallbacks (var(--t, <fallback>), FALLBACK_*) must equal the LIGHT value.',
         // Which theme release this contract was generated from — so a module's
         // guard can say which contract it checked against, and a scheduled job
         // can tell a stale copy from a current one.
@@ -791,8 +840,10 @@ function main() {
         themed: [...new Set([...darkDecls, ...darkTokenDecls].map((d) => d.name))].sort(),
         // Loaded weights per font token — see collectFonts().
         fonts: collectFonts(values.light),
-        // The stylesheet that loads them — see collectFontsUrl().
-        fontsUrl: collectFontsUrl(),
+        // The theme's own webfont stylesheet, theme-relative — see FONTS_CSS.
+        fontsCss: FONTS_CSS,
+        // Deprecated: the equivalent Bunny Fonts request — see LEGACY_FONTS_URL.
+        fontsUrl: checkLegacyFontsUrl(values.light),
         light: lightHex,
         dark: darkHex,
         // The categorical chart palette, in palette order — theme-owned since

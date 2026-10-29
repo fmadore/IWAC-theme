@@ -1,0 +1,8 @@
+/*
+IWAC Theme — self-hosted webfonts only (Besley, Public Sans, Source Serif 4).
+The theme's own pages get these rules from style.css; this stylesheet is for
+pages that render without it (IwacVisualizations' embeds), published as
+tokens.json `fontsCss`. Fonts: SIL Open Font License 1.1 (asset/fonts/OFL-*.txt).
+*/
+
+@use "base/fonts";

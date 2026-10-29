@@ -5,6 +5,10 @@
 
 @use "../abstracts/abstracts" as *;
 
+/* Self-hosted webfonts (@font-face only; also compiled alone as css/fonts.css)
+--------------------------------------------- */
+@forward "fonts";
+
 /* Theme Infrastructure
 --------------------------------------------- */
 @forward "theme";

@@ -103,22 +103,14 @@ $this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
 // base/elements/_icons.scss for the inventory those rules cover. Until 2.24
 // the stylesheet was still preloaded on every page, and with it 77 KB of
 // fa-solid-900.woff2 for the two search-submit glyphs that were its last use.
-// One combined webfont request to Bunny Fonts (not Google Fonts): Besley,
-// Public Sans (body/UI) and Source Serif 4 with its optical-size axis,
-// subsetted to the weights the theme actually uses.
-// Bunny Fonts — privacy-first, GDPR-compliant drop-in mirror of Google
-// Fonts. Relevant since IWAC is hosted at ZMO Berlin (German research
-// institute), where Google Fonts has been ruled non-compliant under
-// GDPR in some EU jurisdictions due to IP logging. Bunny does not log.
-// IMPORTANT: Bunny's /css endpoint only honors the FIRST family in a
-// CSS2-style multi-"&family=" request and silently drops the rest (verified
-// live: "&family=" returned Public Sans only, 0 Source Serif faces). Use the
-// v1 PIPE "|" separator BETWEEN families — that returns all faces including
-// the source-serif-4 opsz axis. Do NOT revert to "&family=" or the display
-// serif disappears and every heading falls back to Georgia.
-// Besley (Clarendon) carries the masthead + headlines; three static faces
-// keep the request small. Source Serif 4 stays for long-form reading.
-$this->headLink()->prependStylesheet('https://fonts.bunny.net/css?family=besley:500,600,800|public-sans:ital,wght@0,400..700;1,400|source-serif-4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap');
+// Webfonts are SELF-HOSTED: Besley, Public Sans and Source Serif 4 (with its
+// optical-size axis) are @font-face rules in the compiled style.css
+// (asset/sass/base/_fonts.scss) pointing at asset/fonts/*.woff2. They came from
+// a Bunny Fonts stylesheet until 2026-10 — render-blocking, one more origin
+// (DNS + TLS) on the critical path, and a third party seeing every visitor's
+// IP at a site hosted by a German research institute. The two faces above the
+// fold are preloaded in <head> below.
+
 // jQuery + Omeka's global.js are enqueued as ordinary synchronous head scripts,
 // and leave the <head> with every other parser-blocking script in the pass
 // below — they run at the end of <body>, in the order enqueued.
@@ -205,7 +197,18 @@ if ($layoutIsHomepage) {
 		// waste the high-priority fetch. Emitting headMeta first fixes the pick.
 		echo $this->headMeta();
 		?>
-		<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+		<?php // Preload the two above-the-fold faces — Public Sans (latin, the
+		      // variable file: body and UI at every weight) and Besley 800 (the
+		      // masthead wordmark on every page, and the homepage banner heading)
+		      // — so they fetch in parallel with style.css instead of after it is
+		      // parsed. `crossorigin` is required even same-origin: font requests
+		      // are CORS-mode, and a preload without it is not reused (the face
+		      // downloads twice). assetUrl() is UN-versioned (4th argument) to
+		      // match the bare url() in style.css, or the preload misses too. ?>
+		<link rel="preload" as="font" type="font/woff2" crossorigin
+		      href="<?php echo $this->escapeHtmlAttr($this->assetUrl('fonts/public-sans-latin-wght-normal.woff2', null, false, false)); ?>">
+		<link rel="preload" as="font" type="font/woff2" crossorigin
+		      href="<?php echo $this->escapeHtmlAttr($this->assetUrl('fonts/besley-latin-800-normal.woff2', null, false, false)); ?>">
 		<?php if (!$customBannerAsset && $layoutIsHomepage): ?>
 		<link rel="preload" as="image" fetchpriority="high"
 		      href="<?php echo $this->escapeHtmlAttr($defaultBannerUrl); ?>"

@@ -90,7 +90,7 @@
  *    used anew here — the same rule the module guards apply downstream.
  *
  * 8. LOADED FONT WEIGHTS. A block that sets a theme font family and a numeric
- *    weight must name a weight layout.phtml actually requests (tokens.json
+ *    weight must name a weight the theme's @font-face rules load (tokens.json
  *    `fonts`). Otherwise the browser substitutes the nearest face and the
  *    stylesheet describes a weight nobody sees.
  *
@@ -853,12 +853,13 @@ if (tokens) {
 /* ------------------------------------------------------------------ */
 /*  Rule 8: a declared font weight is one the theme actually loads      */
 /*                                                                    */
-/*  layout.phtml requests Besley at 500/600/800 only. `font-weight: 700`*/
+/*  The theme loads Besley at 500/600/800 only. `font-weight: 700`    */
 /*  on a Besley block therefore renders at 800 (font matching goes up  */
 /*  from a requested weight above 500), and a stylesheet saying 700 is */
 /*  describing a face no one sees — the section-head mixin said exactly */
 /*  that until this rule existed. tokens.json `fonts` publishes the    */
-/*  loaded axes (parsed from the same webfont URL), and the module     */
+/*  loaded axes (parsed from base/_fonts.scss's @font-face), and the   */
+/*  module                                                             */
 /*  guards apply the same rule downstream.                             */
 /*                                                                    */
 /*  Scope: a block that sets BOTH the family (as the Sass variable or  */
@@ -933,7 +934,7 @@ for (const [heading, list] of groups) {
 if (failed) process.exit(1);
 
 console.log(`✓ token usage: every var(--…) resolves, none is deprecated, and every font-size, letter-spacing and duration comes from the scale (${defined.size} tokens defined)`);
-console.log('✓ every declared font weight is one layout.phtml actually loads');
+console.log('✓ every declared font weight is one the self-hosted @font-face rules load');
 console.log(`✓ breakpoint contract: min-width on a breakpoint, max-width at breakpoint − 1 (${BP_NAMES.join(', ')}) — Sass, JS and templates`);
 console.log('✓ --primary is used as an accent, never as running body text');
 console.log('✓ substitution scope: every theme-relative composition is redeclared in BOTH theme blocks');

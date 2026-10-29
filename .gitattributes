@@ -128,4 +128,5 @@
 *.png  binary
 *.webp binary
 *.gif  binary
+*.woff2 binary
 *.ico  binary

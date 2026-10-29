@@ -116,10 +116,54 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   Found on the way: Omeka loads theme helpers on demand, so static calls on helper
   classes are only safe after the helper was fetched — documented in CLAUDE.md.
 
-- [ ] **7. Self-host the webfonts.** DRE-theme serves woff2 from `asset/fonts/` with
+- [x] **7. Self-host the webfonts.** DRE-theme serves woff2 from `asset/fonts/` with
   `@font-face` in Sass and preloads the two critical faces. IWAC loaded a
   render-blocking stylesheet from fonts.bunny.net plus a preconnect: a third-party
   request on every first visit, and a privacy dependency the theme does not need.
+  *Landed:* 14 woff2 files (latin + latin-ext) in `asset/fonts/` from the npm registry
+  — `@fontsource/besley` 5.3.0 (static 500/600/800), `@fontsource-variable/public-sans`
+  5.3.0 (wght, normal + italic), `@fontsource-variable/source-serif-4` 5.3.1 (the
+  `opsz` files, which carry wght + opsz) — tarball integrity checked against the
+  registry's sha512; OFL texts as `asset/fonts/OFL-*.txt`. `@font-face` in
+  `asset/sass/base/_fonts.scss` with the exact descriptors the Bunny request loaded
+  (Public Sans 400–700 + italic 400, Source Serif 4 400–600 + italic 400, Besley
+  500/600/800), `font-display: swap`. `layout.phtml` drops the Bunny stylesheet and
+  preconnect and preloads Public Sans latin normal + Besley latin 800 (masthead), with
+  `crossorigin` and un-versioned `assetUrl()`. `build-tokens.js` derives `fonts` from
+  the `@font-face` rules (output unchanged); `tokens.json` gains
+  `fontsCss: "asset/css/fonts.css"` (compiled from `asset/sass/fonts.scss`, the same
+  partial alone) and keeps `fontsUrl` (the Bunny URL, deprecated) because
+  IwacVisualizations reads it; the build fails if that URL stops matching the
+  `@font-face` set. `style.css` changed only by the 14 `@font-face` rules (checked).
+  Verified in headless Chromium on two rendered fixture pages with the theme served on
+  a routed origin: no request leaves the origin, `document.fonts` reports Besley
+  600/800, Public Sans 400–700 (+ italic on the About page) and Source Serif 4 loaded,
+  each preloaded file fetched once (the preload matched), and computed font-family /
+  weight / style of body, h1, masthead and metadata values identical to before.
+  `npm run sync:tokens` was NOT run (it writes into the module repos).
+
+  **Module follow-up (IwacVisualizations; not done here):**
+  1. `src/Site/EmbedBrand.php`: add a `webfontStylesheet()` that prefers
+     `config/theme-seeds.php` `fontsCss` (a theme-relative path, validated as
+     `^asset/css/[a-z-]+\.css$`) resolved against the IWAC theme's base URL — e.g.
+     `$view->assetUrl('css/fonts.css')` when the embed's site uses IWAC-theme, or
+     `$basePath . '/themes/IWAC-theme/' . $fontsCss` — and falls back to `fontsUrl`
+     / `WEBFONT_URL` only when the theme path is unavailable.
+  2. `view/iwac-visualizations/layout/embed.phtml` (lines ~93–94): emit
+     `<link rel="stylesheet" href="…fonts.css">` and drop the
+     `<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>` once (1)
+     returns a same-origin URL; optionally preload `fonts/besley-latin-800-normal.woff2`
+     un-versioned with `crossorigin`.
+  3. `scripts/build-embed-tokens.js`: copy `tokens.fontsCss` into
+     `config/theme-seeds.php` beside `fontsUrl` (validate the path shape).
+  4. Tests: `tests/js/embed-brand.test.js` (assert the seeds file carries `fontsCss`
+     equal to `tokens.json`'s) and `tests/php/run.php` ~line 699 (assert the
+     stylesheet URL ends in `/asset/css/fonts.css`, not that it starts with
+     fonts.bunny.net).
+  5. Then `npm run sync:tokens` from IWAC-theme and rebuild both modules. IwacSearch
+     reads no font URL (grep: no `fontsUrl`/`fonts.bunny` outside its synced
+     `tokens.json` and guard copy) — nothing to change there beyond the sync.
+  Once no module reads `fontsUrl`, delete `LEGACY_FONTS_URL` in build-tokens.js.
 
 - [ ] **8. Local browser tests (Playwright, three browsers, axe).** DRE-theme renders
   PHP partials with its committed CSS/JS on a routed fixture origin — no Omeka, no

@@ -138,18 +138,25 @@ of its own, so the guards do not yet refuse line-height literals.
 
 ### Font weights — only the ones the theme loads
 
-`layout.phtml` requests **Besley at 500/600/800 only**, Public Sans at
-400–700 (italic 400) and Source Serif 4 at 400–600 (italic 400). A weight
+The theme self-hosts (`asset/fonts/`, `asset/sass/base/_fonts.scss`)
+**Besley at 500/600/800 only**, Public Sans at 400–700 (italic 400) and
+Source Serif 4 at 400–600 with its optical-size axis (italic 400). A weight
 outside that set is not rendered; the browser substitutes the nearest face, so
 `font-weight: 700` on a `--font-headings` element renders at **800** and the
 stylesheet describes a weight nobody sees. The theme's own `section-head` mixin
 and three module rules said exactly that.
 
 `tokens.json` → `fonts` publishes the loaded axes per font token, parsed from
-the webfont URL, and every guard checks a block that sets both a theme family
-and a numeric weight against it. To use a new weight, add it to the webfont
-request first. The URL itself is published as `tokens.json` → `fontsUrl`, for
-a surface that renders without the theme's layout (§6, embed routes).
+those `@font-face` rules, and every guard checks a block that sets both a
+theme family and a numeric weight against it. To use a new weight, add its
+woff2 files and `@font-face` rules first. For a surface that renders without
+the theme's layout (§6, embed routes), `tokens.json` → `fontsCss` is the
+theme-relative path of a stylesheet holding only those rules
+(`asset/css/fonts.css`; its `url()`s are relative, so it works wherever the
+theme is served). `fontsUrl` — the equivalent Bunny Fonts request, which the
+theme itself loaded until 2026-10 — is still published, deprecated, because
+IwacVisualizations' embed layout reads it; the build refuses to publish it if
+it stops describing exactly the `@font-face` set.
 
 ### Stacking order — derive from `--z-*`
 
@@ -326,8 +333,9 @@ Anything else fails the build, with the fix named: an unknown name, a
 theme-internal component parameter, or a deprecated alias and its replacement.
 
 `tokens.json` also carries `themeVersion` (the theme release it was generated
-from, printed by every module guard), `fonts` (§2, font weights), `fontsUrl`
-(the webfont stylesheet those weights come from, §6) and `themed` (every token
+from, printed by every module guard), `fonts` (§2, font weights), `fontsCss`
+(the theme's own stylesheet of those faces, §6), `fontsUrl` (deprecated: the
+equivalent Bunny Fonts request) and `themed` (every token
 the dark blocks redeclare — the input to the guard's `scope` rule, §5). When
 you add or change a token, run `npm run sync:tokens` and rebuild the modules —
 same workflow as a colour change.
@@ -937,9 +945,12 @@ with that guard rather than duplicating it badly.
   `npm run build:embed-tokens` (light on `:root`, dark on `[data-theme="dark"]`)
   and asserted by `npm run lint:embed-tokens`. Without it `?theme=dark` painted
   light fallbacks around charts drawn with the dark palette. They carry no
-  theme layout either, so no webfont `<link>`: emit `tokens.json` →
-  `fontsUrl` (the exact stylesheet `layout.phtml` requests) rather than a
-  copied URL, and the embed renders in the faces `fonts` says are loaded.
+  theme layout either, so no webfont `<link>`: link the theme's own
+  `tokens.json` → `fontsCss` (`asset/css/fonts.css`, served from the theme
+  directory — no third-party origin) rather than a copied URL, and the embed
+  renders in the faces `fonts` says are loaded. Until a module has moved to
+  it, the deprecated `fontsUrl` (an equivalent Bunny Fonts request) still
+  works.
   The brand accent follows the same logic: the published `--primary` is the
   seed **derived** (`seeds['--primary-base']` + 8% black in light), so an
   embed that repaints from the raw `primary_color` setting must apply that

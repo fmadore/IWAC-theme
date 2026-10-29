@@ -21,7 +21,7 @@
  *   1. it exists and has rules
  *   2. it starts with `@charset "UTF-8";`, and that is the only @charset
  *   3. no U+FEFF anywhere
- *   4. the entry's theme header comment follows, and its Version is
+ *   4. style.css: the theme header comment follows, and its Version is
  *      config/theme.ini's — a stylesheet not rebuilt after `npm run bump`
  *   5. no selector carries a BOM or a control character (it can never match)
  *   6. every var(--x) without a fallback is defined somewhere in the file
@@ -64,9 +64,12 @@ function check(name, css, themeVersion) {
             + `Context: ${JSON.stringify(css.slice(bom, bom + 40))}`);
     }
 
-    // 4. The header, current.
+    // 4. The header, current. Only style.css is the theme's stylesheet;
+    // another entry (fonts.css) carries a comment of its own, or none.
     const header = css.match(/^@charset "UTF-8";\n(\/\*[\s\S]*?\*\/)\n/);
-    if (!header || !/^Theme Name: /m.test(header[1])) {
+    if (name !== 'style.css') {
+        // nothing to compare
+    } else if (!header || !/^Theme Name: /m.test(header[1])) {
         findings.push(`${name}: the theme header comment (Theme Name, Version, …) does not follow @charset`);
     } else {
         const version = header[1].match(/^Version: (.+)$/m)?.[1];
