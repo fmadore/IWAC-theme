@@ -5,13 +5,25 @@ What IWAC-theme adopts from its sibling, [DRE-theme](https://github.com/AM-Digit
 Omeka S 4.2.1 themes on PHP 8.5 with the same author, the same design-token approach and
 the same kind of sibling modules, and DRE-theme had solved several problems IWAC-theme
 still carried. Each item says what DRE-theme does and why IWAC adopts it. Ticked items
-carry the commit that landed them.
+carry the commit(s) that landed them (roadmap commit: 64fe59a). Nothing here is
+released yet: the CHANGELOG's [Unreleased] section describes it for the next bump.
+
+Known gaps left for review:
+
+- **Commit 8c5a8f2 (item 3) is not green on its own:** adding a `use` line to
+  `helper/PwaManifest.php` moved a line reference in the translation catalogue, and
+  that commit did not rebuild it, so `npm test` / `check:generated` fail at exactly
+  that commit; 5b12e47 rebuilds it. The full `npm run verify` ran before 3ed2873,
+  eef9916, 270e735, c6b5b06, fd4beb8 and 1118855; the other commits ran the checks
+  covering what they touched.
+- **Masthead at enlarged text on phones** (item 8 finding, `test.fixme`).
+- **Module follow-up for the fonts** (item 7) — IwacVisualizations still links Bunny.
 
 Process document, not product: export-ignored like `ROADMAP.md`.
 
 ## Items
 
-- [x] **1. Consistency fixes.** The PHP floor was stated three ways (composer.json
+- [x] **1. Consistency fixes.** (8157e48) The PHP floor was stated three ways (composer.json
   `^8.4`, the stylesheet banner `^8.1`, CI testing 8.4/8.5); the Omeka constraint said
   `^4.2.0` while both installs run 4.2.1; the workflows pinned two different
   `actions/setup-node` releases and an old `setup-php`. DRE-theme pins every action to
@@ -25,7 +37,7 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   setup-php 2.40.0, upload-artifact v7.0.2, download-artifact v8.0.2); Dependabot
   weekly, 5-day npm cooldown, grouped actions.
 
-- [x] **2. `npm run verify` is the CI contract.** DRE-theme's `verify` runs locally
+- [x] **2. `npm run verify` is the CI contract.** (3ed2873) DRE-theme's `verify` runs locally
   exactly what its CSS job runs, and its CI job calls `npm run verify` instead of
   restating a step list, so "it passed locally" and "it passed in CI" mean the same
   thing. Its stale-CSS check tells a contributor which generated file is stale (and
@@ -41,7 +53,7 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   the runner's preinstalled PHP is below the floor) and its PHP matrix job runs
   `check-php.js --require`.
 
-- [x] **3. Test against the real Omeka S release.** DRE-theme downloads the official
+- [x] **3. Test against the real Omeka S release.** (8c5a8f2) DRE-theme downloads the official
   Omeka S 4.2.1 zip (SHA-256 verified), installs the theme and asks Omeka's own theme
   manager to discover and parse it with deprecations as errors — once on the working
   tree, and again in `release.yml` on the unpacked release zip, so an export-ignore
@@ -63,7 +75,7 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   OK): `[OK] No errors`; discovery test 48 checks passed, and fails as expected on a
   `^4.3.0` constraint and a lowercased helper filename.
 
-- [x] **4. CHANGELOG.md is the release-notes source.** DRE-theme keeps a Keep a
+- [x] **4. CHANGELOG.md is the release-notes source.** (3057bc4) DRE-theme keeps a Keep a
   Changelog file, lints it, and `release.yml` publishes that version's section as the
   release notes, falling back to generated notes with a warning. IWAC's release notes
   were GitHub's generated commit list — useful to a maintainer, opaque to a site
@@ -78,7 +90,7 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   `--notes-file`, falling back to `--generate-notes` with a warning; CHANGELOG.md is on
   the archive's root allowlist and required-files list.
 
-- [x] **5. Replace gulp with a plain Node build script.** DRE-theme dropped gulp in
+- [x] **5. Replace gulp with a plain Node build script.** (eef9916, 270e735) DRE-theme dropped gulp in
   v2.32 for `scripts/build-css.mjs` (the `sass` JS API → PostCSS), plus a
   compiled-CSS integrity check born from a mid-file BOM that silently dropped 63
   declarations. gulp contributed only glob expansion and a watcher, and gulp-sass v6
@@ -93,7 +105,7 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   `@charset` first and once, no BOM, the header present and current, no dead selector,
   no unresolvable `var()`.
 
-- [x] **6. Move logic out of the heaviest templates into tested helpers.** DRE-theme
+- [x] **6. Move logic out of the heaviest templates into tested helpers.** (5b12e47, c6b5b06) DRE-theme
   moved resource grouping, hierarchy trees, record apparatus and card data into
   helpers with PHP tests. IWAC's `resource-values.phtml` (language filtering,
   translation pairs, AI provenance, transcript disclosure) and `hierarchy-public.phtml`
@@ -116,7 +128,7 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   Found on the way: Omeka loads theme helpers on demand, so static calls on helper
   classes are only safe after the helper was fetched — documented in CLAUDE.md.
 
-- [x] **7. Self-host the webfonts.** DRE-theme serves woff2 from `asset/fonts/` with
+- [x] **7. Self-host the webfonts.** (fd4beb8, 9c61a05) DRE-theme serves woff2 from `asset/fonts/` with
   `@font-face` in Sass and preloads the two critical faces. IWAC loaded a
   render-blocking stylesheet from fonts.bunny.net plus a preconnect: a third-party
   request on every first visit, and a privacy dependency the theme does not need.
@@ -165,7 +177,7 @@ Process document, not product: export-ignored like `ROADMAP.md`.
      `tokens.json` and guard copy) — nothing to change there beyond the sync.
   Once no module reads `fontsUrl`, delete `LEGACY_FONTS_URL` in build-tokens.js.
 
-- [x] **8. Local browser tests (Playwright, three browsers, axe).** DRE-theme renders
+- [x] **8. Local browser tests (Playwright, three browsers, axe).** (1118855; fixes e98fe2b, a4282a5) DRE-theme renders
   PHP partials with its committed CSS/JS on a routed fixture origin — no Omeka, no
   database — and drives them in Chromium, Firefox and WebKit with scoped axe checks.
   IWAC had jsdom unit tests (no layout, no focus, no real CSS) and a live-site e2e that
