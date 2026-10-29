@@ -29,6 +29,7 @@ npm run bump -- patch  # write every version declaration (patch|minor|major|X.Y.
 npm test               # JS behaviour (node:test + jsdom), on pages rendered from the templates
 npm run test:minified  # the same suite against asset/js/dist/*.min.js
 npm run test:php       # view helpers + template regressions (plain PHP, no Composer)
+npm run test:browser   # rendered pages in Chromium/Firefox/WebKit + axe (docs/TESTING.md)
 npm run build:fixtures # re-render test/fixtures/rendered/ after a template change (needs php)
 npm run check:fixtures # fail if a committed fixture differs from a fresh render
 npm run lint           # ESLint + Stylelint (correctness rules and the gotchas below)
@@ -259,6 +260,19 @@ global the scripts share) survive; `npm run test:minified` proves it by running 
 whole behaviour suite against the twins. Vendored `*.min.js` (MiniMasonry) are not
 inputs and stay where they are. `citation.js` is enqueued by IWAC-SEO, not the theme,
 so `layout.phtml` swaps its src for the twin in the same pass that defers it.
+
+### The browser suite runs the same rendered pages, with the real CSS
+
+`npm run test:browser` ([docs/TESTING.md](docs/TESTING.md)) serves
+`test/fixtures/rendered/` and the committed `asset/` on a routed origin and drives them
+in Chromium, Firefox and WebKit: layout, focus, keyboard, the theme toggle, AJAX paging,
+masonry and scoped axe checks in both themes. It needs no PHP at test time, but it tests
+the **committed** CSS and twins, so rebuild before running it after a Sass or JS edit.
+FakeView prints no `headMeta()`/`headLink()`, so `test/browser/fixtures.js` adds the
+charset and the stylesheet link; a page it needs and the renderer does not make is a new
+renderer entry, never hand-written HTML. It found two real bugs on its first run (the
+theme toggle stuck on light without storage; nameless Media-block thumbnail links) and
+one open one (the masthead overflows a phone at 150 %+ text, kept as `test.fixme`).
 
 ### The JS tests run on rendered templates — re-render after a template edit
 

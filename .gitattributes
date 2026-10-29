@@ -42,6 +42,7 @@
 /test-support/        export-ignore
 /e2e/                 export-ignore
 /playwright.config.js export-ignore
+/playwright.local.config.js export-ignore
 /eslint.config.js     export-ignore
 /stylelint.config.js  export-ignore
 /phpstan.neon.dist    export-ignore
@@ -73,6 +74,10 @@
 
 # Same category: the 2026-10 plan for adopting DRE-theme's tooling.
 /docs/CROSS-THEME-ROADMAP-2026-10.md export-ignore
+
+# How the theme is tested: contributor documentation for the toolchain the
+# archive does not ship.
+/docs/TESTING.md export-ignore
 
 # Gettext sources — only the compiled .mo is loaded at runtime
 /language/*.pot export-ignore

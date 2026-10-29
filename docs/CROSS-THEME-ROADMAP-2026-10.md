@@ -165,9 +165,27 @@ Process document, not product: export-ignored like `ROADMAP.md`.
      `tokens.json` and guard copy) — nothing to change there beyond the sync.
   Once no module reads `fontsUrl`, delete `LEGACY_FONTS_URL` in build-tokens.js.
 
-- [ ] **8. Local browser tests (Playwright, three browsers, axe).** DRE-theme renders
+- [x] **8. Local browser tests (Playwright, three browsers, axe).** DRE-theme renders
   PHP partials with its committed CSS/JS on a routed fixture origin — no Omeka, no
   database — and drives them in Chromium, Firefox and WebKit with scoped axe checks.
   IWAC had jsdom unit tests (no layout, no focus, no real CSS) and a live-site e2e that
   only runs after a release is installed. It already renders real templates into
   `test/fixtures/rendered/`; the browser layer builds on those.
+  *Landed:* `playwright.local.config.js` (Chromium, Firefox, WebKit;
+  `IWAC_BROWSER_CHANNEL=msedge|chrome` for the Chromium project), `npm run test:browser`,
+  `test/browser/fixtures.js` (routed `https://iwac.test` origin serving the rendered pages
+  at their manifest URLs + committed `asset/`, AJAX answers from the `xhr` fixtures,
+  third-party requests aborted and recorded) and three specs — `header.spec.js`,
+  `pages.spec.js`, `a11y.spec.js` — covering every surface in the brief. CI job
+  `local-browsers` (browser cache per Playwright version, `test-results/local` uploaded
+  on failure). `docs/TESTING.md`. Locally: 97 passed, 5 skipped in all three engines
+  (three consecutive green runs), and the Chromium project green on installed Edge too.
+  Skips: forced colours in Firefox/WebKit (Chromium-only emulation) and the 390px
+  200%-text case, a `test.fixme` for an **open finding**: the masthead's tool row
+  (search min-width 144px, language, theme, menu) overflows a 390px phone by 13px at
+  150% text and 131px at 200%. Fixing it is a masthead design decision, left for review.
+  Real bugs found and fixed in their own commits: the theme toggle stuck on light when
+  storage is unavailable; Media-block thumbnail links with no accessible name (the
+  fixture renderer's `thumbnail()` also printed no alt, unlike core — corrected).
+  Not bugs, fixed in the fixture origin: WebKit decoded the charset-less fixture pages
+  as windows-1252, and Back to an unrendered AJAX URL 404'd.

@@ -9,6 +9,7 @@
     "test": "node scripts/run-tests.js",
     "test:minified": "node scripts/run-tests.js --minified",
     "test:php": "php test/php/run.php",
+    "test:browser": "playwright test --config=playwright.local.config.js",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:js": "eslint .",
     "lint:css": "stylelint \"asset/sass/**/*.scss\"",

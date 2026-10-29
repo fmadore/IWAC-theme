@@ -69,7 +69,7 @@ module.exports = [
     // Playwright specs run in Node but hand callbacks to page.evaluate(),
     // which execute in the browser.
     {
-        files: ['e2e/**/*.js'],
+        files: ['e2e/**/*.js', 'test/browser/**/*.js'],
         languageOptions: {
             globals: { ...globals.browser },
         },

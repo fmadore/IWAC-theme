@@ -83,6 +83,59 @@ jobs:
           IWAC_SKIP_PHP: '1'
         run: npm run verify
 
+  # The rendered fixture pages with the committed CSS/JS, in Chromium,
+  # Firefox and WebKit (docs/TESTING.md): layout, focus, keyboard and scoped
+  # axe checks that jsdom cannot see. No PHP or Omeka: the pages are the
+  # committed test/fixtures/rendered/, which the PHP job keeps current.
+  local-browsers:
+    name: Local browser and accessibility regressions
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # The three browsers are ~500 MB and only change with @playwright/test,
+      # so they are cached per installed version. The system libraries they
+      # need live outside the cache and are installed on every run.
+      - name: Resolve the Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}-chromium-firefox-webkit
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium firefox webkit
+
+      - run: npm run test:browser
+
+      - name: Keep traces and screenshots of failures
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: local-browser-results
+          path: test-results/local
+          retention-days: 7
+
   php:
     name: PHP ${{ matrix.php }} syntax, tests and Composer
     runs-on: ubuntu-latest
