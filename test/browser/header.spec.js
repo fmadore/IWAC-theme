@@ -49,8 +49,10 @@ test('the drawer opens, traps focus, closes on Escape and hands focus back', asy
     await expect(drawer).toHaveClass(/toggled/);
     await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await expect(page.locator('#content')).toHaveAttribute('inert', '');
-    // Focus moved into the drawer…
-    expect(await page.evaluate(() => document.getElementById('menu-drawer').contains(document.activeElement))).toBe(true);
+    // Focus moved into the drawer… navigation.js retries it frame by frame
+    // until the visibility transition lets it land, so wait rather than read
+    // it once (WebKit in CI was still a frame short).
+    await expect.poll(() => page.evaluate(() => document.getElementById('menu-drawer').contains(document.activeElement))).toBe(true);
     // …and Tab cannot leave it, either way round.
     for (let i = 0; i < 40; i++) {
         await page.keyboard.press('Tab');
