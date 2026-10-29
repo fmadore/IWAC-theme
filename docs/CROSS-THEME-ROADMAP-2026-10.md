@@ -16,7 +16,10 @@ Known gaps left for review:
   that commit; 5b12e47 rebuilds it. The full `npm run verify` ran before 3ed2873,
   eef9916, 270e735, c6b5b06, fd4beb8 and 1118855; the other commits ran the checks
   covering what they touched.
-- **Masthead at enlarged text on phones** (item 8 finding, `test.fixme`).
+- **Masthead at enlarged text on phones** (item 8 finding) — fixed after 2.31.1: the
+  header is a size container, and below 17rem (acronym wordmark) / 20rem (full title)
+  the search box takes its own row; headings break an over-long word. The `fixme`
+  became six tests in `a11y.spec.js`.
 - **Module follow-up for the fonts** (item 7) — done in IwacVisualizations 72bbdffe
   and IwacSearch 847ad08 (token sync), not yet released. Bunny stays only as the
   module's fallback, so `fontsUrl` / `LEGACY_FONTS_URL` stay until that fallback goes.

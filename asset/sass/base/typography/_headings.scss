@@ -13,6 +13,11 @@ h4 {
     font-family: $font__headings;
     margin-block-start: 0;
     text-wrap: balance;
+    // A word longer than the line breaks rather than pushing the page
+    // sideways: at 200 % text on a phone, "Ouagadougou" alone is wider than
+    // the screen at h1 size. Only such a word breaks; `hyphens: auto` would be
+    // inert, Chrome ships no dictionary for either site's language.
+    overflow-wrap: break-word;
     // Headings want lining figures (numbers that align with caps height)
     // and discretionary ligatures. Override the body's old-style default.
     font-feature-settings: "kern" 1, "liga" 1, "dlig" 1, "lnum" 1;

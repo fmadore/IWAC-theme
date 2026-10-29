@@ -89,15 +89,49 @@ test('forced colours: the focus outline survives and the icon controls keep a vi
     expect(glyph[0].bg).not.toBe(glyph[0].canvas);
 });
 
-// Phones are the open finding: at 390px the masthead's tool row (search,
-// language, theme, menu) needs more than the width once text is enlarged —
-// 13px of horizontal scroll at 150%, 131px at 200%. Fixing it is a masthead
-// design decision (docs/CROSS-THEME-ROADMAP-2026-10.md, item 8), not a test
-// tweak; the fixme keeps the case written down and runnable.
-test.fixme('200% text keeps the page within the viewport at 390px', async ({ page }) => {
+const enlarged = (scale) => ({ html: (html) => html.replace('</head>', `<style>html{font-size:${scale}%}</style></head>`) });
+const masthead = (page) => page.evaluate(() => {
+    const top = (selector) => document.querySelector(selector).getBoundingClientRect().top;
+    const search = document.querySelector('.main-header__search-form').getBoundingClientRect();
+    return { searchBelow: search.top >= document.querySelector('.main-navigation__toggle').getBoundingClientRect().bottom, searchWidth: search.width, menuTop: top('.main-navigation__toggle') };
+});
+
+// On a phone the masthead's one row (wordmark, search, language, theme, menu)
+// stopped fitting once text was enlarged: 13px of sideways scroll at 150 %,
+// 131px at 200 %, and at 200 % "Ouagadougou" alone outgrew the screen as an
+// h1. Where the row no longer fits, the search box takes a row of its own.
+for (const [width, scale] of [[320, 125], [390, 150], [390, 200], [600, 200]]) {
+    test(`${scale}% text keeps the page within the viewport at ${width}px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await openFixture(page, 'item.en', enlarged(scale));
+        expect(await hasNoHorizontalScroll(page)).toBe(true);
+        const row = await masthead(page);
+        expect(row.searchBelow).toBe(true);
+        expect(row.searchWidth).toBeGreaterThan(width / 2);
+    });
+}
+
+// …and only there: at the default size every phone keeps the single row.
+for (const width of [320, 390]) {
+    test(`default text keeps the one-row masthead at ${width}px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await openFixture(page, 'item.en');
+        expect((await masthead(page)).searchBelow).toBe(false);
+    });
+}
+
+test('the language list opens above the page in the two-row masthead', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 900 });
-    await openFixture(page, 'item.en', { html: (html) => html.replace('</head>', '<style>html{font-size:200%}</style></head>') });
-    expect(await hasNoHorizontalScroll(page)).toBe(true);
+    await openFixture(page, 'item.en', enlarged(200));
+    await page.locator('.language-switcher__toggle').click();
+    const item = page.locator('.language-switcher__list a, .language-switcher__list button').last();
+    await expect(item).toBeVisible();
+    const box = await item.boundingBox();
+    const hit = await page.evaluate(([x, y]) => {
+        const el = document.elementFromPoint(x, y);
+        return Boolean(el && el.closest('.language-switcher__list'));
+    }, [box.x + box.width / 2, box.y + box.height / 2]);
+    expect(hit).toBe(true);
 });
 
 for (const width of [768, 1280]) {

@@ -11,6 +11,10 @@ create.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Enlarged text on phones.** At 150 % text and above the masthead row (wordmark, search, language, theme, menu) no longer fitted a phone, and the page scrolled sideways by up to 131px. Where the row stops fitting, the search box now takes a full-width row of its own under the other controls; the masthead follows the text size, not just the screen width, so at the default size every phone keeps the single row. Headings also break a word longer than the line: at 200 % "Ouagadougou" alone was wider than the screen.
+
 ## [2.31.1] - 2026-10-29
 
 ### Fixed

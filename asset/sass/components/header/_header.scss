@@ -29,6 +29,18 @@
         transition: none;
     }
 
+    // Enlarged text on a phone. The masthead row's members are sized in rem,
+    // so at 150-200 % the single row needed up to 517px of a 390px screen and
+    // the page scrolled sideways. The header is a size container for the
+    // narrow masthead at the end of this file, which a viewport query cannot
+    // express: it reads the width in rem, so it follows the text size.
+    // Below $md only, where the hamburger row lives. Containment makes the
+    // header the containing block of fixed descendants; it has none (the menu
+    // drawer is rendered after it), and it is a stacking context already.
+    @media (max-width: #{$md - 1px}) {
+        container: masthead / inline-size;
+    }
+
     // Functional glass over scrolling content — the one sanctioned use.
     @supports ((-webkit-backdrop-filter: blur(0.5rem)) or (backdrop-filter: blur(0.5rem))) {
         background: var(--surface-overlay);
@@ -293,5 +305,48 @@
                 outline-offset: -2px;
             }
         }
+    }
+}
+
+// The narrow masthead (see .main-header) puts the search box on a full-width
+// row of its own, under the wordmark, the language and theme controls and the
+// hamburger. The tools cluster dissolves into the bar so its members can be
+// placed separately; navigation.js marks the search box and the utilities
+// inert individually, never the cluster, so it is safe to lose its box.
+@mixin narrow-masthead {
+    .main-header__main-bar {
+        flex-wrap: wrap;
+        row-gap: var(--space-2);
+    }
+
+    .main-header__tools {
+        display: contents;
+    }
+
+    .main-header__utilities {
+        margin-inline-start: auto;
+    }
+
+    .main-header__search-form {
+        order: 1;
+        flex: 1 1 100%;
+        max-width: none;
+    }
+}
+
+// Each threshold is where the one row stops fitting, measured at 320-768px
+// and 100-200 % text: about 17rem with the acronym wordmark (below $sm), 20rem
+// with the full title. So no phone changes at the default text size, and a
+// layout that still fits is left alone: 390px switches at 150 %, 320px at
+// 125 %, 600px at 200 %.
+@media (max-width: #{$sm - 1px}) {
+    @container masthead (width < 17rem) {
+        @include narrow-masthead;
+    }
+}
+
+@media (min-width: $sm) {
+    @container masthead (width < 20rem) {
+        @include narrow-masthead;
     }
 }
