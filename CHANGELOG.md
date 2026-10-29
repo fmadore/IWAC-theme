@@ -11,6 +11,12 @@ create.
 
 ## [Unreleased]
 
+## [2.31.1] - 2026-10-29
+
+### Fixed
+
+- **Source Serif 4 licence.** The OFL text shipped beside the font attributed its copyright to "Google Inc."; it now names the Source Serif 4 Project Authors, as the Google Fonts distribution of the family does.
+
 ## [2.31.0] - 2026-10-29
 
 ### Changed
@@ -101,7 +107,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.31.0...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.31.1...HEAD
+[2.31.1]: https://github.com/fmadore/IWAC-theme/compare/v2.31.0...v2.31.1
 [2.31.0]: https://github.com/fmadore/IWAC-theme/compare/v2.30.1...v2.31.0
 [2.30.1]: https://github.com/fmadore/IWAC-theme/compare/v2.30.0...v2.30.1
 [2.30.0]: https://github.com/fmadore/IWAC-theme/compare/v2.29.0...v2.30.0
