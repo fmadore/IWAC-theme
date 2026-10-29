@@ -17,7 +17,9 @@ Known gaps left for review:
   eef9916, 270e735, c6b5b06, fd4beb8 and 1118855; the other commits ran the checks
   covering what they touched.
 - **Masthead at enlarged text on phones** (item 8 finding, `test.fixme`).
-- **Module follow-up for the fonts** (item 7) — IwacVisualizations still links Bunny.
+- **Module follow-up for the fonts** (item 7) — done in IwacVisualizations 72bbdffe
+  and IwacSearch 847ad08 (token sync), not yet released. Bunny stays only as the
+  module's fallback, so `fontsUrl` / `LEGACY_FONTS_URL` stay until that fallback goes.
 
 Process document, not product: export-ignored like `ROADMAP.md`.
 
@@ -154,7 +156,12 @@ Process document, not product: export-ignored like `ROADMAP.md`.
   weight / style of body, h1, masthead and metadata values identical to before.
   `npm run sync:tokens` was NOT run (it writes into the module repos).
 
-  **Module follow-up (IwacVisualizations; not done here):**
+  **Module follow-up (IwacVisualizations)** — done 2026-10-29 in 72bbdffe, as
+  `EmbedBrand::themeFontsAsset()`: the layout links the site theme's own
+  `asset/css/fonts.css` through `assetUrl()` when the file exists on disk, and keeps
+  the Bunny preconnect + request only for a site on another theme or an IWAC-theme
+  older than 2.31. No preload was added. IwacSearch took the sync only (847ad08).
+  The plan as written:
   1. `src/Site/EmbedBrand.php`: add a `webfontStylesheet()` that prefers
      `config/theme-seeds.php` `fontsCss` (a theme-relative path, validated as
      `^asset/css/[a-z-]+\.css$`) resolved against the IWAC theme's base URL — e.g.
