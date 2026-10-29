@@ -11,6 +11,8 @@ create.
 
 ## [Unreleased]
 
+## [2.31.0] - 2026-10-29
+
 ### Changed
 
 - **Requirements.** The theme now declares Omeka S 4.2.1 as its minimum (it was 4.2.0); both IWAC sites run 4.2.1. The stylesheet header states the same PHP floor as `composer.json`, PHP 8.4.
@@ -99,7 +101,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.30.1...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.31.0...HEAD
+[2.31.0]: https://github.com/fmadore/IWAC-theme/compare/v2.30.1...v2.31.0
 [2.30.1]: https://github.com/fmadore/IWAC-theme/compare/v2.30.0...v2.30.1
 [2.30.0]: https://github.com/fmadore/IWAC-theme/compare/v2.29.0...v2.30.0
 [2.29.0]: https://github.com/fmadore/IWAC-theme/compare/v2.28.0...v2.29.0
