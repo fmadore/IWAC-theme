@@ -153,10 +153,7 @@ woff2 files and `@font-face` rules first. For a surface that renders without
 the theme's layout (§6, embed routes), `tokens.json` → `fontsCss` is the
 theme-relative path of a stylesheet holding only those rules
 (`asset/css/fonts.css`; its `url()`s are relative, so it works wherever the
-theme is served). `fontsUrl` — the equivalent Bunny Fonts request, which the
-theme itself loaded until 2026-10 — is still published, deprecated, because
-IwacVisualizations' embed layout reads it; the build refuses to publish it if
-it stops describing exactly the `@font-face` set.
+theme is served). Its Bunny Fonts predecessor, `fontsUrl`, went in 2.32.
 
 ### Stacking order — derive from `--z-*`
 
@@ -334,8 +331,7 @@ theme-internal component parameter, or a deprecated alias and its replacement.
 
 `tokens.json` also carries `themeVersion` (the theme release it was generated
 from, printed by every module guard), `fonts` (§2, font weights), `fontsCss`
-(the theme's own stylesheet of those faces, §6), `fontsUrl` (deprecated: the
-equivalent Bunny Fonts request) and `themed` (every token
+(the theme's own stylesheet of those faces, §6) and `themed` (every token
 the dark blocks redeclare — the input to the guard's `scope` rule, §5). When
 you add or change a token, run `npm run sync:tokens` and rebuild the modules —
 same workflow as a colour change.
@@ -948,9 +944,7 @@ with that guard rather than duplicating it badly.
   theme layout either, so no webfont `<link>`: link the theme's own
   `tokens.json` → `fontsCss` (`asset/css/fonts.css`, served from the theme
   directory — no third-party origin) rather than a copied URL, and the embed
-  renders in the faces `fonts` says are loaded. Until a module has moved to
-  it, the deprecated `fontsUrl` (an equivalent Bunny Fonts request) still
-  works.
+  renders in the faces `fonts` says are loaded.
   The brand accent follows the same logic: the published `--primary` is the
   seed **derived** (`seeds['--primary-base']` + 8% black in light), so an
   embed that repaints from the raw `primary_color` setting must apply that

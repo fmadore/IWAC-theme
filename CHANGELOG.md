@@ -11,6 +11,12 @@ create.
 
 ## [Unreleased]
 
+## [2.32.0] - 2026-11-04
+
+### Removed
+
+- **`fontsUrl` in `tokens.json`.** The design-token contract no longer publishes the Bunny Fonts request the theme used before it self-hosted its webfonts in 2.31. Its replacement, `fontsCss` (`asset/css/fonts.css`), is unchanged. Its last reader, the IwacVisualizations embed fallback, went in that module's 1.98.0. Nothing changes on the sites, since modules read the contract when they are built, not from the installed theme. The contract loses a key, hence a minor version.
+
 ## [2.31.2] - 2026-10-29
 
 ### Fixed
@@ -113,7 +119,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.31.2...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.32.0...HEAD
+[2.32.0]: https://github.com/fmadore/IWAC-theme/compare/v2.31.2...v2.32.0
 [2.31.2]: https://github.com/fmadore/IWAC-theme/compare/v2.31.1...v2.31.2
 [2.31.1]: https://github.com/fmadore/IWAC-theme/compare/v2.31.0...v2.31.1
 [2.31.0]: https://github.com/fmadore/IWAC-theme/compare/v2.30.1...v2.31.0

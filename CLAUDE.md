@@ -164,7 +164,6 @@ that disagrees. Change a guard rule here, never in a module's copy. It publishes
 | `deprecated` | retired name → replacement, from `// deprecated: --x` markers on declaration lines |
 | `fonts` | the weights each font token actually loads, parsed from the self-hosted `@font-face` rules (`asset/sass/base/_fonts.scss`) |
 | `fontsCss` | `asset/css/fonts.css`, theme-relative: those `@font-face` rules alone, for routes that render without the theme (IwacVisualizations' embeds) |
-| `fontsUrl` | **deprecated** — the equivalent Bunny Fonts stylesheet the theme loaded until 2026-10; kept because IwacVisualizations' embed reads it, and refused by the build if it stops matching `fonts` |
 | `themed` | the tokens the dark blocks redeclare — what the guard's `scope` rule reads to decide whether a module composition must also live on `body` |
 | `breakpoints` | the six media-query widths |
 | `series` | the ordered categorical chart palette (`--series-1 … --series-20`), light + dark, with the theme-driven lead slots marked |

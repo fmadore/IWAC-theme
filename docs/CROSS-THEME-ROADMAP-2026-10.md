@@ -21,8 +21,9 @@ Known gaps left for review:
   the search box takes its own row; headings break an over-long word. The `fixme`
   became six tests in `a11y.spec.js`.
 - **Module follow-up for the fonts** (item 7) — done in IwacVisualizations 72bbdffe
-  and IwacSearch 847ad08 (token sync), not yet released. Bunny stays only as the
-  module's fallback, so `fontsUrl` / `LEGACY_FONTS_URL` stay until that fallback goes.
+  and IwacSearch 847ad08 (token sync). The module's Bunny fallback went in
+  IwacVisualizations 1.98.0 (#34), and `fontsUrl` / `LEGACY_FONTS_URL` with it in
+  theme 2.32.0 (#21).
 
 Process document, not product: export-ignored like `ROADMAP.md`.
 
