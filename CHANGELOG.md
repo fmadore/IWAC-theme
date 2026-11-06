@@ -11,6 +11,10 @@ create.
 
 ## [Unreleased]
 
+### Security
+
+- **minimatch 11 in the build toolchain.** An npm `overrides` entry pins minimatch to 11.0.5, clearing a moderate denial-of-service advisory in minimatch below 11.0.1 ([GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249)), which ESLint 10 still reaches through its own minimatch 10 requirement. ESLint lints the same files with the same results on minimatch 11. It is a development dependency: nothing changes in the release ZIP or on the sites. IwacSearch already carries the same override.
+
 ## [2.32.1] - 2026-11-06
 
 ### Fixed

@@ -76,5 +76,8 @@
     "not dead",
     "safari >= 16.2",
     "ios >= 16.2"
-  ]
+  ],
+  "overrides": {
+    "minimatch": "^11.0.5"
+  }
 }
