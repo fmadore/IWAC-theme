@@ -11,6 +11,8 @@ create.
 
 ## [Unreleased]
 
+## [2.32.1] - 2026-11-06
+
 ### Fixed
 
 - **The main menu no longer jumps on every page load.** The section strip first appeared without the dropdown arrows, then every entry after a section with a submenu slid sideways when the script added them, which read as the whole menu flashing after each click. The stylesheet now reserves the arrows' space from the first paint, so nothing moves.
@@ -123,7 +125,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.32.0...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.32.1...HEAD
+[2.32.1]: https://github.com/fmadore/IWAC-theme/compare/v2.32.0...v2.32.1
 [2.32.0]: https://github.com/fmadore/IWAC-theme/compare/v2.31.2...v2.32.0
 [2.31.2]: https://github.com/fmadore/IWAC-theme/compare/v2.31.1...v2.31.2
 [2.31.1]: https://github.com/fmadore/IWAC-theme/compare/v2.31.0...v2.31.1
