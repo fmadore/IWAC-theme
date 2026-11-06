@@ -11,6 +11,10 @@ create.
 
 ## [Unreleased]
 
+### Fixed
+
+- **The main menu no longer jumps on every page load.** The section strip first appeared without the dropdown arrows, then every entry after a section with a submenu slid sideways when the script added them, which read as the whole menu flashing after each click. The stylesheet now reserves the arrows' space from the first paint, so nothing moves.
+
 ## [2.32.0] - 2026-11-04
 
 ### Removed

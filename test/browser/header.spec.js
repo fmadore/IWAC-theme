@@ -92,6 +92,27 @@ test('navigation and search work with JavaScript disabled', async ({ browser }) 
     await context.close();
 });
 
+test('the section strip does not move when navigation.js adds the submenu toggles', async ({ browser }) => {
+    // navigation.js runs from the end of <body>, after the strip has painted,
+    // so what a reader sees first is the strip as the stylesheet alone lays it
+    // out — the same as with JavaScript off. Every entry has to sit where it
+    // will sit once the toggles are in, or each page load visibly jumps.
+    const positions = async (javaScriptEnabled) => {
+        const context = await browser.newContext({ javaScriptEnabled, viewport: { width: 1280, height: 900 } });
+        const page = await context.newPage();
+        await openFixture(page, 'item.en');
+        const boxes = await page.locator('.main-navigation .navigation > li').evaluateAll(items => items.map(item => {
+            const box = item.getBoundingClientRect();
+            return [Math.round(box.left), Math.round(box.width)];
+        }));
+        await context.close();
+        return boxes;
+    };
+    const before = await positions(false);
+    expect(before.length).toBeGreaterThan(1);
+    expect(await positions(true)).toEqual(before);
+});
+
 test('the theme toggle cycles and persists light and dark across a reload', async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'light' });
     await openFixture(page, 'item.en');

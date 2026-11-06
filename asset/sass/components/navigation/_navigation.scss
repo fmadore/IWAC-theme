@@ -159,6 +159,24 @@
                 }
             }
 
+            // Before navigation.js runs, a parent entry has its <ul> but neither
+            // the class nor the toggle: those are added from the end of <body>,
+            // after the strip has already painted. Without this, every page
+            // load painted the strip once without toggles, then slid every
+            // entry after a parent sideways by the toggle's width (12px of
+            // padding swapped for a 28px button). Reserve exactly the box the
+            // toggle will take, so the swap moves nothing.
+            &:has(> ul):not(.menu-item-has-children) {
+                > a {
+                    margin-inline-end: 0;
+                    padding-inline-end: var(--size-control-xs);
+                }
+
+                &.active > a::after {
+                    inset-inline-end: var(--size-control-xs);
+                }
+            }
+
             &.menu-item-has-children {
                 // The label gives up its trailing padding to the toggle
                 // instead of the toggle sliding back over it: a negative
