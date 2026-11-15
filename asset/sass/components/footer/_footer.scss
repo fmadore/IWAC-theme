@@ -1,13 +1,29 @@
 @use "../../abstracts/abstracts" as *;
 
 // ==========================================================================
-// Main Footer
+// Main Footer — the colophon
 //
-// Stripped to a single quiet decorative element — a hairline rule between
-// __top and __bottom. No radial brand glow, no gradient backgrounds, no
-// per-column dividers, no inset shadows on the bottom band, no glow
-// shadows on social icons. Footers should be navigation, not the most-
-// styled component on the page.
+// Three ruled bands on the page surface, under the closing 2px ink rule:
+//
+//   __top       wordmark + what the collection is, beside the site menu
+//   __partners  partner logos at the start, social + install at the end
+//   __bottom    rights and licence, in two columns on wide screens
+//
+// The menu has two layouts, chosen by helper/FooterMenu.php from the markup
+// (which follows the "Footer Menu Depth" setting):
+//
+//   --index    top-level sections only: one row of links beside the wordmark.
+//   --sitemap  sections over their sub-pages: a column per section, sized to
+//              share the row, with a long section set in two columns so no
+//              single list decides the footer's height.
+//
+// Until 2.33 the sitemap was a flex row capped at five 20% columns inside a
+// middle column: the sixth section wrapped onto a row of its own and the
+// tallest list (thirteen entries) set the height of all the others — over
+// 1100px of footer on a desktop, most of it empty.
+//
+// Everything is start-aligned at every width. No gradients, no shadows, no
+// per-column dividers: hairlines between bands are the only decoration.
 // ==========================================================================
 
 .main-footer {
@@ -17,6 +33,7 @@
     margin-block-start: var(--space-16);
     // The closing rule of the page — mirrors the masthead's 2px ink rule.
     border-top: 2px solid var(--ink-strong);
+    background: var(--footer-surface);
 
     h1, h2, h3, h4 {
         color: var(--footer-text);
@@ -45,98 +62,227 @@
         background: var(--footer-divider);
     }
 
+    p:last-child { margin-bottom: 0; }
+
+    // ----------------------------------------------------------------------
+    // Top band: brand + menu
+    // ----------------------------------------------------------------------
+
     &__top {
-        background: var(--footer-surface);
-        padding: var(--space-12) 0 var(--space-6);
+        padding-block: var(--space-8);
 
         @media (min-width: $lg) {
-            padding: var(--space-16) 0 var(--space-8);
+            padding-block: var(--space-10);
         }
     }
 
     &__top-container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-6) var(--space-12);
+        align-items: start;
+
+        // Index: the wordmark at the start, the row of sections at the end.
+        @media (min-width: $lg) {
+            &--index {
+                grid-template-columns: minmax(16rem, 30rem) minmax(0, 1fr);
+            }
+        }
+
+        // Sitemap: the columns need the width, so the brand only moves beside
+        // them once six columns still fit next to it.
+        @media (min-width: $xl) {
+            &--sitemap {
+                grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+            }
+        }
+    }
+
+    &__brand {
         display: flex;
         flex-direction: column;
-        gap: var(--space-12);
+        gap: var(--space-2);
+        max-width: 34rem;
+    }
 
-        @media (min-width: $lg) {
-            flex-direction: row;
-            gap: var(--space-12);
+    // The masthead's wordmark, one step down: the page closes on the name it
+    // opened with.
+    &__title {
+        margin: 0;
+        line-height: 1.15;
+
+        a,
+        a:visited {
+            font-family: $font__headings;
+            font-size: var(--text-lg);
+            font-weight: 800;
+            letter-spacing: var(--tracking-display);
+            color: var(--ink-strong);
+
+            @include focus-ring;
         }
 
-        > div {
-            flex-grow: 1;
-            margin-bottom: var(--space-4);
-
-            &:first-child { padding-inline-start: 0; }
-        }
-
-        &.no-menu {
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+        @media (hover: hover) {
+            a:hover { color: var(--primary); }
         }
     }
 
-    &__col1,
-    &__col3 {
-        text-align: center;
+    &__site-info {
+        color: var(--footer-text-muted);
+        line-height: var(--line-height-normal);
+    }
 
-        @media (min-width: $lg) {
-            max-width: 30%;
-            text-align: start;
+    // Free HTML from the "Footer Content" setting: a band of its own under
+    // the brand and menu.
+    &__content {
+        grid-column: 1 / -1;
+        padding-block-start: var(--space-6);
+        border-top: 1px solid var(--footer-divider);
+    }
+
+    // ----------------------------------------------------------------------
+    // Menu
+    // ----------------------------------------------------------------------
+
+    &__menu {
+        min-width: 0;
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
         }
 
-        .no-menu & {
-            max-width: 600px;
-            margin-inline-start: 0;
+        li {
+            margin: 0;
+
+            &::before { content: none !important; }
         }
 
-        .all-columns & {
-            @media (min-width: $lg) { max-width: 26%; }
+        a,
+        a:visited {
+            display: block;
+            // Stacked block links with no gap between them, so the padding IS
+            // the target: --text-sm at the snug line height on --space-1
+            // measures ~28px, clear of the 24px floor (WCAG 2.2 §2.5.8).
+            padding-block: var(--space-1);
+            line-height: var(--line-height-snug);
+            color: var(--footer-text);
+            text-transform: none;
         }
 
-        .all-columns.menu-depth-2 & {
-            @media (min-width: $lg) { max-width: 20%; }
+        a:hover,
+        a:active { color: var(--primary); }
+
+        // Top-level entries: the section voice.
+        .navigation > li > a,
+        .main-footer__menu-links > ul > li > a {
+            font-weight: 600;
+        }
+
+        .navigation li.active > a,
+        .navigation li.current > a,
+        .navigation a[aria-current="page"] { color: var(--primary); }
+
+        // Below $lg — and at every width in the index layout — the menu is a
+        // wrapping row of top-level sections. Sub-pages only appear with the
+        // sitemap columns; the header's menu and drawer carry them below that.
+        .navigation,
+        .main-footer__menu-links > ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0 var(--space-6);
+        }
+
+        .navigation > li:not(.main-footer__menu-links) > ul { display: none; }
+    }
+
+    @media (min-width: $lg) {
+        &__menu--index .navigation {
+            justify-content: flex-end;
+            // Sit on the wordmark's line rather than above it.
+            padding-block-start: var(--space-1);
+        }
+
+        &__menu--sitemap {
+            .navigation {
+                display: grid;
+                // 8.5rem: six tracks (five sections, one of them doubled)
+                // still share one row in the $lg container.
+                grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+                gap: var(--space-6);
+                align-items: start;
+            }
+
+            .navigation > li { min-width: 0; }
+
+            .navigation > li:not(.main-footer__menu-links) > ul {
+                display: block;
+                margin-block-start: var(--space-1);
+
+                a,
+                a:visited { color: var(--footer-text-muted); }
+
+                a:hover { color: var(--primary); }
+
+                // A third level, when the depth setting asks for one.
+                ul { padding-inline-start: var(--space-4); }
+            }
+
+            // The gathered childless sections stack as one column of heads.
+            .main-footer__menu-links > ul { display: block; }
+
+            // A long section (nine sub-pages or more) takes two tracks and
+            // sets its list in two columns, so it stands about as tall as its
+            // neighbours instead of deciding the height of the whole footer.
+            // Without :has() it is simply one long column.
+            .navigation > li:has(> ul > li:nth-child(9)) {
+                grid-column: span 2;
+
+                > ul {
+                    columns: 2;
+                    column-gap: var(--space-6);
+
+                    > li { break-inside: avoid; }
+                }
+            }
         }
     }
 
-    &__col1 {
-        img {
-            max-width: 120px;
-            height: auto;
-            border-radius: var(--radius-sm);
-        }
+    // ----------------------------------------------------------------------
+    // Partners band: logos at the start, social + install at the end
+    // ----------------------------------------------------------------------
+
+    &__partners {
+        border-top: 1px solid var(--footer-divider);
+        padding-block: var(--space-5);
+    }
+
+    &__partners-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-5) var(--space-8);
     }
 
     &__logos {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: var(--space-8);
-        margin-block-end: var(--space-4);
         flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-3) var(--space-6);
 
-        @media (min-width: $lg) {
-            justify-content: flex-start;
-        }
-
-        a {
-            display: block;
-            transition: opacity var(--transition-fast);
-
-            &:hover { opacity: 0.8; }
-        }
+        a { display: block; }
 
         .main-footer__logo {
-            height: 48px;
+            display: block;
+            height: 3.5rem;
             width: auto;
-            max-width: 150px;
+            max-width: 11rem;
             object-fit: contain;
+            // The marks are drawn for white paper: keep them on it in dark mode.
             background: var(--white);
-            padding: var(--space-2);
-            border-radius: var(--radius-sm);
+            padding: var(--space-1) var(--space-2);
             // Partner strip reads as one quiet row; full colour on hover.
             filter: grayscale(1);
             opacity: 0.82;
@@ -152,175 +298,40 @@
         }
     }
 
-    &__col2 {
+    &__actions {
         display: flex;
-        justify-content: center;
-
-        .navigation {
-            display: flex;
-            align-self: flex-start;
-            flex-direction: column;
-            flex-wrap: wrap;
-            gap: var(--space-1);
-            justify-content: center;
-            list-style: none;
-            margin-bottom: 0;
-            margin-inline-start: 0;
-            padding-inline-start: 0;
-            text-align: center;
-
-            @media (min-width: $md) {
-                flex-direction: row;
-                gap: var(--space-4);
-                text-align: start;
-            }
-
-            @media (min-width: $lg) {
-                gap: var(--space-8);
-                justify-content: flex-start;
-            }
-
-            li {
-                &::before { content: none !important; }
-            }
-
-            > li {
-                flex: 1;
-                min-width: 160px;
-
-                @media (min-width: $md) { max-width: 20%; }
-
-                > a {
-                    font-weight: 600;
-                    font-size: var(--text-base);
-                    color: var(--footer-text);
-                    display: block;
-                    margin-bottom: 0;
-                    padding: var(--space-1) 0;
-                    transition: color var(--transition-fast);
-
-                    @media (min-width: $lg) {
-                        margin-bottom: var(--space-2);
-                    }
-
-                    &:hover {
-                        color: var(--primary);
-                        text-decoration: none;
-                    }
-                }
-
-                &.active > a,
-                &.current > a { color: var(--primary); }
-
-                > ul {
-                    margin-inline-start: 0;
-                    margin-top: var(--space-2);
-                    list-style: none;
-                    padding-inline-start: 0;
-
-                    li {
-                        margin-bottom: var(--space-1);
-
-                        a {
-                            font-size: var(--text-sm);
-                            color: var(--footer-text-muted);
-                            padding: var(--space-1) 0;
-                            display: block;
-                            transition: color var(--transition-fast);
-
-                            &:hover {
-                                color: var(--primary);
-                                text-decoration: none;
-                            }
-                        }
-
-                        ul {
-                            margin-inline-start: 0;
-                            padding-inline-start: var(--space-6);
-
-                            a {
-                                font-size: var(--text-xs);
-                                color: var(--footer-text-muted);
-                                // Full --space-xs, not half of it. These are
-                                // stacked block links with no gap between them,
-                                // so the padding IS the target: 13px text on a
-                                // half-step measured ~23.5px tall and sat under
-                                // the 24px floor (WCAG 2.2 §2.5.8, and the
-                                // adjacent rows offer no spacing exception).
-                                // The full step clears it at ~27.5px.
-                                padding: var(--space-1) 0;
-
-                                &:hover { color: var(--primary); }
-                            }
-                        }
-                    }
-                }
-            }
-
-            a {
-                color: var(--footer-text);
-                text-transform: none;
-
-                &:visited { color: var(--footer-text); }
-
-                &:hover, &:focus, &:active { color: var(--primary); }
-            }
-
-            ul {
-                display: none;
-                @media (min-width: $lg) { display: block; }
-            }
-
-            // Top-level entries without children, gathered into one column by
-            // footer.phtml (each used to head an empty column). They are
-            // top-level destinations, so they keep the top-level link voice,
-            // stacked — and stay visible below $lg, where nested lists hide.
-            > li.main-footer__menu-links > ul {
-                display: flex;
-                flex-direction: column;
-                gap: var(--space-1);
-                margin-top: 0;
-
-                > li {
-                    margin-bottom: 0;
-                }
-
-                > li > a {
-                    font-size: var(--text-base);
-                    font-weight: 600;
-                    color: var(--footer-text);
-
-                    &:hover { color: var(--primary); }
-                }
-
-                > li.active > a { color: var(--primary); }
-            }
-        }
-    }
-
-    // Hairline rule between top and bottom — the one decorative element
-    &__bottom {
-        background: var(--footer-surface);
-        border-top: 1px solid var(--footer-divider);
-        padding: var(--space-6) 0;
-        color: var(--footer-text);
-    }
-
-    &__bottom-container {
-        display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        flex-direction: column;
-        gap: var(--space-6);
-        justify-content: center;
-        text-align: center;
+        gap: var(--space-2);
+        // Below $lg the row is the install hint's room: see _pwa-install.scss.
+        flex: 1 1 100%;
 
         @media (min-width: $lg) {
-            flex-direction: row;
-            text-align: start;
+            flex: 0 0 auto;
         }
 
-        &.has-social-networks {
-            justify-content: space-between;
+        &:not(:has(a, button:not([hidden]))) { display: none; }
+    }
+
+    // ----------------------------------------------------------------------
+    // Bottom band: rights and licence
+    // ----------------------------------------------------------------------
+
+    &__bottom {
+        border-top: 1px solid var(--footer-divider);
+        padding-block: var(--space-5) var(--space-6);
+    }
+
+    // A paragraph of legal copy at --text-xs across a 1300px container is a
+    // 230-character line. Two columns bring it to a readable measure — the
+    // same answer short prose gets on a page (design principle 4).
+    &__copyright {
+        line-height: var(--line-height-normal);
+
+        @media (min-width: $lg) {
+            columns: 2;
+            column-gap: var(--space-12);
+            column-rule: 1px solid var(--footer-divider);
         }
     }
 
@@ -362,9 +373,6 @@
         flex-wrap: wrap;
         flex-shrink: 0;
         gap: var(--space-2);
-        justify-content: center;
-
-        @media (min-width: $lg) { order: 1; }
 
         a {
             display: inline-flex;

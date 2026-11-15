@@ -11,7 +11,7 @@
 // it rather than leave a bare download glyph to be guessed at.
 //
 // Borrows the footer social links' quiet chrome (same box, same border and
-// hover) so the bottom bar reads as one row. Stays hidden (the [hidden]
+// hover) so the partners band's controls read as one row. Stays hidden (the [hidden]
 // attribute) until js/pwa-install.js confirms installability.
 // ==========================================================================
 
@@ -98,17 +98,14 @@
 .main-footer__install {
     position: relative;
     display: flex;
-    justify-content: center;
-    flex-shrink: 0;
-    // Below $lg the bottom bar is a centred column: stretch the wrapper across
-    // the row so the hint, anchored to its inline-end, has the full row width
-    // to open leftward into and can't run off the screen edge.
-    align-self: stretch;
+    justify-content: flex-start;
+    // Below $lg the wrapper takes the rest of the actions row, so the hint,
+    // anchored to its inline-end, has the row's width to open leftward into
+    // and can't run off the screen edge.
+    flex: 1 1 auto;
 
-    // Desktop: sit with the social cluster at the end of the bottom bar
-    // (copyright keeps order 0 and stays first).
+    // Desktop: the control's own width, at the end of the partners band.
     @media (min-width: $lg) {
-        order: 2;
-        align-self: auto;
+        flex: 0 0 auto;
     }
 }

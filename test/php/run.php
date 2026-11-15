@@ -688,11 +688,56 @@ namespace IwacThemeTest {
     // ---- Templates ----------------------------------------------------------
 
     /** A site whose navigation records the options each renderMenu() got. */
+    /** A site whose footer menu renders as the given HTML. */
+    function fakeMenuSite(string $menuHtml): object
+    {
+        return new class($menuHtml) {
+            public function __construct(private string $html)
+            {
+            }
+
+            public function title(): string
+            {
+                return 'Collection Islam Afrique de l’Ouest';
+            }
+
+            public function url(): string
+            {
+                return '/s/afrique_ouest';
+            }
+
+            public function publicNav()
+            {
+                return $this;
+            }
+
+            public function menu()
+            {
+                return $this;
+            }
+
+            public function renderMenu($container, array $options): string
+            {
+                return $this->html;
+            }
+        };
+    }
+
     function fakeSite(array &$menuCalls): object
     {
         return new class($menuCalls) {
             public function __construct(private array &$calls)
             {
+            }
+
+            public function title(): string
+            {
+                return 'Islam West Africa Collection';
+            }
+
+            public function url(): string
+            {
+                return '/s/westafrica';
             }
 
             public function publicNav()
@@ -727,7 +772,7 @@ namespace IwacThemeTest {
             'footer_site_info' => '<p>About</p>',
         ]);
         $html = $fake->render('common/footer.phtml', ['site' => fakeSite($menuCalls)]);
-        check(str_contains($html, 'main-footer__col2'), 'footer menu column missing');
+        check(str_contains($html, 'main-footer__menu'), 'footer menu missing');
         // Empty means "all levels", the same as 0.
         same([['maxDepth' => -1]], $menuCalls);
     });
@@ -1280,38 +1325,41 @@ namespace IwacThemeTest {
             . '<li><a href="/p/references">Références</a></li><li class="active"><a href="/p/index">Index</a></li>'
             . '<li><a href="/p/expositions">Expositions</a><ul><li><a href="/p/hadj">Hadj</a></li></ul></li>'
             . '<li><a href="/p/a-propos">À propos</a></li></ul>';
-        $site = new class($menuHtml) {
-            public function __construct(private string $html)
-            {
-            }
-
-            public function publicNav()
-            {
-                $html = $this->html;
-                return new class($html) {
-                    public function __construct(private string $html)
-                    {
-                    }
-
-                    public function menu()
-                    {
-                        return $this;
-                    }
-
-                    public function renderMenu($container, array $options): string
-                    {
-                        return $this->html;
-                    }
-                };
-            }
-        };
-        $html = (new FakeView(['footer_menu' => '1']))->render('common/footer.phtml', ['site' => $site]);
-        preg_match('/<div class="main-footer__col2">(.*?)<\/div>/s', $html, $col);
-        $menu = $col[1] ?? '';
+        $html = (new FakeView(['footer_menu' => '1']))->render('common/footer.phtml', ['site' => fakeMenuSite($menuHtml)]);
+        preg_match('/<nav class="main-footer__menu main-footer__menu--sitemap"[^>]*>(.*?)<\/nav>/s', $html, $nav);
+        $menu = $nav[1] ?? '';
         // One links column, standing where Références stood, holding the three childless entries.
         check(str_contains($menu, '<li class="main-footer__menu-links"><ul><li><a href="/p/references">Références</a></li><li class="active"><a href="/p/index">Index</a></li><li><a href="/p/a-propos">À propos</a></li></ul></li>'), 'childless entries not grouped: ' . $menu);
         check(strpos($menu, 'Parcourir') < strpos($menu, 'main-footer__menu-links') && strpos($menu, 'main-footer__menu-links') < strpos($menu, 'Expositions'), 'column out of place');
         same(1, substr_count($menu, 'Bénin'), 'nested entries kept as they were');
+        check(str_contains($html, 'main-footer__top-container--sitemap'), 'the band takes the sitemap layout');
+    });
+
+    test('a footer menu with no sub-pages is a row of section links, printed as rendered', function () {
+        $fm = \OmekaTheme\Helper\FooterMenu::class;
+        $flat = '<ul class="navigation"><li><a href="/p/parcourir">Parcourir</a></li><li class="active"><a href="/p/index">Index</a></li></ul>';
+        same(['html' => $flat, 'layout' => 'index'], $fm::arrange($flat));
+        // Every entry a parent: columns, and nothing to gather.
+        $parents = '<ul class="navigation"><li><a href="/p/a">A</a><ul><li><a href="/p/b">B</a></li></ul></li></ul>';
+        same(['html' => $parents, 'layout' => 'sitemap'], $fm::arrange($parents));
+        // Nothing rendered, or not a list: returned untouched.
+        same(['html' => '', 'layout' => 'index'], $fm::arrange(''));
+        same(['html' => '<p>x</p>', 'layout' => 'index'], $fm::arrange('<p>x</p>'));
+        same(['html' => '', 'layout' => 'index'], (new FakeView())->FooterMenu(null));
+
+        $html = (new FakeView(['footer_menu' => '1', 'footer_menu_depth' => '1']))->render('common/footer.phtml', ['site' => fakeMenuSite($flat)]);
+        check(str_contains($html, 'main-footer__top-container--index'), 'the band takes the index layout');
+        check(str_contains($html, '<nav class="main-footer__menu main-footer__menu--index" aria-label="Footer">'), 'the menu is a named navigation landmark');
+        check(!str_contains($html, 'main-footer__menu-links'), 'a flat menu is not regrouped');
+    });
+
+    test('the footer closes on the site wordmark, and has no menu landmark without a menu', function () {
+        $menuCalls = [];
+        $html = (new FakeView(['footer_site_info' => '<p>About</p>']))->render('common/footer.phtml', ['site' => fakeSite($menuCalls)]);
+        check(str_contains($html, '<p class="main-footer__title"><a href="/s/westafrica">Islam West Africa Collection</a></p>'), 'wordmark missing');
+        check(!str_contains($html, '<nav'), 'an empty nav landmark');
+        check(str_contains($html, 'main-footer__top-container--no-menu'), 'no-menu layout');
+        same([], $menuCalls, 'the menu is not rendered when the setting is off');
     });
 
     test('partner logos link in the page language where the partner has one, and say so where not (T-23)', function () {

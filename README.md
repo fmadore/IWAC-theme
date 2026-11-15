@@ -84,7 +84,7 @@ Maximum number of levels to show in the site's top navigation bar. Set to 0 to s
 ### Footer
 - Footer Site description
 - Footer Menu
-- Footer Menu Depth
+- Footer Menu Depth — 1 (default) shows the main sections as one row; 2 or more adds their sub-pages in columns on wide screens
 - Footer Content
 - Footer Copyright
 
