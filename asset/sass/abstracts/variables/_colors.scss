@@ -4,11 +4,14 @@
 // Design philosophy: research instrument, not editorial product.
 // - Cool-leaning near-white surfaces with imperceptible warm hint at very
 //   low chroma (NOT cream / parchment).
-// - Inks are deep neutrals with a faint cool cast for legibility.
-// - Primary (IWAC orange) is desaturated from its raw hex toward an
-//   institutional, "burnished" register — used sparingly for focus,
-//   current-state, and intentional accents only.
-// - All derived colors come from --primary via color-mix(in oklab, ...)
+// - Inks are deep neutrals with a faint cool cast for legibility. INK is the
+//   brand: masthead, headlines, the 2px section rules.
+// - Primary is a SPOT colour — a deep press blue (2.33), printed the way a
+//   two-colour broadsheet prints its second plate: focus, current state,
+//   links, the hero ground, categorical dots. Never a wash, never a fill on
+//   every row. It replaced the burnt orange (2.6-2.32), which read as a
+//   generic template accent on warm off-white.
+// - All derived colors come from --primary-base via color-mix(in oklab, ...)
 //   so that admin overrides via theme settings cascade automatically.
 //
 // Why OKLCH: equal lightness steps look equal. HSL was perceptually
@@ -23,16 +26,20 @@
 @mixin iwac-light-theme {
   color-scheme: light;
 
-  // Working primary, slightly darkened from the raw hex for AA contrast
-  // on white surfaces and for an institutional, less-vibrant register.
+  // Working primary, slightly darkened from the raw hex. For the default deep
+  // blue seed this is #18298d: 10.7:1 on the hardest light surface, so it is
+  // legible as link text everywhere (the orange it replaced sat at 4.25:1 on
+  // --surface-sunken and needed a scoping rule to stay off body text).
   --primary:        color-mix(in oklab, var(--primary-base), black 8%);
   --primary-hover:  color-mix(in oklab, var(--primary-base), black 18%);
   --primary-active: color-mix(in oklab, var(--primary-base), black 28%);
 
   // Secondary — a stable SECOND categorical / data-series colour (chart
   // series 2, compare-corpus B). NOT a second brand accent for chrome:
-  // never used for focus, buttons, or links. Slate reads as the calm
-  // complement to orange. Consumed by the IwacVisualizations module.
+  // never used for focus, buttons, or links. Claret (2.33): the warm, dark
+  // counterweight to the press blue. It was slate until the blue primary
+  // arrived, and slate beside navy beside a blue --info made one stacked bar
+  // of three indistinguishable blues. Consumed by the IwacVisualizations module.
   --secondary: var(--secondary-base);
 
   // Inks — deep cool neutrals (NOT warm gray). The faint cool cast
@@ -48,9 +55,9 @@
   --black: #000;
 
   // Text and icons painted ON a --primary fill: filled buttons, submits, the
-  // hero search submit, a checked box's tick. White here, 4.78:1 on resting
+  // hero search submit, a checked box's tick. White here, 12.1:1 on resting
   // --primary and higher on hover/active, which darken. It flips in the dark
-  // block, where the ramp LIGHTENS and white falls to 3.23:1 — so a filled
+  // block, where the ramp is LIGHT and white falls to ~2.4:1 — so a filled
   // control must ask for this, never for --white. (After --white: the token
   // generator resolves a block top to bottom.)
   --ink-on-primary: var(--white);
@@ -92,8 +99,13 @@
   --warning-bg: oklch(96% 0.05 60);
   --error:      oklch(54% 0.20 25);
   --error-bg:   oklch(96% 0.04 25);
-  --info:       oklch(56% 0.14 245);
-  --info-bg:    oklch(96% 0.03 245);
+  // Teal (2.33), off the blue it used to share with the new primary: --info
+  // paints the AI-provenance block and is --type-audiovisual / Personnes, so
+  // a blue info dot beside a blue article dot was a legend nobody could read.
+  // Hue 200 sits 0.23 ΔEok from --primary and 0.11 from --success; at 52% it
+  // clears 4.5:1 as text on all four light surfaces (4.61 on the hardest).
+  --info:       oklch(52% 0.10 200);
+  --info-bg:    oklch(96% 0.025 200);
 
   // Categorical SERIES palette — the ordered qualitative scale charts cycle
   // through. Theme-owned since 2.13: it lived as a 19-hex array literal in
@@ -124,17 +136,23 @@
   // collapsed the warm group (6/10/13/16) to 0.012-0.025 ΔEok. The pairs
   // 15/17 and 5/19 (~0.03) — and 6/13, 6/16 in dark — predate this and need
   // a hue re-pick, not a lightness one.
+  //
+  // 2.33 (blue primary, claret secondary, teal info) re-picked the slots that
+  // the new leads crowded, by HUE this time: 3 (green-teal → leaf green, 0.065
+  // ΔEok from --info), 9 (teal → magenta; it is also Événements), 11 (steel →
+  // cornflower, 0.072 from --info) and 20 (teal → olive, 0.037 from --info).
+  // Every slot is now >= 0.09 ΔEok from all three leads in light.
   --series-1:  var(--primary);
   --series-2:  var(--secondary);
-  --series-3:  #4a8c6f;
+  --series-3:  #4f8751;
   --series-4:  #bb4c49;
   --series-5:  #7c5295;
   --series-6:  #ae8050;
   --series-7:  #2c5f7c;
   --series-8:  #876c45;
-  --series-9:  #4c9491;
+  --series-9:  #a53c75;
   --series-10: #824620;
-  --series-11: #4a8aab;
+  --series-11: #5682bb;
   --series-12: #6d5737;
   --series-13: #a46e3e;
   --series-14: #246648;
@@ -143,7 +161,7 @@
   --series-17: #8e7cb8;
   --series-18: #c76f6b;
   --series-19: #6b5b95;
-  --series-20: #007b72;
+  --series-20: #7d7728;
 
   // Categorical type-colour map — the SINGLE SOURCE for resource-type
   // colours shared with IwacSearch (result chips) and IwacVisualizations
@@ -164,7 +182,8 @@
   // The FIVE index (entity) types — People, Places, Organisations, Subjects,
   // Events. The first three reuse status hues; Sujets and Événements borrow
   // series slots, because no status hue is left that stands apart from the
-  // other nine type colours: purple (--series-5) and teal (--series-9) sit
+  // other nine type colours: purple (--series-5) and magenta (--series-9 —
+  // teal until 2.33, when --info took the teal) sit
   // >= 0.09 ΔEok from every other --type-* in both themes and clear 3:1 as
   // dots on every surface (check:tokens rule 9 asserts the contrast). This
   // map sits BELOW the series palette because build-tokens.js resolves a
@@ -199,8 +218,8 @@
   // primary/secondary variant is derived from these via color-mix(in oklab),
   // so a settings change cascades through every focus ring, glow, chart
   // series, and blockquote without hand-tuning.
-  --primary-base:   #e64a19;   // IWAC burnt orange — focus, state, accents
-  --secondary-base: #394f68;   // slate — shared 2nd categorical / data colour
+  --primary-base:   #1c2f9e;   // press blue — the spot colour: focus, state, links
+  --secondary-base: #85253a;   // claret — shared 2nd categorical / data colour
   @include iwac-light-theme;
 }
 
@@ -210,16 +229,34 @@
 // ==========================================================================
 // Dark = "lamplit reading room": warm-tinted deep neutrals (hue ~70, chroma
 // ~0.012) instead of the previous blue-cool set, which read as a generic
-// dashboard dark. The warmth is faint but perceptible, pairs with the burnt
-// orange brand, and keeps surface steps clearly layered (12 → 16 → 20%).
+// dashboard dark. The warmth is faint but perceptible, keeps the light blue
+// spot from turning the page into a blue dashboard, and keeps surface steps
+// clearly layered (12 → 16 → 20%).
 @mixin iwac-dark-theme {
   color-scheme: dark;
 
-  --primary:        color-mix(in oklab, var(--primary-base), white 12%);
-  --primary-hover:  color-mix(in oklab, var(--primary-base), white 22%);
-  --primary-active: color-mix(in oklab, var(--primary-base), black 4%);
+  // The dark primary is the seed RE-LIT, not the seed tinted. Mixing toward
+  // white (the recipe until 2.32: seed + white 12%) works for a mid-lightness
+  // seed like the old orange, and fails for a deep one: the blue seed sits at
+  // L 0.38, and white 12% left it at 2.0:1 on the dark ground — while every
+  // step toward white that would make it legible also bleaches it grey
+  // (white 55% is a dull lavender at a third of the seed's chroma).
+  //
+  // So the lightness is mostly FIXED and the hue and chroma are the seed's
+  // own. `oklab(L none none)` is a colour with no a/b of its own: in a
+  // color-mix, a component missing on one side is taken from the other
+  // (CSS Color 4 §12.4), so the mix interpolates lightness only and keeps
+  // --primary-base's a/b exactly. 10% of the seed's own lightness survives,
+  // so a lighter admin seed still lands a little lighter. Default seed →
+  // #7ba3ff (7.4:1 on the hardest dark surface); an orange seed → a light
+  // orange; any seed → something legible on the lamplit ground. Chroma past
+  // the sRGB gamut is clipped by the browser, and build-tokens.js clips the
+  // same way.
+  --primary:        color-mix(in oklab, var(--primary-base) 10%, oklab(78% none none));
+  --primary-hover:  color-mix(in oklab, var(--primary-base) 10%, oklab(86% none none));
+  --primary-active: color-mix(in oklab, var(--primary-base) 10%, oklab(70% none none));
 
-  // Lighten the slate so it stays legible as a data colour on dark surfaces.
+  // Lighten the claret so it stays legible as a data colour on dark surfaces.
   --secondary: color-mix(in oklab, var(--secondary-base), white 30%);
 
   --ink-strong:    oklch(97% 0.006 80);
@@ -229,10 +266,9 @@
   --muted:         oklch(62% 0.010 70);   // AA (>=4.5:1) on raised/sunken (was 59%, which fell to 4.39 on raised)
   --ink-on-pastel: oklch(15% 0.015 70);
 
-  // Dark ink on the lightened dark primary: 6.10:1 at rest, 7.10:1 on hover
-  // (seed + white 22%), 4.57:1 pressed (seed + black 4%) — where white reads
-  // 3.23 / 2.78 / 4.31:1. The skip link proved the pairing first (see
-  // utilities/_accessibility.scss), and it improves under a lighter seed.
+  // Dark ink on the re-lit dark primary — where white would read ~2.4:1. The
+  // skip link proved the pairing first (see utilities/_accessibility.scss).
+  // Ratios for the default seed are in docs/DESIGN-SYSTEM.md §2.
   --ink-on-primary: var(--ink-on-pastel);
 
   --surface:         oklch(16% 0.012 70);
@@ -261,8 +297,8 @@
   --warning-bg: color-mix(in oklab, oklch(55% 0.16 60) 22%, transparent);
   --error:      oklch(70% 0.19 25);
   --error-bg:   color-mix(in oklab, oklch(50% 0.18 25) 22%, transparent);
-  --info:       oklch(72% 0.14 245);
-  --info-bg:    color-mix(in oklab, oklch(50% 0.14 245) 22%, transparent);
+  --info:       oklch(74% 0.11 200);
+  --info-bg:    color-mix(in oklab, oklch(50% 0.10 200) 22%, transparent);
 
   // Categorical SERIES palette — see the light block. Slots 1-2 track the
   // brand seeds and so already differ here. Slots 3-20 were published at
@@ -272,7 +308,9 @@
   // slot 7 (#2c5f7c, 2.62:1 on --surface-raised) and slots 5 and 19
   // (3.02 / 3.07:1, no headroom) lightened to clear 3.1:1 on every dark
   // surface, hue and chroma held. The light pastels that failed in light
-  // keep their original values here, where they read at 6-9:1.
+  // keep their original values here, where they read at 6-9:1. 2.33 re-picked
+  // 9 and 20 (teal, crowding the new teal --info) to the light theme's new
+  // hues, and 14 (0.079 ΔEok from --info) a step yellower.
   --series-1:  var(--primary);
   --series-2:  var(--secondary);
   --series-3:  #4a8c6f;
@@ -281,18 +319,18 @@
   --series-6:  #d4a574;
   --series-7:  #386b88;
   --series-8:  #876c45;
-  --series-9:  #5ba3a0;
+  --series-9:  #da7baa;
   --series-10: #cc8963;
   --series-11: #4a8aab;
   --series-12: #a68e6d;
   --series-13: #d49b6a;
-  --series-14: #6fb08e;
+  --series-14: #86b37d;
   --series-15: #9e7bb8;
   --series-16: #e0a88a;
   --series-17: #8e7cb8;
   --series-18: #d87e7a;
   --series-19: #6c5c96;
-  --series-20: #4db6ac;
+  --series-20: #afa851;
 
   // Categorical type-colour map — REDECLARED here, not inherited.
   //

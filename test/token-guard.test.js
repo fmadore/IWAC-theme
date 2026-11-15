@@ -49,25 +49,25 @@ test('override: re-declaring a theme token fails unless marked', () => {
 });
 
 test('fallback: hex, non-colour and chained fallbacks equal the canonical light value', () => {
-    clean('a.css', '.a { color: var(--primary, #ce4115); border-radius: var(--panel-radius, 0.5rem); }');
+    clean('a.css', '.a { color: var(--primary, #18298d); border-radius: var(--panel-radius, 0); }');
     fires('a.css', '.a { color: var(--primary, #e64a19); }', 'fallback');
     fires('a.css', '.a { line-height: var(--line-height-relaxed, 1.6); }', 'fallback');
     clean('a.css', '.a { background: var(--panel-bg, var(--surface, #fdfcfb)); }');
     fires('a.css', '.a { color: var(--ink-strong, var(--ink, #13161c)); }', 'fallback');
-    clean('a.css', '.a { outline: var(--focus-outline, 2px solid var(--focus-color, #ce4115)); }');
+    clean('a.css', '.a { outline: var(--focus-outline, 2px solid var(--focus-color, #18298d)); }');
 });
 
 test('raw-colour: every notation is caught outside a fallback, in CSS only', () => {
     for (const lit of ['#fff', 'rgba(0, 0, 0, 0.5)', 'hsl(10 50% 50%)', 'oklch(60% 0.1 40)', 'lab(50% 20 20)', 'color(srgb 1 0 0)']) {
         fires('a.css', `.a { color: ${lit}; }`, 'raw-colour');
     }
-    clean('a.css', '.a { box-shadow: var(--shadow-sm, 0 1px 3px 0 rgba(9, 11, 15, 0.12), 0 1px 2px -1px rgba(20, 22, 27, 0.06)); }');
+    clean('a.css', '.a { box-shadow: var(--shadow-lg, 0 4px 12px -4px rgba(9, 11, 15, 0.18), 0 1px 3px 0 rgba(20, 22, 27, 0.06)); }');
     clean('a.css', '.a { color: #fff; } /* allow-hex */');
     clean('a.js', "const accent = '#abcdef';");
 });
 
 test('raw-colour: a declaration wrapped over several lines is read as one', () => {
-    clean('a.css', '.a {\n  box-shadow: var(\n    --shadow-sm,\n    0 1px 3px 0 rgba(9, 11, 15, 0.12),\n    0 1px 2px -1px rgba(20, 22, 27, 0.06)\n  );\n}');
+    clean('a.css', '.a {\n  box-shadow: var(\n    --shadow-lg,\n    0 4px 12px -4px rgba(9, 11, 15, 0.18),\n    0 1px 3px 0 rgba(20, 22, 27, 0.06)\n  );\n}');
 });
 
 test('colour mixing: oklab only, and never toward black or white', () => {
@@ -111,15 +111,16 @@ test('font-weight: a weight the theme does not load fails', () => {
 });
 
 test('script-fallback: runtime colour fallbacks equal the light value', () => {
-    clean('a.ts', "const p = readColor('--primary', '#ce4115');");
+    clean('a.ts', "const p = readColor('--primary', '#18298d');");
     fires('a.ts', "const p = readColor('--primary', '#e64a19');", 'script-fallback');
 });
 
 test('fallback-object: FALLBACK_* tables and the series palette match tokens.json', () => {
     fires('a.js', "var FALLBACK_LIGHT = {\n  ink: '#000000'\n};", 'fallback-object');
     // A colour token published under `values` (declared outside _colors.scss)
-    // is pinned too — --panel-bg is --surface in light, --surface-raised in dark.
-    fires('a.js', "var FALLBACK_DARK = {\n  panelBg: '#110c08'\n};", 'fallback-object');
+    // is pinned too — --panel-bg is --surface in both themes since 2.33 (it was
+    // --surface-raised in dark), so the old dark value now fails.
+    fires('a.js', "var FALLBACK_DARK = {\n  panelBg: '#1a1510'\n};", 'fallback-object');
     clean('a.js', `var FALLBACK_DARK = {\n  panelBg: '${tokens.values.dark['--panel-bg']}'\n};`);
     clean('a.js', `var FALLBACK_DARK = {\n  surface: '${tokens.dark['--surface']}'\n};`);
     const series = (arr) => arr.map((h) => `'${h}'`).join(', ');
@@ -150,7 +151,7 @@ test('freshness: current passes, ahead is reported, behind or diverged fails', (
 });
 
 test('scope: a :root-only composition of a themed token fails; :root, body passes', () => {
-    const ramp = 'color-mix(in oklab, var(--primary, #ce4115) 8%, var(--surface, #fdfcfb))';
+    const ramp = 'color-mix(in oklab, var(--primary, #18298d) 8%, var(--surface, #fdfcfb))';
     fires('a.css', `:root { --iwac-test-ramp: ${ramp}; }`, 'scope');
     fires('a.css', `html { --iwac-test-ramp: ${ramp}; }`, 'scope');
     fires('a.css', `:root:not([data-x]) { --iwac-test-ramp: ${ramp}; }`, 'scope');
@@ -167,13 +168,13 @@ test('scope: a :root-only composition of a themed token fails; :root, body passe
     });
     assert.deepEqual(hits.map((v) => v.rule), []);
     // Theme-independent values and component-scoped compositions are fine.
-    clean('a.css', ':root { --iwac-test-gap: 3px; --iwac-test-r: var(--radius-md, 0.5rem); }');
+    clean('a.css', ':root { --iwac-test-gap: 3px; --iwac-test-r: var(--radius-md, 0); }');
     clean('a.css', `.iwac-test-block { --iwac-test-ramp: ${ramp}; }`);
 });
 
 test('scope: a composition of a module property that flips is caught too', () => {
-    fires('a.css', ':root, body { --iwac-test-a: var(--primary, #ce4115); }\n:root { --iwac-test-b: var(--iwac-test-a); }', 'scope');
-    clean('a.css', ':root, body { --iwac-test-a: var(--primary, #ce4115); --iwac-test-b: var(--iwac-test-a); }');
+    fires('a.css', ':root, body { --iwac-test-a: var(--primary, #18298d); }\n:root { --iwac-test-b: var(--iwac-test-a); }', 'scope');
+    clean('a.css', ':root, body { --iwac-test-a: var(--primary, #18298d); --iwac-test-b: var(--iwac-test-a); }');
 });
 
 test('focus-outline: dropping the outline anywhere but :focus:not(:focus-visible) fails', () => {
@@ -184,7 +185,7 @@ test('focus-outline: dropping the outline anywhere but :focus:not(:focus-visible
     fires('a.svelte', '<style>\n  .a:global(:focus-visible) { outline: none; }\n</style>', 'focus-outline');
     // A base rule takes the outline away from every state that does not
     // restore one — and a box-shadow ring on :focus-visible does not.
-    fires('a.css', '.slider { outline: none; }\n.slider:focus-visible { box-shadow: var(--ring-focus, 0 0 0 3px rgba(206, 65, 21, 0.3)); }', 'focus-outline');
+    fires('a.css', '.slider { outline: none; }\n.slider:focus-visible { box-shadow: var(--ring-focus, 0 0 0 3px rgba(24, 41, 141, 0.3)); }', 'focus-outline');
     // One sanctioned selector does not excuse its neighbour in the list.
     fires('a.css', '.a:focus:not(:focus-visible),\n.b:focus { outline: none; }', 'focus-outline');
 });
@@ -192,8 +193,8 @@ test('focus-outline: dropping the outline anywhere but :focus:not(:focus-visible
 test('focus-outline: the sanctioned exception and real outlines pass', () => {
     clean('a.css', '.a:focus:not(:focus-visible) { outline: none; }');
     clean('a.svelte', '<style>\n  .a:focus:not(:focus-visible) { outline: none; }\n</style>');
-    clean('a.css', '.a:focus-visible { outline: var(--focus-outline, 2px solid #ce4115); outline-offset: 2px; }');
-    clean('a.css', '.a:focus-visible { outline: 2px solid transparent; box-shadow: var(--ring-focus, 0 0 0 3px rgba(206, 65, 21, 0.3)); }');
+    clean('a.css', '.a:focus-visible { outline: var(--focus-outline, 2px solid #18298d); outline-offset: 2px; }');
+    clean('a.css', '.a:focus-visible { outline: 2px solid transparent; box-shadow: var(--ring-focus, 0 0 0 3px rgba(24, 41, 141, 0.3)); }');
     clean('a.css', '.a:hover { outline-offset: 4px; }');
 });
 

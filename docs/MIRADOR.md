@@ -47,8 +47,8 @@ one-off overrides.
     "light": {
       "palette": {
         "mode": "light",
-        "primary":    { "main": "#ce4115" },
-        "secondary":  { "main": "#ce4115" },
+        "primary":    { "main": "#18298d" },
+        "secondary":  { "main": "#18298d" },
         "shades":     { "dark": "#f4f1ef", "main": "#fdfcfb", "light": "#ffffff" },
         "background": { "default": "#f7f5f3", "paper": "#fdfcfb" },
         "text":       { "primary": "#13161c", "secondary": "#3f4349" },
@@ -58,8 +58,8 @@ one-off overrides.
     "dark": {
       "palette": {
         "mode": "dark",
-        "primary":    { "main": "#ec653f" },
-        "secondary":  { "main": "#ec653f" },
+        "primary":    { "main": "#7aa2ff" },
+        "secondary":  { "main": "#7aa2ff" },
         "shades":     { "dark": "#080503", "main": "#110c08", "light": "#1a1510" },
         "background": { "default": "#080503", "paper": "#1a1510" },
         "text":       { "primary": "#e7e4df", "secondary": "#b5b0aa" },
@@ -77,7 +77,7 @@ the visitor's actual light/dark choice on load (see below).
 
 An item page shows one record's images in one window. Out of the box Mirador is
 a research *workspace* — it lets the reader close that window and open others —
-and its chrome says so: a filled, shadowed orange "+" at the top of the rail,
+and its chrome says so: a filled, shadowed primary "+" at the top of the rail,
 and a close × on the only window, which leaves an empty workspace until reload.
 Three keys lock it down. Each is checked against Mirador **4.2.6**'s
 `src/config/settings.js` (and present in the bundle the module ships):
@@ -134,7 +134,7 @@ the page rather than a bolted-on widget.
 
 | MUI palette key                  | Light token → hex            | Dark token → hex             |
 | -------------------------------- | ---------------------------- | ---------------------------- |
-| `primary.main` / `secondary.main`| `--primary` `#ce4115`        | `--primary` `#ec653f`        |
+| `primary.main` / `secondary.main`| `--primary` `#18298d`        | `--primary` `#7aa2ff`        |
 | `shades.dark`                    | `--surface-sunken` `#f4f1ef` | `--background` `#080503`      |
 | `shades.main`                    | `--surface` `#fdfcfb`        | `--surface` `#110c08`        |
 | `shades.light`                   | `--white` `#ffffff`          | `--surface-raised` `#1a1510` |
@@ -144,9 +144,14 @@ the page rather than a bolted-on widget.
 | `text.secondary`                 | `--ink-light` `#3f4349`      | `--ink-light` `#b5b0aa`      |
 | `divider`                        | `--border` `#ced1d6`         | `--border` `#352f28`         |
 
-`secondary` is set to `--primary` (orange), not the theme's `--secondary` slate:
-slate is a **data-only** series colour (charts), never UI chrome, and Mirador's
-`secondary` is chrome.
+`secondary` is set to `--primary` (the press blue), not the theme's
+`--secondary` claret: that is a **data-only** series colour (charts), never UI
+chrome, and Mirador's `secondary` is chrome.
+
+> **2.33 changed the primary** from burnt orange (`#ce4115` / `#ec653f`) to the
+> press blue above. The Mirador palette is concrete hex in the module's config,
+> so it does not follow the theme on its own: paste the two `primary` /
+> `secondary` pairs into the module settings after updating the theme.
 
 ## Regenerating after a token change
 
@@ -164,9 +169,11 @@ const toHex=(L,a,b)=>{const[r,g,bl]=oklabToLin(L,a,b),f=x=>Math.round(linToSrgb(
 const oklch=(L,C,h)=>toHex(L,C*Math.cos(h*Math.PI/180),C*Math.sin(h*Math.PI/180));
 // color-mix(in oklab, base, black|white p%)
 const mix=(hex,to,p)=>{const[r,g,b]=hexToLin(hex),A=linToOklab(r,g,b);return toHex(A[0]*(1-p)+to[0]*p,A[1]*(1-p)+to[1]*p,A[2]*(1-p)+to[2]*p);};
+// color-mix(in oklab, base 10%, oklab(L none none)) — lightness only; a/b are the seed's
+const relight=(hex,L)=>{const[r,g,b]=hexToLin(hex),A=linToOklab(r,g,b);return toHex(A[0]*0.1+L*0.9,A[1],A[2]);};
 const BLACK=[0,0,0],WHITE=[1,0,0];
-console.log('light --primary', mix('#e64a19',BLACK,0.08));  // #ce4115
-console.log('dark  --primary', mix('#e64a19',WHITE,0.12));  // #ec653f
+console.log('light --primary', mix('#1c2f9e',BLACK,0.08));  // #18298d
+console.log('dark  --primary', relight('#1c2f9e',0.78));    // #7aa2ff
 console.log('light surface  ', oklch(0.992,0.002,60));      // #fdfcfb
 console.log('dark  surface  ', oklch(0.16,0.012,70));       // #110c08
 // …repeat oklch(L,C,h) for each token in _colors.scss

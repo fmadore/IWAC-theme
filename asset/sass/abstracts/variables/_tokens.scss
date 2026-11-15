@@ -20,36 +20,17 @@
   --shadow-color-strong: color-mix(in oklab, oklch(15% 0.01 264) 18%, transparent);
   --shadow-color-subtle: color-mix(in oklab, oklch(20% 0.01 264) 6%,  transparent);
 
-  // Four steps, deliberately not five: shadows are reserved for true panels
-  // and overlays here — rows and tags are divided by rules instead — so an
-  // elevation scale long enough for a card-based grammar is a scale that
-  // gets used like one. --shadow-xl (the fifth) was removed in 2.10: it was
-  // referenced by nothing in any of the three repos.
-  //   xs — hairline lift on quiet chrome    sm — panels (--panel-shadow)
-  //   md — hover / raised panels            lg — overlays: drawer, modal
-  --shadow-xs: 0 1px 2px 0  var(--shadow-color-subtle);
-  --shadow-sm: 0 1px 3px 0  var(--shadow-color), 0 1px 2px -1px var(--shadow-color-subtle);
-  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
-  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color-subtle);
+  // ONE real elevation is left (2.33, "square and flat"): --shadow-lg, for
+  // what genuinely floats over the page — the drawer, menus, popovers, the
+  // typeahead. It is deliberately small: separation, not depth. The page
+  // itself is flat: panels, cards and buttons carry no shadow, rules do the
+  // dividing (see --shadow-xs/sm/md and --panel-shadow in :root below).
+  --shadow-lg: 0 4px 12px -4px var(--shadow-color-strong), 0 1px 3px 0 var(--shadow-color-subtle);
 
   --panel-bg: var(--surface);
   // See the note in :root — re-declare so the inner var() resolves against
   // the --border active in this cascade block.
   --panel-border: 1px solid var(--border);
-  // Composed from --shadow-sm, which this mixin redeclares — so it has to be
-  // redeclared here too, or it freezes at whichever theme's shadow was in
-  // scope on :root. See the substitution-scope note in :root below.
-  --panel-shadow: var(--shadow-sm);
-
-  // Glow — the primary-tinted halo, ONE effect in three states (active /
-  // rest / hover) on the single filled button. Not an elevation scale;
-  // base/elements/_buttons.scss is the only sanctioned consumer.
-  //
-  // Lives in the theme mixins rather than in :root because it composes
-  // --primary, which flips per theme. See :root below.
-  --glow-xs: 0 1px 3px 0  color-mix(in oklab, var(--primary) 20%, transparent);
-  --glow-sm: 0 2px 6px -1px color-mix(in oklab, var(--primary) 25%, transparent);
-  --glow-md: 0 4px 12px -2px color-mix(in oklab, var(--primary) 30%, transparent);
 
   // Composed focus tokens — see the :root note below for the naming and the
   // rule for picking between the outline and the ring. They live in the mixin
@@ -99,18 +80,17 @@
   // ========================================================================
   // Border Radius Scale
   // ========================================================================
-  // Three non-pill steps, each with ONE job. A rules-not-boxes system that
-  // publishes four interchangeable radii invites four different answers to
-  // the same question — which is how maps ended up at 6px, cards at 8px and
-  // the compact search panel at 12px on the same page.
-  --radius-sm: 0.375rem; // 6px  — inline marks: chips, tags, map controls
-  --radius-md: 0.5rem;   // 8px  — DEFAULT for panels, controls, inputs.
-                         // Tightened from 12px to feel more
-                         // institutional/instrument-like, less consumer.
-  --radius-lg: 0.75rem;  // 12px — media only: figures, thumbnails, carousel
-                         // plates. A photograph reads as matted, not as a
-                         // card; nothing that is chrome may use this.
-  --radius-full: 9999px; // pills
+  // SQUARE (2.33). Type is set in metal and cut on a guillotine: a broadsheet
+  // has no rounded corners, and the 6/8/12px steps were the single loudest
+  // "generic web app" tell on the page. The three steps stay PUBLISHED — two
+  // modules consume them in ~230 places, and each keeps its job, so a site
+  // that wants softer corners back changes three values here — but all three
+  // compute to 0. --radius-full stays round: it is for dots and switch thumbs,
+  // which are circles, not corners.
+  --radius-sm: 0; // inline marks: chips, tags, map controls
+  --radius-md: 0; // DEFAULT for panels, controls, inputs
+  --radius-lg: 0; // media only: figures, thumbnails, carousel plates
+  --radius-full: 9999px; // dots, switch thumbs — never a control's outline
   // (--radius-xl, 16px, removed in 2.10 — declared, referenced by nothing in
   //  any of the three repos, and one more way to disagree about a corner.)
 
@@ -228,6 +208,23 @@
   // Theme-independent panel geometry. --radius-md does not flip per theme.
   --panel-radius: var(--radius-md);
 
+  // FLAT (2.33). The page carries no elevation: panels sit on the surface
+  // and are divided by rules, the filled button no longer floats or glows.
+  // These stay published because both modules consume them (shadow-xs/sm/md
+  // on their panels and controls, the glows re-declared by the embed's brand
+  // sheet), so every consumer goes flat at once instead of each re-deciding.
+  // A transparent zero-offset shadow rather than `none`, because a shadow
+  // token is also composed into comma-separated lists (`var(--ring-focus),
+  // var(--shadow-sm)`), where `none` would invalidate the whole declaration.
+  // Theme-independent, so they live here, not in the light/dark mixins.
+  --shadow-xs: 0 0 0 0 transparent;
+  --shadow-sm: 0 0 0 0 transparent;
+  --shadow-md: 0 0 0 0 transparent;
+  --panel-shadow: 0 0 0 0 transparent;
+  --glow-xs: 0 0 0 0 transparent;
+  --glow-sm: 0 0 0 0 transparent;
+  --glow-md: 0 0 0 0 transparent;
+
   // ========================================================================
   // Easing & Transitions
   // ========================================================================
@@ -280,26 +277,14 @@
   --shadow-color-strong: color-mix(in oklab, black 25%, transparent);
   --shadow-color-subtle: color-mix(in oklab, black 12%, transparent);
 
-  --shadow-xs: 0 1px 3px 0  var(--shadow-color-subtle), 0 1px 2px -1px color-mix(in oklab, black 10%, transparent);
-  --shadow-sm: 0 2px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color-subtle);
-  --shadow-md: 0 6px 16px -4px var(--shadow-color-strong), 0 4px 8px -4px var(--shadow-color-strong);
-  --shadow-lg: 0 12px 28px -8px color-mix(in oklab, black 35%, transparent), 0 8px 16px -8px color-mix(in oklab, black 20%, transparent);
+  --shadow-lg: 0 4px 14px -4px color-mix(in oklab, black 40%, transparent), 0 1px 3px 0 color-mix(in oklab, black 20%, transparent);
 
-  --panel-bg: var(--surface-raised);
+  // The page ground, not a raised tone: with no shadow to lift a panel, a
+  // lighter fill would read as a box. Panels are divided by rules (2.33).
+  --panel-bg: var(--surface);
   // See the substitution-scope note in the :root block — re-declare for the
   // dark cascade, or these freeze at the light composition on <body>.
   --panel-border: 1px solid var(--border);
-  --panel-shadow: var(--shadow-sm);
-
-  // Glow — same recipe as light; it is the REFERENT (--primary) that flips,
-  // which is exactly why the declaration has to be repeated here. The old
-  // comment on this block said the glows "already derive from --primary so
-  // they auto-update", and that was true of the @media dark block (where the
-  // dark values land on :root) and false of the manual toggle (where they land
-  // on <body> and --glow-* stays computed from :root's light primary).
-  --glow-xs: 0 1px 3px 0  color-mix(in oklab, var(--primary) 20%, transparent);
-  --glow-sm: 0 2px 6px -1px color-mix(in oklab, var(--primary) 25%, transparent);
-  --glow-md: 0 4px 12px -2px color-mix(in oklab, var(--primary) 30%, transparent);
 
   // Composed focus tokens — same recipe as light, different referents.
   --focus-outline: 2px solid var(--focus-color);

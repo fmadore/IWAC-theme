@@ -151,14 +151,32 @@ function resolve(value, scope) {
         if (pa === null && pb === null) { pa = 50; pb = 50; }
         else if (pa === null) pa = 100 - pb;
         else if (pb === null) pb = 100 - pa;
-        const ca = resolve(a.color, scope);
-        const cb = resolve(b.color, scope);
-        if (ca === TRANSLUCENT || cb === TRANSLUCENT) return TRANSLUCENT;
-        if (!ca || !cb) return null;
-        const oa = hexToOklab(ca);
-        const ob = hexToOklab(cb);
+        // `oklab(L none none)` — a lightness with MISSING a/b. In a mix, a
+        // component missing on one side takes the other side's value (CSS
+        // Color 4 §12.4), so only lightness interpolates: the dark primary
+        // re-lights the seed this way. Represented as [L, null, null].
+        const lightnessOnly = (c) => {
+            const lm = c.match(/^oklab\(\s*([\d.]+)(%?)\s+none\s+none\s*\)$/i);
+            return lm ? [lm[2] ? parseFloat(lm[1]) / 100 : parseFloat(lm[1]), null, null] : null;
+        };
+        const toOklab = (c) => {
+            const missing = lightnessOnly(c);
+            if (missing) return missing;
+            const hex = resolve(c, scope);
+            return typeof hex === 'string' ? hexToOklab(hex) : hex;
+        };
+        const oa = toOklab(a.color);
+        const ob = toOklab(b.color);
+        if (oa === TRANSLUCENT || ob === TRANSLUCENT) return TRANSLUCENT;
+        if (!oa || !ob) return null;
         const wa = pa / (pa + pb), wb = pb / (pa + pb);
-        return oklabToHex(oa[0] * wa + ob[0] * wb, oa[1] * wa + ob[1] * wb, oa[2] * wa + ob[2] * wb);
+        const channel = (i) => {
+            if (oa[i] === null && ob[i] === null) return 0;
+            if (oa[i] === null) return ob[i];
+            if (ob[i] === null) return oa[i];
+            return oa[i] * wa + ob[i] * wb;
+        };
+        return oklabToHex(channel(0), channel(1), channel(2));
     }
 
     return null; // unknown form (e.g. a non-colour value) — skip
