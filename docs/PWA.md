@@ -136,9 +136,10 @@ in the PWA where the collection's own material can show: the icon has to be a
 mark, but a screenshot is allowed to be a picture.
 
 Both are the homepage banner. The catch is that `asset/img/banner.webp` is a
-plain colour photograph — the orange duotone is applied by CSS at render time
+plain colour photograph — the blue duotone is applied by CSS at render time
 (`_banner.scss`: a grayscale plate multiplied over `color-mix(in oklab,
-var(--primary) 90%, black 10%)`, the plate at 90% opacity). So
+var(--primary-base) 88%, white 12%)`, the plate at 90% opacity, under a 4px
+halftone dot screen). So
 `gen-pwa-icons.js` replays that composite offline, per pixel, and the numbers it
 replays live in [`scripts/lib/hero-duotone.js`](../scripts/lib/hero-duotone.js)
 — read by the generator *and* by `npm run check:tokens`, which fails when the
@@ -147,7 +148,7 @@ you the screenshots are stale.
 
 Two more things hold it together:
 
-- **The ground is derived, never typed.** It is `--primary` from `tokens.json`,
+- **The ground is derived, never typed.** It is the `--primary-base` seed from `tokens.json`,
   mixed in Oklab by [`scripts/lib/oklab.js`](../scripts/lib/oklab.js) — the same
   maths `build-tokens.js` uses, moved there rather than pasted so an
   admin-configured brand colour can't leave the screenshot behind.

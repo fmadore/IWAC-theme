@@ -11,6 +11,24 @@ create.
 
 ## [Unreleased]
 
+**Upgrade note.** The default primary colour is now a press blue (`#1C2F9E`) instead of burnt orange, and the default secondary (chart) colour is claret (`#85253A`) instead of slate. Most sites saved the old defaults the first time an admin pressed Save in the theme settings; the theme now reads exactly `#E64A19` and `#394F68` as "not set", so those sites switch to the new colours without any action. A site that chose any other colour keeps it. To keep the orange on purpose, store a neighbouring value such as `#E64A1A` under *Themes → Configure → Theme's Primary Color*. The Mirador viewer's colours are set in the Mirador module, not by the theme: paste the new values from `docs/MIRADOR.md` into its settings. Sites with a customised resource-page or page layout need no other change.
+
+### Changed
+
+- **A new look: ink and one spot colour.** The site now prints like a two-colour newspaper. Ink carries the masthead, headlines and the thick section rules; a deep blue is the one accent, used for links, the current page, focus and the single filled button. It replaces the burnt orange on warm off-white. In dark mode the blue is automatically lightened (keeping its hue) so it stays legible on the dark page, and any colour an admin sets in the theme settings follows the same rule.
+- **Square and flat.** Corners are square everywhere (buttons, fields, chips, panels, images) and nothing on the page casts a shadow; the filled button no longer glows or lifts on hover. Only things that float over the page, such as menus, the mobile drawer and search suggestions, keep a small shadow.
+- **Page sections are ruled, not boxed.** Text blocks and block groups on site pages are no longer white cards on a grey page. The page is one flat surface, and each section after the first opens on a thick ink rule, the way the "How to cite" and "Linked resources" sections already did.
+- **Short texts are set in newspaper columns.** A short HTML block (up to about 1,800 characters, with no table, image, embed or quotation in it), such as "About the collection" on the homepage, now flows into two balanced columns on wide screens instead of a narrow column with empty space beside it. Headings span both columns, and phones still get a single column. Long texts fill the full page width in one column. The same goes for the AI-generated summary on item pages, and descriptions, full texts and the citation panel no longer stop at a fixed reading width.
+- **Fewer capital letters.** Spaced-out capitals are kept for the main menu and for datelines and small headers ("ARTICLE · LA NATION · 15 NOV 1991", "ON THIS DAY"). Field labels on item pages, breadcrumbs, table headers, the Linked resources filters and sort, the citation styles, the homepage figures' captions and other labels are now written in normal sentence case.
+- **The homepage banner** now prints the collage of newspaper covers in black on the blue, through a fine halftone dot screen, like a newspaper photograph. The banner keeps the same deep blue in dark mode.
+- **Colours in charts and legends.** Because the accent is now blue, the colours that mark resource types were re-chosen so that no two look alike: Islamic periodicals are claret, audiovisual items (and People) teal, and Events magenta; AI-generated content is marked in teal too. Four chart series colours were changed for the same reason. The app screenshots shown when installing the site as an app were redrawn to match.
+
+- **Design-token contract (for the IwacSearch and IwacVisualizations modules).** No token was removed or renamed, but several changed value: `--primary`, `--secondary`, `--info` and the resource-type and chart-series colours above; `--radius-sm/md/lg` and `--panel-radius` are now `0`; `--shadow-xs/sm/md`, `--panel-shadow` and `--glow-xs/sm/md` are now flat (a transparent zero shadow), `--shadow-lg` is smaller, and the dark `--panel-bg` is `--surface`. The dark `--primary` is derived differently (lightness only, see `docs/DESIGN-SYSTEM.md` §1), which an embed that recomputes it must mirror. Both modules need their fallbacks updated after `npm run sync:tokens`.
+
+### Removed
+
+- **The thin image strip at the top of inner pages.** Pages other than the homepage now open directly on their breadcrumb and title under the menu, which also loads one image less on every page.
+
 ### Security
 
 - **minimatch 11 in the build toolchain.** An npm `overrides` entry pins minimatch to 11.0.5, clearing a moderate denial-of-service advisory in minimatch below 11.0.1 ([GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249)), which ESLint 10 still reaches through its own minimatch 10 requirement. ESLint lints the same files with the same results on minimatch 11. It is a development dependency: nothing changes in the release ZIP or on the sites. IwacSearch already carries the same override.

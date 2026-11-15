@@ -63,7 +63,7 @@ npm install
 ## Theme Settings
 
 ### General Settings
-- **Primary Color** - The theme's primary brand color (default: `#E64A19`, IWAC Burnt Orange). Every primary variant (hover, active, focus ring, glows, blockquote) and the data-visualization sequential ramps derive from it via `color-mix(in oklab, …)`. Automatically adapts for dark mode.
+- **Primary Color** - The theme's spot colour (default: `#1C2F9E`, press blue). Every primary variant (hover, active, focus ring, blockquote, the homepage banner ground) and the data-visualization sequential ramps derive from it via `color-mix(in oklab, …)`. Dark mode re-lights it, keeping its hue. The former default `#E64A19` (burnt orange) is read as unset, so a site that once saved its settings gets the blue.
 - **Secondary Color** - A second, **non-brand** color used only for data visualizations — chart series 2 and corpus comparison in the IwacVisualizations module (default: `#394f68`, slate blue). Not used for buttons, links, or focus. See [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md).
 - **Enable PWA (installable app)** - Adds the web app manifest, icons, and the footer install button so visitors can install the site as an app. Default on. See [`docs/PWA.md`](docs/PWA.md).
 
@@ -284,7 +284,7 @@ deprecated.
 
 /* Effects and motion */
 --shadow-xs, --shadow-sm, --shadow-md, --shadow-lg
---radius-sm, --radius-md, --radius-lg, --radius-full  /* full is for dots, not controls */
+--radius-sm, --radius-md, --radius-lg, --radius-full  /* sm/md/lg are 0 (square, 2.33); full is for dots */
 --transition-fast, --transition-base, --transition-slow  /* duration + easing */
 --duration-fast, --duration-base, --duration-slow        /* for *-duration */
 
@@ -294,8 +294,8 @@ deprecated.
 
 The raw brand seeds `--primary-base` and `--secondary-base` are injected at
 runtime from the admin's Primary/Secondary Color settings in
-`view/layout/layout.phtml`; every variant (hover/active, focus ring, glows,
-blockquote, chart ramps…) is derived from them in Sass via
+`view/layout/layout.phtml`; every variant (hover/active, focus ring,
+blockquote, hero ground, chart ramps…) is derived from them in Sass via
 `color-mix(in oklab, …)`. The old HSL components `--primary-hue` /
 `--primary-sat` were removed in the OKLCH migration.
 

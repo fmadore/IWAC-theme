@@ -29,31 +29,49 @@ Two **brand seeds** are admin-configurable and injected at runtime in
 [`view/layout/layout.phtml`](../view/layout/layout.phtml):
 
 ```php
-$primaryColor   = $this->themeSetting('primary_color')   ?? '#e64a19';
-$secondaryColor = $this->themeSetting('secondary_color') ?? '#394f68';
+$brandSeeds = $this->BrandSeeds($this->themeSetting('primary_color'), $this->themeSetting('secondary_color'));
+// → ['primary' => '#1c2f9e', 'secondary' => '#85253a'] unless the admin chose otherwise
 ```
 
 ```html
 <style>
   :root {
-    --primary-base:   <?= $primaryColor ?>;   /* IWAC burnt orange */
-    --secondary-base: <?= $secondaryColor ?>; /* slate, 2nd data colour */
+    --primary-base:   <?= $primaryColor ?>;   /* press blue — the spot colour */
+    --secondary-base: <?= $secondaryColor ?>; /* claret, 2nd data colour */
   }
 </style>
 ```
+
+`helper/BrandSeeds.php` accepts one `#rrggbb` per seed and reads the
+**pre-2.33 defaults as unset**: Omeka stores every field of the settings form
+on the first Save, so `#e64a19` (burnt orange) and `#394f68` (slate) sit in the
+settings of any site configured before the redesign as if someone had chosen
+them. Those two exact values resolve to today's defaults; an admin who wants
+the orange back stores a neighbour (`#e64a1a`). A consumer that repaints from
+the raw setting (IwacVisualizations' embed routes) must apply the same rule.
 
 Every other brand variant is **derived** from these seeds in SCSS via
 `color-mix(in oklab, …)` (see `_colors.scss`):
 
 ```scss
---primary:   color-mix(in oklab, var(--primary-base), black 8%);   // light
---secondary: var(--secondary-base);                                // light
---secondary: color-mix(in oklab, var(--secondary-base), white 30%);// dark
+--primary:   color-mix(in oklab, var(--primary-base), black 8%);                   // light
+--primary:   color-mix(in oklab, var(--primary-base) 10%, oklab(78% none none));   // dark
+--secondary: var(--secondary-base);                                                // light
+--secondary: color-mix(in oklab, var(--secondary-base), white 30%);                // dark
 ```
+
+**The dark primary is the seed re-lit, not tinted.** `oklab(78% none none)`
+has no a/b of its own; in a `color-mix`, a component missing on one side takes
+the other side's value (CSS Color 4 §12.4), so only lightness interpolates and
+the seed's hue and chroma survive intact. Mixing toward white — the recipe
+until 2.32 — works for a mid-lightness seed and fails for a deep one: the blue
+seed plus white 12% sat at 2.0:1 on the dark ground, and any amount of white
+that made it legible also bleached it grey. Out-of-gamut chroma is clipped by
+the browser; `build-tokens.js` resolves `none` and clips the same way.
 
 **Consequence:** when an admin changes the Primary or Secondary colour in the
 theme settings, the new value cascades automatically through every focus ring,
-glow, blockquote, chart series, and map swatch — in both modules, with no
+blockquote, hero ground, chart series, and map swatch — in both modules, with no
 rebuild. The modules read the *live* values at runtime; they never bake the
 brand colour into their bundles.
 
@@ -80,9 +98,9 @@ value (see §3). Do **not** invent token names — undefined tokens fail silentl
 | **Focus** | `--focus-outline` (default), `--ring-focus`, `--ring-focus-sm`, `--focus-color`, `--focus-ring-color` |
 | **Typography** | `--font-headings`, `--font-serif-text`, `--font-body`, `--font-mono`; `--text-2xs … --text-5xl`; `--line-height-tight/snug/normal/relaxed`; `--tracking-display/tight/normal/wide/wider` |
 | **Spacing** | `--space-1 … --space-40` (the numeric scale is canonical — see below) |
-| **Radius** | `--radius-sm/md/lg/full` |
-| **Shadow / glow** | `--shadow-xs … --shadow-lg`; `--glow-xs/sm/md` |
-| **Panel** | `--panel-bg`, `--panel-border`, `--panel-radius`, `--panel-shadow` |
+| **Radius** | `--radius-sm/md/lg/full` — sm/md/lg are **0** since 2.33 (square); `full` is for dots |
+| **Shadow / glow** | `--shadow-xs … --shadow-lg`; `--glow-xs/sm/md` — all but `--shadow-lg` are **flat** since 2.33 (see below) |
+| **Panel** | `--panel-bg`, `--panel-border`, `--panel-radius` (0), `--panel-shadow` (flat) |
 | **Controls** | `--size-control-xs … --size-control-xl` |
 | **Measures** | `--measure-narrow/base/wide` |
 | **Motion** | `--transition-fast/base/slow` (shorthand: duration + easing), `--duration-fast/base/slow` (150 / 200 / 300ms, for `*-duration`), `--ease-out-quart`; `--lift-xxs/xs/sm` |
@@ -96,6 +114,28 @@ theme defines, and the difference is the theme's **component parameters**
 component to tune that component, and free to change with its markup. The
 module guards refuse them. Rather than consulting a table of names to avoid,
 run the guard — it names the fix.
+
+### Square and flat — what 2.33 changed in the contract
+
+No token was removed or renamed; seven changed **value**, and a consumer that
+reads them goes square and flat with the theme instead of re-deciding:
+
+| Token | Was | Is | Why it stays published |
+|---|---|---|---|
+| `--radius-sm` / `-md` / `-lg` | 6 / 8 / 12px | `0` | ~230 module uses; each keeps its job, so softer corners are three values here |
+| `--panel-radius` | `var(--radius-md)` | `var(--radius-md)` → `0` | — |
+| `--shadow-xs` / `-sm` / `-md` | soft drop shadows | `0 0 0 0 transparent` | consumed by module panels and controls |
+| `--panel-shadow` | `var(--shadow-sm)` | `0 0 0 0 transparent` | consumed by IwacSearch |
+| `--glow-xs` / `-sm` / `-md` | primary halos on the filled button | `0 0 0 0 transparent` | re-declared by IwacVisualizations' embed brand sheet |
+| `--shadow-lg` | `0 10px 15px -3px …` | `0 4px 12px -4px …` (smaller) | the one elevation left: overlays only |
+| `--panel-bg` (dark) | `--surface-raised` | `--surface` | panels sit on the page; no raised tone without a shadow |
+
+A flat shadow is a transparent zero-offset shadow, not `none`, because shadow
+tokens are composed into comma-separated lists (`var(--ring-focus),
+var(--shadow-sm)`) where `none` would invalidate the whole declaration. The
+three flat steps and the glows are theme-independent now, so they moved out of
+the light/dark mixins (and out of `tokens.json` → `themed`). `--lift-*` stay
+defined; the theme's filled button no longer uses them.
 
 ### Spacing — one scale
 
@@ -205,18 +245,20 @@ renamed `--focus-ring-color` so no two focus tokens are near-homographs.
 
 ### `--primary` is an accent, not a text colour
 
-**Normative.** `--primary` (`#ce4115`) as text, measured on each light surface:
+**Normative.** `--primary` as text, measured on each surface (default seed,
+2.33):
 
-| on `--surface` | on `--surface-raised` | on `--background` | on `--surface-sunken` |
-|---|---|---|---|
-| 4.67:1 ✅ | 4.51:1 ✅ | **4.40:1** ❌ | **4.25:1** ❌ |
+| | on `--surface` | on `--surface-raised` | on `--background` | on `--surface-sunken` |
+|---|---|---|---|---|
+| light `#18298d` | 11.77:1 | 11.39:1 | 11.09:1 | 10.73:1 |
+| dark `#7aa2ff` | 7.82:1 | 7.28:1 | 8.17:1 | 8.07:1 |
 
-It clears AA for normal text on the two lightest surfaces and misses on the
-other two — which is worse than a clean fail, because it means the same
-declaration passes or fails depending on which panel it lands in, and a
-component does not know that. All four clear the 3:1 bar for large text
-(≥ 24px, or ≥ 19px bold) and for non-text marks. The decision is therefore a
-scoping rule, not a new token:
+The press blue clears AA as text everywhere, in both themes. The burnt orange
+it replaced (`#ce4115`) did not — 4.67:1 on `--surface` but 4.25:1 on
+`--surface-sunken`, so one declaration passed or failed depending on the panel
+it landed in. The rule below was written for that orange and **stays**, because
+the seed is admin-configurable and a site may set a lighter one: it is the
+policy that holds for any seed, not a patch for one colour.
 
 | Sanctioned | Not sanctioned |
 |---|---|
@@ -227,11 +269,14 @@ scoping rule, not a new token:
 | Pseudo-element marks: interpuncts, `::marker`, chevrons, dots | |
 | Non-text: borders, fills, focus rings, the duotone plate | |
 
-A darker primary was considered and rejected: the brand seed is
-admin-configurable, so no fixed token value can guarantee 4.5:1 for a site that
-sets its own — and `--primary` is already darkened 8% from the raw hex for
-exactly this reason. Scoping the use is the durable answer; darkening the
-colour would only move the failure to the next admin who changes it.
+A darker primary was considered and rejected (for the orange): the brand seed
+is admin-configurable, so no fixed token value can guarantee 4.5:1 for a site
+that sets its own — and `--primary` is already darkened 8% from the raw hex for
+exactly this reason. Scoping the use is the durable answer.
+
+`--ink-on-primary` (text on a `--primary` fill) is white in light — 12.1:1 at
+rest, 13.8 / 15.6:1 on hover / pressed — and dark ink in dark mode — 7.9:1 at
+rest, 10.0 / 6.3:1 — where white would read 2.5:1.
 
 `npm run check:tokens` enforces the rule mechanically over the theme's Sass —
 narrowly, and it says so in the script: it flags `color: var(--primary…)` only
@@ -289,8 +334,12 @@ viewport.
 
 ### `--secondary` — read this before using it
 
-`--secondary` (slate `#394f68`) is a **second categorical / data-series
-colour**, not a second brand accent. It exists for data visualisation:
+`--secondary` (claret `#85253a`; slate `#394f68` until 2.33) is a **second
+categorical / data-series colour**, not a second brand accent. It moved off
+slate because slate beside the new press blue, beside a blue `--info`, made a
+stacked bar of three blues; the spot blue, claret and the teal `--info` now sit
+0.23–0.26 ΔEok apart in both themes and differ in lightness too. It exists for
+data visualisation:
 
 - the second slot of the categorical chart palette (`--series-2`, palette
   index 1),
@@ -373,13 +422,22 @@ Two kinds of switch, two treatments — and the loud fill is not either of them.
 | Control | Treatment | Active state |
 |---|---|---|
 | **Page-level tab set** (switching between sections of a page) | Ruled tabs: ink text on the page ground, no box | `--ink-strong` text + a 2px `--primary` underline. No fill. |
-| **In-panel switch / toggle** (chart mode, list ↔ gallery, a filter chip) | Outlined chip, `--radius-sm` | `--primary` border + the existing primary wash (`--primary` mixed toward `transparent` at a low percentage), ink text |
+| **In-panel switch / toggle** (chart mode, list ↔ gallery, a filter chip) | Outlined chip, `--radius-sm` (0 — square) | `--primary` border + the existing primary wash (`--primary` mixed toward `transparent` at a low percentage), ink text |
 
 - **Never a filled-primary active state.** A brand fill is reserved for the one
   loud action — a submit or `.btn--primary` (see the button-default note in
   CLAUDE.md: the quiet control is the default).
 - **`--radius-full` is for dots**, not controls: categorical dots and status
   pips. A pill-shaped chip or tab is off-grammar.
+- **Labels are sentence case.** Tracked uppercase is rationed (2.33) to the
+  nav strip and to datelines / eyebrows (`TYPE · PUBLISHER · DATE`, "ON THIS
+  DAY"). A control's label, a filter chip, a table header, a form label, a
+  figure's caption: sentence case, no `--tracking-wide/-wider`, weight 600
+  where it is a label.
+- **Prose fills the width.** No `max-width` measure on prose with empty space
+  beside it. Short prose flows into balanced columns at wide viewports
+  (`column-width: 28rem`, `--space-10` gap, a 1px `--border` column rule,
+  headings `column-span: all`); long prose is one column at full width.
 - **Primary-coloured text** uses `--primary-hover` wherever `--primary` would
   sit under 4.5:1 (see "`--primary` is an accent" above).
 
@@ -439,7 +497,7 @@ what it *does* do is assert that a headline ink degrades to a body ink — a
 substitution the type hierarchy would not survive if it ever fired. The one
 exception is a **module-owned** property, where the chain asks a scope question
 rather than a theme-absent one: `var(--iwac-vis-compare-color-a,
-var(--primary, #ce4115))` correctly means "outside a compare block, use the
+var(--primary, #18298d))` correctly means "outside a compare block, use the
 brand".
 
 ### Canonical fallback values
@@ -457,10 +515,10 @@ column. The OKLCH source for each value lives in `_colors.scss`.
 <!-- BEGIN GENERATED:TOKEN-TABLE -->
 | Token | Light fallback | Dark fallback |
 |-------|---------------|---------------|
-| `--primary` | `#ce4115` | `#ec653f` |
-| `--primary-hover` | `#b03710` | `#f17857` |
-| `--primary-active` | `#942c0c` | `#da4617` |
-| `--secondary` | `#394f68` | `#708093` |
+| `--primary` | `#18298d` | `#7aa2ff` |
+| `--primary-hover` | `#132278` | `#90baff` |
+| `--primary-active` | `#0e1a64` | `#668bff` |
+| `--secondary` | `#85253a` | `#ae6770` |
 | `--ink-strong` | `#05070c` | `#f7f5f1` |
 | `--ink` | `#13161c` | `#e7e4df` |
 | `--ink-light` | `#3f4349` | `#b5b0aa` |
@@ -477,12 +535,12 @@ column. The OKLCH source for each value lives in `_colors.scss`.
 | `--success` | `#2e9052` | `#56bd78` |
 | `--warning` | `#d66800` | `#f99532` |
 | `--error` | `#c9222b` | `#ff645f` |
-| `--info` | `#037ac0` | `#4dacf6` |
+| `--info` | `#007980` | `#3ebfc6` |
 | `--white` | `#ffffff` | `—` |
 <!-- END GENERATED:TOKEN-TABLE -->
 
-> `--error` is red (`oklch(54% .20 25)`), deliberately **not** the orange
-> brand. Tokens whose dark value mixes in `transparent` (the `*-bg` tints,
+> `--error` is red (`oklch(54% .20 25)`), distinct from the claret
+> `--secondary` by lightness and chroma (0.14 ΔEok). Tokens whose dark value mixes in `transparent` (the `*-bg` tints,
 > `--surface-overlay`, …) are not single-hex fallbacks and so are omitted.
 
 ### Categorical type-colour map (`--type-*`)
@@ -498,17 +556,17 @@ three repos (the `document` badge fallback was `#e89c4a` in IwacSearch but
 <!-- BEGIN GENERATED:TYPE-TABLE -->
 | `--type-*` token | → semantic token | Light | Dark |
 |---|---|---|---|
-| `--type-article` | `--primary` | `#ce4115` | `#ec653f` |
-| `--type-publication` | `--secondary` | `#394f68` | `#708093` |
-| `--type-audiovisual` | `--info` | `#037ac0` | `#4dacf6` |
+| `--type-article` | `--primary` | `#18298d` | `#7aa2ff` |
+| `--type-publication` | `--secondary` | `#85253a` | `#ae6770` |
+| `--type-audiovisual` | `--info` | `#007980` | `#3ebfc6` |
 | `--type-document` | `--warning` | `#d66800` | `#f99532` |
 | `--type-reference` | `--muted` | `#66696e` | `#8a8580` |
 | `--type-photograph` | `--success` | `#2e9052` | `#56bd78` |
-| `--type-entity-personnes` | `--info` | `#037ac0` | `#4dacf6` |
+| `--type-entity-personnes` | `--info` | `#007980` | `#3ebfc6` |
 | `--type-entity-lieux` | `--success` | `#2e9052` | `#56bd78` |
 | `--type-entity-organisations` | `--warning` | `#d66800` | `#f99532` |
 | `--type-entity-sujets` | `--series-5` | `#7c5295` | `#7e5497` |
-| `--type-entity-evenements` | `--series-9` | `#4c9491` | `#5ba3a0` |
+| `--type-entity-evenements` | `--series-9` | `#a53c75` | `#da7baa` |
 <!-- END GENERATED:TYPE-TABLE -->
 
 Each `--type-*` resolves to its semantic token, so the fallback hex equals
@@ -533,8 +591,9 @@ series slots of its own choosing — Personnes slate, Lieux red — so its netwo
 legend gave Persons and Newspaper articles the same dot while IwacSearch's
 chips said blue / green / orange. No status hue was left that stands apart
 from the other nine type colours, so the two new ones alias series slots:
-purple `--series-5` and teal `--series-9`, each ≥ 0.09 ΔEok from every other
-`--type-*` and ≥ 3.1:1 on every surface in both themes. Three entity types
+purple `--series-5` and `--series-9` — teal until 2.33, magenta since, when
+`--info` took the teal — each ≥ 0.09 ΔEok from every other `--type-*` in light
+and ≥ 3.1:1 on every surface in both themes. Three entity types
 share a status hue with an item type by design — `--info` (audiovisual /
 Personnes), `--success` (photograph / Lieux), `--warning` (document /
 Organisations) — so a view that draws item and entity types in one legend
@@ -573,8 +632,8 @@ name to check, no value to compare, and slot 0 a hand-kept twin of
   "leadSlots": 2,                          // slots that alias a theme token
   "leads": ["--primary", "--secondary"],   // …and which token each aliases
   "tokens": ["--series-1", …, "--series-20"],
-  "light":  ["#ce4115", …],                // series.light[i] === --series-{i+1}
-  "dark":   ["#ec653f", …]
+  "light":  ["#18298d", …],                // series.light[i] === --series-{i+1}
+  "dark":   ["#7aa2ff", …]
 }
 ```
 
@@ -627,6 +686,13 @@ Two views of one resolution pass: `light["--series-7"]` for a CSS consumer,
   design decision rather than a fix: 15 / 17 (0.025) and 5 / 19 (0.035) in
   both themes, and in dark — where the warm pastels pass and kept their
   values — 6 / 13 (0.024) and 6 / 16 (0.034).
+- **2.33 re-picked four light slots and three dark ones by hue**, because the
+  new leads (press blue, claret) and the new teal `--info` crowded them:
+  light 3 (green-teal `#4a8c6f` → leaf `#4f8751`), 9 (teal `#4c9491` →
+  magenta `#a53c75`), 11 (steel `#4a8aab` → cornflower `#5682bb`), 20 (teal
+  `#007b72` → olive `#7d7728`); dark 9 (→ `#da7baa`), 14 (`#6fb08e` →
+  `#86b37d`), 20 (→ `#afa851`). Every light slot is now ≥ 0.09 ΔEok from all
+  three leads. The pre-existing near-pairs (15 / 17, 5 / 19) are unchanged.
 - The generator **fails the build** on a hole in the numbering, a slot missing
   from either theme, or a lead that is an alias in one theme and a literal in
   the other.
@@ -634,26 +700,26 @@ Two views of one resolution pass: `light["--series-7"]` for a CSS consumer,
 <!-- BEGIN GENERATED:SERIES-TABLE -->
 | Palette index | Token | Source | Light | Dark |
 |---|---|---|---|---|
-| 0 | `--series-1` | `--primary` | `#ce4115` | `#ec653f` |
-| 1 | `--series-2` | `--secondary` | `#394f68` | `#708093` |
-| 2 | `--series-3` | fixed | `#4a8c6f` | `#4a8c6f` |
+| 0 | `--series-1` | `--primary` | `#18298d` | `#7aa2ff` |
+| 1 | `--series-2` | `--secondary` | `#85253a` | `#ae6770` |
+| 2 | `--series-3` | fixed | `#4f8751` | `#4a8c6f` |
 | 3 | `--series-4` | fixed | `#bb4c49` | `#bb4c49` |
 | 4 | `--series-5` | fixed | `#7c5295` | `#7e5497` |
 | 5 | `--series-6` | fixed | `#ae8050` | `#d4a574` |
 | 6 | `--series-7` | fixed | `#2c5f7c` | `#386b88` |
 | 7 | `--series-8` | fixed | `#876c45` | `#876c45` |
-| 8 | `--series-9` | fixed | `#4c9491` | `#5ba3a0` |
+| 8 | `--series-9` | fixed | `#a53c75` | `#da7baa` |
 | 9 | `--series-10` | fixed | `#824620` | `#cc8963` |
-| 10 | `--series-11` | fixed | `#4a8aab` | `#4a8aab` |
+| 10 | `--series-11` | fixed | `#5682bb` | `#4a8aab` |
 | 11 | `--series-12` | fixed | `#6d5737` | `#a68e6d` |
 | 12 | `--series-13` | fixed | `#a46e3e` | `#d49b6a` |
-| 13 | `--series-14` | fixed | `#246648` | `#6fb08e` |
+| 13 | `--series-14` | fixed | `#246648` | `#86b37d` |
 | 14 | `--series-15` | fixed | `#9e7bb8` | `#9e7bb8` |
 | 15 | `--series-16` | fixed | `#8a583c` | `#e0a88a` |
 | 16 | `--series-17` | fixed | `#8e7cb8` | `#8e7cb8` |
 | 17 | `--series-18` | fixed | `#c76f6b` | `#d87e7a` |
 | 18 | `--series-19` | fixed | `#6b5b95` | `#6c5c96` |
-| 19 | `--series-20` | fixed | `#007b72` | `#4db6ac` |
+| 19 | `--series-20` | fixed | `#7d7728` | `#afa851` |
 <!-- END GENERATED:SERIES-TABLE -->
 
 ### Font tokens
@@ -695,7 +761,9 @@ These were consumed by the modules historically and have been repointed:
 | `var(--on-primary, …)` | `var(--ink-on-primary, #ffffff)` |
 | `var(--accent, …)` | `var(--primary, …)` |
 | `var(--success-strong, …)` | `color-mix(in oklab, var(--success), black 18%)` |
-| `#c66` (old rose brand) | `var(--primary, #ce4115)` / `var(--error, #c9222b)` |
+| `#c66` (old rose brand) | `var(--primary, #18298d)` / `var(--error, #c9222b)` |
+| `#e64a19` / `#ce4115` / `#ec653f` (burnt orange, until 2.32) | `var(--primary, #18298d)` |
+| `#394f68` / `#708093` (slate `--secondary`, until 2.32) | `var(--secondary, #85253a)` |
 | `var(--space-xs/sm/md/lg/xl/2xl/3xl, …)` | `--space-1/2/4/6/8/12/16` (deprecated aliases — §2) |
 | `var(--focus-ring, …)` | `--focus-ring-color` (tint) — but you almost certainly want `--focus-outline` |
 | `var(--radius-xl, …)` | `--radius-lg` (media) / `--radius-md` (chrome) |
@@ -946,9 +1014,11 @@ with that guard rather than duplicating it badly.
   directory — no third-party origin) rather than a copied URL, and the embed
   renders in the faces `fonts` says are loaded.
   The brand accent follows the same logic: the published `--primary` is the
-  seed **derived** (`seeds['--primary-base']` + 8% black in light), so an
+  seed **derived** (`seeds['--primary-base']` + 8% black in light; in dark,
+  the seed re-lit to ~78% lightness with its own hue and chroma — §1), so an
   embed that repaints from the raw `primary_color` setting must apply that
-  derivation, not use the seed as `--primary`.
+  derivation, not use the seed as `--primary` — and must read the pre-2.33
+  defaults (`#e64a19`, `#394f68`) as unset, as `helper/BrandSeeds.php` does.
 - **Build:** `npm run build:js` (esbuild) bundles `asset/js/**` into
   `asset/js/dist/` per `asset/js/bundles.json`; `npm run build:css` (csso)
   writes the `*.min.css` the templates load. CSS sources are hand-edited; never

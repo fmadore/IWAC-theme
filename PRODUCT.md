@@ -76,9 +76,10 @@ the press register grounded in the collection's own material.
 
 ## Brand Commitments
 
-- **Seed colors (admin-overridable):** primary `#E64A19` "IWAC Burnt Orange"
-  (resolved light `--primary` = `#ce4115`); secondary `#394f68` slate — **data-only**,
-  never UI chrome.
+- **Seed colors (admin-overridable):** primary `#1C2F9E` press blue — the spot
+  colour; ink is the brand (resolved light `--primary` = `#18298d`, dark `#7aa2ff`);
+  secondary `#85253a` claret — **data-only**, never UI chrome. (Burnt orange and
+  slate until 2.33; the old defaults are read as unset.)
 - **Three-font system:** Besley (Clarendon display), Source Serif 4 (long-form text),
   Public Sans (UI) — all verified for Arabic-transliteration diacritics.
 - **Icons:** **Lucide** — 24×24, `stroke-width: 2`, round caps — as SVG masks in
