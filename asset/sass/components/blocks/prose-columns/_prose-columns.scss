@@ -1,0 +1,83 @@
+@use "../../../abstracts/abstracts" as *;
+
+// ==========================================================================
+// Prose columns — short HTML blocks set as a newspaper sets a short story
+//
+// The rule (2.33): prose FILLS the content width. A capped measure with an
+// empty right-hand half beside it is the one layout this site must not have.
+// A short block reaches a comfortable line length by flowing into balanced
+// columns; a long one stays a single column at full width, because columns
+// taller than the viewport make the reader scroll down, up and down again.
+//
+// Which blocks are short is decided server-side, on the stored HTML, by
+// helper/ProseColumns.php (600–1800 characters of visible text, no tables,
+// figures, embeds or quotes), and common/block-layout/html.phtml wraps those
+// in .prose-columns. Everything else prints exactly as core prints it.
+//
+// The column count is not fixed: `column-width` asks for columns of at least
+// 28rem — ~60 characters of Source Serif 4 at the body size — so the 1300px
+// container takes two of ~75 characters, a narrower one takes one, and a
+// block placed in a narrow grid cell stays a single column by itself.
+// ==========================================================================
+
+.prose-columns {
+    // The face is the block's own (sans on most pages, the reading serif on
+    // the homepage — _block-group.scss): a page whose short sections flowed
+    // in serif beside long ones in sans read as two documents.
+
+    > :first-child,
+    > div:first-child > :first-child {
+        margin-block-start: 0;
+    }
+
+    @media (min-width: $lg) {
+        column-width: 28rem;
+        column-gap: var(--space-10);
+        column-rule: 1px solid var(--border);
+        column-fill: balance;
+    }
+
+    // Headings cross every column: the block's title sits over the whole
+    // story, and a subhead mid-block starts a new balanced band under it.
+    // (Live content nests them in CKEditor's bare <div>s, which `column-span`
+    // reaches through — no formatting context comes between.)
+    h1,
+    h2,
+    h3,
+    h4 {
+        column-span: all;
+        break-after: avoid;
+        break-inside: avoid;
+    }
+
+    // No widowed or orphaned lines at a column break, and no list item
+    // split across two columns.
+    p,
+    li {
+        orphans: 3;
+        widows: 3;
+    }
+
+    li {
+        break-inside: avoid;
+    }
+
+    // A closing paragraph that is a single link ("More about the collection
+    // →") is a kicker: it ends the story, so it may not open a column. CSS
+    // cannot see text nodes, so `:has(> a:only-child)` also matches a long
+    // paragraph with one link in it — hence last-child only, and break-before
+    // only: `break-inside: avoid` on such a paragraph would forbid the very
+    // split that balances the columns (it left a one-paragraph band of the
+    // sentiment page unbalanced in review).
+    p:last-child:has(> a:only-child) {
+        break-before: avoid;
+    }
+
+    // The lede rule in _block-group.scss targets `.block-html > p`; inside the
+    // wrapper the paragraphs are one level down, and in columns every
+    // paragraph is body copy at the same size.
+    p {
+        font-size: var(--text-base);
+        line-height: var(--line-height-relaxed);
+    }
+}

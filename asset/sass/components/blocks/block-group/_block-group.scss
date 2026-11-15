@@ -1,52 +1,52 @@
 @use "../../../abstracts/abstracts" as *;
 
 // ==========================================================================
-// Block Group
-// Card-like container for grouped blocks (news items, announcements, etc.)
+// Page blocks — ruled sections, not cards (2.33)
+//
+// A page is a column of sections on one flat --surface, divided the way a
+// broadsheet divides its stories: by the 2px --ink-strong rule (the section-
+// opener grammar of DESIGN-PHILOSOPHY.md). Until 2.33 every text block and
+// block group was a card — fill, hairline border, rounded corners, a shadow,
+// a hover lift — floating on a grey page, which is the generic web-app look
+// the redesign removes. No block below carries a background, border, radius,
+// shadow or inline padding of its own; its edges are the column's edges.
+//
+// Scope: the direct children of core's page grid (.blocks-inner). Blocks
+// nested in a block group are parts of ONE section and are not ruled apart.
 // ==========================================================================
 
-// Block groups containing HTML blocks (text content cards)
-// Excludes: page title blocks, blocks with assets (handled separately)
-// Includes: blocks with line breaks (spacing elements are fine)
-.block-blockGroup:has(.block-html):not(:has(.block-asset)):not(:has(.block-pageTitle)) {
-    // Text content blocks get clean card styling — visible border,
-    // subtle shadow, no orange glow or inner highlight.
-    position: relative;
-    background: var(--panel-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
-    padding: var(--space-6);
-    margin-block-end: var(--space-6);
-
-    @include card-hover;
+.blocks-inner > .block {
+    // Grid items: the row gap core sets inline (10px) is the floor, the rule
+    // and its breathing room come from here.
+    min-width: 0;
 }
 
-// News-style block groups (contain asset + html blocks)
-// Target block groups that have .block-asset as a direct child
+// Every section after the first opens on the rule — except right under a
+// page title, whose h1 already opens on its own 2px rule (base/elements/
+// _titles.scss), and around a line-break block, which is spacing, not a
+// section. A section beside another in the same grid row (two spans of a
+// 12-column row) carries its rule too, so the row reads as one ruled band.
+.blocks-inner > .block:not(:first-child):not(.block-pageTitle):not(.block-lineBreak):not(.block-pageTitle + .block):not(.block-lineBreak + .block) {
+    border-block-start: 2px solid var(--ink-strong);
+    padding-block-start: var(--space-6);
+    margin-block-start: var(--space-6);
+}
+
+// Block groups: a container, never a card.
 .block-blockGroup {
 
     // When block group contains an asset and text (news item pattern)
     &:has(.block-asset) {
-        background: var(--panel-bg);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-sm);
-        padding: var(--space-6);
-        margin-block-end: var(--space-6);
-        @include card-hover;
-
-        // Reset child block margins inside card
+        // Reset child block margins inside the section
         .block {
             margin-block-end: 0;
         }
 
-        // Style the asset image inside the card
+        // Style the asset image inside the section
         .block-asset {
             margin-block-end: 0;
 
             .asset {
-                border-radius: var(--radius-md);
                 overflow: hidden;
                 // An Omeka asset has no derivatives, so the src is the stored
                 // original and `width: 100%` rendered it at whatever the card
@@ -103,6 +103,11 @@
                 margin-block-end: 0;
             }
         }
+
+        // Asset beside text: the gutter the card's padding used to give.
+        &.block-group-grid {
+            column-gap: var(--space-8);
+        }
     }
 
     // Block groups that are just containers (no special styling)
@@ -143,23 +148,14 @@
         gap: var(--space-4);
     }
 
+    // A plate, not a card: the image on the page with a hairline around it,
+    // no fill, no shadow, no hover lift (2.33).
     .asset {
-        background: var(--panel-bg);
         border: var(--panel-border);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--panel-shadow);
         overflow: hidden;
         // Constrain standalone images to reasonable size
         max-width: 320px;
         margin-inline: auto;
-        transition:
-            transform var(--transition-base),
-            box-shadow var(--transition-base);
-
-        &:hover {
-            transform: translateY(var(--lift-xxs));
-            box-shadow: var(--shadow-md);
-        }
 
         img {
             // Use max-width instead of width to respect natural size
@@ -172,7 +168,8 @@
     }
 }
 
-// Date headers for news sections: the quiet uppercase eyebrow voice.
+// Date headers for news sections: the quiet uppercase eyebrow voice — a
+// dateline, one of the two places tracked uppercase survives (2.33).
 // (Primary text on headings is off-limits — and "an HTML block whose only
 // child is an h3" is a guess about admin content, so keep it neutral.)
 .block-html h3:first-child {
@@ -191,42 +188,17 @@
 // Rich typography and visual interest for main content areas
 // ==========================================================================
 
-// Standalone HTML blocks (not inside block groups) - main content cards
-.block-html:not(.block-blockGroup .block-html) {
-    position: relative;
-    background: var(--panel-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
-    padding: var(--space-6);
-    margin-block-end: var(--space-6);
-
-    @include card-hover;
-}
-
-// The homepage's standalone HTML block is "About the collection": long-form
-// prose, not a panel. Principle 2 keeps boxes for true panels, and principle 3
-// gives long-form reading to Source Serif 4 — so it drops the card (border,
-// radius, shadow, hover) and opens on the 2px ink section rule instead, with
-// the prose in the reading serif at the body measure. Scoped to the homepage:
-// elsewhere a standalone HTML block can be a genuine callout.
-.is-homepage .block-html:not(.block-blockGroup .block-html) {
-    padding: var(--space-4) 0 0;
-    background: none;
-    border: 0;
-    border-block-start: 2px solid var(--ink-strong);
-    border-radius: 0;
-    box-shadow: none;
-
-    &:hover {
-        border-color: var(--ink-strong);
-        box-shadow: none;
-    }
-
-    p {
-        max-inline-size: var(--measure-narrow);
-        font-family: var(--font-serif-text);
-    }
+// (Standalone HTML blocks were cards until 2.33, and the homepage's "About
+// the collection" alone was let out of the card onto a capped reading measure
+// — a narrow column with half the page empty beside it. Every HTML block is
+// now a plain section at the full column width; short prose flows into
+// newspaper columns instead of being capped — see ../prose-columns/.)
+//
+// The homepage's prose keeps the reading serif (principle 3: long-form
+// reading is Source Serif 4's) — the one page where the HTML blocks are the
+// collection's own introduction rather than documentation.
+.is-homepage .block-html p {
+    font-family: var(--font-serif-text);
 }
 
 // Content blocks - enhanced readability for both standalone and grouped

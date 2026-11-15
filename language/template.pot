@@ -46,7 +46,7 @@ msgstr ""
 msgid "An error occurred while processing your request. Please try again later."
 msgstr ""
 
-#: view/common/banner.phtml:28
+#: view/common/banner.phtml:27
 msgid "An open-access collection of newspapers, Islamic publications, archives, audiovisual sources, and academic references on Islam and Muslims in Benin, Burkina Faso, Côte d'Ivoire, Niger, Nigeria, and Togo."
 msgstr ""
 
@@ -60,11 +60,11 @@ msgid_plural "Archived web pages"
 msgstr[0] ""
 msgstr[1] ""
 
-#: view/common/banner.phtml:223
+#: view/common/banner.phtml:178
 msgid "Archives consulted"
 msgstr ""
 
-#: view/common/banner.phtml:225
+#: view/common/banner.phtml:180
 msgid "Audiovisual minutes"
 msgstr ""
 
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Available languages"
 msgstr ""
 
-#: view/layout/layout.phtml:324
+#: view/layout/layout.phtml:298
 msgid "Back to top"
 msgstr ""
 
@@ -116,7 +116,7 @@ msgstr ""
 msgid "Collapse the full text"
 msgstr ""
 
-#: view/common/banner.phtml:254
+#: view/common/banner.phtml:209
 msgid "Collection at a glance"
 msgstr ""
 
@@ -136,11 +136,11 @@ msgstr ""
 msgid "Copy failed. Text selected: press Ctrl+C or ⌘C."
 msgstr ""
 
-#: view/common/banner.phtml:272
+#: view/common/banner.phtml:227
 msgid "Corpus in depth"
 msgstr ""
 
-#: view/common/banner.phtml:207
+#: view/common/banner.phtml:162
 msgid "Countries"
 msgstr ""
 
@@ -156,7 +156,7 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: view/common/banner.phtml:224
+#: view/common/banner.phtml:179
 msgid "Document types"
 msgstr ""
 
@@ -216,7 +216,7 @@ msgstr ""
 msgid "Image viewer"
 msgstr ""
 
-#: view/common/banner.phtml:198
+#: view/common/banner.phtml:153
 msgid "Index"
 msgstr ""
 
@@ -224,7 +224,7 @@ msgstr ""
 msgid "Install app"
 msgstr ""
 
-#: view/common/banner.phtml:99
+#: view/common/banner.phtml:84
 msgid "Introduction"
 msgstr ""
 
@@ -244,7 +244,7 @@ msgstr ""
 msgid "Item: %s"
 msgstr ""
 
-#: view/common/banner.phtml:197 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:49
+#: view/common/banner.phtml:152 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:49
 msgid "Items"
 msgstr ""
 
@@ -252,7 +252,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: view/common/banner.phtml:226
+#: view/common/banner.phtml:181
 msgid "Languages"
 msgstr ""
 
@@ -300,7 +300,7 @@ msgstr ""
 msgid "Newspaper covers and archival documents from the collection"
 msgstr ""
 
-#: view/common/banner.phtml:205
+#: view/common/banner.phtml:160
 msgid "Newspapers"
 msgstr ""
 
@@ -384,7 +384,7 @@ msgstr ""
 msgid "Read the full text — %s more words"
 msgstr ""
 
-#: view/common/banner.phtml:219
+#: view/common/banner.phtml:174
 msgid "References"
 msgstr ""
 
@@ -432,7 +432,7 @@ msgstr ""
 msgid "Site pages"
 msgstr ""
 
-#: view/layout/layout.phtml:300
+#: view/layout/layout.phtml:277
 msgid "Skip to main content"
 msgstr ""
 
@@ -496,11 +496,11 @@ msgstr ""
 msgid "Title (Z-A)"
 msgstr ""
 
-#: view/common/banner.phtml:215
+#: view/common/banner.phtml:170
 msgid "Total pages"
 msgstr ""
 
-#: view/common/banner.phtml:214
+#: view/common/banner.phtml:169
 msgid "Total words"
 msgstr ""
 

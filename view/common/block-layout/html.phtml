@@ -1,0 +1,17 @@
+<?php
+// The HTML page block. Core's own template (application/view/common/
+// block-layout/html.phtml, Omeka S 4.2) is a single line that prints the
+// purified HTML; the block's <div class="block block-html …"> wrapper is
+// printed around it by core's blockLayout() helper, so it is untouched here.
+//
+// Long prose is printed exactly as core prints it. Short, plain prose is
+// wrapped in .prose-columns, which flows it into balanced newspaper columns at
+// wide viewports instead of leaving a capped measure with an empty half beside
+// it (components/blocks/prose-columns/). Which is which is decided in
+// helper/ProseColumns.php, with its rules tested in test/php/run.php.
+$html = (string) $block->dataValue('html', '');
+if ($this->ProseColumns($html)): ?>
+<div class="prose-columns"><?php echo $html; ?></div>
+<?php else: ?>
+<?php echo $html; ?>
+<?php endif; ?>

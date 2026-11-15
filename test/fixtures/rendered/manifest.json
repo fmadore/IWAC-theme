@@ -15,7 +15,6 @@
             "common/search-form.phtml",
             "common/language-switcher.phtml",
             "common/menu-drawer.phtml",
-            "common/banner.phtml",
             "common/footer.phtml"
         ]
     },
@@ -35,7 +34,6 @@
             "common/search-form.phtml",
             "common/language-switcher.phtml",
             "common/menu-drawer.phtml",
-            "common/banner.phtml",
             "common/footer.phtml"
         ]
     },
@@ -57,7 +55,6 @@
             "common/search-form.phtml",
             "common/language-switcher.phtml",
             "common/menu-drawer.phtml",
-            "common/banner.phtml",
             "common/footer.phtml"
         ]
     },
@@ -79,7 +76,6 @@
             "common/search-form.phtml",
             "common/language-switcher.phtml",
             "common/menu-drawer.phtml",
-            "common/banner.phtml",
             "common/footer.phtml"
         ]
     },
@@ -242,6 +238,20 @@
             "common/search-form.phtml",
             "common/language-switcher.phtml",
             "common/menu-drawer.phtml",
+            "common/footer.phtml"
+        ]
+    },
+    "page-home.en": {
+        "url": "/s/westafrica/page/home",
+        "lang": "en-US",
+        "xhr": false,
+        "templates": [
+            "common/block-layout/html.phtml",
+            "layout/layout.phtml",
+            "common/header.phtml",
+            "common/search-form.phtml",
+            "common/language-switcher.phtml",
+            "common/menu-drawer.phtml",
             "common/banner.phtml",
             "common/footer.phtml"
         ]
@@ -252,6 +262,7 @@
         "xhr": false,
         "templates": [
             "common/block-layout/page-title.phtml",
+            "common/block-layout/html.phtml",
             "common/block-layout/asset.phtml",
             "common/block-layout/item-carousel.phtml",
             "layout/layout.phtml",
@@ -259,7 +270,6 @@
             "common/search-form.phtml",
             "common/language-switcher.phtml",
             "common/menu-drawer.phtml",
-            "common/banner.phtml",
             "common/footer.phtml"
         ]
     },
@@ -269,6 +279,7 @@
         "xhr": false,
         "templates": [
             "common/block-layout/page-title.phtml",
+            "common/block-layout/html.phtml",
             "common/block-layout/asset.phtml",
             "common/block-layout/item-carousel.phtml",
             "layout/layout.phtml",
@@ -276,7 +287,6 @@
             "common/search-form.phtml",
             "common/language-switcher.phtml",
             "common/menu-drawer.phtml",
-            "common/banner.phtml",
             "common/footer.phtml"
         ]
     },
@@ -286,6 +296,7 @@
         "xhr": false,
         "templates": [
             "common/block-layout/page-title.phtml",
+            "common/block-layout/html.phtml",
             "common/block-template/media-masonry.phtml",
             "common/block-layout/file.phtml",
             "layout/layout.phtml",
@@ -293,7 +304,6 @@
             "common/search-form.phtml",
             "common/language-switcher.phtml",
             "common/menu-drawer.phtml",
-            "common/banner.phtml",
             "common/footer.phtml"
         ]
     }

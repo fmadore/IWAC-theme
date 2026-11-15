@@ -79,8 +79,8 @@
  *    homepage hero, composited offline by `npm run build:icons` from the
  *    numbers in lib/hero-duotone.js — a copy of _banner.scss that nothing can
  *    notice going stale, because the result lives in pixels. Assert the
- *    stylesheet still spells the same ground mix, filter chain and plate
- *    opacity.
+ *    stylesheet still spells the same ground mix, filter chain, plate
+ *    opacity and halftone screen.
  *
  * 6d. THE MANIFEST COLOURS. helper/PwaManifest.php's theme_color and
  *    background_color are literal copies of light --surface / --background.
@@ -706,7 +706,7 @@ const collapse = (s) => s.replace(/\s+/g, ' ');
         artifactFailures.push(`${DUOTONE.SCSS_FILE} is missing — scripts/lib/hero-duotone.js points at it`);
     } else {
         const scss = collapse(fs.readFileSync(scssPath, 'utf8'));
-        for (const key of ['SCSS_GROUND', 'SCSS_FILTER', 'SCSS_OPACITY']) {
+        for (const key of ['SCSS_GROUND', 'SCSS_FILTER', 'SCSS_OPACITY', 'SCSS_HALFTONE']) {
             if (!scss.includes(collapse(DUOTONE[key]))) {
                 artifactFailures.push(
                     `${DUOTONE.SCSS_FILE} no longer declares \`${DUOTONE[key]}\` — the hero duotone changed, so the`

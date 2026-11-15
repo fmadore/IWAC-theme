@@ -91,7 +91,7 @@
         place-items: center;
         inline-size: var(--size-control-sm);
         block-size: var(--size-control-sm);
-        border-radius: var(--radius-full);
+        border-radius: var(--radius-sm);
         background: var(--plate-chip);
         color: var(--plate-ink);
         opacity: 0;
@@ -211,10 +211,8 @@
     &__counter {
         margin: 0;
         font-family: var(--font-body);
-        font-size: var(--text-2xs);
+        font-size: var(--text-xs);
         font-weight: 600;
-        letter-spacing: var(--tracking-wider);
-        text-transform: uppercase;
         color: var(--plate-ink);
     }
 
@@ -247,7 +245,7 @@
         block-size: var(--size-control-lg);
         padding: 0;
         border: 1px solid transparent;
-        border-radius: var(--radius-full);
+        border-radius: var(--radius-sm);
         background: transparent;
         color: var(--plate-ink);
         transition:
@@ -406,10 +404,8 @@
         justify-content: center;
         gap: var(--space-2);
         text-align: center;
-        font-size: var(--text-2xs);
+        font-size: var(--text-xs);
         font-weight: 600;
-        letter-spacing: var(--tracking-wider);
-        text-transform: uppercase;
         color: var(--plate-ink-quiet);
         pointer-events: none;
 

@@ -83,8 +83,7 @@
         width: 100%;
 
         a {
-            font-size: var(--text-xs);
-            text-transform: uppercase;
+            font-size: var(--text-sm);
             transition: color var(--transition-fast);
 
             &:hover {

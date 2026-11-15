@@ -21,8 +21,7 @@ $bannerDescription = $this->themeSetting('banner_description');
 // The banner_description setting is empty on both live sites, so the hero
 // proved the collection's scale without ever saying what the collection is —
 // the only one-sentence statement of scope sat in the footer. Fall back to it
-// here; an admin value still wins. Only the full hero renders the paragraph
-// (see the !$compact guard below), but the value is set before the
+// here; an admin value still wins. The value is set before the
 // $bannerHeightProperty and .has-text decisions so both count the dek as text.
 if (!$bannerDescription) {
     $bannerDescription = $translate('An open-access collection of newspapers, Islamic publications, archives, audiovisual sources, and academic references on Islam and Muslims in Benin, Burkina Faso, Côte d\'Ivoire, Niger, Nigeria, and Togo.');
@@ -38,35 +37,27 @@ $defaultBannerUrl = $this->assetUrl('img/banner-1400.webp');
 // Width-descriptor srcset for the default hero, computed in layout.phtml so the
 // LCP preload and this image element stay in sync. Empty for a custom banner.
 $bannerSrcset = isset($srcset) ? $srcset : '';
-// Pre-cropped centre band for the inner-page strip, also computed in
-// layout.phtml so the preload and this element request the same candidate.
-$stripSrc = isset($stripSrc) ? $stripSrc : $this->assetUrl('img/banner-strip-768.webp');
-$stripSrcset = isset($stripSrcset) ? $stripSrcset : '';
 $hasCustomBanner = (bool) $banner;
 
 $bannerHeightProperty = ($bannerEyebrow || $bannerHeading || $bannerDescription) ? 'min-height' : 'height';
 
-// Inner (non-home) pages get a short image strip; only the homepage shows the
-// full hero with the configurable height and overlay text.
-$compact = !empty($compact);
-
+// The hero renders on the homepage only (layout.phtml); inner pages carry no
+// banner at all since 2.33 — the slim .banner--compact strip is gone.
 $bannerInlineStyles = '';
 $imageInlineStyles = '';
 
-if (!$compact) {
-    // Validate before it reaches the style attribute. This is a free-text
-    // admin setting spliced straight into inline CSS; escapeHtmlAttr stops an
-    // attribute breakout but not `10px; background: url(https://…)`. The
-    // mobile counterpart in layout.phtml goes through the same helper.
-    // helper/CssLength.php: one plain length, or null.
-    $bannerHeight = $this->CssLength($bannerHeight);
-    if ($bannerHeight !== null) {
-        $bannerInlineStyles .= "{$bannerHeightProperty}: {$bannerHeight};";
-    } else {
-        // Default hero stature: tall enough to carry the display heading,
-        // capped so the fold still shows content underneath.
-        $bannerInlineStyles .= "{$bannerHeightProperty}: clamp(20rem, 42vh, 32rem);";
-    }
+// Validate before it reaches the style attribute. This is a free-text
+// admin setting spliced straight into inline CSS; escapeHtmlAttr stops an
+// attribute breakout but not `10px; background: url(https://…)`. The
+// mobile counterpart in layout.phtml goes through the same helper.
+// helper/CssLength.php: one plain length, or null.
+$bannerHeight = $this->CssLength($bannerHeight);
+if ($bannerHeight !== null) {
+    $bannerInlineStyles .= "{$bannerHeightProperty}: {$bannerHeight};";
+} else {
+    // Default hero stature: tall enough to carry the display heading,
+    // capped so the fold still shows content underneath.
+    $bannerInlineStyles .= "{$bannerHeightProperty}: clamp(20rem, 42vh, 32rem);";
 }
 
 $imageInlineStyles .= "object-position: {$bannerHorizontalPosition} {$bannerVerticalPosition};";
@@ -77,9 +68,7 @@ $class = ['banner'];
 if (in_array($bannerWidth, ['container', 'alignfull'], true)) {
     $class[] = $bannerWidth;
 }
-if ($compact) {
-    $class[] = 'banner--compact';
-} elseif ($bannerEyebrow || $bannerHeading || $bannerDescription) {
+if ($bannerEyebrow || $bannerHeading || $bannerDescription) {
     $class[] = 'has-text';
 }
 ?>
@@ -89,29 +78,15 @@ if ($compact) {
 // It renders before <main> (layout.phtml), so as a plain <div> it sat outside
 // every landmark: screen-reader landmark navigation skipped the site's only
 // h1, its description and the hero search (axe `region`, both homepages).
-// Named by its heading when there is one; the compact inner-page band is
-// decoration (an aria-hidden image) and stays an anonymous <div>.
-$bannerTag = $compact ? 'div' : 'section';
-$bannerLandmark = '';
-if (!$compact) {
-    $bannerLandmark = $bannerHeading
-        ? ' aria-labelledby="banner-heading"'
-        : ' aria-label="' . $escAttr($translate('Introduction')) . '"';
-}
+// Named by its heading when there is one.
+$bannerLandmark = $bannerHeading
+    ? ' aria-labelledby="banner-heading"'
+    : ' aria-label="' . $escAttr($translate('Introduction')) . '"';
 ?>
-<<?php echo $bannerTag; ?> class="<?php echo $escAttr(implode(' ', $class)); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>"<?php echo $bannerLandmark; ?>>
+<section class="<?php echo $escAttr(implode(' ', $class)); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>"<?php echo $bannerLandmark; ?>>
 
     <?php
-    // Both are LCP candidates. The hero obviously so; the compact band because
-    // it paints a full-bleed 72-112px strip at the top of the viewport, which on
-    // a phone outranks any item title shorter than ~2.5 lines. The band carried
-    // fetchpriority=low on the reasoning that a decorative image should not
-    // compete with content fetches — but the browser was painting it above the
-    // fold regardless, so the only effect was to hold an LCP element in flight
-    // for ~3s. Measured on a throttled Moto G4 against the live site: the strip
-    // completed at 3.5-4.9s and WAS the LCP (3.5s) on short-titled items;
-    // unthrottled priority plus the small band assets bring it in by ~0.6s.
-    // "Decorative" is not a property the LCP algorithm can read.
+    // The hero plate is the homepage's LCP element, preloaded in layout.phtml.
     $imageFetchPriority = 'high';
     ?>
     <?php
@@ -124,25 +99,6 @@ if (!$compact) {
     <div class="banner__media">
     <?php if ($hasCustomBanner): ?>
         <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true', 'fetchpriority' => $imageFetchPriority]); ?>
-    <?php elseif ($compact): ?>
-        <?php // The band has its own pre-cropped ~6.25:1 assets rather than a
-              // 16:9 hero derivative: at 768x123 it carries the same texture in
-              // 14 KiB instead of 57 KiB, because object-fit:cover is no longer
-              // discarding most of the file. ?>
-        <?php // sizes=50vw, not 100vw: the band is an aria-hidden duotone texture
-              // cropped to a 72px strip, so half-density sampling is invisible —
-              // and it keeps a DPR-3 phone on the 768w candidate (14 KiB) instead
-              // of pulling the 1400w one (36 KiB) it would otherwise demand. ?>
-        <img src="<?php echo $escAttr($stripSrc); ?>"
-             <?php if ($stripSrcset): ?>srcset="<?php echo $escAttr($stripSrcset); ?>"
-             sizes="50vw"
-             <?php endif; ?>width="768"
-             height="123"
-             style="<?php echo $escAttr($imageInlineStyles); ?>"
-             role="presentation"
-             aria-hidden="true"
-             alt=""
-             fetchpriority="high">
     <?php else: ?>
         <img src="<?php echo $escAttr($defaultBannerUrl); ?>"
              <?php if ($bannerSrcset): ?>srcset="<?php echo $escAttr($bannerSrcset); ?>"
@@ -157,7 +113,6 @@ if (!$compact) {
     <?php endif; ?>
     </div>
 
-    <?php if (!$compact): ?>
     <?php
     // Data access and IWAC class mappings live in the helper; this template
     // only maps the resulting values to translated presentation labels.
@@ -279,5 +234,4 @@ if (!$compact) {
         </ul>
         <?php endif; ?>
     </div>
-    <?php endif; ?>
-</<?php echo $bannerTag; ?>>
+</section>

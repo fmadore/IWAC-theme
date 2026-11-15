@@ -722,6 +722,22 @@ final class Api
         if ($resourceName !== 'items') {
             throw new \LogicException("the fake API searches items only, not '$resourceName'");
         }
+        // The homepage hero's two corpus counts (helper/BannerStats.php): a
+        // COUNT over thousands of public items in a set of resource classes,
+        // which the fake's handful of records cannot stand in for. Answer with
+        // the live figures (2026-11), keyed by the class list's first id.
+        if (isset($query['resource_class_id'])) {
+            $unknown = array_diff(array_keys($query), ['resource_class_id', 'is_public', 'limit']);
+            if ($unknown || ($query['limit'] ?? null) !== 0) {
+                throw new \LogicException('the fake API counts resource classes with limit 0 only');
+            }
+            $total = match ($query['resource_class_id'][0] ?? null) {
+                36 => 21031, // items: articles, publications, documents, …
+                94 => 6056,  // index: authority records
+                default => throw new \LogicException('the fake API has no count for these resource classes'),
+            };
+            return self::result([], $total);
+        }
         $unknown = array_diff(array_keys($query), ['property', 'sort_by', 'sort_order', 'limit', 'offset', 'site_id']);
         if ($unknown) {
             throw new \LogicException('the fake API does not understand ' . implode(', ', $unknown));
@@ -742,6 +758,12 @@ final class Api
         }
         $total = count($items);
         $items = array_slice($items, (int) ($query['offset'] ?? 0), isset($query['limit']) ? (int) $query['limit'] : null);
+        return self::result($items, $total);
+    }
+
+    /** What core's api()->search() returns: the page of records and the total. */
+    private static function result(array $items, int $total): object
+    {
         return new class($items, $total) {
             public function __construct(private array $items, private int $total)
             {
@@ -818,6 +840,29 @@ final class Asset
     public function thumbnailDisplayUrl(string $type): string
     {
         return '/files/asset/' . $this->hash . '.webp';
+    }
+}
+
+/**
+ * A site page block, as a block layout's template reads it: core's
+ * SitePageBlockRepresentation::dataValue(). Core's blockLayout() helper prints
+ * the <div class="block block-…"> wrapper around the template's output, which
+ * render-fixtures.php's blocks() reproduces.
+ */
+final class PageBlock
+{
+    public function __construct(private string $layout, private array $data = [])
+    {
+    }
+
+    public function layout(): string
+    {
+        return $this->layout;
+    }
+
+    public function dataValue(string $key, mixed $default = null): mixed
+    {
+        return $this->data[$key] ?? $default;
     }
 }
 

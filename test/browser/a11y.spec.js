@@ -17,6 +17,8 @@ const SURFACES = [
     ['item-set.en', 1280, ['#linked-resources', '#item-set-resources']],
     ['page-about.en', 390, ['#content']],
     ['page-exhibit.en', 1280, ['#content']],
+    ['page-home.en', 1280, ['.banner', '#content']],
+    ['page-home.en', 390, ['.banner', '#content']],
 ];
 
 function summarize(violations) {

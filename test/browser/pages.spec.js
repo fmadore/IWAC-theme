@@ -162,3 +162,140 @@ test('the carousel does not rotate on its own under reduced motion', async ({ br
         await context.close();
     }
 });
+
+// ---- 2.33: ruled sections, prose columns, no compact band ----------------------
+
+/** Distinct left edges of the visible lines' boxes — one per column. */
+const columnLefts = (page, selector) => page.locator(selector).evaluateAll((elements) => {
+    const lefts = new Set();
+    for (const element of elements) {
+        for (const rect of element.getClientRects()) {
+            if (rect.width > 0) lefts.add(Math.round(rect.left));
+        }
+    }
+    return [...lefts];
+});
+
+test('short prose flows into balanced columns at a wide viewport and stays one column on a phone', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openFixture(page, 'page-home.en');
+    const prose = page.locator('.block-html .prose-columns');
+    await expect(prose).toHaveCount(1);
+    const wide = await prose.evaluate((element) => {
+        const box = element.getBoundingClientRect();
+        const heading = element.querySelector('h2').getBoundingClientRect();
+        const block = element.closest('.blocks-inner').getBoundingClientRect();
+        return { width: box.width, height: box.height, blockWidth: block.width, headingWidth: heading.width, rule: getComputedStyle(element).columnRuleStyle };
+    });
+    // Two columns of the 1300px container, under a heading that spans both,
+    // and the prose fills the column: no capped measure beside an empty half.
+    expect(await columnLefts(page, '.prose-columns p')).toHaveLength(2);
+    expect(wide.headingWidth).toBeGreaterThan(wide.width * 0.95);
+    expect(wide.width).toBeGreaterThan(wide.blockWidth * 0.95);
+    expect(wide.rule).toBe('solid');
+    // Balanced and short: the whole story inside one laptop viewport.
+    expect(wide.height).toBeLessThan(900);
+    // The kicker link is never the first line of a column.
+    const kicker = await page.locator('.prose-columns p:last-child:has(> a:only-child)').last().boundingBox();
+    const tops = await page.locator('.prose-columns p').evaluateAll((ps) => ps.map((p) => Math.round(p.getBoundingClientRect().top)));
+    expect(kicker.y).toBeGreaterThan(Math.min(...tops));
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await columnLefts(page, '.prose-columns p')).toHaveLength(1);
+    expect(await hasNoHorizontalScroll(page)).toBe(true);
+});
+
+test('long prose fills the full width in a single column', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openFixture(page, 'page-about.en');
+    await expect(page.locator('.prose-columns')).toHaveCount(0);
+    const widths = await page.locator('.blocks-inner > .block-html').nth(1).evaluate((block) => ({
+        block: block.getBoundingClientRect().width,
+        paragraphs: [...block.querySelectorAll('p')].map((p) => p.getBoundingClientRect().width),
+    }));
+    expect(widths.paragraphs.length).toBeGreaterThan(1);
+    for (const width of widths.paragraphs) expect(width).toBeGreaterThan(widths.block * 0.95);
+});
+
+test('page blocks are ruled sections on one flat surface, not cards', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openFixture(page, 'page-about.en');
+    const blocks = await page.locator('.blocks-inner > .block').evaluateAll((elements) => elements.map((element) => {
+        const style = getComputedStyle(element);
+        return {
+            cls: element.className,
+            ruleTop: `${style.borderTopWidth} ${style.borderTopStyle}`,
+            bg: style.backgroundColor,
+            shadow: style.boxShadow,
+            radius: style.borderTopLeftRadius,
+            paddingInline: style.paddingLeft,
+        };
+    }));
+    for (const block of blocks) {
+        expect(block.bg, block.cls).toBe('rgba(0, 0, 0, 0)');
+        expect(block.shadow, block.cls).toBe('none');
+        expect(block.radius, block.cls).toBe('0px');
+        expect(block.paddingInline, block.cls).toBe('0px');
+    }
+    // The title opens on its own rule; the section under it does not repeat
+    // it; every later section opens on the 2px ink rule.
+    expect(blocks[1].ruleTop).toBe('0px none');
+    expect(blocks[2].ruleTop).toBe('2px solid');
+    // One flat --surface: the body paints it, nothing between it and the blocks.
+    const ground = await page.evaluate(() => {
+        const probe = document.createElement('i');
+        probe.style.color = 'var(--surface)';
+        document.body.append(probe);
+        return {
+            body: getComputedStyle(document.body).backgroundColor,
+            surface: getComputedStyle(probe).color,
+            main: getComputedStyle(document.querySelector('#content')).backgroundColor,
+        };
+    });
+    expect(ground.body).toBe(ground.surface);
+    expect(ground.main).toBe('rgba(0, 0, 0, 0)');
+});
+
+test('inner pages open on the breadcrumb under the masthead; the hero is the homepage\'s alone', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openFixture(page, 'item.en');
+    await expect(page.locator('.banner')).toHaveCount(0);
+    const gap = await page.evaluate(() => document.querySelector('#content .breadcrumbs').getBoundingClientRect().top
+        - document.querySelector('.main-header').getBoundingClientRect().bottom);
+    expect(gap).toBeGreaterThanOrEqual(0);
+    expect(gap).toBeLessThan(80);
+
+    await openFixture(page, 'page-home.en');
+    const hero = await page.locator('.banner').evaluate((banner) => ({
+        screen: getComputedStyle(banner.querySelector('.banner__media'), '::after').backgroundImage,
+        blend: getComputedStyle(banner.querySelector('.banner__media'), '::after').mixBlendMode,
+        searchRadius: getComputedStyle(banner.querySelector('.banner__search form')).borderTopLeftRadius,
+    }));
+    expect(hero.screen).toContain('radial-gradient');
+    expect(hero.blend).toBe('multiply');
+    expect(hero.searchRadius).toBe('0px');
+});
+
+test('the hero ground stays a deep seed blue in dark mode, never the re-lit dark primary', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    for (const theme of ['light', 'dark']) {
+        await page.emulateMedia({ colorScheme: theme });
+        await openFixture(page, 'page-home.en');
+        const [ground, primary] = await page.evaluate(() => {
+            const probe = document.createElement('i');
+            document.body.append(probe);
+            const rgb = (value) => { probe.style.color = value; return getComputedStyle(probe).color; };
+            return [getComputedStyle(document.querySelector('.banner')).backgroundColor, rgb('var(--primary)')];
+        });
+        // A ground white type reads on: dark enough in both themes.
+        const luminance = await page.evaluate((colour) => {
+            const c = document.createElement('canvas').getContext('2d');
+            c.fillStyle = colour; c.fillRect(0, 0, 1, 1);
+            const [r, g, b] = c.getImageData(0, 0, 1, 1).data;
+            const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+            return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+        }, ground);
+        expect(1.05 / (luminance + 0.05), `${theme}: white on the hero ground`).toBeGreaterThan(4.5);
+        if (theme === 'dark') expect(ground).not.toBe(primary);
+    }
+});

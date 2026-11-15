@@ -27,23 +27,16 @@ $bannerHeightMobile = $this->CssLength($this->themeSetting('banner_height_mobile
 // stats spilled over the page beneath it.
 $bannerHeightProperty = 'min-height';
 
-// Brand color: SCSS derives every primary variant (--primary,
-// --primary-hover, --primary-active, --focus-ring, glows, etc.) from
-// --primary-base via color-mix(in oklab, ...). PHP only needs to inject
-// the raw hex if the admin overrode the default. This replaces the
-// previous HSL-conversion path which produced inconsistencies between
-// the SCSS-tuned palette and the runtime values.
-$primaryColor = $this->themeSetting('primary_color') ?? '#e64a19';
-// Secondary seed: the shared 2nd categorical / data-series colour consumed by
-// the IwacVisualizations module (chart series 2, compare-corpus B). SCSS
-// derives --secondary (and its dark-mode lightening) from this base.
-$secondaryColor = $this->themeSetting('secondary_color') ?? '#394f68';
-if (!is_string($primaryColor) || !preg_match('/^#[0-9a-f]{6}$/i', $primaryColor)) {
-    $primaryColor = '#e64a19';
-}
-if (!is_string($secondaryColor) || !preg_match('/^#[0-9a-f]{6}$/i', $secondaryColor)) {
-    $secondaryColor = '#394f68';
-}
+// Brand seeds: SCSS derives every primary variant (--primary,
+// --primary-hover, --primary-active, the focus tokens, the hero ground) from
+// --primary-base via color-mix(in oklab, ...), and --secondary from
+// --secondary-base (the shared 2nd data-series colour the IwacVisualizations
+// module reads). helper/BrandSeeds.php validates the two stored hexes, and
+// reads the pre-2.33 defaults (burnt orange, slate) as unset so a site that
+// once saved its settings still gets the press blue.
+$brandSeeds = $this->BrandSeeds($this->themeSetting('primary_color'), $this->themeSetting('secondary_color'));
+$primaryColor = $brandSeeds['primary'];
+$secondaryColor = $brandSeeds['secondary'];
 
 // PWA: build the per-site web-app manifest. Default ON; only an explicit
 // unchecked setting ('0') disables it. The manifest is emitted as a JSON island
@@ -83,13 +76,6 @@ $defaultBannerSrcset = $this->assetUrl('img/banner-480.webp') . ' 480w, '
     . $this->assetUrl('img/banner-1024.webp') . ' 1024w, '
     . $this->assetUrl('img/banner-1280.webp') . ' 1280w, '
     . $defaultBannerUrl . ' 1400w';
-// Inner pages render the same plate as a slim full-bleed strip
-// (.banner--compact, 72-112px tall). It has its own pre-cropped band assets --
-// reusing the hero's 768w derivative meant shipping 57 KiB for a box that paints
-// 375x72 CSS px. Regenerate with `npm run build:images`.
-$compactStripUrl = $this->assetUrl('img/banner-strip-768.webp');
-$compactStripSrcset = $compactStripUrl . ' 768w, '
-    . $this->assetUrl('img/banner-strip-1400.webp') . ' 1400w';
 
 $this->htmlElement('html')->setAttribute('lang', $this->lang());
 $this->headMeta()->setCharset('utf-8');
@@ -220,15 +206,6 @@ if ($layoutIsHomepage) {
 		<link rel="preload" as="image" fetchpriority="high"
 		      href="<?php echo $this->escapeHtmlAttr($customBannerAsset->assetUrl()); ?>">
 		<?php endif; ?>
-		<?php // NOTE: the inner-page compact strip is deliberately NOT preloaded,
-		      // though it is an LCP candidate (see common/banner.phtml). A preload
-		      // here is emitted before the stylesheet link, so it competes with the
-		      // render-blocking CSS on every inner page — measurably delaying FCP,
-		      // and with it the text LCP of any page whose title is the largest
-		      // paint. The strip is a plain <img src> near the top of <body>, so
-		      // the preload scanner already starts it at ~350ms; it only ever
-		      // needed to stop being fetchpriority=low. With the small band assets
-		      // it now completes around 600ms unaided. ?>
 		<?php echo $this->headTitle(); ?>
 		<?php echo $this->headLink(); ?>
 		<?php echo $this->headStyle(); ?>
@@ -242,11 +219,11 @@ if ($layoutIsHomepage) {
 			}
 		</style>
 		
-		<?php if ($bannerHeightMobile !== null): ?>
+		<?php if ($bannerHeightMobile !== null && $layoutIsHomepage): ?>
 		<?php // 767px, not 768px: max-width sits at breakpoint − 1 so it never
 		      // overlaps the `min-width: $md` half. See abstracts/variables/_breakpoints.scss. ?>
 		<style type="text/css" media="screen and (max-width:767px)">
-			.banner:not(.banner--compact) {
+			.banner {
 				<?php echo $this->escapeHtml($bannerHeightProperty) . ': ' . $this->escapeHtml($bannerHeightMobile) . ' !important;'; ?>
 			}
 		</style>
@@ -302,17 +279,14 @@ if ($layoutIsHomepage) {
 		<?php echo $this->partial('common/header', ['userBar' => $userBar, 'site' => $site]); ?>
 
 		<?php
-		// The full hero renders on the site homepage only; inner pages carry
-		// a slim compact band of the same duotone plate so the page doesn't
-		// open on bare whitespace between the section strip and the title.
-		// Only the homepage hero is LCP-preloaded (see <head>); the compact
-		// band asks for the image at low priority.
-		echo $this->partial('common/banner', [
-			'compact' => !$layoutIsHomepage,
-			'srcset' => $defaultBannerSrcset,
-			'stripSrc' => $compactStripUrl,
-			'stripSrcset' => $compactStripSrcset,
-		]);
+		// The hero renders on the site homepage only. Inner pages open straight
+		// on their breadcrumb and title under the masthead's 2px rule: the slim
+		// duotone band they carried until 2.33 (.banner--compact) was a strip of
+		// decoration between the section strip and the content — and, on a
+		// phone, the LCP element of every short-titled page.
+		if ($layoutIsHomepage) {
+			echo $this->partial('common/banner', ['srcset' => $defaultBannerSrcset]);
+		}
 		?>
 
 		<main id="content" class="container" tabindex="-1">

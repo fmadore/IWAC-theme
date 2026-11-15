@@ -35,20 +35,19 @@ const BANNER_FILE = path.join(ROOT, 'asset', 'img', 'banner.webp');
 // the icons' paper is the site's paper and the screenshot's ground is the
 // hero's ground. The outputs are static: re-run this script after a token
 // change — `npm run check:tokens` is what tells you they have drifted.
-const [TILE_BG, PRIMARY] = (() => {
+const [TILE_BG, PRIMARY_SEED] = (() => {
     const tokens = JSON.parse(fs.readFileSync(path.join(ROOT, 'tokens.json'), 'utf8'));
-    return ['--surface', '--primary'].map((name) => {
-        const value = tokens.light && tokens.light[name];
-        if (!value) {
-            throw new Error(`tokens.json carries no light ${name} — run \`npm run build:tokens\` first.`);
-        }
-        return value;
-    });
+    const surface = tokens.light && tokens.light['--surface'];
+    const seed = tokens.seeds && tokens.seeds['--primary-base'];
+    if (!surface || !seed) {
+        throw new Error('tokens.json carries no light --surface or --primary-base seed — run `npm run build:tokens` first.');
+    }
+    return [surface, seed];
 })();
 
-// The hero's ground: `color-mix(in oklab, var(--primary) 90%, black 10%)`,
+// The hero's ground: `color-mix(in oklab, var(--primary-base) 88%, white 12%)`,
 // performed here exactly as the browser performs it in _banner.scss.
-const BANNER_GROUND = mixOklab(PRIMARY, '#000000', DUOTONE.GROUND.primaryPct);
+const BANNER_GROUND = mixOklab(PRIMARY_SEED, '#ffffff', DUOTONE.GROUND.seedPct);
 
 // The ZMO brand values, spelled exactly as they appear in zmo-mark.svg.
 const BOX_STROKE = '#EB8241';
@@ -221,12 +220,13 @@ async function render(size, svg, file) {
  * as the browser duotones it on the homepage.
  *
  * The install dialog should show the site as it looks, and the banner master is
- * a plain colour photograph — the orange is applied by CSS. So the composite is
+ * a plain colour photograph — the blue is applied by CSS. So the composite is
  * redone here from the recipe in lib/hero-duotone.js:
  *
- *   grayscale(1) → contrast(1.04) → brightness(1.22), multiplied over the
- *   ground, the whole plate at 90% opacity. Which collapses, per channel, to
- *   `ground × (0.9 · plate + 0.1)`.
+ *   grayscale(1) → contrast() → brightness(), multiplied over the ground, the
+ *   whole plate at 90% opacity. Which collapses, per channel, to
+ *   `ground × (0.9 · plate + 0.1)` — then the halftone screen multiplies the
+ *   centre of every 4px tile by `1 − dotAlpha · opacity · coverage`.
  *
  * The luma matrix and the two filter steps run on sRGB values, not linear
  * light, because that is what CSS filter functions do — matching the browser
@@ -237,7 +237,15 @@ async function render(size, svg, file) {
  * @param {number} height output height
  */
 async function screenshot(crop, width, height, file) {
-    const { LUMA, FILTER, PLATE_OPACITY } = DUOTONE;
+    const { LUMA, FILTER, PLATE_OPACITY, HALFTONE } = DUOTONE;
+    // The solid dot's area (radius = stopPct of the 2√2-px corner distance on
+    // a 4px tile), spread over the four pixels at the tile's centre.
+    const dotRadius = (HALFTONE.stopPct / 100) * Math.SQRT2 * (HALFTONE.period / 2);
+    const coverage = Math.min(1, (Math.PI * dotRadius ** 2) / 4);
+    const dotFactor = 1 - HALFTONE.dotAlpha * HALFTONE.opacity * coverage;
+    const half = HALFTONE.period / 2;
+    const inDot = (x, y) => (x % HALFTONE.period === half - 1 || x % HALFTONE.period === half)
+        && (y % HALFTONE.period === half - 1 || y % HALFTONE.period === half);
     const ground = [1, 3, 5].map((i) => parseInt(BANNER_GROUND.slice(i, i + 2), 16));
 
     const { data, info } = await sharp(BANNER_FILE)
@@ -253,7 +261,9 @@ async function screenshot(crop, width, height, file) {
         g = (g - 0.5) * FILTER.contrast + 0.5;      // contrast()
         g = g * FILTER.brightness;                  // brightness()
         g = Math.max(0, Math.min(1, g));
-        const k = PLATE_OPACITY * g + (1 - PLATE_OPACITY); // multiply, then plate opacity
+        let k = PLATE_OPACITY * g + (1 - PLATE_OPACITY); // multiply, then plate opacity
+        const px = (i / 3) % info.width;
+        if (inDot(px, Math.floor(i / 3 / info.width))) k *= dotFactor; // the halftone screen
         out[i] = Math.round(ground[0] * k);
         out[i + 1] = Math.round(ground[1] * k);
         out[i + 2] = Math.round(ground[2] * k);

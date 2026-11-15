@@ -554,6 +554,58 @@ namespace IwacThemeTest {
         same('400px', (new FakeView())->CssLength('400px'), 'registered under its exact name');
     });
 
+    test('BrandSeeds validates the two seeds and reads the pre-2.33 defaults as unset', function () {
+        $seeds = \OmekaTheme\Helper\BrandSeeds::class;
+        same('#1c2f9e', $seeds::primary(null), 'no setting: the press blue');
+        same('#85253a', $seeds::secondary(null), 'no setting: claret');
+        // Omeka stores every field on the first Save, so a site configured
+        // before 2.33 holds the old defaults as if chosen. Those exact values
+        // (in any case) are the new default; anything else is the admin's.
+        foreach (['#e64a19', '#E64A19', ' #e64a19 '] as $legacy) {
+            same('#1c2f9e', $seeds::primary($legacy), "legacy orange '$legacy'");
+        }
+        same('#85253a', $seeds::secondary('#394F68'), 'legacy slate');
+        same('#e64a1a', $seeds::primary('#E64A1A'), 'one step off the legacy orange is a choice, kept');
+        same('#0b6e4f', $seeds::primary('#0B6E4F'), 'a chosen colour is kept, lowercased');
+        // Spliced into a <style> block: one #rrggbb hex, or the default.
+        foreach (['', 'red', '#abc', '#12345g', '#1c2f9e; } body { display:none', ['#123456'], 42] as $bad) {
+            same('#1c2f9e', $seeds::primary($bad), 'refuses ' . var_export($bad, true));
+        }
+        same(['primary' => '#1c2f9e', 'secondary' => '#85253a'], (new FakeView())->BrandSeeds('#e64a19', '#394f68'), 'registered under its exact name');
+    });
+
+    test('ProseColumns flows short plain prose into columns and keeps long or mixed blocks in one', function () {
+        $pc = \OmekaTheme\Helper\ProseColumns::class;
+        $para = static fn (int $chars): string => '<p>' . str_repeat('word ', intdiv($chars, 5)) . '</p>';
+        // Length: between MIN_CHARS and MAX_CHARS of visible text.
+        check(!$pc::flows($para(200)), 'a one-line intro has nothing to balance');
+        check($pc::flows('<h2>About the collection</h2>' . $para(700) . $para(500)), 'a short section flows');
+        check(!$pc::flows($para(1000) . $para(1000)), 'a long section stays one column');
+        same($pc::MAX_CHARS, $pc::textLength(str_repeat('a', $pc::MAX_CHARS)), 'the boundary counts characters');
+        check($pc::flows(str_repeat('a', $pc::MAX_CHARS)), 'MAX_CHARS itself flows');
+        check(!$pc::flows(str_repeat('a', $pc::MAX_CHARS + 1)), 'one past MAX_CHARS does not');
+        // Visible text only: markup, attributes and entities do not count, and
+        // a tag is a word boundary.
+        same(7, $pc::textLength('<p class="lede" data-x="long attribute">a&nbsp;b</p><p>c&amp;d</p>'), 'a b c&d');
+        same(3, $pc::textLength("<div>\n<p>a</p>\n\n<p>b</p>\n</div>"));
+        same(4, $pc::textLength('Côte'), 'characters, not bytes');
+        // Content: one table, figure, image, embed or quote keeps it in one column.
+        $prose = $para(800);
+        foreach (['<table><tr><td>1</td></tr></table>', '<figure><img src="a.jpg" alt=""></figure>', '<img src="a.jpg" alt="">',
+            '<iframe src="https://x.test"></iframe>', '<video src="a.mp4"></video>', '<blockquote><p>Quoted.</p></blockquote>',
+            '<pre>code</pre>', '<TABLE></TABLE>'] as $blocker) {
+            check(!$pc::flows($prose . $blocker), "blocked by $blocker");
+        }
+        // …but not an element whose name merely starts the same way.
+        check($pc::flows($prose . '<p><span class="tablet">x</span><a href="/preface">Preface</a></p>'), 'no false positives on <tablet-like names');
+        // The live homepage's "About the collection" flows; the About page's history section does not.
+        $home = (string) file_get_contents(ROOT . '/test/fixtures/rendered/page-home.en.html');
+        check(str_contains($home, '<div class="prose-columns"><h2') || str_contains($home, '<div class="prose-columns"><div>'), 'the homepage About block is set in columns');
+        $about = (string) file_get_contents(ROOT . '/test/fixtures/rendered/page-about.en.html');
+        check(!str_contains($about, 'prose-columns'), 'the About page sections (a one-liner, a long history) stay single-column');
+        check($pc::flows('') === false && (new FakeView())->ProseColumns(null) === false, 'empty or missing html never flows');
+    });
+
     test('MoveBlockingHeadScripts takes every parser-blocking script, inline ones in place (regression: Mapping "MappingBasemap is not defined")', function () {
         // What headScript()->getContainer() holds: one stdClass per script, in
         // the shape a live place record has — Mapping's inline credentials block
@@ -1577,7 +1629,7 @@ namespace IwacThemeTest {
     // ---- Homepage hero --------------------------------------------------------
 
     /** Render common/banner.phtml with a snapshot of $summary figures (null: no snapshot). */
-    function renderBanner(array $settings, bool $compact, ?array $summary = null): string
+    function renderBanner(array $settings, ?array $summary = null): string
     {
         $root = sys_get_temp_dir() . '/iwac-theme-banner-' . getmypid();
         @mkdir($root . '/files/iwac-visualizations', 0777, true);
@@ -1594,25 +1646,39 @@ namespace IwacThemeTest {
         $fake->helpers['api'] = static fn () => throw new \RuntimeException('no API in this test');
         $previousLog = ini_set('error_log', PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null');
         try {
-            return $fake->render('common/banner.phtml', ['compact' => $compact]);
+            return $fake->render('common/banner.phtml');
         } finally {
             ini_set('error_log', (string) $previousLog);
             @unlink($snapshot);
         }
     }
 
-    test('the full hero is a labelled region; the compact band is not (T-08)', function () {
-        $hero = renderBanner(['banner_heading' => 'Islam West Africa Collection'], false);
+    test('the hero is a labelled region (T-08)', function () {
+        $hero = renderBanner(['banner_heading' => 'Islam West Africa Collection']);
         check((bool) preg_match('/<section class="banner[^"]*"[^>]*aria-labelledby="banner-heading">/', $hero), 'hero is not a section named by its heading');
         check(str_contains($hero, '<h1 class="banner__heading" id="banner-heading">Islam West Africa Collection</h1>'), 'heading id missing');
         check(str_ends_with(rtrim($hero), '</section>'), 'hero section not closed');
 
-        $unnamed = renderBanner([], false);
+        $unnamed = renderBanner([]);
         check((bool) preg_match('/<section class="banner[^"]*"[^>]*aria-label="Introduction">/', $unnamed), 'a hero without a heading needs a label');
+    });
 
-        $band = renderBanner([], true);
-        check(str_contains($band, '<div class="banner banner--compact"'), 'compact band should stay a div');
-        check(!str_contains($band, '<section') && !str_contains($band, 'aria-label'), 'compact band must not be a landmark');
+    test('inner pages carry no banner at all; only the homepage renders the hero (2.33)', function () {
+        // The slim .banner--compact strip went in 2.33: inner pages open on
+        // their breadcrumb and title under the masthead rule. The rendered
+        // fixtures are the real layout around real pages — read them.
+        $dir = ROOT . '/test/fixtures/rendered';
+        foreach (glob($dir . '/*.html') ?: [] as $file) {
+            $html = (string) file_get_contents($file);
+            if (str_contains($html, '<html') === false) {
+                continue; // an XHR fragment: no layout
+            }
+            $isHome = basename($file) === 'page-home.en.html';
+            same($isHome ? 1 : 0, substr_count($html, '<section class="banner'), basename($file) . ': hero count');
+            check(!str_contains($html, 'banner--compact') && !str_contains($html, 'banner-strip'), basename($file) . ': compact band is back');
+            check($isHome === str_contains($html, 'rel="preload" as="image"'), basename($file) . ': the hero preload belongs to the homepage only');
+        }
+        check(!is_file(ROOT . '/asset/img/banner-strip-768.webp'), 'the compact band assets are no longer shipped');
     });
 
     test('the corpus tier carries its figure count for the column template (T-07)', function () {
@@ -1620,13 +1686,13 @@ namespace IwacThemeTest {
             'total_words' => 9876543, 'total_pages' => 34567, 'references_count' => 1200,
             'unique_sources' => 88, 'document_types' => 7, 'audiovisual_minutes' => 1234, 'languages' => 5,
         ];
-        $html = renderBanner([], false, $summary);
+        $html = renderBanner([], $summary);
         check(str_contains($html, 'class="banner__substats banner__substats--n7"'), 'seven figures, --n7');
         same(7, substr_count($html, 'class="banner__substat"'));
 
         unset($summary['languages'], $summary['document_types']);
-        check(str_contains(renderBanner([], false, $summary), 'banner__substats--n5'), 'five figures, --n5');
-        check(!str_contains(renderBanner([], false), 'banner__substats'), 'no snapshot, no tier');
+        check(str_contains(renderBanner([], $summary), 'banner__substats--n5'), 'five figures, --n5');
+        check(!str_contains(renderBanner([]), 'banner__substats'), 'no snapshot, no tier');
     });
 
     test('linked values show the uncropped medium thumbnail, keeping the rendered markup (T-09)', function () {

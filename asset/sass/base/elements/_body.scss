@@ -5,11 +5,13 @@
 // Flat, neutral surfaces — no atmospheric gradients, no parchment wash.
 // The previous warm radial-from-top read as "manuscript / cultural-heritage
 // brochure," wrong register for a research instrument. Surfaces are now
-// solid; depth comes from intentional shadows on raised elements only.
+// solid. Since 2.33 the page is ONE flat --surface — no grey ground behind
+// white cards (the cards are gone too; sections are divided by rules).
+// --background stays published for consumers, but the page no longer paints it.
 // ==========================================================================
 
 body {
-  background: var(--background);
+  background: var(--surface);
   margin: 0;
   color: var(--ink);
   font-family: $font__body;

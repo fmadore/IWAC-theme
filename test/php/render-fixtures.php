@@ -305,6 +305,63 @@ function blocks(array $blocks): string
     return $html;
 }
 
+/**
+ * An HTML page block through the theme's own template (common/block-layout/
+ * html.phtml), which decides whether the prose flows into columns. Core
+ * prints the purified HTML; blocks() adds core's wrapper around it.
+ */
+function htmlBlock(FakeView $view, string $html): string
+{
+    return $view->partial('common/block-layout/html', ['block' => new PageBlock('html', ['html' => $html])]);
+}
+
+/**
+ * Prose as the live sites store it: CKEditor wraps paragraphs in bare <div>s,
+ * and links carry absolute URLs. The homepage's "About the collection" (short:
+ * it flows into columns) and one section of the About page (long: it stays a
+ * single full-width column), each copied from the live site.
+ */
+function liveProse(string $name): string
+{
+    $prose = [
+        'about-the-collection' => <<<'HTML'
+<div>
+<h2 dir="auto">About the collection</h2>
+
+<p dir="auto">The&nbsp;<em>Islam West Africa Collection</em>&nbsp;(IWAC) is a collaborative, open-access digital collection developed by&nbsp;<a href="https://www.frederickmadore.com/">Frédérick Madore</a>&nbsp;and hosted by the&nbsp;<a href="https://www.zmo.de/en">Leibniz-Zentrum Moderner Orient (ZMO)</a>&nbsp;in Berlin. It builds on the&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/award-and-mentions">award-winning</a>&nbsp;<em><a href="https://web.archive.org/web/20240312164955/https://islam.domains.uflib.ufl.edu/s/bf/page/home">Islam Burkina Faso Collection</a></em>, launched in 2021. To preserve its sources for the long term, IWAC stores press articles as scans and captures them in the&nbsp;<a href="https://web.archive.org/">Wayback Machine</a>.</p>
+</div>
+
+<div>
+<p dir="auto">The collection brings together&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/browse?b1196.f.type_s=document">archival documents</a>,&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/browse?b1196.f.type_s=article">newspaper articles</a>,&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/browse?b1196.f.type_s=publication">Islamic publications</a>,&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/browse?b1196.f.type_s=audiovisual">audiovisual recordings</a>,&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/browse?b1196.f.type_s=photograph">photographs</a>&nbsp;and&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/references">academic references</a>&nbsp;on Islam and Muslims in&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/benin">Benin</a>,&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/burkina-faso">Burkina Faso</a>,&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/cote-d-ivoire">Côte d&#39;Ivoire</a>,&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/niger">Niger</a>,&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/nigeria">Nigeria</a>&nbsp;and&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/togo">Togo</a>. Most materials are in French, with others in Hausa, Arabic, Dendi, Ewé, Kabiyè and English.</p>
+</div>
+
+<div>
+<p dir="auto">IWAC uses&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/ocr">optical character recognition</a>&nbsp;and&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/ai-metadata-enrichment">AI-assisted metadata enrichment</a>&nbsp;to make textual documents easier to search and study. These methods support <a href="https://islam.zmo.de/s/westafrica/page/browse">filterable search</a>, an&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/index">authority index</a>&nbsp;of people, organisations, places and events, and&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/copyrights_data_reuse">open data export</a>. A suite of&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/explore">interactive visualisations</a>, including&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/spatial-exploration">maps</a>,&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/entity-networks">entity networks</a>,&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/topic-modelling">topic models</a>,&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/words-over-time">word trends</a>&nbsp;and&nbsp;<a href="https://islam.zmo.de/s/westafrica/page/sentiment-analysis">AI-assisted analysis of press attitudes</a>, helps users explore patterns across the corpus.</p>
+</div>
+
+<div>
+<p data-heading="[More about the collection →](https://islam.zmo.de/s/westafrica/page/about)" dir="auto"><a href="https://islam.zmo.de/s/westafrica/page/about">More about the collection &rarr;</a></p></div>
+HTML,
+        'about-history.en' => <<<'HTML'
+<p>IWAC grew from the practical demands of historical fieldwork rather than from a formal digitisation plan.</p>
+
+<p>Since 2011, <a class="external-link" href="https://www.frederickmadore.com/">Frédérick Madore</a>&nbsp;has conducted fieldwork and archival research across francophone West Africa. His work examines Islamic activism among youth and women in Burkina Faso and Côte d&#39;Ivoire, Muslim minorities in southern Benin and Togo, and the history of faith-based student organisations at the Université d&#39;Abomey-Calavi in Benin and the Université de Lomé in Togo. During his Master&#39;s research, he encountered a rapidly growing body of material scattered across archives and libraries. Many postcolonial state archives in the region work with limited resources and preserve fragmented collections. Sources may be difficult to access, split among several centres, poorly catalogued or at risk of disappearance. Madore therefore began digitising and organising them himself, and the resulting research database soon outgrew its original purpose.</p>
+
+<p>Over the following decade, Madore digitised or saved more than 24,000 pages of press clippings from over 80 newspapers dating back to 1962, some 1,500 issues from 25 Islamic publications, many of which are now defunct, and thousands of online articles preserved through the <a class="external-link" href="https://web.archive.org/">Wayback Machine</a>. Websites and URLs frequently disappear; web archiving preserves access to earlier versions of these sources. The materials came from nine archival institutions across six countries, as well as private collections held by individuals and Islamic associations. <a class="external-link" href="https://islam.zmo.de/s/westafrica/page/why_newspapers">Together, they allow researchers to trace changes within Muslim communities over time</a>.</p>
+
+<p>Initially kept in a private <a href="https://www.zotero.org/">Zotero</a> database, the collection became a form of &quot;digital hoarding&quot;: a personal archive too large for one researcher to analyse fully. Requests from colleagues for particular clippings revealed the limits of private storage. The public database grew out of open-science principles and the goal of making research data findable, accessible, interoperable and reusable.</p>
+HTML,
+        'about-history.fr' => <<<'HTML'
+<p>Depuis 2013,&nbsp;<a href="https://frederickmadore.com/">Fr&eacute;d&eacute;rick Madore</a>&nbsp;m&egrave;ne des enqu&ecirc;tes de terrain et des recherches dans des centres d&#39;archive &agrave; travers l&#39;Afrique de l&#39;Ouest, se concentrant sur l&#39;activisme islamique parmi les jeunes et les femmes au Burkina Faso et en C&ocirc;te d&#39;Ivoire, les minorit&eacute;s musulmanes dans le sud du B&eacute;nin et du Togo ainsi que sur l&#39;histoire des organisations estudiantines confessionnelles &agrave; l&#39;Universit&eacute; d&#39;Abomey-Calavi (B&eacute;nin) et &agrave; l&#39;Universit&eacute; de Lom&eacute; (Togo).&nbsp;Ce qui a commenc&eacute; comme une recherche de m&eacute;moire de maitrise s&#39;est transform&eacute; en une initiative majeure d&#39;humanit&eacute;s num&eacute;riques qui comble d&#39;importantes lacunes dans l&#39;accessibilit&eacute; des ressources sur l&#39;islam en Afrique de l&#39;Ouest.</p>
+
+<p>&Agrave; travers ses efforts de documentation, Madore a num&eacute;ris&eacute; plus de 14 000 coupures de presse provenant de 15 journaux publics et priv&eacute;s couvrant l&#39;islam et les musulmans en Afrique de l&#39;Ouest de 1962 &agrave; 2024. Il a &eacute;galement pr&eacute;serv&eacute; environ 1500 publications islamiques diverses (pamphlets, bulletins, magazines et journaux), dont la plupart ne sont plus en circulation. De plus, il a archiv&eacute; des articles de presse en ligne de la r&eacute;gion gr&acirc;ce &agrave; la Wayback Machine.&nbsp;Ces documents ont &eacute;t&eacute; obtenus &agrave; partir de collections priv&eacute;es d&#39;individus et d&#39;associations islamiques, ainsi que de neuf centres d&#39;archives et biblioth&egrave;ques dans six pays diff&eacute;rents.&nbsp;<a href="https://islam.zmo.de/s/afrique_ouest/page/journaux">Ces sources offrent un excellent moyen de retracer l&#39;histoire des communaut&eacute;s musulmanes</a>.</p>
+
+<p>Malgr&eacute; la popularit&eacute; croissante des humanit&eacute;s num&eacute;riques, &eacute;tonnamment peu d&#39;initiatives ont utilis&eacute; des outils num&eacute;riques pour &eacute;tudier et diffuser des connaissances sur l&#39;islam en Afrique de l&#39;Ouest. De nombreux projets de num&eacute;risation existants ont privil&eacute;gi&eacute; les manuscrits, comme ceux de Tombouctou, sugg&eacute;rant implicitement que ces mat&eacute;riaux sont intrins&egrave;quement plus pr&eacute;cieux et dignes d&#39;&ecirc;tre pr&eacute;serv&eacute;s que d&#39;autres documents historiques. Cette vision &eacute;troite risque de n&eacute;gliger un &eacute;ventail plus large de mat&eacute;riaux culturellement et historiquement significatifs, y compris la riche culture imprim&eacute;e islamique, les journaux et les documents nativement num&eacute;riques. L&#39;id&eacute;e de distribuer et d&#39;archiver ouvertement une grande partie de ce corpus diversifi&eacute;, et de rendre ces documents accessibles aux chercheurs du monde entier pour de nouvelles &eacute;tudes sur l&#39;islam en Afrique de l&#39;Ouest, a &eacute;t&eacute; fortement influenc&eacute;e par les d&eacute;bats sur la science ouverte.</p>
+HTML,
+    ];
+    return $prose[$name];
+}
+
 // ---- Pages --------------------------------------------------------------------
 
 /**
@@ -476,9 +533,11 @@ function aboutPage(string $locale): array
             $view->htmlElement('body')->appendAttribute('class', 'page site-page-' . $slug);
             return blockGrid([
                 ['pageTitle', 12, $view->partial('common/block-layout/page-title', ['pageTitle' => $site->page($slug)->title()])],
-                ['html', 12, $fr
+                ['html', 12, htmlBlock($view, $fr
                     ? '<p>La <em>Collection Islam Afrique de l’Ouest</em> retrace le développement de l’islam et des communautés musulmanes en Afrique de l’Ouest depuis les années 1960.</p>'
-                    : '<p>The <em>Islam West Africa Collection</em> (IWAC) traces the development of Islam and Muslim communities in West Africa from the 1960s to the present.</p>'],
+                    : '<p>The <em>Islam West Africa Collection</em> (IWAC) traces the development of Islam and Muslim communities in West Africa from the 1960s to the present.</p>')],
+                // A long section: past ProseColumns::MAX_CHARS, so one column.
+                ['html', 12, htmlBlock($view, liveProse($fr ? 'about-history.fr' : 'about-history.en'))],
                 // No alt text on the asset: the caption names it.
                 ['asset', 3, $view->partial('common/block-layout/asset', ['attachments' => $asset([
                     ['asset' => new Asset('548c34588b16d934918dbb1b4b90a6f417cd604e'), 'caption' => $fr ? 'Bibliothèque nationale du Togo' : 'Togo National Library'],
@@ -608,17 +667,36 @@ function exhibitPage(): array
             $view->htmlElement('body')->appendAttribute('class', 'page site-page-hajj-bf');
             return blockGrid([
                 ['pageTitle', 12, $view->partial('common/block-layout/page-title', ['pageTitle' => $site->page('hajj-bf')->title()])],
-                ['html', 12, '<p>Trace the history of the hajj in Burkina Faso, from long overland journeys to state regulation and contemporary debates over the pilgrimage’s organisation.</p>'],
+                ['html', 12, htmlBlock($view, '<p>Trace the history of the hajj in Burkina Faso, from long overland journeys to state regulation and contemporary debates over the pilgrimage’s organisation.</p>')],
                 ['media', 12, mediaEmbedBlock($view, $masonry, $gallery, ['layout' => 'horizontal', 'media_display' => 'thumbnail', 'thumbnail_type' => 'large'])],
                 ['media', 12, mediaEmbedBlock($view, $masonry, $embeds, ['thumbnail_type' => 'large'])],
                 // "Further references" as the live page sets it: in a block
                 // group under its heading, aligned centre. Core turns that
                 // alignment into rules that shrink a block to its content.
                 ['blockGroup', 12, blocks([
-                    ['html', 12, '<h2>Further references</h2>'],
+                    ['html', 12, htmlBlock($view, '<h2>Further references</h2>')],
                     ['media', 12, mediaEmbedBlock($view, $masonry, $references, ['layout' => 'horizontal', 'media_display' => 'thumbnail']), 'block-layout-alignment-block-center block-layout-alignment-text-center'],
                 ]), 'block-group-grid'],
                 ['media', 12, mediaEmbedBlock($view, 'common/block-layout/file', $references, ['layout' => 'horizontal', 'media_display' => 'thumbnail'])],
+            ]);
+        },
+    );
+}
+
+/**
+ * The homepage: the hero (layout.phtml renders it on the site's homepage only)
+ * over core's page grid — "About the collection" in a block group, as the live
+ * page sets it, and the short prose that flows into columns.
+ */
+function homePage(): array
+{
+    return page('en', ['en' => '/s/westafrica/page/home', 'fr' => '/s/afrique_ouest/page/accueil'], [], ['page-slug' => 'home'],
+        static function (FakeView $view): string {
+            $view->htmlElement('body')->appendAttribute('class', 'page site-page-home');
+            return blockGrid([
+                ['blockGroup', 12, blocks([
+                    ['html', 12, htmlBlock($view, liveProse('about-the-collection'))],
+                ]), 'block-group-grid'],
             ]);
         },
     );
@@ -656,6 +734,7 @@ function fixtures(): array
         'item-set.xhr-page-2-subject.en' => static fn () => itemSetPage(['page' => '2', 'resource_property' => 'items:3'], true),
         'item-set.xhr-both-page-2.en' => static fn () => itemSetPage(['lr_page' => '2', 'page' => '2'], true),
         'items-browse.en' => static fn () => itemsBrowsePage(),
+        'page-home.en' => static fn () => homePage(),
         'page-about.en' => static fn () => aboutPage('en'),
         'page-about.fr' => static fn () => aboutPage('fr'),
         'page-exhibit.en' => static fn () => exhibitPage(),

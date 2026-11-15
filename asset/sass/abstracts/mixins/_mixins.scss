@@ -63,40 +63,40 @@
     padding: var(--space-2) var(--space-8);
     font-weight: 500;
     text-decoration: none;
-    text-transform: uppercase;
-    transition:
-        background-color var(--transition-fast),
-        transform var(--transition-fast),
-        box-shadow var(--transition-fast);
+    transition: background-color var(--transition-fast);
 }
 
 // ==========================================================================
-// The LOUD button — filled primary, glow, hover lift.
+// The LOUD button — a flat block of the spot colour.
 //
 // Appearance only (no padding / case / layout), so it can be laid over the
 // quiet base in _buttons.scss without re-deciding geometry. This is the
 // opt-in half of the base-style inversion: until v2.10 every <button> in the
 // document got this treatment by default and any quiet control had to reset
 // three properties to escape it. Restraint is the register; the shout opts in.
+//
+// Flat since 2.33: no glow halo, no hover lift. A square of solid blue is
+// already the loudest thing on a page of ink and rules; the floating halo
+// was a second effect on the same component, and the lift a third. The
+// state change is the fill alone (rest → hover → pressed darken in light,
+// lighten-then-darken in dark). `box-shadow: none` / `transform: none` stay
+// so a filled control also escapes anything a component layered on it.
 // ==========================================================================
 @mixin button-filled {
     background: var(--primary);
     border: 1px solid transparent;
     color: var(--ink-on-primary);
-    box-shadow: var(--glow-sm);
+    box-shadow: none;
+    transform: none;
 
     &:hover:not(:disabled):not(.disabled) {
         background: var(--primary-hover);
         border-color: transparent;
         color: var(--ink-on-primary);
-        transform: translateY(var(--lift-xxs));
-        box-shadow: var(--glow-md);
     }
 
     &:active:not(:disabled):not(.disabled) {
         background: var(--primary-active);
-        transform: translateY(0);
-        box-shadow: var(--glow-xs);
     }
 
     &:focus-visible {
@@ -129,16 +129,14 @@
 
 // ==========================================================================
 // Card hover effect
-// Consistent shadow + quiet border emphasis. Calmer than v1's brand-tinted
-// hover; primary stays a state marker, not a decorative wash.
+// A quiet border emphasis, nothing else: since 2.33 the page is flat, so a
+// hovered card no longer rises on a shadow. Primary stays a state marker,
+// not a decorative wash.
 // ==========================================================================
 @mixin card-hover {
-    transition:
-        box-shadow var(--transition-fast),
-        border-color var(--transition-fast);
+    transition: border-color var(--transition-fast);
 
     &:hover {
-        box-shadow: var(--shadow-md);
         border-color: var(--border-strong);
     }
 }
@@ -243,7 +241,7 @@
     padding: 0;
     background: transparent;
     border: none;
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-sm);
     cursor: pointer;
     color: var(--ink-light);
     transition:
