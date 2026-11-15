@@ -11,6 +11,8 @@ create.
 
 ## [Unreleased]
 
+## [2.33.0] - 2026-11-15
+
 **Upgrade note.** The default primary colour is now a press blue (`#1C2F9E`) instead of burnt orange, and the default secondary (chart) colour is claret (`#85253A`) instead of slate. Most sites saved the old defaults the first time an admin pressed Save in the theme settings; the theme now reads exactly `#E64A19` and `#394F68` as "not set", so those sites switch to the new colours without any action. A site that chose any other colour keeps it. To keep the orange on purpose, store a neighbouring value such as `#E64A1A` under *Themes → Configure → Theme's Primary Color*. The Mirador viewer's colours are set in the Mirador module, not by the theme: paste the new values from `docs/MIRADOR.md` into its settings. Sites with a customised resource-page or page layout need no other change.
 
 ### Changed
@@ -149,7 +151,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.32.1...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.33.0...HEAD
+[2.33.0]: https://github.com/fmadore/IWAC-theme/compare/v2.32.1...v2.33.0
 [2.32.1]: https://github.com/fmadore/IWAC-theme/compare/v2.32.0...v2.32.1
 [2.32.0]: https://github.com/fmadore/IWAC-theme/compare/v2.31.2...v2.32.0
 [2.31.2]: https://github.com/fmadore/IWAC-theme/compare/v2.31.1...v2.31.2
