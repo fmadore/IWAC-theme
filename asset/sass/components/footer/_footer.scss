@@ -280,26 +280,17 @@
             width: auto;
             max-width: 11rem;
             object-fit: contain;
-            // The marks are drawn for white paper; the dark theme reverses
-            // them out instead (end of this file).
+            // Partners' marks are shown as their owners drew them: full
+            // colour, on the white ground they were made for, in both themes.
+            // No grayscale, no inversion, no blending — a funder's logo is
+            // not ours to restyle. (They sat grayscale-until-hover through
+            // 2.32.) The padding is the mark's clear space on a dark page.
             background: var(--white);
             padding: var(--space-1) var(--space-2);
-            // `multiply` prints the mark on the page itself: its white ground
-            // takes the surface colour instead of standing out as a tile.
-            mix-blend-mode: multiply;
-            // Partner strip reads as one quiet row; full colour on hover.
-            filter: grayscale(1);
-            opacity: 0.82;
-            transition:
-                filter var(--transition-fast),
-                opacity var(--transition-fast);
+            transition: opacity var(--transition-fast);
         }
 
-        a:hover .main-footer__logo,
-        a:focus-visible .main-footer__logo {
-            filter: none;
-            opacity: 1;
-        }
+        a:hover .main-footer__logo { opacity: 0.8; }
     }
 
     &__actions {
@@ -417,46 +408,5 @@
                 fill: currentColor;
             }
         }
-    }
-}
-
-// Dark theme: the partner marks reversed out of the page, not pasted on
-// white tiles. Three of the four files carry an opaque white ground, so a
-// transparent background alone would not do it: the mark is greyed and
-// inverted (white ground → black, ink → light), then `screen` drops the
-// black against the footer surface, leaving only the light mark. Hover lifts
-// the opacity; the full-colour version stays a light-theme gesture, since it
-// would need its white tile back.
-@mixin iwac-footer-logos-dark {
-    .main-footer__logos {
-        .main-footer__logo,
-        a:hover .main-footer__logo,
-        a:focus-visible .main-footer__logo {
-            // brightness after the inversion: the ground stays black, and a
-            // mark drawn in mid-grey (Africa Multiple) is lifted to legible.
-            filter: grayscale(1) invert(1) brightness(1.6);
-            mix-blend-mode: screen;
-        }
-    }
-}
-
-// data-theme lives on <body>, so the :not() guard sits there too (see
-// _banner.scss).
-@media (prefers-color-scheme: dark) {
-    body:not([data-theme="light"]) {
-        @include iwac-footer-logos-dark;
-    }
-}
-
-body[data-theme="dark"] {
-    @include iwac-footer-logos-dark;
-}
-
-// Forced colours: keep the marks as drawn, on their own ground.
-@media (forced-colors: active) {
-    .main-footer__logos .main-footer__logo {
-        filter: none;
-        mix-blend-mode: normal;
-        opacity: 1;
     }
 }
