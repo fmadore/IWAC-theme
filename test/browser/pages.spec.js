@@ -205,11 +205,15 @@ test('short prose flows into balanced columns at a wide viewport and stays one c
     expect(await hasNoHorizontalScroll(page)).toBe(true);
 });
 
-test('long prose fills the full width in a single column', async ({ page }) => {
+test('numbered steps fill the full width in a single column', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await openFixture(page, 'page-about.en');
-    await expect(page.locator('.prose-columns')).toHaveCount(0);
-    const widths = await page.locator('.blocks-inner > .block-html').nth(1).evaluate((block) => ({
+    // The procedure block is not wrapped (helper/ProseColumns.php keeps any
+    // <ol> out of columns); over-length prose is pinned in test/php/run.php.
+    const steps = page.locator('.blocks-inner > .block-html').filter({ has: page.locator('ol') });
+    await expect(steps).toHaveCount(1);
+    await expect(steps.locator('.prose-columns')).toHaveCount(0);
+    const widths = await steps.evaluate((block) => ({
         block: block.getBoundingClientRect().width,
         paragraphs: [...block.querySelectorAll('p')].map((p) => p.getBoundingClientRect().width),
     }));

@@ -604,7 +604,7 @@ namespace IwacThemeTest {
         $home = (string) file_get_contents(ROOT . '/test/fixtures/rendered/page-home.en.html');
         check(str_contains($home, '<div class="prose-columns"><h2') || str_contains($home, '<div class="prose-columns"><div>'), 'the homepage About block is set in columns');
         $about = (string) file_get_contents(ROOT . '/test/fixtures/rendered/page-about.en.html');
-        same(1, substr_count($about, 'prose-columns'), 'on the About page the history flows and the one-line intro does not');
+        same(1, substr_count($about, 'prose-columns'), 'on the About page the history flows; the one-line intro and the numbered steps do not');
         check($pc::flows('') === false && (new FakeView())->ProseColumns(null) === false, 'empty or missing html never flows');
     });
 

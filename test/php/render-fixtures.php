@@ -317,9 +317,10 @@ function htmlBlock(FakeView $view, string $html): string
 
 /**
  * Prose as the live sites store it: CKEditor wraps paragraphs in bare <div>s,
- * and links carry absolute URLs. The homepage's "About the collection" (short:
- * it flows into columns) and one section of the About page (long: it stays a
- * single full-width column), each copied from the live site.
+ * and links carry absolute URLs. The homepage's "About the collection" and one
+ * section of the About page (both short enough to flow into columns), and the
+ * AI access page's local-extension steps (a numbered list: it stays a single
+ * full-width column), each copied from the live site.
  */
 function liveProse(string $name): string
 {
@@ -341,6 +342,39 @@ function liveProse(string $name): string
 
 <div>
 <p data-heading="[More about the collection →](https://islam.zmo.de/s/westafrica/page/about)" dir="auto"><a href="https://islam.zmo.de/s/westafrica/page/about">More about the collection &rarr;</a></p></div>
+HTML,
+        'ai-access-steps' => <<<'HTML'
+<p><em>As an alternative to double-clicking the file, drag it into the installation area in <strong>Settings → Extensions</strong>.</em></p>
+
+<ol start="4">
+	<li>Ask Claude an IWAC question. On first use, the extension downloads about 250 MB of public data from Hugging Face. Later searches reuse the copy stored in <code>~/.iwac-mcp/cache/</code>.</li>
+</ol>
+
+<p>The bundle includes the software it needs, so you do not have to install Python or use a command line. Claude Desktop is unavailable on Linux, and the project therefore provides Windows and macOS bundles only.</p>
+
+<h4 data-heading="Add the research skill in Claude">Add the research skill in Claude</h4>
+
+<ol>
+	<li>Download <code>iwac-mcp-skill.zip</code> from the same <a aria-label="https://github.com/fmadore/iwac-mcp-server/releases" class="external-link" data-tooltip-position="top" href="https://github.com/fmadore/iwac-mcp-server/releases" rel="noopener nofollow" target="_blank">Releases page</a>.</li>
+	<li>In Claude, open <strong>Customize → Skills → + → Create skill → Upload a skill</strong>.</li>
+	<li>Select the zip file. Leave it compressed; Claude imports it directly.</li>
+</ol>
+
+<p>The skill is separate from the server extension. The extension supplies the tools and data, while the skill teaches Claude how to organise a systematic search and discuss the limits of the evidence.</p>
+
+<h4 data-heading="Optional semantic search">Optional semantic search</h4>
+
+<p>The standard search, index and analysis tools work without an external key. Three additional tools search articles, Islamic publications and photographs by meaning. In the local extension, enable <strong>Semantic search</strong> in its settings and provide a free <a aria-label="https://aistudio.google.com/apikey" class="external-link" data-tooltip-position="top" href="https://aistudio.google.com/api-keys" rel="noopener nofollow" target="_blank">Google AI Studio</a> key if you want these tools. This step is optional.</p>
+
+<h3 data-heading="Option 3: add IWAC to ChatGPT">Option 3: add IWAC to ChatGPT</h3>
+
+<p>Use ChatGPT on the web. Access to custom MCP apps depends on your plan and, for managed workspaces, your administrator's settings. OpenAI's <a aria-label="https://help.openai.com/en/articles/12584461-developer-mode-and-full-mcp-connectors-in-chatgpt" class="external-link" data-tooltip-position="top" href="https://help.openai.com/en/articles/12584461-developer-mode-and-full-mcp-connectors-in-chatgpt" rel="noopener nofollow" target="_blank">developer-mode documentation</a> gives the current availability and menu paths. If your account does not display <strong>Developer mode</strong> or <strong>Create</strong>, the feature has not been enabled for you.</p>
+
+<p>Your plan also determines whether ChatGPT exposes the server's general search and fetch functions or the full set of read-only research tools.</p>
+
+<ol>
+	<li>Open <strong>Settings → Security and login → Advanced security</strong> and turn on <strong>Developer mode</strong>. On some accounts, this setting appears under <strong>Apps → Advanced settings</strong>.</li>
+</ol>
 HTML,
         'about-history.en' => <<<'HTML'
 <p>IWAC grew from the practical demands of historical fieldwork rather than from a formal digitisation plan.</p>
@@ -538,6 +572,9 @@ function aboutPage(string $locale): array
                     : '<p>The <em>Islam West Africa Collection</em> (IWAC) traces the development of Islam and Muslim communities in West Africa from the 1960s to the present.</p>')],
                 // The history section: under ProseColumns::MAX_CHARS, so it flows.
                 ['html', 12, htmlBlock($view, liveProse($fr ? 'about-history.fr' : 'about-history.en'))],
+                // A procedure (from the AI access page, so English only): its
+                // numbered lists keep it in one column at full width.
+                ...($fr ? [] : [['html', 12, htmlBlock($view, liveProse('ai-access-steps'))]]),
                 // No alt text on the asset: the caption names it.
                 ['asset', 3, $view->partial('common/block-layout/asset', ['attachments' => $asset([
                     ['asset' => new Asset('548c34588b16d934918dbb1b4b90a6f417cd604e'), 'caption' => $fr ? 'Bibliothèque nationale du Togo' : 'Togo National Library'],
