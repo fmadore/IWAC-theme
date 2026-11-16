@@ -10,8 +10,8 @@
 // taller than the viewport make the reader scroll down, up and down again.
 //
 // Which blocks are short is decided server-side, on the stored HTML, by
-// helper/ProseColumns.php (600–1800 characters of visible text, no tables,
-// figures, embeds or quotes), and common/block-layout/html.phtml wraps those
+// helper/ProseColumns.php (600–2400 characters of visible text, no tables,
+// figures, embeds, quotes or numbered steps), and common/block-layout/html.phtml wraps those
 // in .prose-columns. Everything else prints exactly as core prints it.
 //
 // The column count is not fixed: `column-width` asks for columns of at least

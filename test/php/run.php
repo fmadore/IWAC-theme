@@ -580,7 +580,8 @@ namespace IwacThemeTest {
         // Length: between MIN_CHARS and MAX_CHARS of visible text.
         check(!$pc::flows($para(200)), 'a one-line intro has nothing to balance');
         check($pc::flows('<h2>About the collection</h2>' . $para(700) . $para(500)), 'a short section flows');
-        check(!$pc::flows($para(1000) . $para(1000)), 'a long section stays one column');
+        check(!$pc::flows($para(1300) . $para(1300)), 'a long section stays one column');
+        check($pc::flows($para(1200) . $para(1100)), 'the French homepage’s 2,300-character About block flows (2.33.0 cut off at 1800)');
         same($pc::MAX_CHARS, $pc::textLength(str_repeat('a', $pc::MAX_CHARS)), 'the boundary counts characters');
         check($pc::flows(str_repeat('a', $pc::MAX_CHARS)), 'MAX_CHARS itself flows');
         check(!$pc::flows(str_repeat('a', $pc::MAX_CHARS + 1)), 'one past MAX_CHARS does not');
@@ -593,16 +594,17 @@ namespace IwacThemeTest {
         $prose = $para(800);
         foreach (['<table><tr><td>1</td></tr></table>', '<figure><img src="a.jpg" alt=""></figure>', '<img src="a.jpg" alt="">',
             '<iframe src="https://x.test"></iframe>', '<video src="a.mp4"></video>', '<blockquote><p>Quoted.</p></blockquote>',
-            '<pre>code</pre>', '<TABLE></TABLE>'] as $blocker) {
+            '<pre>code</pre>', '<TABLE></TABLE>', '<ol><li>Open Settings.</li><li>Select Add.</li></ol>'] as $blocker) {
             check(!$pc::flows($prose . $blocker), "blocked by $blocker");
         }
+        check($pc::flows($prose . '<ul><li>Ulrike Freitag;</li><li>Dodji Amouzouvi.</li></ul>'), 'a bulleted list still flows');
         // …but not an element whose name merely starts the same way.
         check($pc::flows($prose . '<p><span class="tablet">x</span><a href="/preface">Preface</a></p>'), 'no false positives on <tablet-like names');
-        // The live homepage's "About the collection" flows; the About page's history section does not.
+        // The live homepage's "About the collection" flows, and so does the About page's history section (under 2,400).
         $home = (string) file_get_contents(ROOT . '/test/fixtures/rendered/page-home.en.html');
         check(str_contains($home, '<div class="prose-columns"><h2') || str_contains($home, '<div class="prose-columns"><div>'), 'the homepage About block is set in columns');
         $about = (string) file_get_contents(ROOT . '/test/fixtures/rendered/page-about.en.html');
-        check(!str_contains($about, 'prose-columns'), 'the About page sections (a one-liner, a long history) stay single-column');
+        same(1, substr_count($about, 'prose-columns'), 'on the About page the history flows and the one-line intro does not');
         check($pc::flows('') === false && (new FakeView())->ProseColumns(null) === false, 'empty or missing html never flows');
     });
 

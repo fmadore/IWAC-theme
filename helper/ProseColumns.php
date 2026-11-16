@@ -23,10 +23,17 @@ use Laminas\View\Helper\AbstractHelper;
  *      Under MIN_CHARS (a one-line intro, a lone heading) there is nothing to
  *      balance — two columns of two lines read as a mistake. Over MAX_CHARS
  *      the two columns of the widest container (1300px, ~75 characters a
- *      line) outgrow a laptop viewport.
+ *      line, so ~16 lines each at the limit) outgrow a laptop viewport.
+ *      2.33.0 stopped at 1800, which left the French homepage's 2,300-
+ *      character "À propos" in one column beside its English twin in two.
  *   2. Content. Nothing that does not belong in a text column: tables,
  *      figures, images, embeds, media, forms, preformatted text, block
- *      quotes. Any one of them keeps the block in a single column.
+ *      quotes — and numbered lists. An <ol> is a procedure (the AI-access
+ *      page's setup steps): split across columns, step 1 sat at the foot of
+ *      one column and steps 2–3 at the top of the next, beside an intro
+ *      that belonged above them. Any one of them keeps the block in a
+ *      single column. Bulleted lists still flow (the About page's
+ *      acknowledgments read well in columns).
  *
  * Pure static so test/php/run.php can pin both rules without a view;
  * common/block-layout/html.phtml calls it through the invokable, which also
@@ -36,12 +43,12 @@ use Laminas\View\Helper\AbstractHelper;
 final class ProseColumns extends AbstractHelper
 {
     public const MIN_CHARS = 600;
-    public const MAX_CHARS = 1800;
+    public const MAX_CHARS = 2400;
 
     /** Elements that keep a block in one column wherever they appear. */
     public const BLOCKING_ELEMENTS = [
         'table', 'figure', 'img', 'picture', 'iframe', 'video', 'audio', 'embed', 'object',
-        'canvas', 'svg', 'form', 'pre', 'blockquote', 'script', 'style',
+        'canvas', 'svg', 'form', 'pre', 'blockquote', 'script', 'style', 'ol',
     ];
 
     public function __invoke(mixed $html): bool

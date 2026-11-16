@@ -536,7 +536,7 @@ function aboutPage(string $locale): array
                 ['html', 12, htmlBlock($view, $fr
                     ? '<p>La <em>Collection Islam Afrique de l’Ouest</em> retrace le développement de l’islam et des communautés musulmanes en Afrique de l’Ouest depuis les années 1960.</p>'
                     : '<p>The <em>Islam West Africa Collection</em> (IWAC) traces the development of Islam and Muslim communities in West Africa from the 1960s to the present.</p>')],
-                // A long section: past ProseColumns::MAX_CHARS, so one column.
+                // The history section: under ProseColumns::MAX_CHARS, so it flows.
                 ['html', 12, htmlBlock($view, liveProse($fr ? 'about-history.fr' : 'about-history.en'))],
                 // No alt text on the asset: the caption names it.
                 ['asset', 3, $view->partial('common/block-layout/asset', ['attachments' => $asset([

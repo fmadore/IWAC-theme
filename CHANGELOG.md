@@ -11,6 +11,10 @@ create.
 
 ## [Unreleased]
 
+### Changed
+
+- **More short texts are set in newspaper columns, and step-by-step instructions never are.** The length up to which an HTML block flows into two columns goes from about 1,800 to about 2,400 characters, so the French homepage's "À propos" (2,300 characters) is set in columns like its English twin, and so are the history sections of the About page. A block containing a numbered list stays in one column: on the AI access page, setup steps were split between two columns, with step 1 at the bottom of one and steps 2 and 3 at the top of the next. Bulleted lists still flow.
+
 ## [2.33.0] - 2026-11-15
 
 **Upgrade note.** The default primary colour is now a press blue (`#1C2F9E`) instead of burnt orange, and the default secondary (chart) colour is claret (`#85253A`) instead of slate. Most sites saved the old defaults the first time an admin pressed Save in the theme settings; the theme now reads exactly `#E64A19` and `#394F68` as "not set", so those sites switch to the new colours without any action. A site that chose any other colour keeps it. To keep the orange on purpose, store a neighbouring value such as `#E64A1A` under *Themes → Configure → Theme's Primary Color*. The Mirador viewer's colours are set in the Mirador module, not by the theme: paste the new values from `docs/MIRADOR.md` into its settings. Sites with a customised resource-page or page layout need no other change.
