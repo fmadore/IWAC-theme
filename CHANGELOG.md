@@ -11,6 +11,8 @@ create.
 
 ## [Unreleased]
 
+## [2.33.1] - 2026-11-16
+
 ### Changed
 
 - **More short texts are set in newspaper columns, and step-by-step instructions never are.** The length up to which an HTML block flows into two columns goes from about 1,800 to about 2,400 characters, so the French homepage's "À propos" (2,300 characters) is set in columns like its English twin, and so are the history sections of the About page. A block containing a numbered list stays in one column: on the AI access page, setup steps were split between two columns, with step 1 at the bottom of one and steps 2 and 3 at the top of the next. Bulleted lists still flow.
@@ -155,7 +157,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.33.0...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.33.1...HEAD
+[2.33.1]: https://github.com/fmadore/IWAC-theme/compare/v2.33.0...v2.33.1
 [2.33.0]: https://github.com/fmadore/IWAC-theme/compare/v2.32.1...v2.33.0
 [2.32.1]: https://github.com/fmadore/IWAC-theme/compare/v2.32.0...v2.32.1
 [2.32.0]: https://github.com/fmadore/IWAC-theme/compare/v2.31.2...v2.32.0
