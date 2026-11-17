@@ -5,7 +5,8 @@
  *
  * The homepage banner is a grayscale plate multiplied over a blue ground built
  * from the primary SEED, through a halftone dot screen
- * (asset/sass/components/banner/_banner.scss). The PWA manifest's
+ * (asset/sass/components/banner/_press-plate.scss, the recipe the hero shares
+ * with the plate page head of section pages). The PWA manifest's
  * `screenshots` member has to show the site as it actually looks, so
  * scripts/gen-pwa-icons.js performs that same composite offline, in
  * JavaScript, over a committed WebP.
@@ -44,7 +45,7 @@ module.exports = {
 
     // What the stylesheet must still say. Kept beside the numbers above so the
     // two cannot be edited apart.
-    SCSS_FILE: 'asset/sass/components/banner/_banner.scss',
+    SCSS_FILE: 'asset/sass/components/banner/_press-plate.scss',
     SCSS_GROUND: 'background: color-mix(in oklab, var(--primary-base) 88%, white 12%);',
     SCSS_FILTER: 'filter: grayscale(1) contrast(1.2) brightness(1.08);',
     SCSS_OPACITY: 'opacity: 0.9;',

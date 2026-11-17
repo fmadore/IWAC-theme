@@ -1714,9 +1714,10 @@ namespace IwacThemeTest {
     });
 
     test('inner pages carry no banner at all; only the homepage renders the hero (2.33)', function () {
-        // The slim .banner--compact strip went in 2.33: inner pages open on
-        // their breadcrumb and title under the masthead rule. The rendered
-        // fixtures are the real layout around real pages — read them.
+        // The slim .banner--compact strip went in 2.33. A section page's
+        // plate page head is its page-title block, not a banner (tested
+        // below). The rendered fixtures are the real layout around real
+        // pages — read them.
         $dir = ROOT . '/test/fixtures/rendered';
         foreach (glob($dir . '/*.html') ?: [] as $file) {
             $html = (string) file_get_contents($file);
@@ -2134,6 +2135,265 @@ namespace IwacThemeTest {
         check(str_contains($html, '<span class="value-content" dir="auto">iwac-index-0000001</span>'), 'literal identifier changed');
         check(str_contains($html, '<span class="value-content" dir="auto"><a class="uri-value-link" target="_blank" href="https://example.org/article">Article</a></span>'), 'plain URI lost core markup');
         same(2, substr_count($html, 'ext-id__mark'), 'one mark per recognised identifier');
+    });
+
+    // ---- PageHead: the plate page head of section pages -----------------------
+
+    /** A Laminas navigation page, or (no label) its container. */
+    function fakeNavPage(?string $label, ?string $href = null, ?object $parent = null): object
+    {
+        if ($label === null) {
+            return new \stdClass();
+        }
+        return new class($label, $href, $parent) {
+            public function __construct(private string $label, private ?string $href, private ?object $parent)
+            {
+            }
+
+            public function getLabel(): string
+            {
+                return $this->label;
+            }
+
+            public function getHref(): string
+            {
+                return (string) $this->href;
+            }
+
+            public function getParent(): ?object
+            {
+                return $this->parent;
+            }
+
+            public function hasPages(): bool
+            {
+                return false;
+            }
+        };
+    }
+
+    /**
+     * A site page with blocks of the given layouts, the site it is on (homepage
+     * $homeSlug) and, when $active is given, the navigation page the request is
+     * on — as page-title.phtml and page/show.phtml reach them.
+     *
+     * @return array{0:FakeView,1:object} the view and the page
+     */
+    function plateView(string $slug, array $layouts, string $homeSlug = 'home', ?object $active = null): array
+    {
+        $page = new class($slug, $layouts) {
+            public function __construct(private string $slug, private array $layouts)
+            {
+            }
+
+            public function slug(): string
+            {
+                return $this->slug;
+            }
+
+            public function title(): string
+            {
+                return 'Vue d’ensemble de la collection';
+            }
+
+            public function blocks(): array
+            {
+                $page = $this;
+                return array_map(static fn (string $layout, int $i) => new class($layout, $i + 1, $page) {
+                    public function __construct(private string $layout, private int $id, private object $page)
+                    {
+                    }
+
+                    public function layout(): string
+                    {
+                        return $this->layout;
+                    }
+
+                    public function id(): int
+                    {
+                        return $this->id;
+                    }
+
+                    public function page(): object
+                    {
+                        return $this->page;
+                    }
+                }, $this->layouts, array_keys($this->layouts));
+            }
+        };
+        $container = fakeNavPage(null);
+        $site = new class($homeSlug, $active, $container) {
+            public function __construct(private string $homeSlug, private ?object $active, private object $container)
+            {
+            }
+
+            public function homepage(): object
+            {
+                return new class($this->homeSlug) {
+                    public function __construct(private string $slug)
+                    {
+                    }
+
+                    public function slug(): string
+                    {
+                        return $this->slug;
+                    }
+                };
+            }
+
+            public function linkedPages(): array
+            {
+                return [];
+            }
+
+            public function publicNav(): object
+            {
+                return new class($this->active, $this->container) {
+                    public function __construct(private ?object $active, private object $container)
+                    {
+                    }
+
+                    public function getContainer(): object
+                    {
+                        return $this->container;
+                    }
+
+                    public function findActive($container): array
+                    {
+                        return $this->active ? ['page' => $this->active, 'depth' => 1] : [];
+                    }
+                };
+            }
+        };
+        $fake = new FakeView();
+        $body = new class {
+            public string $class = '';
+
+            public function appendAttribute(string $name, string $value): self
+            {
+                $this->class = trim($this->class . ' ' . $value);
+                return $this;
+            }
+        };
+        $fake->helpers['currentSite'] = static fn () => $site;
+        $fake->helpers['htmlElement'] = static fn () => $body;
+        $fake->helpers['partial'] = static fn (string $name, array $vars = []): string => $fake->render($name . '.phtml', $vars);
+        $fake->helpers['headLink'] = static fn () => new class {
+            public function appendStylesheet(...$args): self
+            {
+                return $this;
+            }
+        };
+        $fake->helpers['pageTitle'] = static fn (...$args): string => '';
+        $fake->helpers['sitePagePagination'] = static fn (): string => '';
+        $fake->vars = ['site' => $site];
+        return [$fake, $page];
+    }
+
+    test('PageHead: only a page that opens on its title, and never the homepage, gets the plate', function () {
+        $opens = [\OmekaTheme\Helper\PageHead::class, 'opensWithTitle'];
+        check($opens(['pageTitle', 'html'], false), 'a section page opening on its title');
+        check(!$opens(['pageTitle', 'html'], true), 'the homepage carries the hero, not the plate');
+        check(!$opens(['html', 'pageTitle'], false), 'a title further down keeps the section-head voice');
+        check(!$opens(['blockGroup'], false), 'a page opening on a block group');
+        check(!$opens([], false), 'a page with no blocks');
+    });
+
+    test('PageHead::trail is core\'s crumb trail: ancestors linked, the page last, nothing at depth 0', function () {
+        $container = fakeNavPage(null);
+        $explore = fakeNavPage('Explore', '/s/westafrica/page/explore', $container);
+        $overview = fakeNavPage('Collection overview', '/s/westafrica/page/collection-overview', $explore);
+        same([
+            ['label' => 'Explore', 'url' => '/s/westafrica/page/explore'],
+            ['label' => 'Collection overview', 'url' => null],
+        ], \OmekaTheme\Helper\PageHead::trail($overview));
+        same([], \OmekaTheme\Helper\PageHead::trail($explore), 'a top-level page has no trail');
+        same([], \OmekaTheme\Helper\PageHead::trail(null), 'a page outside the navigation has no trail');
+    });
+
+    test('PageHead::imageValue accepts a plain asset URL and refuses anything that could leave url() or <style>', function () {
+        $value = [\OmekaTheme\Helper\PageHead::class, 'imageValue'];
+        same('url("/files/asset/banner.jpg")', $value('/files/asset/banner.jpg'));
+        same('url("https://islam.zmo.de/files/asset/a1b2.webp")', $value('https://islam.zmo.de/files/asset/a1b2.webp'));
+        foreach ([null, '', 'banner.jpg', '//evil.example/x.jpg', 'javascript:alert(1)', 'data:image/png;base64,AAAA',
+            '/files/a.jpg"); background: red; x: url("', '/files/a.jpg)', "/files/a\n.jpg", '/files/</style><script>', '/files/a b.jpg', '/files/a\\.jpg',
+        ] as $bad) {
+            same(null, $value($bad), var_export($bad, true));
+        }
+    });
+
+    test('the page-title block is the plate only when it opens the page, with the crumb above the title', function () {
+        $active = fakeNavPage('Collection overview', '/p/overview', fakeNavPage('Explore', '/p/explore', fakeNavPage(null)));
+        [$fake, $page] = plateView('collection-overview', ['pageTitle', 'html'], 'home', $active);
+        $html = $fake->render('common/block-layout/page-title.phtml', ['block' => $page->blocks()[0], 'pageTitle' => $page->title()]);
+        check(str_contains($html, '<header class="page-head">'), 'no plate');
+        check((bool) preg_match('~<header class="page-head">\s*<nav class="breadcrumbs" aria-label="Breadcrumb"><span><a href="/p/explore">Explore</a></span><span aria-current="page">Collection overview</span></nav>\s*<h1 class="title page-head__title">Vue d’ensemble de la collection</h1>\s*</header>~', $html), "crumb then title inside the plate:\n$html");
+        same('has-page-head', $fake->plugin('htmlElement')('body')->class, 'the body is marked for the full-bleed clip');
+
+        // The same block placed second: today's section head, no plate.
+        [$fake, $page] = plateView('collection-overview', ['html', 'pageTitle'], 'home', $active);
+        $html = $fake->render('common/block-layout/page-title.phtml', ['block' => $page->blocks()[1], 'pageTitle' => $page->title()]);
+        same('<h1 class="title">Vue d’ensemble de la collection</h1>', trim($html));
+        same('', $fake->plugin('htmlElement')('body')->class);
+
+        // The homepage keeps its hero and no plate, even opening on a title.
+        [$fake, $page] = plateView('home', ['pageTitle', 'html']);
+        $html = $fake->render('common/block-layout/page-title.phtml', ['block' => $page->blocks()[0], 'pageTitle' => $page->title()]);
+        check(!str_contains($html, 'page-head'), 'plate on the homepage');
+
+        // A template call without a block (an older core, a module) degrades to the section head.
+        $html = $fake->render('common/block-layout/page-title.phtml', ['pageTitle' => 'Index']);
+        same('<h1 class="title">Index</h1>', trim($html));
+    });
+
+    test('page/show.phtml prints the crumb above the blocks only when the page does not open on the plate', function () {
+        $active = fakeNavPage('Team', '/p/team', fakeNavPage('About', '/p/about', fakeNavPage(null)));
+        $render = static function (array $layouts) use ($active): string {
+            [$fake, $page] = plateView('team', $layouts, 'home', $active);
+            $fake->content = '<div class="blocks-inner"></div>';
+            return $fake->render('omeka/site/page/show.phtml', $fake->vars + ['page' => $page, 'pageBodyClass' => 'page site-page-team', 'displayNavigation' => true]);
+        };
+        $html = $render(['html']);
+        check((bool) preg_match('~<nav class="breadcrumbs" aria-label="Breadcrumb"><span><a href="/p/about">About</a></span><span aria-current="page">Team</span></nav>\s*<div class="blocks">~', $html), "crumb above the blocks:\n$html");
+        $html = $render(['pageTitle', 'html']);
+        check(!str_contains($html, 'breadcrumbs'), 'the plate prints the crumb; show.phtml must not print it twice');
+        check(str_contains($html, '<div class="blocks">'), 'blocks wrapper');
+    });
+
+    test('rendered pages: the plate opens section pages, once, and nowhere else', function () {
+        $dir = ROOT . '/test/fixtures/rendered';
+        $expected = [
+            // fixture => [plate?, crumb inside it?]
+            'page-about.en' => [true, false],
+            'page-about.fr' => [true, false],
+            'page-exhibit.en' => [true, true],
+            'page-overview.fr' => [true, false],
+            'page-home.en' => [false, false],
+            'item.en' => [false, false],
+            'item-set.en' => [false, false],
+            'items-browse.en' => [false, false],
+        ];
+        foreach ($expected as $name => [$plate, $crumb]) {
+            $html = (string) file_get_contents("$dir/$name.html");
+            same($plate ? 1 : 0, substr_count($html, '<header class="page-head">'), "$name: plate count");
+            same($plate, str_contains($html, 'class="has-page-head '), "$name: body class");
+            if ($plate) {
+                // The crumb sits inside the plate, never between masthead and band.
+                $head = substr($html, strpos($html, '<header class="page-head">'));
+                $head = substr($head, 0, (int) strpos($head, '</header>'));
+                same($crumb, str_contains($head, '<nav class="breadcrumbs"'), "$name: crumb in the plate");
+                same($crumb ? 1 : 0, substr_count($html, '<nav class="breadcrumbs"'), "$name: crumb count");
+            }
+        }
+    });
+
+    test('an uploaded banner reaches the plate as a validated inline rule', function () {
+        $layout = (string) file_get_contents(ROOT . '/view/layout/layout.phtml');
+        check(str_contains($layout, '$pageHeadImage = $customBannerAsset ? $this->PageHead()::imageValue('), 'layout no longer validates the image URL');
+        check(str_contains($layout, '.page-head::before { background-image: <?php echo $pageHeadImage; ?>; }'), 'layout no longer prints the rule');
+        foreach (glob(ROOT . '/test/fixtures/rendered/*.html') ?: [] as $file) {
+            check(!str_contains((string) file_get_contents($file), '.page-head::before'), basename($file) . ': no custom banner, no rule');
+        }
     });
 
     // ---- Run ----------------------------------------------------------------

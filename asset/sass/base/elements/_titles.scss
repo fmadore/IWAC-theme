@@ -10,11 +10,17 @@
 //       treatment from base/typography/_headings.scss; the span carries a
 //       quiet hairline as the rule under the headline.
 //
-//   <h1 class="title">…</h1>                — page-title blocks ("Browse",
-//       "Index", "Visualisations"). These are section labels, not
-//       headlines: they repeat the nav entry the reader just clicked. Set
-//       them as compact newspaper section heads — 2px ink rule above,
-//       moderate size — and give the viewport back to the content.
+//   <h1 class="title">…</h1>                — page-title blocks placed
+//       anywhere but the top of a page. These are section labels, not
+//       headlines. Set them as compact newspaper section heads — 2px ink
+//       rule above, moderate size — and give the viewport back to the
+//       content.
+//
+// A page-title block that OPENS a section page ("Browse", "Index",
+// "Explore") is printed as the plate page head instead — the same h1, plus
+// .page-head__title, inside header.page-head — and set in
+// components/banner/_page-head.scss: white Besley 800 at display size on the
+// press-plate band, with no rule of its own (helper/PageHead.php decides).
 // ==========================================================================
 
 .title {

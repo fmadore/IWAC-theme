@@ -1,0 +1,92 @@
+// ==========================================================================
+// The press plate — one recipe, two users
+//
+// A grayscale press collage multiplied over a blue ground, through a fine
+// halftone dot screen (2.33, "variant B"): the homepage hero (_banner.scss)
+// and the plate page head of section pages (_page-head.scss). Both print the
+// same plate, so its numbers live here once, as mixins emitting no CSS of
+// their own. scripts/lib/hero-duotone.js points at this file: the PWA
+// screenshots are composited offline from the same numbers, and
+// `npm run check:tokens` fails when this file stops spelling them.
+//
+// The ground is built from --primary-base, the raw seed, NOT from --primary:
+// in dark mode --primary is re-lit to a light blue for text on dark surfaces,
+// and multiplying the plate over that would turn the band pale. The seed does
+// not flip, so the plate keeps its deep blue in both themes (banked down a
+// step in dark, below).
+//
+// Every layer multiplies, and multiplication commutes: a black scrim over the
+// composite and the same scrim laid on the ground under the image print the
+// same pixels. That is what lets the page head, which has two pseudo-elements
+// for three layers, carry its scrim on its own background.
+// ==========================================================================
+
+// The ground: light areas of the grayscale image become this. The seed lifted
+// 12% toward white — #314bab for the default press blue, where white type
+// still reads 7.7:1 before the plate and scrim darken it.
+@mixin press-plate-ground {
+    background: color-mix(in oklab, var(--primary-base) 88%, white 12%);
+}
+
+// The image layer: grayscale plate multiplied over the ground = duotone. The
+// contrast is pushed the way a press plate is, so headlines and portraits
+// print as ink on the blue and the paper stays the ground.
+@mixin press-plate-image {
+    filter: grayscale(1) contrast(1.2) brightness(1.08);
+    mix-blend-mode: multiply;
+    opacity: 0.9;
+}
+
+// The halftone screen: a 4px grid of soft dots multiplied over the plate, so
+// the photograph reads as printed — the dot gain of a newspaper half-tone,
+// not a filter effect. A static layer over the image.
+@mixin press-plate-screen {
+    background-image: radial-gradient(color-mix(in oklab, black 55%, transparent) 30%, transparent 32%);
+    background-size: 4px 4px;
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+}
+
+// The editorial scrim for white type over the duotone — light at the top,
+// where the press covers stay readable as texture, darkest at the foot,
+// where the type sits.
+@function press-plate-scrim() {
+    @return linear-gradient(
+        180deg,
+        color-mix(in oklab, black 6%, transparent) 0%,
+        color-mix(in oklab, black 22%, transparent) 62%,
+        color-mix(in oklab, black 42%, transparent) 100%
+    );
+}
+
+// Dark theme: the same seed-built plate, banked down — lamplight, not neon.
+// Still --primary-base, never the re-lit dark --primary (see the top note).
+//
+// Include inside the plate's own rule; it emits the ground under BOTH dark
+// paths, and @content (the image layer's rule, with press-plate-image-dark)
+// beside it. data-theme lives on <body> (set pre-paint by the layout head
+// script), so the :not() guard sits on body too — on :root it always matched
+// and a forced-light user on an OS-dark device still got the dark plate.
+//
+// background-color, not the shorthand: the page head lays its scrim on its
+// own background-image, which a dark `background:` would reset to none.
+$-dark-ground: color-mix(in oklab, var(--primary-base) 76%, black 24%);
+
+@mixin press-plate-dark {
+    @media (prefers-color-scheme: dark) {
+        body:not([data-theme="light"]) & {
+            background-color: $-dark-ground;
+            @content;
+        }
+    }
+
+    body[data-theme="dark"] & {
+        background-color: $-dark-ground;
+        @content;
+    }
+}
+
+@mixin press-plate-image-dark {
+    opacity: 0.88;
+    filter: grayscale(1) contrast(1.15) brightness(0.95);
+}

@@ -27,7 +27,7 @@
 		<script type="application/json" id="iwac-pwa-manifest">{"id":"/s/westafrica/","name":"Islam West Africa Collection","short_name":"IWAC","description":"The Islam West Africa Collection (IWAC) is an open-access digital database of archival documents, newspaper articles, Islamic publications and photographs on Islam and Muslims in West Africa.","start_url":"/s/westafrica/","scope":"/s/westafrica/","display":"standalone","display_override":["standalone","minimal-ui"],"orientation":"any","lang":"en-US","dir":"ltr","theme_color":"#fdfcfb","background_color":"#f7f5f3","categories":["education","books","news"],"prefer_related_applications":false,"icons":[{"src":"/themes/IWAC-theme/asset/img/pwa/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-maskable-192.png","sizes":"192x192","type":"image/png","purpose":"maskable"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"},{"src":"/themes/IWAC-theme/asset/img/pwa/icon-monochrome-512.png","sizes":"512x512","type":"image/png","purpose":"monochrome"}],"screenshots":[{"src":"/themes/IWAC-theme/asset/img/pwa/screenshot-wide.webp","sizes":"1280x720","type":"image/webp","form_factor":"wide","label":"Newspaper covers and archival documents from the collection"},{"src":"/themes/IWAC-theme/asset/img/pwa/screenshot-narrow.webp","sizes":"540x960","type":"image/webp","form_factor":"narrow","label":"Newspaper covers and archival documents from the collection"}],"shortcuts":[{"name":"Browse items","url":"/s/westafrica/page/browse","icons":[{"src":"/themes/IWAC-theme/asset/img/pwa/icon-192.png","sizes":"192x192","type":"image/png"}]},{"name":"Search","url":"/s/westafrica/search/everything","icons":[{"src":"/themes/IWAC-theme/asset/img/pwa/icon-192.png","sizes":"192x192","type":"image/png"}]}]}</script>
 			</head>
 
-	<body class="page site-page-about">		<script>
+	<body class="has-page-head page site-page-about">		<script>
 		// Apply theme synchronously before first paint to prevent FOUC.
 		// Mirrors getMode()/resolveTheme() in js/theme-toggle.js.
 		(function () {
@@ -209,8 +209,13 @@
 
 		
 		<main id="content" class="container" tabindex="-1">
-			<div class="blocks">
-    <div class="blocks-inner page-layout-grid grid-template-columns-12" style="column-gap: 10px; row-gap: 10px;"><div class="block block-pageTitle grid-position-auto grid-span-12" style=""><h1 class="title">About</h1>
+			
+
+
+<div class="blocks">
+    <div class="blocks-inner page-layout-grid grid-template-columns-12" style="column-gap: 10px; row-gap: 10px;"><div class="block block-pageTitle grid-position-auto grid-span-12" style=""><header class="page-head">
+    <h1 class="title page-head__title">About</h1>
+</header>
 </div><div class="block block-html grid-position-auto grid-span-12" style=""><p>The <em>Islam West Africa Collection</em> (IWAC) traces the development of Islam and Muslim communities in West Africa from the 1960s to the present.</p></div><div class="block block-html grid-position-auto grid-span-12" style=""><div class="prose-columns"><p>IWAC grew from the practical demands of historical fieldwork rather than from a formal digitisation plan.</p>
 
 <p>Since 2011, <a class="external-link" href="https://www.frederickmadore.com/">Frédérick Madore</a>&nbsp;has conducted fieldwork and archival research across francophone West Africa. His work examines Islamic activism among youth and women in Burkina Faso and Côte d&#39;Ivoire, Muslim minorities in southern Benin and Togo, and the history of faith-based student organisations at the Université d&#39;Abomey-Calavi in Benin and the Université de Lomé in Togo. During his Master&#39;s research, he encountered a rapidly growing body of material scattered across archives and libraries. Many postcolonial state archives in the region work with limited resources and preserve fragmented collections. Sources may be difficult to access, split among several centres, poorly catalogued or at risk of disappearance. Madore therefore began digitising and organising them himself, and the resulting research database soon outgrew its original purpose.</p>
@@ -357,8 +362,7 @@
         <span class="carousel__rule-mark"></span>
     </div>
 </div>
-</div></div>
-</div>
+</div></div></div>
 		</main>
 
 		

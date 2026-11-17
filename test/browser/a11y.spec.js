@@ -17,6 +17,9 @@ const SURFACES = [
     ['item-set.en', 1280, ['#linked-resources', '#item-set-resources']],
     ['page-about.en', 390, ['#content']],
     ['page-exhibit.en', 1280, ['#content']],
+    // The plate page head with its crumb on a phone, and the longest title.
+    ['page-exhibit.en', 390, ['#content']],
+    ['page-overview.fr', 390, ['#content']],
     ['page-home.en', 1280, ['.banner', '#content']],
     ['page-home.en', 390, ['.banner', '#content']],
 ];

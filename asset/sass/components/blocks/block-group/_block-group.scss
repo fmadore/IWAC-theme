@@ -23,7 +23,9 @@
 
 // Every section after the first opens on the rule — except right under a
 // page title, whose h1 already opens on its own 2px rule (base/elements/
-// _titles.scss), and around a line-break block, which is spacing, not a
+// _titles.scss) or, opening a section page, is the plate page head, which a
+// rule against its foot would only double (components/banner/_page-head.scss);
+// and around a line-break block, which is spacing, not a
 // section. A section beside another in the same grid row (two spans of a
 // 12-column row) carries its rule too, so the row reads as one ruled band.
 .blocks-inner > .block:not(:first-child):not(.block-pageTitle):not(.block-lineBreak):not(.block-pageTitle + .block):not(.block-lineBreak + .block) {

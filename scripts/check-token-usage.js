@@ -77,7 +77,7 @@
  *
  * 6c. THE HERO DUOTONE. The manifest's install-dialog screenshots are the
  *    homepage hero, composited offline by `npm run build:icons` from the
- *    numbers in lib/hero-duotone.js — a copy of _banner.scss that nothing can
+ *    numbers in lib/hero-duotone.js — a copy of _press-plate.scss that nothing can
  *    notice going stale, because the result lives in pixels. Assert the
  *    stylesheet still spells the same ground mix, filter chain, plate
  *    opacity and halftone screen.
@@ -694,7 +694,7 @@ if (tokens) {
 //
 // The manifest's install-dialog screenshots are the homepage hero, composited
 // offline by scripts/gen-pwa-icons.js from the numbers in lib/hero-duotone.js.
-// That makes them a copy of _banner.scss that no build step can notice going
+// That makes them a copy of _press-plate.scss that no build step can notice going
 // stale — the PNG/WebP holds the result in pixels. So assert the stylesheet
 // still spells the recipe, with whitespace collapsed so reformatting is free.
 const DUOTONE = require('./lib/hero-duotone');

@@ -71,6 +71,9 @@ function locales(): array
             'cote-d-ivoire' => "Côte d'Ivoire", 'references' => 'Références', 'index' => 'Index',
             'expositions' => 'Expositions', 'hadj-bf' => 'Hadj au Burkina Faso', 'laicite' => 'Laïcité',
             'a-propos' => 'À propos', 'pourquoi-les-journaux' => 'Pourquoi les journaux?', 'equipe' => 'Équipe',
+            // Not in the navigation: the longest page title on either site,
+            // for the plate page head's wrapping.
+            'vue-d-ensemble' => 'Vue d’ensemble de la collection',
         ],
         [
             ['parcourir', ['benin', 'burkina-faso', 'cote-d-ivoire']], ['references', []], ['index', []],
@@ -86,7 +89,12 @@ function locales(): array
         'browse_layout' => 'togglegrid',
         'pwa_enabled' => '1',
     ];
-    $settings = ['show_value_annotations' => true, 'filter_locale_values' => false, 'show_locale_label' => true];
+    // The live sites hide core's sub-navigation and its previous/next page
+    // links (no sub-menu or site-page-pagination in their page markup).
+    $settings = [
+        'show_value_annotations' => true, 'filter_locale_values' => false, 'show_locale_label' => true,
+        'subnav_display' => 'hide', 'show_page_pagination' => false,
+    ];
     return $locales = [
         'en' => [
             'site' => $en,
@@ -277,16 +285,48 @@ function linkedResourcesBlock(FakeView $view, Resource $resource): string
 }
 
 /**
- * Core's page-block grid (omeka/site/page/show.phtml), which wraps each
- * block's own template: [layout, grid span, html, the classes the block's
- * Layout panel adds — its alignment, a block group's grid].
+ * Core's page-block grid (pageLayout()->render(): the page's content child,
+ * which omeka/site/page/show.phtml wraps in div.blocks) around each block's
+ * own template: [layout, grid span, html, the classes the block's Layout
+ * panel adds — its alignment, a block group's grid].
  *
  * @param list<array{0:string,1:int,2:string,3?:string}> $blocks
  */
 function blockGrid(array $blocks): string
 {
-    $html = "<div class=\"blocks\">\n    <div class=\"blocks-inner page-layout-grid grid-template-columns-12\" style=\"column-gap: 10px; row-gap: 10px;\">";
-    return $html . blocks($blocks) . "</div>\n</div>\n";
+    $html = "<div class=\"blocks-inner page-layout-grid grid-template-columns-12\" style=\"column-gap: 10px; row-gap: 10px;\">";
+    return $html . blocks($blocks) . "</div>";
+}
+
+/**
+ * A site page as core's page controller renders it: the blocks through core's
+ * grid, then the theme's omeka/site/page/show.phtml around them (the
+ * breadcrumb, unless the page opens on the plate page head). A block given
+ * as just ['pageTitle', span] is rendered here, through the theme's
+ * page-title template with the block it belongs to, so the template can tell
+ * whether it opens the page.
+ *
+ * @param list<array{0:string,1:int,2?:string,3?:string}> $blocks
+ */
+function sitePage(FakeView $view, Site $site, string $slug, array $blocks): string
+{
+    $page = $site->page($slug)->withLayouts(array_column($blocks, 0));
+    $pageBlocks = $page->blocks();
+    foreach ($blocks as $i => $block) {
+        if ($block[0] === 'pageTitle' && !isset($block[2])) {
+            $blocks[$i][2] = $view->partial('common/block-layout/page-title', ['block' => $pageBlocks[$i], 'pageTitle' => $page->title()]);
+        }
+    }
+    // Laminas renders the content child first and hands it to show.phtml as
+    // `content`; FakeView keeps it where layout.phtml reads it too, and
+    // page() replaces it with this template's output afterwards.
+    $view->content = blockGrid($blocks);
+    return $view->render('omeka/site/page/show.phtml', [
+        'site' => $site,
+        'page' => $page,
+        'pageBodyClass' => 'page site-page-' . $slug,
+        'displayNavigation' => true,
+    ]);
 }
 
 /**
@@ -563,10 +603,8 @@ function aboutPage(string $locale): array
     );
     return page($locale, ['en' => '/s/westafrica/page/about', 'fr' => '/s/afrique_ouest/page/a-propos'], [], ['page-slug' => $slug],
         static function (FakeView $view) use ($site, $slug, $fr, $asset, $carousel, $l): string {
-            // Core's page/show.phtml.
-            $view->htmlElement('body')->appendAttribute('class', 'page site-page-' . $slug);
-            return blockGrid([
-                ['pageTitle', 12, $view->partial('common/block-layout/page-title', ['pageTitle' => $site->page($slug)->title()])],
+            return sitePage($view, $site, $slug, [
+                ['pageTitle', 12],
                 ['html', 12, htmlBlock($view, $fr
                     ? '<p>La <em>Collection Islam Afrique de l’Ouest</em> retrace le développement de l’islam et des communautés musulmanes en Afrique de l’Ouest depuis les années 1960.</p>'
                     : '<p>The <em>Islam West Africa Collection</em> (IWAC) traces the development of Islam and Muslim communities in West Africa from the 1960s to the present.</p>')],
@@ -701,9 +739,9 @@ function exhibitPage(): array
     $masonry = 'common/block-template/media-masonry';
     return page('en', ['en' => '/s/westafrica/page/hajj-bf', 'fr' => '/s/afrique_ouest/page/hadj-bf'], [], ['page-slug' => 'hajj-bf'],
         static function (FakeView $view) use ($site, $gallery, $embeds, $references, $masonry): string {
-            $view->htmlElement('body')->appendAttribute('class', 'page site-page-hajj-bf');
-            return blockGrid([
-                ['pageTitle', 12, $view->partial('common/block-layout/page-title', ['pageTitle' => $site->page('hajj-bf')->title()])],
+            // A child of Exhibits in the navigation: its crumb rides the plate.
+            return sitePage($view, $site, 'hajj-bf', [
+                ['pageTitle', 12],
                 ['html', 12, htmlBlock($view, '<p>Trace the history of the hajj in Burkina Faso, from long overland journeys to state regulation and contemporary debates over the pilgrimage’s organisation.</p>')],
                 ['media', 12, mediaEmbedBlock($view, $masonry, $gallery, ['layout' => 'horizontal', 'media_display' => 'thumbnail', 'thumbnail_type' => 'large'])],
                 ['media', 12, mediaEmbedBlock($view, $masonry, $embeds, ['thumbnail_type' => 'large'])],
@@ -729,11 +767,27 @@ function homePage(): array
 {
     return page('en', ['en' => '/s/westafrica/page/home', 'fr' => '/s/afrique_ouest/page/accueil'], [], ['page-slug' => 'home'],
         static function (FakeView $view): string {
-            $view->htmlElement('body')->appendAttribute('class', 'page site-page-home');
-            return blockGrid([
+            return sitePage($view, locales()['en']['site'], 'home', [
                 ['blockGroup', 12, blocks([
                     ['html', 12, htmlBlock($view, liveProse('about-the-collection'))],
                 ]), 'block-group-grid'],
+            ]);
+        },
+    );
+}
+
+/**
+ * A French section page with the longest title on either site — the live
+ * collection overview's — opening on the plate page head. Not linked in the
+ * navigation, so it has no crumb.
+ */
+function overviewPage(): array
+{
+    return page('fr', ['en' => '/s/westafrica/page/collection-overview', 'fr' => '/s/afrique_ouest/page/vue-d-ensemble'], [], ['page-slug' => 'vue-d-ensemble'],
+        static function (FakeView $view): string {
+            return sitePage($view, locales()['fr']['site'], 'vue-d-ensemble', [
+                ['pageTitle', 12],
+                ['html', 12, htmlBlock($view, '<h2>Vue d’ensemble</h2><p>Le nombre de documents par pays, par type et par année, et la couverture de chaque journal.</p>')],
             ]);
         },
     );
@@ -775,6 +829,7 @@ function fixtures(): array
         'page-about.en' => static fn () => aboutPage('en'),
         'page-about.fr' => static fn () => aboutPage('fr'),
         'page-exhibit.en' => static fn () => exhibitPage(),
+        'page-overview.fr' => static fn () => overviewPage(),
     ];
 }
 

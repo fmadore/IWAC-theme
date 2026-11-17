@@ -41,8 +41,11 @@ $hasCustomBanner = (bool) $banner;
 
 $bannerHeightProperty = ($bannerEyebrow || $bannerHeading || $bannerDescription) ? 'min-height' : 'height';
 
-// The hero renders on the homepage only (layout.phtml); inner pages carry no
-// banner at all since 2.33 — the slim .banner--compact strip is gone.
+// The hero renders on the homepage only (layout.phtml). Section pages open on
+// the plate page head instead, which is their page-title block printed in the
+// same press-plate recipe (common/block-layout/page-title, helper/PageHead.php,
+// components/banner/_press-plate.scss) — not this template; the slim
+// .banner--compact strip that sat above inner pages' titles went in 2.33.
 $bannerInlineStyles = '';
 $imageInlineStyles = '';
 

@@ -1,0 +1,21 @@
+<?php
+/**
+ * A site page's crumb trail: its ancestors in the site navigation, then the
+ * page itself. The same crumb line as a resource page's (common/breadcrumbs,
+ * components/breadcrumbs): link crumbs in spans, the current one marked with
+ * aria-current and the dot.
+ *
+ * Printed by the plate page head (common/block-layout/page-title) on a page
+ * that opens on its title, and by omeka/site/page/show.phtml above the blocks
+ * on any other page — never both (helper/PageHead.php decides).
+ *
+ * Expected variables:
+ * - $crumbs: list of ['label' => string, 'url' => ?string], from
+ *            PageHead::trail() — the last one is the current page
+ */
+$escape = $this->plugin('escapeHtml');
+$escapeAttr = $this->plugin('escapeHtmlAttr');
+$translate = $this->plugin('translate');
+$current = array_pop($crumbs);
+?>
+<nav class="breadcrumbs" aria-label="<?php echo $escapeAttr($translate('Breadcrumb')); ?>"><?php foreach ($crumbs as $crumb): ?><span><a href="<?php echo $escapeAttr($crumb['url']); ?>"><?php echo $escape($crumb['label']); ?></a></span><?php endforeach; ?><span aria-current="page"><?php echo $escape($current['label']); ?></span></nav>

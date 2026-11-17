@@ -1,0 +1,250 @@
+@use "../../abstracts/abstracts" as *;
+@use "press-plate" as *;
+
+// ==========================================================================
+// Plate page head — a section page's title printed on the press plate
+//
+// When a site page opens on its page-title block (Explore, Browse, Index,
+// References, About…), that block is a slim full-bleed band in the hero's
+// own recipe (_press-plate.scss), flush under the masthead's closing rule,
+// with the page title in white Besley 800 at its foot and the page's
+// breadcrumb above it. helper/PageHead.php decides which block that is and
+// common/block-layout/page-title.phtml prints it:
+//
+//   main#content.container > .blocks > .blocks-inner > .block-pageTitle
+//     > header.page-head > (nav.breadcrumbs) + h1.title.page-head__title
+//
+// A page-title block anywhere else, resource titles, and the homepage keep
+// their own voices. Unlike the hero it carries no image below $md (a phone
+// downloads nothing for it: the background-image only exists inside the
+// media query) and no animation at all.
+// ==========================================================================
+
+// Full bleed. The band breaks out of the content container to the viewport
+// edges with `margin-inline: calc(50% - 50vw)` — but 100vw includes the
+// vertical scrollbar, so the band overshoots the page by half a scrollbar on
+// each side and the document scrolls sideways by a scrollbar's width.
+//
+// The overshoot is clipped at <body>. `overflow-x: clip` (not hidden) makes no
+// scroll container, so the sticky masthead still sticks to the viewport, and
+// it is no containing block, so the fixed drawer, back-to-top control and
+// Mirador's maximize overlay are untouched. One catch: <body>'s overflow is
+// handed to the viewport whenever <html>'s is `visible`, and a `clip` handed
+// over becomes `hidden` there — still scrollable sideways in scrollWidth, and
+// not a clip of the body. Giving <html> its own non-visible value keeps the
+// body's for the body; `auto` on the root is what the viewport does anyway.
+// Scoped to pages that print the plate (the block template sets the class).
+html:has(> body.has-page-head) {
+    overflow-y: auto;
+}
+
+body.has-page-head {
+    overflow-x: clip;
+}
+
+.page-head {
+    position: relative;
+    // The layers below blend within the band: with isolation, `multiply`
+    // composites against the band's own ground, and the negative z-indexes
+    // paint above that ground and below the type.
+    isolation: isolate;
+
+    // Viewport edge to viewport edge, with the content back on the
+    // container's own left edge (the margins and paddings cancel).
+    margin-inline: calc(50% - 50vw);
+    padding-inline: calc(50vw - 50%);
+
+    // Flush under the masthead's 2px rule; the space below separates the band
+    // from the first section, which draws no opening rule of its own against
+    // it (components/blocks/block-group: a block after a page title).
+    margin-block: 0 var(--space-8);
+    padding-block: var(--space-10) var(--space-5);
+
+    color: var(--white);
+
+    // The ground, with the scrim laid on it: every plate layer multiplies, so
+    // a scrim under the image prints as one over it (_press-plate.scss).
+    @include press-plate-ground;
+    background-image: press-plate-scrim();
+
+    // The halftone screen, over the image and on the flat ground alike.
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        @include press-plate-screen;
+    }
+
+    @include press-plate-dark {
+        &::before {
+            @include press-plate-image-dark;
+        }
+    }
+
+    // The collage, from $md up only. An uploaded banner replaces it through
+    // an inline rule in layout.phtml; the default is the grayscale
+    // derivative the homepage's srcset already fetches at that width.
+    @media (min-width: $md) {
+        margin-block-end: var(--space-10);
+        // About 160px at 1440 with a one-line title: the band, not a hero.
+        // The foot leaves room for the display face's descenders ("Hajj").
+        padding-block: var(--space-16) var(--space-8);
+
+        // A crumb line takes the top of the band rather than adding to it.
+        &:has(> .breadcrumbs) {
+            padding-block-start: var(--space-10);
+        }
+
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+            background-image: url("../img/banner-1024.webp");
+            background-position: center 32%;
+            background-repeat: no-repeat;
+            background-size: cover;
+            @include press-plate-image;
+        }
+    }
+
+    @media (min-width: $lg) {
+        &::before {
+            background-image: url("../img/banner-1400.webp");
+        }
+    }
+}
+
+// The title: the masthead voice, one step quieter than the hero heading at
+// every breakpoint (2xl / 3xl / 4xl against 3xl / 4xl / 5xl), so the homepage
+// stays the loudest page. Not the h1.title section head: no rule of its own,
+// the band is the opening. Two classes, so the section head's own steps
+// (h1.title inside a media query, base/elements/_titles.scss) never win.
+.page-head > .page-head__title {
+    position: relative;
+    max-width: 22em;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: var(--white);
+    font-family: $font__headings;
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: var(--tracking-display);
+    // Long and French titles ("Vue d'ensemble de la collection") wrap in
+    // even lines; an unbreakable word still never pushes the page sideways.
+    text-wrap: balance;
+    overflow-wrap: break-word;
+
+    @media (min-width: $md) {
+        font-size: var(--text-3xl);
+        line-height: 1.02;
+    }
+
+    @media (min-width: $lg) {
+        font-size: var(--text-4xl);
+    }
+}
+
+// The crumb line, in white on the plate: ≥92% white like the hero's small
+// type, a white dot for the current page (a primary dot is invisible on its
+// own ground), and white focus rings for the same reason.
+.page-head .breadcrumbs {
+    position: relative;
+    margin-block: 0 var(--space-3);
+    color: color-mix(in oklab, var(--white) 92%, transparent);
+
+    a {
+        color: color-mix(in oklab, var(--white) 92%, transparent);
+        text-decoration: underline;
+        text-decoration-color: color-mix(in oklab, var(--white) 45%, transparent);
+        text-underline-offset: 0.2em;
+
+        &:hover {
+            color: var(--white);
+            text-decoration-color: currentColor;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--white);
+            outline-offset: 2px;
+        }
+    }
+
+    span:not(:last-child)::after {
+        color: color-mix(in oklab, var(--white) 70%, transparent);
+    }
+
+    span:last-child {
+        color: color-mix(in oklab, var(--white) 92%, transparent);
+
+        &::before {
+            background: var(--white);
+        }
+    }
+}
+
+// Forced colours: the system repaints text and drops author backgrounds, so
+// the band would be a box of nothing. Hide the layers and let the title and
+// crumbs take system colours; a rule under the head keeps it an opening.
+@media (forced-colors: active) {
+    .page-head {
+        background: Canvas;
+        border-block-end: 2px solid CanvasText;
+
+        &::before,
+        &::after {
+            display: none;
+        }
+    }
+
+    .page-head > .page-head__title,
+    .page-head .breadcrumbs,
+    .page-head .breadcrumbs span:last-child {
+        color: CanvasText;
+    }
+
+    .page-head .breadcrumbs a {
+        color: LinkText;
+    }
+
+    .page-head .breadcrumbs span:last-child::before {
+        background: CanvasText;
+    }
+}
+
+// Print: no blue band on paper. The head prints as ink, the title back on the
+// section head's 2px rule, inside the margins.
+@media print {
+    .page-head {
+        margin: 0 0 var(--space-6);
+        padding: 0;
+        background: none;
+        color: var(--ink-strong);
+
+        &::before,
+        &::after {
+            display: none;
+        }
+    }
+
+    .page-head > .page-head__title {
+        color: var(--ink-strong);
+        border-block-start: 2px solid var(--ink-strong);
+        padding-block-start: var(--space-3);
+    }
+
+    .page-head .breadcrumbs,
+    .page-head .breadcrumbs a,
+    .page-head .breadcrumbs span:last-child {
+        color: var(--ink);
+    }
+
+    .page-head .breadcrumbs span:last-child::before {
+        background: var(--ink);
+    }
+}

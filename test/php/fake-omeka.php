@@ -109,11 +109,36 @@ final class Request
     }
 }
 
-/** A site page, as SitePageBySlug, breadcrumbs and the PWA manifest read it. */
+/**
+ * A site page, as SitePageBySlug, breadcrumbs, the PWA manifest, page/show.phtml
+ * and the page-title block read it. Its blocks are what withLayouts() gave it:
+ * core's SitePageRepresentation::blocks(), in position order.
+ */
 final class Page
 {
+    /** @var list<string> */
+    private array $layouts = [];
+
     public function __construct(private Site $site, private string $slug, private string $title)
     {
+    }
+
+    /** @param list<string> $layouts the page's block layouts, in order */
+    public function withLayouts(array $layouts): self
+    {
+        $page = clone $this;
+        $page->layouts = $layouts;
+        return $page;
+    }
+
+    /** @return list<PageBlock> */
+    public function blocks(): array
+    {
+        $blocks = [];
+        foreach ($this->layouts as $i => $layout) {
+            $blocks[] = new PageBlock($layout, [], $i + 1, $this);
+        }
+        return $blocks;
     }
 
     public function slug(): string
@@ -204,8 +229,11 @@ final class Site
     {
         $site = $this;
         return new class($site) {
+            private object $container;
+
             public function __construct(private Site $site)
             {
+                $this->container = new \stdClass();
             }
 
             public function menu(): self
@@ -217,7 +245,42 @@ final class Site
             {
                 return $this->site->renderMenu($options);
             }
+
+            public function getContainer(): object
+            {
+                return $this->container;
+            }
+
+            /** Laminas' findActive(): the deepest page the request is on, else []. */
+            public function findActive($container): array
+            {
+                return $this->site->findActive($container);
+            }
         };
+    }
+
+    /**
+     * Laminas' findActive() over the site navigation for the current request:
+     * ['page' => the active page, 'depth' => 0 for a top-level entry, 1 for a
+     * child], or [] for a page the navigation does not link.
+     */
+    public function findActive(object $container): array
+    {
+        $here = Request::$current->path;
+        foreach ($this->navigation as [$slug, $children]) {
+            $page = $this->page($slug);
+            $top = new NavPage($page->title(), $page->siteUrl(), $container, (bool) $children);
+            if ($page->siteUrl() === $here) {
+                return ['page' => $top, 'depth' => 0];
+            }
+            foreach ($children as $child) {
+                $childPage = $this->page($child);
+                if ($childPage->siteUrl() === $here) {
+                    return ['page' => new NavPage($childPage->title(), $childPage->siteUrl(), $top, false), 'depth' => 1];
+                }
+            }
+        }
+        return [];
     }
 
     /**
@@ -252,6 +315,38 @@ final class Site
             $html .= $item($slug, $children, 0, '    ');
         }
         return $html . '</ul>';
+    }
+}
+
+/**
+ * A Laminas navigation page (Laminas\Navigation\Page\AbstractPage), as
+ * PageHead::trail() and core's page/show.phtml read it. A top-level entry's
+ * parent is the navigation container, which is not a page.
+ */
+final class NavPage
+{
+    public function __construct(private string $label, private string $href, private object $parent, private bool $hasPages)
+    {
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function getHref(): string
+    {
+        return $this->href;
+    }
+
+    public function getParent(): object
+    {
+        return $this->parent;
+    }
+
+    public function hasPages(): bool
+    {
+        return $this->hasPages;
     }
 }
 
@@ -845,14 +940,24 @@ final class Asset
 
 /**
  * A site page block, as a block layout's template reads it: core's
- * SitePageBlockRepresentation::dataValue(). Core's blockLayout() helper prints
- * the <div class="block block-…"> wrapper around the template's output, which
- * render-fixtures.php's blocks() reproduces.
+ * SitePageBlockRepresentation (layout, dataValue, id, page). Core's
+ * blockLayout() helper prints the <div class="block block-…"> wrapper around
+ * the template's output, which render-fixtures.php's blocks() reproduces.
  */
 final class PageBlock
 {
-    public function __construct(private string $layout, private array $data = [])
+    public function __construct(private string $layout, private array $data = [], private int $id = 0, private ?Page $page = null)
     {
+    }
+
+    public function id(): int
+    {
+        return $this->id;
+    }
+
+    public function page(): Page
+    {
+        return $this->page ?? throw new \LogicException('this block was built without its page');
     }
 
     public function layout(): string

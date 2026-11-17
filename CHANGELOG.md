@@ -11,6 +11,10 @@ create.
 
 ## [Unreleased]
 
+### Changed
+
+- **Section pages open on a printed title band.** A site page whose first block is a page title (Explore, Browse, Index, References, About and their sub-pages) now opens on a slim blue band under the menu, printed like the homepage hero (the same press collage, blue ground and dot screen) with the page title in large white type. On a sub-page, the breadcrumb ("Explore / Collection overview") sits in the band above the title instead of on its own line above it. Phones get the blue band without the photograph, so they download no extra image. A custom banner image uploaded under *Themes → Configure* appears in the band too. Pages whose first block is something else, page-title blocks placed further down a page, item, media and item-set pages, and the homepage are unchanged. Printed pages show the title in ink, without the band.
+
 ## [2.33.1] - 2026-11-16
 
 ### Changed

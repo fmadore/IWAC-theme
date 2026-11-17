@@ -241,8 +241,9 @@ test('page blocks are ruled sections on one flat surface, not cards', async ({ p
         expect(block.radius, block.cls).toBe('0px');
         expect(block.paddingInline, block.cls).toBe('0px');
     }
-    // The title opens on its own rule; the section under it does not repeat
-    // it; every later section opens on the 2px ink rule.
+    // The title opens the page (as the plate here); the section under it
+    // does not open on a rule against it; every later section opens on the
+    // 2px ink rule.
     expect(blocks[1].ruleTop).toBe('0px none');
     expect(blocks[2].ruleTop).toBe('2px solid');
     // One flat --surface: the body paints it, nothing between it and the blocks.
@@ -278,6 +279,195 @@ test('inner pages open on the breadcrumb under the masthead; the hero is the hom
     expect(hero.screen).toContain('radial-gradient');
     expect(hero.blend).toBe('multiply');
     expect(hero.searchRadius).toBe('0px');
+});
+
+// ---- The plate page head of section pages -------------------------------------
+
+/**
+ * Classic scrollbars. Headless engines draw overlay scrollbars, which take no
+ * width, so a band sized in vw cannot overflow in them; WebKit honours a
+ * styled scrollbar and draws a 15px one, which is how a desktop visitor on
+ * Windows sees the page — and where `100vw` is wider than the page.
+ */
+const classicScrollbars = { html: (html) => html.replace('</head>', '<style>::-webkit-scrollbar{width:15px;height:15px;background:#ccc}</style></head>') };
+
+/** No sideways scroll, measured against the width the page can use (scrollbar excluded). */
+const fitsWithoutSidewaysScroll = (page) => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
+
+const plateGeometry = (page) => page.evaluate(() => {
+    const head = document.querySelector('.page-head');
+    const box = head.getBoundingClientRect();
+    const title = head.querySelector('h1');
+    const grid = document.querySelector('.blocks-inner').getBoundingClientRect();
+    const image = getComputedStyle(head, '::before');
+    return {
+        top: box.top,
+        left: box.left,
+        width: box.width,
+        height: box.height,
+        page: document.documentElement.clientWidth,
+        masthead: document.querySelector('.main-header').getBoundingClientRect().bottom,
+        titleLeft: title.getBoundingClientRect().left,
+        contentLeft: grid.left,
+        titleSize: parseFloat(getComputedStyle(title).fontSize),
+        titleColour: getComputedStyle(title).color,
+        titleRule: getComputedStyle(title).borderTopStyle,
+        image: image.content === 'none' ? 'none' : image.backgroundImage,
+        screen: getComputedStyle(head, '::after').backgroundImage,
+    };
+});
+
+test('a section page opens on the plate: flush under the masthead, edge to edge, title on the content edge', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openFixture(page, 'page-about.en');
+    await expect(page.locator('.page-head')).toHaveCount(1);
+    await expect(page.locator('.blocks-inner > .block-pageTitle:first-child > header.page-head > h1.title')).toHaveText('About');
+    const plate = await plateGeometry(page);
+    expect(Math.abs(plate.top - plate.masthead)).toBeLessThan(1);
+    expect(plate.left).toBe(0);
+    expect(Math.abs(plate.width - plate.page)).toBeLessThan(1);
+    expect(Math.abs(plate.titleLeft - plate.contentLeft)).toBeLessThan(1);
+    // A band, not a hero: ~160px with a one-line title at this width, and a
+    // display title one step under the hero's.
+    expect(plate.height).toBeGreaterThan(120);
+    expect(plate.height).toBeLessThan(200);
+    expect(plate.titleSize).toBeGreaterThan(48);
+    expect(plate.titleColour).toBe('rgb(255, 255, 255)');
+    expect(plate.titleRule).toBe('none');
+    expect(plate.image).toContain('banner-1400.webp');
+    expect(plate.screen).toContain('radial-gradient');
+
+    // The homepage keeps its hero and gets no plate.
+    await openFixture(page, 'page-home.en');
+    await expect(page.locator('.page-head')).toHaveCount(0);
+    await expect(page.locator('.banner')).toHaveCount(1);
+});
+
+test('the plate prints no image below $md: a phone downloads nothing for it', async ({ page }) => {
+    const images = [];
+    page.on('request', (request) => {
+        if (/\/asset\/img\/banner/.test(request.url())) images.push(request.url());
+    });
+    for (const width of [390, 767]) {
+        await page.setViewportSize({ width, height: 844 });
+        await openFixture(page, 'page-overview.fr');
+        const plate = await plateGeometry(page);
+        expect(plate.image, `${width}px`).toBe('none');
+        expect(plate.screen, `${width}px: the halftone stays`).toContain('radial-gradient');
+        expect(Math.abs(plate.top - plate.masthead)).toBeLessThan(1);
+    }
+    expect(images).toEqual([]);
+
+    await page.setViewportSize({ width: 768, height: 900 });
+    await openFixture(page, 'page-overview.fr');
+    expect((await plateGeometry(page)).image).toContain('banner-1024.webp');
+});
+
+for (const width of [360, 768, 1280, 1920]) {
+    test(`the full-bleed plate adds no sideways scroll at ${width}px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        for (const name of ['page-overview.fr', 'page-exhibit.en']) {
+            await openFixture(page, name, classicScrollbars);
+            expect(await fitsWithoutSidewaysScroll(page), name).toBe(true);
+            const plate = await plateGeometry(page);
+            // Edge to edge of the page the visitor sees (the band's box is
+            // wider by the scrollbar; the body clips it).
+            expect(plate.width, `${name}: edge to edge`).toBeGreaterThanOrEqual(plate.page - 1);
+            // The long French title wraps inside the page.
+            const title = await page.locator('.page-head h1').boundingBox();
+            expect(title.x + title.width, name).toBeLessThanOrEqual(plate.page + 1);
+        }
+    });
+}
+
+test('the masthead still sticks over a plate page (the clip makes no scroll container)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 600 });
+    await openFixture(page, 'page-exhibit.en');
+    expect(await page.evaluate(() => getComputedStyle(document.body).overflowX)).toBe('clip');
+    await page.evaluate(() => window.scrollTo(0, 900));
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(500);
+    // Sticky: still at the top of the viewport (the nav strip may slide up
+    // under it), not scrolled away with the page.
+    const header = await page.evaluate(() => document.querySelector('.main-header').getBoundingClientRect());
+    expect(header.bottom).toBeGreaterThan(0);
+});
+
+test('a child page carries its breadcrumb inside the plate, above the title, in white', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openFixture(page, 'page-exhibit.en');
+    // One trail, inside the plate: none stranded between masthead and band.
+    await expect(page.locator('nav.breadcrumbs')).toHaveCount(1);
+    const crumbs = page.locator('.page-head > nav.breadcrumbs');
+    await expect(crumbs).toHaveAttribute('aria-label', 'Breadcrumb');
+    await expect(crumbs.locator('a')).toHaveText(['Exhibits']);
+    await expect(crumbs.locator('[aria-current="page"]')).toHaveText('Hajj in Burkina Faso');
+    const layout = await page.evaluate(() => {
+        const head = document.querySelector('.page-head');
+        const nav = head.querySelector('.breadcrumbs').getBoundingClientRect();
+        return {
+            navTop: nav.top,
+            navBottom: nav.bottom,
+            titleTop: head.querySelector('h1').getBoundingClientRect().top,
+            plateTop: head.getBoundingClientRect().top,
+        };
+    });
+    expect(layout.navBottom).toBeLessThanOrEqual(layout.titleTop);
+    expect(layout.navTop).toBeGreaterThan(layout.plateTop);
+
+    // The focus ring is white on the plate, where the primary ring would vanish.
+    // (WebKit's Tab skips links unless the OS setting says otherwise, so the
+    // ring is asked for by a key press, then focus.)
+    const link = crumbs.locator('a');
+    await page.keyboard.press('Shift');
+    await link.focus();
+    await expect(link).toBeFocused();
+    const ring = await link.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return { style: style.outlineStyle, colour: style.outlineColor };
+    });
+    expect(ring.style).toBe('solid');
+    expect(ring.colour).toBe('rgb(255, 255, 255)');
+});
+
+test('forced colours: the plate drops its layers and the title and crumbs keep system colours', async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'forced-colors emulation is Chromium-only');
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.emulateMedia({ forcedColors: 'active' });
+    await openFixture(page, 'page-exhibit.en');
+    const plate = await page.evaluate(() => {
+        const head = document.querySelector('.page-head');
+        return {
+            image: getComputedStyle(head, '::before').display,
+            screen: getComputedStyle(head, '::after').display,
+            title: getComputedStyle(head.querySelector('h1')).color,
+            canvas: getComputedStyle(document.body).backgroundColor,
+            ground: getComputedStyle(head).backgroundColor,
+        };
+    });
+    expect(plate.image).toBe('none');
+    expect(plate.screen).toBe('none');
+    expect(plate.ground).toBe(plate.canvas);
+    expect(plate.title).not.toBe(plate.canvas);
+});
+
+test('print: the plate prints as ink, with no blue band', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openFixture(page, 'page-exhibit.en');
+    await page.emulateMedia({ media: 'print' });
+    const plate = await page.evaluate(() => {
+        const head = document.querySelector('.page-head');
+        const style = getComputedStyle(head);
+        return {
+            ground: style.backgroundColor,
+            layers: style.backgroundImage,
+            screen: getComputedStyle(head, '::after').display,
+            title: getComputedStyle(head.querySelector('h1')).color,
+        };
+    });
+    expect(plate.ground).toBe('rgba(0, 0, 0, 0)');
+    expect(plate.layers).toBe('none');
+    expect(plate.screen).toBe('none');
+    expect(plate.title).not.toBe('rgb(255, 255, 255)');
 });
 
 test('the hero ground stays a deep seed blue in dark mode, never the re-lit dark primary', async ({ page }) => {

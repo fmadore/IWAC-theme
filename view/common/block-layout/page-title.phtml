@@ -1,2 +1,35 @@
-<?php $escape = $this->plugin('escapeHtml'); ?>
+<?php
+/**
+ * The page-title block, in two voices (helper/PageHead.php decides which):
+ *
+ * - the PLATE: when it opens a section page (the page's first block, not the
+ *   homepage), a slim full-bleed band in the hero's press-plate recipe, with
+ *   the page's breadcrumb above the title (components/banner/_page-head.scss).
+ *   The crumb is printed here rather than by show.phtml, which leaves it out
+ *   on such a page, so it never strands between the masthead and the band.
+ *   The body class lets the stylesheet clip the band's 100vw overshoot at the
+ *   body (a full-bleed band otherwise adds a scrollbar's width of sideways
+ *   scroll); the content renders before the layout, so it reaches <body>.
+ * - the section head: anywhere else, the plain h1.title (base/elements/
+ *   _titles.scss).
+ *
+ * Core passes $block and $pageTitle (Omeka\Site\BlockLayout\PageTitle).
+ */
+$escape = $this->plugin('escapeHtml');
+$pageHead = $this->PageHead();
+$block = isset($block) ? $block : null;
+?>
+<?php if ($pageHead->isPlate($block)): ?>
+<?php
+$this->htmlElement('body')->appendAttribute('class', 'has-page-head');
+$crumbs = $pageHead->crumbs();
+?>
+<header class="page-head">
+<?php if ($crumbs): ?>
+    <?php echo $this->partial('common/page-breadcrumbs', ['crumbs' => $crumbs]); ?>
+<?php endif; ?>
+    <h1 class="title page-head__title"><?php echo $escape($pageTitle); ?></h1>
+</header>
+<?php else: ?>
 <h1 class="title"><?php echo $escape($pageTitle); ?></h1>
+<?php endif; ?>

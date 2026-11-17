@@ -1,4 +1,5 @@
 @use "../../abstracts/abstracts" as *;
+@use "press-plate" as *;
 
 // ==========================================================================
 // Banner — homepage hero, a press collage printed on the blue plate
@@ -10,11 +11,9 @@
 // material: one confident colour statement, automatically on-brand for any
 // admin-configured seed.
 //
-// The ground is built from --primary-base, the raw seed, NOT from --primary:
-// in dark mode --primary is re-lit to a light blue for text on dark surfaces,
-// and multiplying the plate over that would turn the hero pale. The seed does
-// not flip, so the hero keeps its deep blue in both themes (banked down a
-// step in dark, below).
+// The plate itself — ground, image treatment, halftone screen, scrim and the
+// dark variant — is _press-plate.scss, shared with the plate page head of
+// section pages (_page-head.scss); this file places it.
 // Renders on the homepage only (see layout.phtml).
 // ==========================================================================
 
@@ -36,10 +35,15 @@
     margin-block-end: var(--space-10);
     border-radius: 0;
 
-    // The ground: light areas of the grayscale image become this. The seed
-    // lifted 12% toward white — #314bab for the default press blue, where
-    // white type still reads 7.7:1 before the plate and scrim darken it.
-    background: color-mix(in oklab, var(--primary-base) 88%, white 12%);
+    // The ground (from the seed, never --primary — see _press-plate.scss).
+    @include press-plate-ground;
+
+    // Dark theme: the same plate, banked down.
+    @include press-plate-dark {
+        img {
+            @include press-plate-image-dark;
+        }
+    }
 
     // Defeat the optional .container / alignment classes the template can
     // attach — the hero owns the full viewport width.
@@ -56,13 +60,7 @@
         content: "";
         position: absolute;
         inset: 0;
-        background:
-            linear-gradient(
-                180deg,
-                color-mix(in oklab, black 6%, transparent) 0%,
-                color-mix(in oklab, black 22%, transparent) 62%,
-                color-mix(in oklab, black 42%, transparent) 100%
-            );
+        background: press-plate-scrim();
         z-index: 1;
     }
 
@@ -77,22 +75,17 @@
         inset: 0;
         overflow: hidden;
 
-        // The halftone screen: a 4px grid of soft dots multiplied over the
-        // plate, so the photograph reads as printed — the dot gain of a
-        // newspaper half-tone, not a filter effect. A static layer over the
-        // image (the Ken Burns settle moves the photograph under the screen,
-        // as a plate moves under a fixed screen). Like the image, it carries no
-        // z-index and stays inside this non-stacking wrapper, so `multiply`
-        // blends against the ground at the root level.
+        // The halftone screen, a static layer over the image (the Ken Burns
+        // settle moves the photograph under the screen, as a plate moves under
+        // a fixed screen). Like the image, it carries no z-index and stays
+        // inside this non-stacking wrapper, so `multiply` blends against the
+        // ground at the root level.
         &::after {
             content: "";
             position: absolute;
             inset: 0;
             pointer-events: none;
-            background-image: radial-gradient(color-mix(in oklab, black 55%, transparent) 30%, transparent 32%);
-            background-size: 4px 4px;
-            mix-blend-mode: multiply;
-            opacity: 0.5;
+            @include press-plate-screen;
         }
     }
 
@@ -104,12 +97,8 @@
         top: 0;
         inset-inline-start: 0;
         z-index: 0;
-        // Grayscale plate multiplied over the blue ground = duotone. The
-        // contrast is pushed the way a press plate is, so headlines and
-        // portraits print as ink on the blue and the paper stays the ground.
-        filter: grayscale(1) contrast(1.2) brightness(1.08);
-        mix-blend-mode: multiply;
-        opacity: 0.9;
+        // Grayscale plate multiplied over the blue ground = duotone.
+        @include press-plate-image;
     }
 
     // One-time Ken Burns on load (not hover-triggered). Gated on
@@ -628,32 +617,6 @@
             }
         }
     }
-}
-
-// Dark theme: the same seed-built plate, banked down — lamplight, not neon.
-// Still --primary-base, never the re-lit dark --primary (see the top note).
-@mixin iwac-banner-dark {
-    .banner {
-        background: color-mix(in oklab, var(--primary-base) 76%, black 24%);
-
-        img {
-            opacity: 0.88;
-            filter: grayscale(1) contrast(1.15) brightness(0.95);
-        }
-    }
-}
-
-// data-theme lives on <body> (set pre-paint by the layout head script), so
-// the :not() guard must sit on body too — on :root it always matched and a
-// forced-light user on an OS-dark device still got the dark plate.
-@media (prefers-color-scheme: dark) {
-    body:not([data-theme="light"]) {
-        @include iwac-banner-dark;
-    }
-}
-
-body[data-theme="dark"] {
-    @include iwac-banner-dark;
 }
 
 // One-time Ken Burns zoom on load.

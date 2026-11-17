@@ -247,6 +247,7 @@
         "xhr": false,
         "templates": [
             "common/block-layout/html.phtml",
+            "omeka/site/page/show.phtml",
             "layout/layout.phtml",
             "common/header.phtml",
             "common/search-form.phtml",
@@ -261,10 +262,11 @@
         "lang": "en-US",
         "xhr": false,
         "templates": [
-            "common/block-layout/page-title.phtml",
             "common/block-layout/html.phtml",
             "common/block-layout/asset.phtml",
             "common/block-layout/item-carousel.phtml",
+            "common/block-layout/page-title.phtml",
+            "omeka/site/page/show.phtml",
             "layout/layout.phtml",
             "common/header.phtml",
             "common/search-form.phtml",
@@ -278,10 +280,11 @@
         "lang": "fr",
         "xhr": false,
         "templates": [
-            "common/block-layout/page-title.phtml",
             "common/block-layout/html.phtml",
             "common/block-layout/asset.phtml",
             "common/block-layout/item-carousel.phtml",
+            "common/block-layout/page-title.phtml",
+            "omeka/site/page/show.phtml",
             "layout/layout.phtml",
             "common/header.phtml",
             "common/search-form.phtml",
@@ -295,10 +298,28 @@
         "lang": "en-US",
         "xhr": false,
         "templates": [
-            "common/block-layout/page-title.phtml",
             "common/block-layout/html.phtml",
             "common/block-template/media-masonry.phtml",
             "common/block-layout/file.phtml",
+            "common/block-layout/page-title.phtml",
+            "common/page-breadcrumbs.phtml",
+            "omeka/site/page/show.phtml",
+            "layout/layout.phtml",
+            "common/header.phtml",
+            "common/search-form.phtml",
+            "common/language-switcher.phtml",
+            "common/menu-drawer.phtml",
+            "common/footer.phtml"
+        ]
+    },
+    "page-overview.fr": {
+        "url": "/s/afrique_ouest/page/vue-d-ensemble",
+        "lang": "fr",
+        "xhr": false,
+        "templates": [
+            "common/block-layout/html.phtml",
+            "common/block-layout/page-title.phtml",
+            "omeka/site/page/show.phtml",
             "layout/layout.phtml",
             "common/header.phtml",
             "common/search-form.phtml",

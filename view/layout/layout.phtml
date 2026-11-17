@@ -54,12 +54,10 @@ $pwaManifest = $pwaEnabled ? $this->PwaManifest($site) : null;
 // the configured homepage, or failing that the first page linked in the
 // navigation, which is where the root redirects. Reading only homepage() left
 // a site without one — any install that never set it — with no hero at all.
-$layoutHomepage = $site->homepage();
-if (!$layoutHomepage) {
-    $layoutLinkedPages = $site->linkedPages();
-    $layoutHomepage = $layoutLinkedPages ? reset($layoutLinkedPages) : null;
-}
-$layoutIsHomepage = $layoutHomepage && $this->params()->fromRoute('page-slug') === $layoutHomepage->slug();
+// helper/PageHead.php answers it, because the plate page head must stay off
+// the same page the hero is on.
+$layoutHomepageSlug = $this->PageHead()::homepageSlug($site);
+$layoutIsHomepage = $layoutHomepageSlug !== null && $this->params()->fromRoute('page-slug') === $layoutHomepageSlug;
 
 // For LCP: preload default banner image when no custom banner is set.
 // banner-1400.webp, not banner.webp: the master is the colour source of truth
@@ -67,6 +65,13 @@ $layoutIsHomepage = $layoutHomepage && $this->params()->fromRoute('page-slug') =
 // is grayscale, because _banner.scss paints the plate through
 // `filter: grayscale(1)`. See scripts/gen-banner-images.js.
 $customBannerAsset = $this->themeSettingAsset('banner');
+// The plate page head of section pages (components/banner/_page-head.scss)
+// prints the same collage as the hero from $md up, from CSS. An uploaded
+// banner replaces the default there too, through an inline <style> rule
+// below — validated, not escaped: HTML escaping means nothing
+// inside a <style> element, so PageHead::imageValue() refuses any URL that
+// could close the url() or the element.
+$pageHeadImage = $customBannerAsset ? $this->PageHead()::imageValue((string) $customBannerAsset->assetUrl()) : null;
 $defaultBannerUrl = $this->assetUrl('img/banner-1400.webp');
 // Responsive variants (regenerate with `npm run build:images`) so phones fetch a
 // right-sized hero instead of the full 1400w plate. Width-descriptor srcset;
@@ -218,6 +223,16 @@ if ($layoutIsHomepage) {
 				--secondary-base: <?php echo $this->escapeHtml($secondaryColor); ?>;
 			}
 		</style>
+<?php if ($pageHeadImage !== null): ?>
+		<?php // The uploaded banner as the plate page head's image, from $md (768px)
+		      // up like the default it replaces. A rule, not a custom property: a
+		      // property declared here would join the published token vocabulary
+		      // (tokens.json `names`) the two modules are checked against. It comes
+		      // after style.css, so at equal specificity it wins. ?>
+		<style type="text/css" media="screen and (min-width:768px)">
+			.page-head::before { background-image: <?php echo $pageHeadImage; ?>; }
+		</style>
+<?php endif; ?>
 		
 		<?php if ($bannerHeightMobile !== null && $layoutIsHomepage): ?>
 		<?php // 767px, not 768px: max-width sits at breakpoint − 1 so it never
@@ -279,11 +294,13 @@ if ($layoutIsHomepage) {
 		<?php echo $this->partial('common/header', ['userBar' => $userBar, 'site' => $site]); ?>
 
 		<?php
-		// The hero renders on the site homepage only. Inner pages open straight
-		// on their breadcrumb and title under the masthead's 2px rule: the slim
-		// duotone band they carried until 2.33 (.banner--compact) was a strip of
-		// decoration between the section strip and the content — and, on a
-		// phone, the LCP element of every short-titled page.
+		// The hero renders on the site homepage only. A section page that opens
+		// on its page-title block gets the plate page head instead — but that is
+		// the page-title block itself (common/block-layout/page-title), printed
+		// inside <main> with the page's h1 and breadcrumb, not a banner here.
+		// The slim duotone band inner pages carried until 2.33 (.banner--compact)
+		// was decoration above the title, and on a phone the LCP element of
+		// every short-titled page; the plate carries no image below $md.
 		if ($layoutIsHomepage) {
 			echo $this->partial('common/banner', ['srcset' => $defaultBannerSrcset]);
 		}

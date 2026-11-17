@@ -98,8 +98,10 @@ module.exports = {
         },
         {
             files: [
-                // The hero scrim: legibility of white type over the duotone plate.
-                'asset/sass/components/banner/_banner.scss',
+                // The press plate shared by the hero and the plate page head:
+                // its halftone dot screen (the plate printing as a half-tone)
+                // and the scrim that keeps white type legible over it.
+                'asset/sass/components/banner/_press-plate.scss',
                 // The fade that tells a reader a clamped description continues.
                 'asset/sass/base/elements/_resource-description.scss',
             ],
