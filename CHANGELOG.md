@@ -11,6 +11,8 @@ create.
 
 ## [Unreleased]
 
+## [2.34.0] - 2026-11-17
+
 ### Changed
 
 - **Section pages open on a printed title band.** A site page whose first block is a page title (Explore, Browse, Index, References, About and their sub-pages) now opens on a slim blue band under the menu, printed like the homepage hero (the same press collage, blue ground and dot screen) with the page title in large white type. On a sub-page, the breadcrumb ("Explore / Collection overview") sits in the band above the title instead of on its own line above it. Phones get the blue band without the photograph, so they download no extra image. A custom banner image uploaded under *Themes → Configure* appears in the band too. Pages whose first block is something else, page-title blocks placed further down a page, item, media and item-set pages, and the homepage are unchanged. Printed pages show the title in ink, without the band.
@@ -161,7 +163,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.33.1...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.34.0...HEAD
+[2.34.0]: https://github.com/fmadore/IWAC-theme/compare/v2.33.1...v2.34.0
 [2.33.1]: https://github.com/fmadore/IWAC-theme/compare/v2.33.0...v2.33.1
 [2.33.0]: https://github.com/fmadore/IWAC-theme/compare/v2.32.1...v2.33.0
 [2.32.1]: https://github.com/fmadore/IWAC-theme/compare/v2.32.0...v2.32.1
