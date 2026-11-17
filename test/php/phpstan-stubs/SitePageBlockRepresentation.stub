@@ -1,0 +1,34 @@
+<?php
+/**
+ * PHPStan stub (phpstan.neon.dist `stubFiles`): corrects one PHPDoc in Omeka S
+ * core. SitePageBlockRepresentation::page() is documented `@return
+ * SiteRepresentation`, but its body returns the `site_pages` adapter's
+ * representation — a SitePageRepresentation (application/src/Api/
+ * Representation/SitePageBlockRepresentation.php, 4.2.1). helper/PageHead.php
+ * reads the page's blocks through it, which PHPStan refused against the
+ * documented type. Drop this file once core's PHPDoc is fixed.
+ *
+ * A stub file is resolved on its own, so the two classes it names are
+ * declared here as well; an empty stub class changes nothing about the real
+ * one.
+ */
+
+namespace Omeka\Api\Representation;
+
+abstract class AbstractRepresentation
+{
+}
+
+class SitePageRepresentation extends AbstractRepresentation
+{
+}
+
+class SitePageBlockRepresentation extends AbstractRepresentation
+{
+    /**
+     * @return SitePageRepresentation
+     */
+    public function page()
+    {
+    }
+}

@@ -11,6 +11,12 @@ create.
 
 ## [Unreleased]
 
+## [2.34.1] - 2026-11-17
+
+### Fixed
+
+- **2.34.0 was tagged but never published; this release carries its changes.** The release check that analyses the theme's PHP against Omeka S refused the new page-head helper, so no 2.34.0 ZIP was built. Nothing was wrong on a running site: Omeka S documents one of its own methods with the wrong return type, and the check now carries a correction for it. See 2.34.0 below for what changed on the site.
+
 ## [2.34.0] - 2026-11-17
 
 ### Changed
@@ -163,7 +169,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.34.0...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.34.1...HEAD
+[2.34.1]: https://github.com/fmadore/IWAC-theme/compare/v2.34.0...v2.34.1
 [2.34.0]: https://github.com/fmadore/IWAC-theme/compare/v2.33.1...v2.34.0
 [2.33.1]: https://github.com/fmadore/IWAC-theme/compare/v2.33.0...v2.33.1
 [2.33.0]: https://github.com/fmadore/IWAC-theme/compare/v2.32.1...v2.33.0

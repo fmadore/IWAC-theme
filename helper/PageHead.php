@@ -150,8 +150,9 @@ final class PageHead extends AbstractHelper
         }
         $crumbs = [['label' => (string) $active->getLabel(), 'url' => null]];
         $page = $active;
-        while (method_exists($page, 'getParent') && ($parent = $page->getParent())) {
-            if (!method_exists($parent, 'getLabel') || !method_exists($parent, 'getHref')) {
+        while (method_exists($page, 'getParent')) {
+            $parent = $page->getParent();
+            if (!is_object($parent) || !method_exists($parent, 'getLabel') || !method_exists($parent, 'getHref')) {
                 break; // the container: the root of the navigation
             }
             array_unshift($crumbs, ['label' => (string) $parent->getLabel(), 'url' => (string) $parent->getHref()]);

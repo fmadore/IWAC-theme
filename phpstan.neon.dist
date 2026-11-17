@@ -28,6 +28,10 @@ parameters:
     treatPhpDocTypesAsCertain: false
     bootstrapFiles:
         - test/php/phpstan-bootstrap.php
+    # Corrections to core PHPDoc that disagrees with what core returns; each
+    # stub says which line of core it corrects and why.
+    stubFiles:
+        - test/php/phpstan-stubs/SitePageBlockRepresentation.stub
     ignoreErrors:
         # View helpers are reached through PhpRenderer's plugin broker
         # (__call), which AbstractHelper::getView() types as the bare
