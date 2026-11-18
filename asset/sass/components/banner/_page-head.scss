@@ -42,6 +42,14 @@ body.has-page-head {
     overflow-x: clip;
 }
 
+// Core's page-blocks.css gives every block of a page in the "normal" layout
+// `margin: 1rem 0` (.page-layout-normal .block); the grid layout has none.
+// On the plate's block that margin is a strip of paper between the masthead
+// rule and the band, on normal-layout pages only.
+body.has-page-head .blocks-inner > .block-pageTitle:first-child {
+    margin-block-start: 0;
+}
+
 .page-head {
     position: relative;
     // The layers below blend within the band: with isolation, `multiply`

@@ -11,6 +11,12 @@ create.
 
 ## [Unreleased]
 
+## [2.34.2] - 2026-11-18
+
+### Fixed
+
+- **The plate page head sits flush under the menu on every page.** On a page using Omeka's "normal" layout (rather than the grid), a 16px strip of white showed between the header and the blue band.
+
 ## [2.34.1] - 2026-11-17
 
 ### Fixed
@@ -169,7 +175,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.34.1...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.34.2...HEAD
+[2.34.2]: https://github.com/fmadore/IWAC-theme/compare/v2.34.1...v2.34.2
 [2.34.1]: https://github.com/fmadore/IWAC-theme/compare/v2.34.0...v2.34.1
 [2.34.0]: https://github.com/fmadore/IWAC-theme/compare/v2.33.1...v2.34.0
 [2.33.1]: https://github.com/fmadore/IWAC-theme/compare/v2.33.0...v2.33.1
