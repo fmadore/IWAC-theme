@@ -11,6 +11,12 @@ create.
 
 ## [Unreleased]
 
+## [2.35.0] - 2026-11-18
+
+### Added
+
+- **A condensed sans for the nav strip and datelines.** Fira Sans Condensed (500 and 600, self-hosted like the other faces) now sets the section menu and the menu drawer. It also sets the item dateline, the hero eyebrow, carousel datelines and news date headers. It is the narrow "press" gothic that goes with Besley headlines, and it covers every Arabic-transliteration letter, including `ʿ`, which Public Sans lacks. Modules can use it through the new `--font-condensed` token.
+
 ## [2.34.2] - 2026-11-18
 
 ### Fixed
@@ -175,7 +181,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.34.2...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.35.0...HEAD
+[2.35.0]: https://github.com/fmadore/IWAC-theme/compare/v2.34.2...v2.35.0
 [2.34.2]: https://github.com/fmadore/IWAC-theme/compare/v2.34.1...v2.34.2
 [2.34.1]: https://github.com/fmadore/IWAC-theme/compare/v2.34.0...v2.34.1
 [2.34.0]: https://github.com/fmadore/IWAC-theme/compare/v2.33.1...v2.34.0

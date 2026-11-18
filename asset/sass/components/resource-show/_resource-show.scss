@@ -47,6 +47,7 @@ body.item-set {
         margin-block-end: var(--space-4);
         font-size: var(--text-xs);
         font-weight: 600;
+        font-family: $font__condensed;
         text-transform: uppercase;
         letter-spacing: var(--tracking-wider);
         color: var(--ink-light);

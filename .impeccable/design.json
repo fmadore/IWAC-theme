@@ -1,40 +1,42 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-09T00:00:00Z",
+  "generatedAt": "2026-11-18T00:00:00Z",
   "title": "Design System: IWAC Theme",
   "extensions": {
     "colorMeta": {
       "primary": {
         "role": "primary",
-        "displayName": "IWAC Burnt Orange",
+        "displayName": "Press Blue",
         "canonical": "color-mix(in oklab, var(--primary-base) 92%, black)",
-        "dark": "#ec653f",
+        "dark": "#7aa2ff",
         "tonalRamp": [
-          "#3c0000",
-          "#630000",
-          "#8a0000",
-          "#b22300",
-          "#db4d24",
-          "#ff734c",
-          "#ff9971",
-          "#ffbe94"
-        ]
+          "#020034",
+          "#0b0973",
+          "#1f3397",
+          "#3a57bd",
+          "#587ae4",
+          "#7fa0fd",
+          "#b3c8fe",
+          "#e8eeff"
+        ],
+        "purpose": "The spot colour. Seed --primary-base #1c2f9e darkened 8% (#18298d), 10.7-11.8:1 as text on every light surface. Dark mode re-lights the seed (lightness ~78%, seed hue and chroma held) to #7aa2ff rather than tinting it toward white. Links, focus, current/active state, interpuncts, dots, counts, the one filled button, the plate."
       },
       "secondary": {
         "role": "secondary",
-        "displayName": "Slate (data-only)",
-        "canonical": "#394f68",
-        "dark": "#708093",
+        "displayName": "Claret (data-only)",
+        "canonical": "var(--secondary-base)",
+        "dark": "#ae6770",
         "tonalRamp": [
-          "#000b1f",
-          "#12263d",
-          "#2e445c",
-          "#4d647e",
-          "#6e86a1",
-          "#90a9c5",
-          "#b4cdeb",
-          "#d7f1ff"
-        ]
+          "#1e0005",
+          "#4a0318",
+          "#77172f",
+          "#9d3b4d",
+          "#c35d6d",
+          "#ea808f",
+          "#feb1b9",
+          "#ffe8ea"
+        ],
+        "purpose": "Seed --secondary-base #85253a. Data only: chart series slot 2, corpus comparison, the publication type dot. Dark: mixed 30% toward white. Never UI chrome."
       },
       "ink-strong": {
         "role": "neutral",
@@ -114,7 +116,8 @@
           "#a7a6a5",
           "#cbcac9",
           "#efeeed"
-        ]
+        ],
+        "purpose": "The page: body paints --surface, one flat sheet. Page blocks carry no fill of their own."
       },
       "surface-raised": {
         "role": "neutral",
@@ -162,7 +165,8 @@
           "#a8a6a4",
           "#cccac8",
           "#f0eeec"
-        ]
+        ],
+        "purpose": "Still published for consumers; the page no longer paints it."
       },
       "border-light": {
         "role": "neutral",
@@ -243,7 +247,7 @@
           "#ffa956",
           "#ffcd7c"
         ],
-        "purpose": "oklch(63.5% 0.18 60), darkened from 66% in 2.14. Also --type-document and --type-entity-organisations, which render as solid dots, so it is calibrated as a non-text mark: 3:1 on all four light surfaces (3.51 / 3.40 / 3.31 / 3.20). Chroma holds at 0.18, keeping the amber identity and ~16 degrees of hue separation from --primary. Not a text colour at any lightness that stays amber. Dark unchanged."
+        "purpose": "oklch(63.5% 0.18 60). Also --type-document and --type-entity-organisations, which render as solid dots, so it is calibrated as a non-text mark: 3:1 on all four light surfaces (3.51 / 3.39 / 3.31 / 3.20). Not a text colour at any lightness that stays amber."
       },
       "error": {
         "role": "status",
@@ -263,19 +267,20 @@
       },
       "info": {
         "role": "status",
-        "displayName": "Info Blue",
-        "canonical": "#037ac0",
-        "dark": "#4dacf6",
+        "displayName": "Info Teal",
+        "canonical": "oklch(52% 0.10 200)",
+        "dark": "#3ebfc6",
         "tonalRamp": [
-          "#000041",
-          "#002363",
-          "#004486",
-          "#0066ab",
-          "#2389d1",
-          "#4faef7",
-          "#75d3ff",
-          "#9af8ff"
-        ]
+          "#000e10",
+          "#022b2e",
+          "#054c50",
+          "#0e6e75",
+          "#2f9299",
+          "#58b6bd",
+          "#7edbe2",
+          "#c3faff"
+        ],
+        "purpose": "Teal since 2.33, moved off the blue it shared with the new primary. Notices, AI provenance, the audiovisual and Personnes dots."
       },
       "ink-subtle": {
         "role": "neutral",
@@ -316,7 +321,7 @@
         "displayName": "Ink On Primary",
         "canonical": "#ffffff",
         "dark": "#0f0a05",
-        "purpose": "Text and icons on a --primary fill (filled buttons, submits, add/remove-value buttons, checked tick, hero search submit). White in light; warm dark ink in dark mode, where the lightened primary ramp drops white below AA. Never a hardcoded --white.",
+        "purpose": "Text and icons on a --primary fill (filled buttons, submits, add/remove-value hover, checked tick). White in light (12.06:1 on --primary); warm dark ink in dark mode, where white on the re-lit blue is 2.49:1 and the dark ink reads 7.92 / 9.99 / 6.29:1 rest / hover / pressed. Never a hardcoded --white.",
         "tonalRamp": [
           "#0b0b0b",
           "#272727",
@@ -382,111 +387,125 @@
       "info-bg": {
         "role": "neutral",
         "displayName": "Info Ground",
-        "canonical": "#e2f5ff",
-        "purpose": "Light: flat pastel at oklch(96% 0.03 245). Dark: 22% in-oklab mix of oklch(50% 0.14 245).",
+        "canonical": "#dff7f8",
+        "purpose": "Light: flat pastel at oklch(96% 0.025 200). Dark: 22% in-oklab mix of oklch(50% 0.10 200).",
         "tonalRamp": [
-          "#020d13",
-          "#1a2930",
-          "#384850",
-          "#586972",
-          "#7b8c95",
-          "#9caeb7",
-          "#bfd1db",
-          "#dff2fc"
+          "#000e0f",
+          "#16292a",
+          "#324647",
+          "#516667",
+          "#718788",
+          "#94aaab",
+          "#b7cecf",
+          "#dcf4f5"
         ],
-        "dark": "rgba(0, 104, 173, 0.22)"
+        "dark": "rgba(0, 116, 122, 0.22)"
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display (Besley 800)",
-        "purpose": "Masthead wordmark and homepage hero only."
+        "purpose": "The homepage hero heading, white on the plate, at >=1024px (--text-3xl / --text-4xl below). The masthead wordmark is the same voice at 1.1875rem / 1.5rem."
       },
       "headline": {
         "displayName": "Headline (Besley 600)",
-        "purpose": "Page titles (h1), opened by a 2px ink rule; steps down to the --text-3xl clamp below 768px."
+        "purpose": "h1; the --text-3xl clamp below 768px. The plate page head title is Besley 800 white, 1.875rem / --text-3xl / --text-4xl; an off-plate page title is the h1.title section head, Besley 800 1.875rem on a 2px ink rule."
       },
       "subhead": {
         "displayName": "Subhead (Besley 600)",
-        "purpose": "Section headings (h2); 1.875rem below 768px. Never painted in primary."
+        "purpose": "h2; 1.875rem below 768px. Never painted in primary."
       },
       "title": {
         "displayName": "Title (Besley 600)",
-        "purpose": "h3 and ledger-row item titles; 1.875rem at >=768px. In-record section heads (citation, linked resources, web archive) use the section-head treatment: 2px --ink-strong rule above, Besley 1.1875rem (--text-lg) at weight 800, --tracking-display, --ink-strong, never primary."
+        "purpose": "h3 and ledger-row item titles; 1.5rem below 768px."
+      },
+      "section-head": {
+        "displayName": "Section head (Besley 800)",
+        "purpose": "In-record section heads (How to cite, Linked resources, Archived web page): h2 sized by the section-head mixin, --ink-strong, --tracking-display, opened by the 2px ink rule. Never primary."
       },
       "body": {
         "displayName": "Body (Public Sans)",
-        "purpose": "UI prose, labels, navigation."
+        "purpose": "UI text, line-height 1.6, old-style proportional figures; paragraphs at 1.7."
       },
       "body-serif": {
         "displayName": "Long-form (Source Serif 4)",
-        "purpose": "Article full text and ledes at 44-52.5rem measures, line-height 1.7."
+        "purpose": "Article full text and ledes at line-height 1.7; long AI and OCR prose one step up at 1.1875rem. Short prose flows into balanced columns from 1024px."
       },
       "label": {
-        "displayName": "Label (Public Sans caps)",
-        "purpose": "Datelines, metadata labels, chips, disclosure toggles, nav strip; 11px (--text-2xs) is the absolute floor."
+        "displayName": "Label (Public Sans 600, sentence case)",
+        "purpose": "Metadata dts in --ink, form labels, disclosure toggles, hero stat captions, breadcrumbs. Public Sans, untracked, never uppercase."
+      },
+      "dateline": {
+        "displayName": "Dateline (Fira Sans Condensed 600 caps)",
+        "purpose": "The two homes of tracked uppercase, both in --font-condensed (Fira Sans Condensed 500/600, falling back to the Public Sans stack): TYPE · PUBLISHER · DATE, carousel datelines and news date headers at +0.08em; the nav strip and drawer at +0.04em. In IwacVisualizations: chart axes, legends, tooltips. Carries every transliteration glyph, ʿ included. 11px (--text-2xs) is the absolute floor."
       }
     },
     "shadows": [
       {
         "name": "shadow-xs",
-        "value": "0 1px 2px 0 rgba(20, 22, 27, 0.06)",
-        "dark": "0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 1px 2px -1px rgba(0, 0, 0, 0.1)",
-        "purpose": "Minimal ambient depth. Declared in BOTH theme mixins, not composed once on :root."
+        "value": "0 0 0 0 transparent",
+        "dark": "0 0 0 0 transparent",
+        "purpose": "Flat since 2.33: published as a transparent zero shadow (not none, so composed box-shadow lists stay valid) because both modules still consume the name."
       },
       {
         "name": "shadow-sm",
-        "value": "0 1px 3px 0 rgba(9, 11, 15, 0.12), 0 1px 2px -1px rgba(20, 22, 27, 0.06)",
-        "dark": "0 2px 6px -1px rgba(0, 0, 0, 0.18), 0 2px 4px -2px rgba(0, 0, 0, 0.12)",
-        "purpose": "Default panel shadow (= --panel-shadow). Declared in BOTH theme mixins, not composed once on :root."
+        "value": "0 0 0 0 transparent",
+        "dark": "0 0 0 0 transparent",
+        "purpose": "Flat since 2.33: published as a transparent zero shadow (not none, so composed box-shadow lists stay valid) because both modules still consume the name."
       },
       {
         "name": "shadow-md",
-        "value": "0 4px 6px -1px rgba(9, 11, 15, 0.12), 0 2px 4px -2px rgba(20, 22, 27, 0.06)",
-        "dark": "0 6px 16px -4px rgba(0, 0, 0, 0.25), 0 4px 8px -4px rgba(0, 0, 0, 0.25)",
-        "purpose": "Dropdowns and floating panels. Declared in BOTH theme mixins, not composed once on :root."
+        "value": "0 0 0 0 transparent",
+        "dark": "0 0 0 0 transparent",
+        "purpose": "Flat since 2.33: published as a transparent zero shadow (not none, so composed box-shadow lists stay valid) because both modules still consume the name."
       },
       {
         "name": "shadow-lg",
-        "value": "0 10px 15px -3px rgba(9, 11, 15, 0.12), 0 4px 6px -4px rgba(20, 22, 27, 0.06)",
-        "dark": "0 12px 28px -8px rgba(0, 0, 0, 0.35), 0 8px 16px -8px rgba(0, 0, 0, 0.2)",
-        "purpose": "Modals; rare. Dark is struck from pure black at higher alpha and greater spread — a neutral-ink shadow is invisible on a lamplit ground. Declared in BOTH theme mixins, not composed once on :root."
+        "value": "0 4px 12px -4px rgba(9, 11, 15, 0.18), 0 1px 3px 0 rgba(20, 22, 27, 0.06)",
+        "dark": "0 4px 14px -4px rgba(0, 0, 0, 0.4), 0 1px 3px 0 rgba(0, 0, 0, 0.2)",
+        "purpose": "The one real elevation: overlays that float over the page and dismiss (drawer, menus, language switcher, tooltips, annotation popovers, typeahead). Dark is struck from pure black at higher alpha. Declared in BOTH theme mixins."
+      },
+      {
+        "name": "panel-shadow",
+        "value": "0 0 0 0 transparent",
+        "dark": "0 0 0 0 transparent",
+        "purpose": "Flat since 2.33: published as a transparent zero shadow (not none, so composed box-shadow lists stay valid) because both modules still consume the name."
       },
       {
         "name": "glow-xs",
-        "value": "0 1px 3px 0 rgba(206, 65, 21, 0.2)",
-        "dark": "0 1px 3px 0 rgba(236, 101, 63, 0.2)",
-        "purpose": "Filled-primary button, active/pressed. Declared in BOTH theme mixins, not composed once on :root."
+        "value": "0 0 0 0 transparent",
+        "dark": "0 0 0 0 transparent",
+        "purpose": "Flat since 2.33: published as a transparent zero shadow (not none, so composed box-shadow lists stay valid) because both modules still consume the name."
       },
       {
         "name": "glow-sm",
-        "value": "0 2px 6px -1px rgba(206, 65, 21, 0.25)",
-        "dark": "0 2px 6px -1px rgba(236, 101, 63, 0.25)",
-        "purpose": "Filled-primary button at rest. Declared in BOTH theme mixins, not composed once on :root."
+        "value": "0 0 0 0 transparent",
+        "dark": "0 0 0 0 transparent",
+        "purpose": "Flat since 2.33: published as a transparent zero shadow (not none, so composed box-shadow lists stay valid) because both modules still consume the name."
       },
       {
         "name": "glow-md",
-        "value": "0 4px 12px -2px rgba(206, 65, 21, 0.3)",
-        "dark": "0 4px 12px -2px rgba(236, 101, 63, 0.3)",
-        "purpose": "Filled-primary button on hover. Declared in BOTH theme mixins, not composed once on :root."
+        "value": "0 0 0 0 transparent",
+        "dark": "0 0 0 0 transparent",
+        "purpose": "Flat since 2.33: published as a transparent zero shadow (not none, so composed box-shadow lists stay valid) because both modules still consume the name."
       },
       {
         "name": "focus-outline",
-        "value": "2px solid #ce4115",
-        "dark": "2px solid #ec653f",
-        "purpose": "THE default focus indicator, paired with outline-offset: 2px. Declared in BOTH theme mixins, not composed once on :root."
+        "value": "2px solid #18298d",
+        "dark": "2px solid #7aa2ff",
+        "purpose": "THE default focus indicator, paired with outline-offset: 2px. Declared in BOTH theme mixins. White on the plate."
       },
       {
         "name": "ring-focus",
-        "value": "0 0 0 3px rgba(206, 65, 21, 0.3)",
-        "dark": "0 0 0 3px rgba(236, 101, 63, 0.35)",
-        "purpose": "Box-shadow focus ring — the exception, for controls an outline would be clipped on. Also the input focus ring, paired with a primary border. Declared in BOTH theme mixins, not composed once on :root."
+        "value": "0 0 0 3px rgba(24, 41, 141, 0.3)",
+        "dark": "0 0 0 3px rgba(122, 162, 255, 0.35)",
+        "purpose": "Box-shadow ring: the input focus ring (with a primary border) and the exception for controls an outline would be clipped on. Always with outline: 2px solid transparent."
       },
       {
         "name": "ring-focus-sm",
-        "value": "0 0 0 2px rgba(206, 65, 21, 0.22)",
-        "dark": "0 0 0 2px rgba(236, 101, 63, 0.22)",
-        "purpose": "Tighter 2px ring for dense controls. Declared in BOTH theme mixins, not composed once on :root."
+        "value": "0 0 0 2px rgba(24, 41, 141, 0.22)",
+        "dark": "0 0 0 2px rgba(122, 162, 255, 0.22)",
+        "purpose": "Tighter 2px ring for dense controls."
       }
     ],
     "motion": [
@@ -553,22 +572,22 @@
       }
     ],
     "typeMap": {
-      "purpose": "Fixed semantic map for resource types and the five index (entity) types — personnes, lieux, organisations, sujets, evenements — rendered as dots on outlined chips. Sujets and evenements alias --series-5 and --series-9; the rest alias status hues and the brand pair. Declared in BOTH theme blocks: as :root-only aliases they inherited already-substituted light hues under the data-theme toggle. Every slot clears 3:1 on all four surfaces of its theme.",
+      "purpose": "Fixed semantic map for resource types and the five index (entity) types, rendered as dots on outlined square chips. Article = the spot blue, publication = claret, audiovisual = teal info; Personnes / Lieux / Organisations reuse info / success / warning; Sujets and Evenements alias --series-5 (purple) and --series-9 (magenta). Declared in BOTH theme blocks. Every slot clears 3:1 on all four surfaces of its theme.",
       "slots": [
         {
           "name": "--type-article",
-          "light": "#ce4115",
-          "dark": "#ec653f"
+          "light": "#18298d",
+          "dark": "#7aa2ff"
         },
         {
           "name": "--type-publication",
-          "light": "#394f68",
-          "dark": "#708093"
+          "light": "#85253a",
+          "dark": "#ae6770"
         },
         {
           "name": "--type-audiovisual",
-          "light": "#037ac0",
-          "dark": "#4dacf6"
+          "light": "#007980",
+          "dark": "#3ebfc6"
         },
         {
           "name": "--type-document",
@@ -587,8 +606,8 @@
         },
         {
           "name": "--type-entity-personnes",
-          "light": "#037ac0",
-          "dark": "#4dacf6"
+          "light": "#007980",
+          "dark": "#3ebfc6"
         },
         {
           "name": "--type-entity-lieux",
@@ -607,13 +626,13 @@
         },
         {
           "name": "--type-entity-evenements",
-          "light": "#4c9491",
-          "dark": "#5ba3a0"
+          "light": "#a53c75",
+          "dark": "#da7baa"
         }
       ]
     },
     "categoricalSeries": {
-      "purpose": "The theme-owned categorical chart palette, consumed by IwacVisualizations. Slots 1-2 alias --primary/--secondary and flip with the theme; slots 3-20 are literals, independent per theme. Since the 2026-10 review twelve diverge: light 6, 9, 10, 12, 13, 14, 16, 18, 20 darkened and dark 5, 7, 19 lightened, in lightness only (hue and chroma held), so every slot clears 3:1 on all four surfaces of its theme — asserted by npm run check:tokens. Slots 4 and 8 were lifted out of the crossover band so knocked-out labels stay legible.",
+      "purpose": "The theme-owned categorical chart palette, consumed by IwacVisualizations. Slots 1-2 alias --primary/--secondary (blue / claret) and flip with the theme; slots 3-20 are literals, independent per theme, tuned in lightness only so every slot clears 3:1 on all four surfaces of its theme (asserted by npm run check:tokens). 2.33 re-picked the slots that crowded the new blue / claret / teal leads: 3, 9 (teal to magenta), 11 (steel to cornflower), 20 (teal to olive).",
       "leadSlots": 2,
       "leads": [
         "--primary",
@@ -622,19 +641,19 @@
       "slots": [
         {
           "name": "--series-1",
-          "light": "#ce4115",
-          "dark": "#ec653f",
+          "light": "#18298d",
+          "dark": "#7aa2ff",
           "lead": true
         },
         {
           "name": "--series-2",
-          "light": "#394f68",
-          "dark": "#708093",
+          "light": "#85253a",
+          "dark": "#ae6770",
           "lead": true
         },
         {
           "name": "--series-3",
-          "light": "#4a8c6f",
+          "light": "#4f8751",
           "dark": "#4a8c6f",
           "lead": false
         },
@@ -670,8 +689,8 @@
         },
         {
           "name": "--series-9",
-          "light": "#4c9491",
-          "dark": "#5ba3a0",
+          "light": "#a53c75",
+          "dark": "#da7baa",
           "lead": false
         },
         {
@@ -682,7 +701,7 @@
         },
         {
           "name": "--series-11",
-          "light": "#4a8aab",
+          "light": "#5682bb",
           "dark": "#4a8aab",
           "lead": false
         },
@@ -701,7 +720,7 @@
         {
           "name": "--series-14",
           "light": "#246648",
-          "dark": "#6fb08e",
+          "dark": "#86b37d",
           "lead": false
         },
         {
@@ -736,8 +755,8 @@
         },
         {
           "name": "--series-20",
-          "light": "#007b72",
-          "dark": "#4db6ac",
+          "light": "#7d7728",
+          "dark": "#afa851",
           "lead": false
         }
       ]
@@ -748,97 +767,118 @@
       "name": "Quiet Button",
       "kind": "button",
       "refersTo": "button",
-      "description": "The default control: outlined, flat, ink-on-transparent. Loudness opts in elsewhere.",
-      "html": "<button class=\"ds-btn\">Browse the collection</button>",
-      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-sm, 0.5rem) var(--space-lg, 1.5rem); font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); font-weight: 500; color: var(--ink, #13161c); background: transparent; border: 1px solid var(--border, #ced1d6); border-radius: var(--radius-md, 0.5rem); box-shadow: none; cursor: pointer; transition: background-color 150ms cubic-bezier(0.25,1,0.5,1), border-color 150ms cubic-bezier(0.25,1,0.5,1), color 150ms cubic-bezier(0.25,1,0.5,1); } .ds-btn:hover { background: var(--surface-sunken, #f4f1ef); border-color: var(--border-strong, #aeb1b7); color: var(--ink-strong, #05070c); } .ds-btn:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 2px; }"
+      "description": "The default control: outlined, square, flat, ink-on-transparent. Loudness opts in elsewhere.",
+      "html": "<button class=\"ds-btn\" type=\"button\">Browse the collection</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-2, 0.5rem) var(--space-6, 1.5rem); font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); font-weight: 500; color: var(--ink, #13161c); background: transparent; border: 1px solid var(--border, #ced1d6); border-radius: var(--radius-md, 0); box-shadow: none; cursor: pointer; transition: background-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), border-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)); } .ds-btn:hover { background: var(--surface-sunken, #f4f1ef); border-color: var(--border-strong, #aeb1b7); color: var(--ink-strong, #05070c); } .ds-btn:focus-visible { outline: var(--focus-outline, 2px solid #18298d); outline-offset: 2px; }"
     },
     {
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The opt-in loud action (.btn--primary or a submit control): brand fill, --ink-on-primary text (white light, dark ink dark), glow halo, hover lift.",
+      "description": "The opt-in loud action (.btn--primary or a submit control): a flat square of the spot colour, --ink-on-primary text. No halo, no lift.",
       "html": "<button class=\"ds-btn-primary\" type=\"submit\">Search</button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-sm, 0.5rem) var(--space-lg, 1.5rem); font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); font-weight: 500; color: var(--ink-on-primary, #ffffff); background: var(--primary, #ce4115); border: 1px solid transparent; border-radius: var(--radius-md, 0.5rem); box-shadow: var(--glow-sm, 0 2px 6px -1px rgba(206,65,21,0.25)); cursor: pointer; transition: background-color 150ms cubic-bezier(0.25,1,0.5,1), box-shadow 150ms cubic-bezier(0.25,1,0.5,1), transform 150ms cubic-bezier(0.25,1,0.5,1); } .ds-btn-primary:hover { background: var(--primary-hover, #b03710); transform: translateY(-0.0625rem); box-shadow: var(--glow-md, 0 4px 12px -2px rgba(206,65,21,0.3)); } .ds-btn-primary:active { background: var(--primary-active, #942c0c); transform: translateY(0); box-shadow: var(--glow-xs, 0 1px 3px 0 rgba(206,65,21,0.2)); } .ds-btn-primary:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 2px; }"
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-2, 0.5rem) var(--space-6, 1.5rem); font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); font-weight: 500; color: var(--ink-on-primary, #ffffff); background: var(--primary, #18298d); border: 1px solid transparent; border-radius: var(--radius-md, 0); box-shadow: none; cursor: pointer; transition: background-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), border-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)); } .ds-btn-primary:hover { background: var(--primary-hover, #132278); } .ds-btn-primary:active { background: var(--primary-active, #0e1a64); } .ds-btn-primary:focus-visible { outline: var(--focus-outline, 2px solid #18298d); outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": ".btn--secondary: outlined in the spot colour on a transparent ground; hover lays the selection wash.",
+      "html": "<button class=\"ds-btn-secondary\" type=\"button\">Export</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-2, 0.5rem) var(--space-6, 1.5rem); font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); font-weight: 500; color: var(--primary, #18298d); background: transparent; border: 1px solid var(--primary, #18298d); border-radius: var(--radius-md, 0); box-shadow: none; cursor: pointer; transition: background-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), border-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)); } .ds-btn-secondary:hover { background: var(--selection-bg, rgba(24, 41, 141, 0.14)); border-color: var(--primary-hover, #132278); color: var(--primary-hover, #132278); } .ds-btn-secondary:focus-visible { outline: var(--focus-outline, 2px solid #18298d); outline-offset: 2px; }"
     },
     {
       "name": "Search Input",
       "kind": "input",
       "refersTo": "input",
-      "description": "Full-width field on paper white; focus swaps the border to primary and adds the 3px ring, no transform.",
-      "html": "<input class=\"ds-input\" type=\"search\" placeholder=\"Search the collection…\">",
-      "css": ".ds-input { display: block; width: 100%; padding: var(--space-sm, 0.5rem) var(--space-md, 1rem); font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-base, 1.0625rem); color: var(--ink, #13161c); background: var(--panel-bg, #fdfcfb); border: 1px solid var(--border, #ced1d6); border-radius: var(--panel-radius, 0.5rem); line-height: 1.4; transition: border-color 150ms cubic-bezier(0.25,1,0.5,1), box-shadow 150ms cubic-bezier(0.25,1,0.5,1); } .ds-input:focus-visible { outline: none; border-color: var(--primary, #ce4115); box-shadow: var(--ring-focus, 0 0 0 3px rgba(206,65,21,0.3)); } .ds-input::placeholder { color: var(--muted, #66696e); }"
+      "description": "Full-width square field on the surface; focus swaps the border to primary and adds the 3px ring over a transparent outline, no transform.",
+      "html": "<input class=\"ds-input\" type=\"search\" placeholder=\"Search the collection…\" aria-label=\"Search the collection\">",
+      "css": ".ds-input { display: block; width: 100%; padding: var(--space-2, 0.5rem) var(--space-4, 1rem); font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-base, 1.0625rem); line-height: var(--line-height-snug, 1.4); color: var(--ink, #13161c); background: var(--panel-bg, #fdfcfb); border: var(--panel-border, 1px solid #ced1d6); border-radius: var(--panel-radius, 0); transition: border-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), box-shadow var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)); } .ds-input:focus-visible { outline: 2px solid transparent; border-color: var(--primary, #18298d); box-shadow: var(--ring-focus, 0 0 0 3px rgba(24, 41, 141, 0.3)); } .ds-input::placeholder { color: var(--muted, #66696e); }"
     },
     {
       "name": "Type Chip",
       "kind": "chip",
       "refersTo": "chip-tag",
-      "description": "Outlined uppercase pill with a categorical dot — category is a dot, never a fill.",
+      "description": "Outlined square chip in sentence case with a categorical dot — category is a dot, never a fill.",
       "html": "<span class=\"ds-chip\"><span class=\"ds-chip-dot\"></span>Article</span>",
-      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 0.375rem; background: transparent; border: 1px solid var(--border-strong, #aeb1b7); border-radius: var(--radius-full, 9999px); color: var(--ink-light, #3f4349); font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-xs, 0.8125rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wide, 0.04em); padding: 2px var(--space-3, 0.75rem); transition: color 150ms cubic-bezier(0.25,1,0.5,1), border-color 150ms cubic-bezier(0.25,1,0.5,1); } .ds-chip:hover { color: var(--ink-strong, #05070c); border-color: var(--ink-strong, #05070c); } .ds-chip-dot { width: 0.5em; height: 0.5em; border-radius: 50%; background: var(--type-article, #ce4115); flex-shrink: 0; }"
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: var(--space-2, 0.5rem); background: transparent; border: 1px solid var(--border-strong, #aeb1b7); border-radius: var(--radius-sm, 0); color: var(--ink-light, #3f4349); font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-xs, 0.8125rem); font-weight: 600; padding: 2px var(--space-3, 0.75rem); transition: color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), border-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)); } .ds-chip:hover { color: var(--ink-strong, #05070c); border-color: var(--ink-strong, #05070c); } .ds-chip-dot { width: 0.5em; height: 0.5em; border-radius: var(--radius-full, 9999px); background: var(--type-article, #18298d); flex-shrink: 0; }"
+    },
+    {
+      "name": "Plate Page Head",
+      "kind": "custom",
+      "refersTo": "page-head-title",
+      "description": "A section page's title printed on the press plate: seed-built blue ground, black scrim, 4px halftone screen (the collage multiplies in from 768px), crumb line in 92% white above a white Besley 800 title. Never on resource pages or the homepage.",
+      "html": "<header class=\"ds-plate\"><nav class=\"ds-plate-crumbs\" aria-label=\"Breadcrumb\"><a href=\"#\">Home</a><span class=\"ds-plate-sep\">/</span><span class=\"ds-plate-current\">Index</span></nav><h1 class=\"ds-plate-title\">Index of persons, places and organisations</h1></header>",
+      "css": ".ds-plate { position: relative; isolation: isolate; padding: var(--space-10, 2.5rem) var(--space-6, 1.5rem) var(--space-8, 2rem); color: #fff; background: color-mix(in oklab, var(--primary-base, #1c2f9e) 88%, white 12%); background-image: linear-gradient(180deg, color-mix(in oklab, black 6%, transparent) 0%, color-mix(in oklab, black 22%, transparent) 62%, color-mix(in oklab, black 42%, transparent) 100%); } .ds-plate::after { content: \"\"; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: radial-gradient(color-mix(in oklab, black 55%, transparent) 30%, transparent 32%); background-size: 4px 4px; mix-blend-mode: multiply; opacity: 0.5; } .ds-plate-crumbs { display: flex; flex-wrap: wrap; gap: var(--space-2, 0.5rem); margin: 0 0 var(--space-3, 0.75rem); font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); color: color-mix(in oklab, white 92%, transparent); } .ds-plate-crumbs a { color: color-mix(in oklab, white 92%, transparent); text-decoration: underline; text-decoration-color: color-mix(in oklab, white 45%, transparent); text-underline-offset: 0.2em; } .ds-plate-crumbs a:hover { color: #fff; text-decoration-color: currentColor; } .ds-plate-crumbs a:focus-visible { outline: 2px solid #fff; outline-offset: 2px; } .ds-plate-sep { color: color-mix(in oklab, white 70%, transparent); } .ds-plate-current { font-weight: 600; } .ds-plate-current::before { content: \"\"; display: inline-block; width: var(--space-1, 0.25rem); height: var(--space-1, 0.25rem); margin-inline-end: var(--space-2, 0.5rem); vertical-align: middle; background: #fff; border-radius: var(--radius-full, 9999px); } .ds-plate-title { max-width: 22em; margin: 0; color: #fff; font-family: Besley, \"Source Serif 4\", Georgia, serif; font-size: var(--text-3xl, clamp(2.25rem, 1.9rem + 1.8vw, 3rem)); font-weight: 800; line-height: 1.02; letter-spacing: var(--tracking-display, -0.01em); text-wrap: balance; font-feature-settings: \"kern\" 1, \"liga\" 1, \"dlig\" 1, \"lnum\" 1; }"
     },
     {
       "name": "Dateline",
       "kind": "custom",
-      "refersTo": "label",
-      "description": "TYPE · PUBLISHER · DATE in tracked uppercase with primary interpuncts. Its right edge carries a quiet CITE jump to the citation panel anchor.",
-      "html": "<p class=\"ds-dateline\">Article<span class=\"ds-dateline-sep\">·</span>La Croix du Bénin<span class=\"ds-dateline-sep\">·</span>4 June 1993<a class=\"ds-dateline-cite\" href=\"#how-to-cite\">” Cite</a></p>",
-      "css": ".ds-dateline { display: flex; flex-wrap: wrap; align-items: baseline; margin: 0; font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-xs, 0.8125rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wide, 0.04em); color: var(--ink-light, #3f4349); } .ds-dateline-sep { color: var(--primary, #ce4115); padding: 0 0.5em; } .ds-dateline-cite { margin-inline-start: auto; color: var(--muted, #66696e); text-decoration: none; border-bottom: 1px solid var(--border, #ced1d6); transition: color 150ms cubic-bezier(0.25, 1, 0.5, 1), border-color 150ms cubic-bezier(0.25, 1, 0.5, 1); } .ds-dateline-cite:hover { color: var(--primary, #ce4115); border-bottom-color: var(--primary, #ce4115); } .ds-dateline-cite:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 2px; }"
+      "refersTo": "dateline",
+      "description": "TYPE · PUBLISHER · DATE in tracked uppercase with bold primary interpuncts — real record metadata, one of the two homes of uppercase. Its right edge carries a quiet Cite jump to the citation panel anchor.",
+      "html": "<p class=\"ds-dateline\">Article<span class=\"ds-dateline-sep\">·</span>La Croix du Bénin<span class=\"ds-dateline-sep\">·</span>4 June 1993<a class=\"ds-dateline-cite\" href=\"#how-to-cite\">Cite</a></p>",
+      "css": ".ds-dateline { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--space-2, 0.5rem); row-gap: var(--space-1, 0.25rem); margin: 0; font-family: \"Fira Sans Condensed\", \"Public Sans\", system-ui, sans-serif; font-size: var(--text-xs, 0.8125rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wider, 0.08em); color: var(--ink-light, #3f4349); } .ds-dateline-sep { color: var(--primary, #18298d); font-weight: 700; } .ds-dateline-cite { margin-inline-start: auto; color: var(--ink-light, #3f4349); text-decoration: none; border-block-end: 1px solid var(--border, #ced1d6); transition: color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), border-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)); } .ds-dateline-cite:hover { color: var(--primary, #18298d); border-block-end-color: var(--primary, #18298d); } .ds-dateline-cite:focus-visible { outline: var(--focus-outline, 2px solid #18298d); outline-offset: 2px; }"
     },
     {
       "name": "Ledger Row",
       "kind": "custom",
       "refersTo": "title",
-      "description": "The result-list unit: hairline-ruled row with dateline eyebrow, Besley title, snippet. No box, no shadow, no lift.",
+      "description": "The result-list unit: hairline-ruled row with dateline eyebrow, Besley title, two-line snippet. No box, no shadow, no lift.",
       "html": "<article class=\"ds-ledger-row\"><p class=\"ds-ledger-eyebrow\">Article<span class=\"ds-ledger-sep\">·</span>La Croix du Bénin<span class=\"ds-ledger-sep\">·</span>4 June 1993</p><h3 class=\"ds-ledger-title\">Le pèlerinage à La Mecque des musulmans béninois</h3><p class=\"ds-ledger-snippet\">Les préparatifs du hajj mobilisent cette année plus de trois cents fidèles, encadrés par la communauté…</p></article>",
-      "css": ".ds-ledger-row { padding: 1rem 0; border-bottom: 1px solid var(--border-light, #e2e5e8); background: transparent; } .ds-ledger-eyebrow { margin: 0 0 0.375rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-2xs, 0.6875rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wider, 0.08em); color: var(--muted, #66696e); } .ds-ledger-sep { color: var(--primary, #ce4115); padding: 0 0.4em; } .ds-ledger-title { margin: 0 0 0.25rem; font-family: Besley, 'Source Serif 4', Georgia, serif; font-size: var(--text-xl, 1.5rem); font-weight: 600; letter-spacing: var(--tracking-display, -0.01em); color: var(--ink, #13161c); } .ds-ledger-snippet { margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: var(--text-sm, 0.9375rem); line-height: 1.5; color: var(--ink-light, #3f4349); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }"
+      "css": ".ds-ledger-row { padding: var(--space-4, 1rem) 0; border-bottom: 1px solid var(--border-light, #e2e5e8); background: transparent; } .ds-ledger-eyebrow { margin: 0 0 var(--space-2, 0.5rem); font-family: \"Fira Sans Condensed\", \"Public Sans\", system-ui, sans-serif; font-size: var(--text-2xs, 0.6875rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wider, 0.08em); color: var(--muted, #66696e); } .ds-ledger-sep { color: var(--primary, #18298d); padding: 0 0.4em; } .ds-ledger-title { margin: 0 0 var(--space-1, 0.25rem); font-family: Besley, \"Source Serif 4\", Georgia, serif; font-size: var(--text-xl, 1.5rem); font-weight: 600; line-height: var(--line-height-tight, 1.25); letter-spacing: var(--tracking-display, -0.01em); color: var(--ink-strong, #05070c); } .ds-ledger-snippet { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-size: var(--text-sm, 0.9375rem); line-height: 1.5; color: var(--ink-light, #3f4349); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }"
     },
     {
       "name": "Almanac Figure",
       "kind": "custom",
       "refersTo": "display",
-      "description": "KPI as an almanac entry: 2px ink rule, uppercase eyebrow, Besley numeral with lining figures. No card, no gradient.",
-      "html": "<div class=\"ds-almanac\"><p class=\"ds-almanac-label\">Items in the collection</p><p class=\"ds-almanac-figure\">14,208</p></div>",
-      "css": ".ds-almanac { border-top: 2px solid var(--ink-strong, #05070c); padding-top: 0.625rem; background: transparent; } .ds-almanac-label { margin: 0 0 0.25rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: var(--text-2xs, 0.6875rem); font-weight: 600; text-transform: uppercase; letter-spacing: var(--tracking-wider, 0.08em); color: var(--muted, #66696e); } .ds-almanac-figure { margin: 0; font-family: Besley, 'Source Serif 4', Georgia, serif; font-size: var(--text-2xl, 1.875rem); font-weight: 600; letter-spacing: var(--tracking-display, -0.01em); font-feature-settings: 'lnum'; color: var(--ink, #13161c); }"
+      "description": "KPI as an almanac entry: 2px rule on top, Besley 800 numeral with lining figures, sentence-case caption. The featured figure's rule turns primary. No card, no gradient, no lift.",
+      "html": "<div class=\"ds-almanac\"><p class=\"ds-almanac-figure\">14 208</p><p class=\"ds-almanac-label\">Items in the collection</p></div>",
+      "css": ".ds-almanac { border-top: 2px solid var(--ink-strong, #05070c); padding-top: var(--space-2, 0.5rem); background: transparent; } .ds-almanac-figure { margin: 0; font-family: Besley, \"Source Serif 4\", Georgia, serif; font-size: var(--text-2xl, 1.875rem); font-weight: 800; line-height: 1; letter-spacing: var(--tracking-display, -0.01em); font-feature-settings: \"kern\" 1, \"liga\" 1, \"lnum\" 1; color: var(--ink-strong, #05070c); } .ds-almanac-label { margin: var(--space-1, 0.25rem) 0 0; font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); font-weight: 600; color: var(--ink-light, #3f4349); }"
     },
     {
       "name": "Transcript Disclosure",
       "kind": "custom",
       "refersTo": "disclosure-toggle",
-      "description": "Progressive disclosure for an over-long OCR body: an opening extract, then a native <details> whose summary is drawn as a press \"continued\" rule.",
+      "description": "Progressive disclosure for an over-long OCR body: an opening extract, then a native <details> whose summary is a press \"continued\" hairline with a sentence-case label and a rotating chevron.",
       "html": "<div class=\"ds-transcript\"><p class=\"ds-transcript-extract\">Le Conseil supérieur des imams a tenu son assemblée générale annuelle…</p><details class=\"ds-transcript-rest\"><summary class=\"ds-transcript-toggle\"><span class=\"ds-transcript-more\">Read the full transcript</span><span class=\"ds-transcript-less\">Show less</span></summary><p class=\"ds-transcript-extract\">… le reste du texte numérisé.</p></details></div>",
-      "css": ".ds-transcript-extract { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-size: var(--text-lg, 1.1875rem); line-height: var(--line-height-relaxed, 1.7); color: var(--ink, #13161c); max-width: var(--measure-narrow, 44rem); } .ds-transcript-rest { margin-top: 1.25rem; } .ds-transcript-toggle { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 0; border-top: 1px solid var(--border, #ced1d6); font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-xs, 0.8125rem); font-weight: 600; letter-spacing: var(--tracking-wider, 0.08em); text-transform: uppercase; color: var(--ink-light, #3f4349); cursor: pointer; list-style: none; transition: color 150ms cubic-bezier(0.25, 1, 0.5, 1), border-color 150ms cubic-bezier(0.25, 1, 0.5, 1); } .ds-transcript-toggle::-webkit-details-marker { display: none; } .ds-transcript-toggle::after { content: \"\"; width: 0.85em; height: 0.85em; flex: none; background-color: currentColor; -webkit-mask: center / contain no-repeat url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E\"); mask: center / contain no-repeat url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E\"); transition: transform 150ms cubic-bezier(0.25, 1, 0.5, 1); } .ds-transcript-toggle:hover { color: var(--primary, #ce4115); border-top-color: var(--primary, #ce4115); } .ds-transcript-toggle:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 2px; } .ds-transcript-less { display: none; } .ds-transcript-rest[open] .ds-transcript-more { display: none; } .ds-transcript-rest[open] .ds-transcript-less { display: inline; } .ds-transcript-rest[open] .ds-transcript-toggle::after { transform: rotate(180deg); }"
+      "css": ".ds-transcript-extract { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-size: var(--text-lg, 1.1875rem); line-height: var(--line-height-relaxed, 1.7); color: var(--ink, #13161c); } .ds-transcript-rest { margin-top: var(--space-5, 1.25rem); } .ds-transcript-toggle { display: flex; align-items: center; gap: var(--space-2, 0.5rem); padding-block: var(--space-3, 0.75rem); border-block-start: 1px solid var(--border, #ced1d6); font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); font-weight: 600; color: var(--ink-light, #3f4349); cursor: pointer; list-style: none; transition: color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), border-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)); } .ds-transcript-toggle::-webkit-details-marker { display: none; } .ds-transcript-toggle::after { content: \"\"; width: 0.85em; height: 0.85em; flex: none; background-color: currentColor; -webkit-mask: center / contain no-repeat url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\"); mask: center / contain no-repeat url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\"); transition: transform var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)); } .ds-transcript-toggle:hover { color: var(--primary, #18298d); border-block-start-color: var(--primary, #18298d); } .ds-transcript-toggle:focus-visible { outline: var(--focus-outline, 2px solid #18298d); outline-offset: 2px; } .ds-transcript-less { display: none; } .ds-transcript-rest[open] .ds-transcript-more { display: none; } .ds-transcript-rest[open] .ds-transcript-less { display: inline; } .ds-transcript-rest[open] .ds-transcript-toggle::after { transform: rotate(180deg); }"
     },
     {
       "name": "Breadcrumb Trail",
       "kind": "nav",
       "refersTo": "label",
-      "description": "Plain uppercase crumb line — wayfinding, not a component to decorate. Current page marked with a primary dot; link crumbs wrap rather than truncate.",
-      "html": "<nav class=\"ds-crumbs\" aria-label=\"Breadcrumb\"><a href=\"#\">Home</a><span class=\"ds-crumbs-sep\">/</span><a href=\"#\">Items</a><span class=\"ds-crumbs-sep\">/</span><span class=\"ds-crumbs-current\">Le pèlerinage à La Mecque</span></nav>",
-      "css": ".ds-crumbs { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-xs, 0.8125rem); text-transform: uppercase; letter-spacing: var(--tracking-wide, 0.04em); } .ds-crumbs a { color: var(--muted, #66696e); text-decoration: none; border-radius: var(--radius-sm, 0.375rem); transition: color 150ms cubic-bezier(0.25, 1, 0.5, 1); } .ds-crumbs a:hover { color: var(--primary, #ce4115); } .ds-crumbs a:focus-visible { outline: 2px solid var(--focus-color, #ce4115); outline-offset: 1px; } .ds-crumbs-sep { color: var(--border-strong, #aeb1b7); } .ds-crumbs-current { display: inline-flex; align-items: center; gap: 0.4em; color: var(--ink-light, #3f4349); font-weight: 600; } .ds-crumbs-current::before { content: \"\"; width: 0.4em; height: 0.4em; border-radius: 9999px; background: var(--primary, #ce4115); }"
+      "description": "Plain sentence-case crumb line — wayfinding, not a component to decorate. Current page in ink at 600 behind a primary dot; link crumbs wrap, only the current crumb ellipses.",
+      "html": "<nav class=\"ds-crumbs\" aria-label=\"Breadcrumb\"><span><a href=\"#\">Home</a></span><span><a href=\"#\">Items</a></span><span>Le pèlerinage à La Mecque des musulmans béninois</span></nav>",
+      "css": ".ds-crumbs { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2, 0.5rem); font-family: \"Public Sans\", system-ui, sans-serif; font-size: var(--text-sm, 0.9375rem); } .ds-crumbs a { color: var(--muted, #66696e); text-decoration: none; transition: color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)); } .ds-crumbs a:hover { color: var(--primary, #18298d); } .ds-crumbs a:focus-visible { outline: var(--focus-outline, 2px solid #18298d); outline-offset: 1px; } .ds-crumbs > span:not(:last-child)::after { content: \"/\"; color: var(--ink-subtle, #5a5e63); margin-inline-start: var(--space-2, 0.5rem); font-weight: 400; } .ds-crumbs > span:last-child { display: inline-block; flex: 1 1 0; max-width: var(--measure-narrow, 44rem); min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--ink, #13161c); font-weight: 600; } .ds-crumbs > span:last-child::before { content: \"\"; display: inline-block; width: var(--space-1, 0.25rem); height: var(--space-1, 0.25rem); margin-inline-end: var(--space-2, 0.5rem); vertical-align: middle; background: var(--primary, #18298d); border-radius: var(--radius-full, 9999px); }"
     },
     {
       "name": "Layout Toggle",
       "kind": "toggle",
-      "description": "In-panel switch per the controls grammar: a role=\"group\" pair of icon buttons, state in aria-pressed (both stay enabled), outlined at --radius-sm; pressed = primary border + 10% primary wash, glyph in --primary-hover. Never a filled-primary active state.",
-      "html": "<div class=\"ds-toggle\" role=\"group\" aria-label=\"Layout\"><button type=\"button\" class=\"ds-toggle-btn\" aria-pressed=\"true\" aria-label=\"Grid\">Grid</button><button type=\"button\" class=\"ds-toggle-btn\" aria-pressed=\"false\" aria-label=\"List\">List</button></div>",
-      "css": ".ds-toggle { display: flex; gap: var(--space-2, 0.5rem); } .ds-toggle-btn { min-inline-size: var(--size-control-sm, 2.25rem); min-block-size: var(--size-control-sm, 2.25rem); padding: 0 var(--space-2, 0.5rem); background: transparent; border: 1px solid transparent; border-radius: var(--radius-sm, 0.375rem); color: var(--ink-light, #3f4349); font: inherit; cursor: pointer; transition: color var(--transition-fast, 150ms cubic-bezier(0.25,1,0.5,1)), background-color var(--transition-fast, 150ms cubic-bezier(0.25,1,0.5,1)), border-color var(--transition-fast, 150ms cubic-bezier(0.25,1,0.5,1)); } .ds-toggle-btn:hover { background: var(--surface-sunken, #f4f1ef); border-color: var(--border, #ced1d6); color: var(--ink-strong, #05070c); } .ds-toggle-btn[aria-pressed=\"true\"] { color: var(--primary-hover, #b03710); background-color: color-mix(in oklab, var(--primary, #ce4115) 10%, var(--surface, #fdfcfb)); border-color: var(--primary, #ce4115); cursor: default; } .ds-toggle-btn:focus-visible { outline: var(--focus-outline, 2px solid #ce4115); outline-offset: 2px; }"
+      "description": "In-panel switch per the controls grammar: a role=\"group\" pair of icon buttons, state in aria-pressed (both stay enabled), square outline; pressed = primary border + 10% primary wash, glyph in --primary-hover. Never a filled-primary active state.",
+      "html": "<div class=\"ds-toggle\" role=\"group\" aria-label=\"Layout\"><button type=\"button\" class=\"ds-toggle-btn\" aria-pressed=\"true\">Grid</button><button type=\"button\" class=\"ds-toggle-btn\" aria-pressed=\"false\">List</button></div>",
+      "css": ".ds-toggle { display: flex; gap: var(--space-2, 0.5rem); } .ds-toggle-btn { min-inline-size: var(--size-control-sm, 2.25rem); min-block-size: var(--size-control-sm, 2.25rem); padding: 0 var(--space-2, 0.5rem); background: transparent; border: 1px solid transparent; border-radius: var(--radius-sm, 0); color: var(--ink-light, #3f4349); font: inherit; cursor: pointer; transition: color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), background-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)), border-color var(--transition-fast, 150ms cubic-bezier(0.25, 1, 0.5, 1)); } .ds-toggle-btn:hover { background: var(--surface-sunken, #f4f1ef); border-color: var(--border, #ced1d6); color: var(--ink-strong, #05070c); } .ds-toggle-btn[aria-pressed=\"true\"] { color: var(--primary-hover, #132278); background-color: color-mix(in oklab, var(--primary, #18298d) 10%, var(--surface, #fdfcfb)); border-color: var(--primary, #18298d); cursor: default; } .ds-toggle-btn:focus-visible { outline: var(--focus-outline, 2px solid #18298d); outline-offset: 2px; }"
     }
   ],
   "narrative": {
     "northStar": "The Research Broadsheet",
-    "overview": "A 20th-century broadsheet operated as a scientific instrument. The site is a scholarly database — LLM sentiment models, LDA topics, embeddings, IIIF — that carries the visual grammar of the newspapers it preserves: masthead wordmark, uppercase section strip, thick 2px ink rules, datelines, ledger-style result rows, a duotone press-collage hero. The execution is a modern broadsheet's digital archive run by a university press: newspaper typographic conventions with Linear/Stripe-grade product polish.\n\nDensity is a feature, not a compromise: researchers want more items per screen, flat ledger rows over boxed cards, metadata flowing inline with interpunct separators. Restraint is the resting state — the quiet control is the default and loudness opts in. Confirmed anti-references: not a small museum's website, not a warm editorial magazine, not a generic dashboard; no cream or parchment, no pastiche of aged paper.\n\nThe system is enforced, not merely written down. Every value the token generator publishes is compared by a guard in this repo and in both consumer modules; a rule that lives only in prose is a rule that has already drifted. That doctrine — publish it and assert it — is why the palette below includes the twenty categorical chart slots and the eleven resource-type and entity hues that once lived as loose hex in a sibling repo.",
+    "overview": "A 20th-century broadsheet operated as a scientific instrument. The site is a scholarly database — LLM sentiment models, LDA topics, embeddings, IIIF — that carries the visual grammar of the newspapers it preserves: masthead wordmark, uppercase section strip, thick 2px ink rules, datelines, ledger-style result rows, a press collage printed on a blue plate. The execution is a modern broadsheet's digital archive run by a university press: newspaper typographic conventions with Linear/Stripe-grade product polish.\n\nInk is the brand; blue is the spot colour. A broadsheet prints in black and adds one second plate where it matters, and since 2.33 the system does exactly that: square corners, no elevation on the page, no cards — sections divided by rules on one flat `--surface` — and a deep press blue used the way a second plate is used. It replaced a burnt orange on rounded, shadowed cards with tracked uppercase labels everywhere, which together read as a generic template product rather than an archive.\n\nDensity is a feature, not a compromise: researchers want more items per screen, flat ledger rows over boxed cards, metadata flowing inline with interpunct separators, short prose flowing into newspaper columns rather than sitting in a capped measure. Restraint is the resting state — the quiet control is the default and loudness opts in. Confirmed anti-references: not a small museum's website, not a warm editorial magazine, not a generic dashboard, not a SaaS card grid; no cream or parchment, no pastiche of aged paper.\n\nThe system is enforced, not merely written down. Every value the token generator publishes is compared by a guard in this repo and in both consumer modules; a rule that lives only in prose is a rule that has already drifted. That doctrine — publish it and assert it — is why the palette below includes the twenty categorical chart slots and the eleven resource-type and entity hues.",
     "keyCharacteristics": [
-      "Newspaper grammar (rules, datelines, ledgers) executed with product-grade polish",
-      "Density over comfort; typography as architecture, rules as joinery",
-      "Near-white cool-neutral light mode; warm \"lamplit reading room\" dark mode",
-      "One brand accent used sparingly; category encoded as dots, never fills",
-      "Two themes declared in full as a mixin pair — dark is a redeclaration, never an inherited substitution, and light is never a gap",
+      "Ink and one spot colour: a deep press blue, used where a second plate would be",
+      "Square and flat: zero radii, no shadows on the page, rules instead of boxes",
+      "Newspaper grammar (rules, datelines, ledgers, columns) executed with product-grade polish",
+      "Uppercase rationed to the nav strip and datelines; every other label is sentence case",
+      "Near-white light mode; warm \"lamplit reading room\" dark mode, declared in full as a mixin pair",
       "AI-generated content visibly marked (computational honesty)"
     ],
     "rules": [
       {
         "name": "The One Plate Rule",
-        "body": "The duotone hero — a grayscale collage multiplied over a primary ground — is the one big color statement on the site. Everything else earns primary only as an accent.",
+        "body": "The press plate — a grayscale collage multiplied over a blue ground built from the raw seed, through a 4px halftone dot screen — is the one big colour statement. It prints twice: as the homepage hero, and at band height as the plate page head of section pages. Everything else earns blue only as an accent. The ground is built from `--primary-base`, never `--primary`, so the plate stays deep blue in dark mode.",
+        "section": "colors"
+      },
+      {
+        "name": "The Spot-Not-Paint Rule",
+        "body": "Blue marks what is live or current — links, focus, active state, interpunct, dot, count, the one loud button, the plate. It is never heading text, running prose, a badge fill, a tab fill, or a wash laid for atmosphere. Contrast is not the limit (it clears 10:1); the second plate is. The seed is admin-configurable, so a use that only works because of this particular blue is a use to avoid.",
         "section": "colors"
       },
       {
@@ -847,33 +887,33 @@
         "section": "colors"
       },
       {
-        "name": "The Accent-Not-Text Rule",
-        "body": "`--primary` is an accent, never running body text. As text it measures 4.67 / 4.51 / 4.40 / 4.25:1 on surface / raised / background / sunken — it clears AA on the two lightest surfaces and misses on the other two, so the same declaration passes or fails depending on which panel it lands in. Sanctioned: links, controls and their states, current/active state, large display text (the 404 numeral, KPI figures), pseudo-element marks (interpuncts, `::marker`, chevrons, dots), and every non-text use. Not sanctioned: paragraph, list-item or table-cell copy, ledes, abstracts, anything set from `--font-serif-text`. Darkening the token is not the fix — the brand seed is admin-configurable, so scoping the use is the durable answer.",
-        "section": "colors"
-      },
-      {
         "name": "The Data-Only Secondary Rule",
-        "body": "#394f68 exists for data. If it appears on a button, link, or focus ring, it is a bug.",
+        "body": "The claret exists for data. If it appears on a button, link, or focus ring, it is a bug.",
         "section": "colors"
       },
       {
         "name": "The Mirror-Both-Blocks Rule",
-        "body": "A custom property is substituted at computed-value time on the element that *declares* it, so a token whose value contains `var(…)` must be declared in BOTH theme blocks, and the rule runs both directions. A light-only composition is substituted against light referents and inherited frozen by every dark descendant. A dark-only declaration is worse-hidden still: with no light counterpart, `body[data-theme=\"light\"]` cannot win back on a dark-OS machine. Since 2.14 the light and dark token blocks are a mixin pair carrying the same names — shadows, panel tokens, glows and the three composed focus tokens are declared twice by construction.",
+        "body": "A custom property is substituted at computed-value time on the element that *declares* it, so a token whose value contains `var(…)` must be declared in **both** theme blocks, and the rule runs both directions. A light-only composition is inherited frozen by every dark descendant; a dark-only declaration leaves a manual light choice on a dark-OS machine unable to win back. The light and dark token blocks are a **mixin pair** carrying the same names, and `npm run check:tokens` asserts it.",
         "section": "colors"
       },
       {
         "name": "The Three-to-One Mark Rule",
-        "body": "Every categorical mark — each `--series-*` slot and each `--type-*` dot — clears 3:1 on all four surfaces of its theme (surface, raised, background, sunken), because a chart mark is a graphical object and a module does not know which panel it lands on. `npm run check:tokens` measures it; a slot that fails moves in lightness, never in hue.",
+        "body": "Every categorical mark — each `--series-*` slot and each `--type-*` dot — clears 3:1 on all four surfaces of its theme. `npm run check:tokens` measures it; a slot that fails moves in lightness, never in hue.",
         "section": "colors"
       },
       {
         "name": "The Published Scale Rule",
-        "body": "A color that encodes data belongs in `tokens.json` with a name, a light value and a dark value. Owning a scale means deciding it, never leaving it unpublished in a consumer's source.",
+        "body": "A colour that encodes data belongs in `tokens.json` with a name, a light value and a dark value. Owning a scale means deciding it, never leaving it unpublished in a consumer's source.",
         "section": "colors"
       },
       {
+        "name": "The Rationed Capitals Rule",
+        "body": "Tracked uppercase belongs to two places only, and is set in `--font-condensed` in both: the nav strip (and the drawer that mirrors it) and datelines. Every other label — metadata `dt`s, breadcrumbs, table headers, filter chips, hero stat captions, pagination, form labels, buttons, disclosure toggles — is sentence case, untracked, weight 600 where it is a label.",
+        "section": "typography"
+      },
+      {
         "name": "The Slab Tracking Rule",
-        "body": "Besley display sizes track at -0.01em, never the full -0.02em — slab serifs clog at tight tracking.",
+        "body": "Besley display sizes track at -0.01em (`--tracking-display`), never the full -0.02em — slab serifs clog at tight tracking.",
         "section": "typography"
       },
       {
@@ -883,23 +923,43 @@
       },
       {
         "name": "The No-14px Rule",
-        "body": "The type scale deliberately skips 14px; 11px (`--text-2xs`) is the floor. Absolute `font-size` literals fail `npm run check:tokens` — use `--text-*` tokens. The check reads the whole value, not just its first token, so `clamp()`, `min()` and `max()` are not an escape hatch: a fluid size composes `--text-*` steps (or `calc()` on them).",
+        "body": "The type scale deliberately skips 14px; 11px (`--text-2xs`) is the floor. Absolute `font-size` literals fail `npm run check:tokens`, inside `clamp()`, `min()` and `max()` included — a fluid size composes `--text-*` steps. A weight the theme does not load (Besley 700) fails it too.",
         "section": "typography"
       },
       {
         "name": "The Narrow-Space Figure Rule",
-        "body": "Thousands group with U+202F (narrow no-break space) in every locale — pagination, hero figures and transcript word counts all pass through `number_format($n, 0, '.', \"\\u{202F}\")`. The decimal mark follows the page locale, never the browser's (`12,5 %` fr, `12.5%` en), and date-only values format in UTC so no date lands a day early west of Greenwich.",
+        "body": "Thousands group with U+202F (narrow no-break space) in every locale — pagination, hero figures and transcript word counts all pass through `number_format($n, 0, '.', \"\\u{202F}\")`. The decimal mark follows the page locale, never the browser's (`12,5 %` fr, `12.5%` en), and date-only values format in UTC.",
         "section": "typography"
       },
       {
         "name": "The Bound Punctuation Rule",
-        "body": "French sets a space before `: ; ! ?` and `»` and after `«`. Rendered as an ordinary space it is a legal line-break opportunity, and a headline can open a line with an orphaned colon that reads as a bullet. Titles pass through the `FrenchSpacing` helper, which rewrites those spaces to U+202F NARROW NO-BREAK SPACE — same gap, no break.",
+        "body": "French sets a space before `: ; ! ?` and `»` and after `«`. Titles pass through the `FrenchSpacing` helper, which rewrites those spaces to U+202F NARROW NO-BREAK SPACE — same gap, no line break before an orphaned colon.",
         "section": "typography"
       },
       {
-        "name": "The Separator-Ends-The-Line Rule",
-        "body": "An inline separator between repeated values is drawn with `::after` on the preceding value, never `::before` on the following one. Each value is an atomic wrap unit, so a leading separator opens whichever line its box starts — an interpunct that reads as a bullet.",
+        "name": "The Fill-the-Width Rule",
+        "body": "Prose never sits in a narrow capped column with an empty half beside it. Short prose (an HTML block under ~2,400 characters with no table, figure, embed or numbered list; the AI summary on an item) flows into balanced newspaper columns from 1024px — 28rem column width, `--space-10` gap, a 1px `--border` column rule, headings spanning all columns. Long prose stays one column at the full container width; phones get one column. `helper/ProseColumns.php` decides.",
         "section": "layout"
+      },
+      {
+        "name": "The One-Spelling Breakpoint Rule",
+        "body": "`min-width` sits on a published breakpoint and `max-width` at breakpoint − 1px (`#{$md - 1px}`), never Bootstrap's − 0.02px — carrying both idioms in files that reflow the same header is how the halves of a pair both match. Guards in this repo and in both consumer modules assert it, including `matchMedia()` strings and `media=\"\"` attributes.",
+        "section": "layout"
+      },
+      {
+        "name": "The Separator-Ends-The-Line Rule",
+        "body": "An inline separator between repeated values is drawn with `::after` on the preceding value, never `::before` on the following one, so a wrap never opens a line on an interpunct that reads as a bullet.",
+        "section": "layout"
+      },
+      {
+        "name": "The Square-and-Flat Rule",
+        "body": "`--radius-sm/md/lg` are 0 and the page casts no shadow. A new component that needs a corner or a lift to read as a unit is asking for a rule instead.",
+        "section": "elevation-and-depth"
+      },
+      {
+        "name": "The Overlay-Only Shadow Rule",
+        "body": "`--shadow-lg` is for things that float over the page and dismiss — drawer, menu, popover, tooltip, typeahead. A panel in the flow never takes it.",
+        "section": "elevation-and-depth"
       },
       {
         "name": "The Glass Once Rule",
@@ -908,49 +968,49 @@
       },
       {
         "name": "The Rules-Not-Boxes Rule",
-        "body": "Before adding a shadowed card, try a 2px ink rule or a hairline. Boxes are a last resort for true panels. The AI lede, the linked-resources filter bar, and the transcript disclosure were all boxes once and are all rules now.",
+        "body": "Before adding a card, try a 2px ink rule or a hairline. Boxes are a last resort for true panels (charts). The AI lede, the linked-resources filter bar, the transcript disclosure and every page block were boxes once and are rules now.",
         "section": "elevation-and-depth"
       },
       {
         "name": "The Outline-First Focus Rule",
-        "body": "`--focus-outline` at 2px offset is the focus indicator. The `--ring-focus` halo is the exception for clipped or oddly-shaped controls — paired with `outline: 2px solid transparent`, never `outline: none`, so forced-colors mode (which drops the shadow) repaints a real outline. The one legal `outline: none` is `:focus:not(:focus-visible)`. The halo is never the default — it is the weaker indicator, and reaching for it by habit is how a surface ends up with no visible focus at all.",
+        "body": "`--focus-outline` at 2px offset is the focus indicator. The `--ring-focus` halo is the exception for inputs and clipped controls — paired with `outline: 2px solid transparent`, never `outline: none`, so forced-colors mode repaints a real outline. The one legal `outline: none` is `:focus:not(:focus-visible)`. On the plate, focus rings are white.",
         "section": "elevation-and-depth"
       },
       {
-        "name": "The One-Spelling Breakpoint Rule",
-        "body": "`min-width` sits ON a published breakpoint and `max-width` at breakpoint − 1px — one spelling, not two. Bootstrap's − 0.02px was tolerated until 2.14 and the theme carried both idioms in files that reflow the same header; neither is wrong alone, carrying both is. Guards in this repo and in both consumer modules assert it. `@container` queries are exempt.",
-        "section": "layout"
-      },
-      {
         "name": "The Two-Switch Rule",
-        "body": "Page-level tab sets are ruled tabs: ink text, no box, active = `--ink-strong` on a 2px `--primary` underline. In-panel toggles (list/grid, chart mode, filter chips) are outlined chips at `--radius-sm`: active = `--primary` border + 10% in-oklab primary wash, label in `--primary-hover`, state exposed by `aria-pressed`. Neither is ever a filled-primary active state — the brand fill belongs to the one loud action — and `--radius-full` is for dots, pips and circular icon controls, not tabs or toggles.",
+        "body": "Page-level tab sets are ruled tabs; in-panel toggles are outlined square chips with a primary border and wash when active. Neither is ever a filled-primary active state — the brand fill belongs to the one loud action — and `--radius-full` is for dots, thumbs and circular icon controls, never a tab or toggle.",
         "section": "components"
       },
       {
         "name": "The Mask-Not-Font Icon Rule",
-        "body": "Every UI glyph is a Lucide SVG painted through `icon-mask()` in `currentColor`; Font Awesome is not loaded, and module-emitted FA-classed elements are re-rendered as masks. The mixin restates the glyph in a system colour (CanvasText / ButtonText / LinkText) under `forced-colors: active`, where a bare mask would paint nothing.",
+        "body": "A new glyph is a Lucide SVG in `asset/img/` behind `@include icon-mask(url, $forced)`, with `ButtonText` inside buttons and `LinkText` inside links. A rule that sets `background-color` after the mixin re-hides the glyph; set `color`.",
         "section": "components"
       }
     ],
     "dos": [
-      "**Do** open sections with 2px ink rules and divide rows with hairlines — typography is the architecture, rules are the joinery.",
-      "**Do** declare every composed or aliased token in **both** theme blocks — dark pages must compose against dark referents, and a manual light choice on a dark OS must be able to win back.",
-      "**Do** publish any color that encodes data as a named light/dark pair in `tokens.json`, and let the guards compare it.",
-      "**Do** time motion from `--duration-fast/base/slow` (150 / 200 / 300ms) alone, or composed with `cubic-bezier(0.25, 1, 0.5, 1)` as `--transition-*`; a literal duration fails `npm run check:tokens`.",
+      "**Do** open sections with 2px ink rules and divide rows and columns with hairlines — typography is the architecture, rules are the joinery.",
+      "**Do** keep every corner square and every in-flow surface shadowless; reserve `--shadow-lg` for overlays.",
+      "**Do** flow short prose into balanced columns at wide viewports and let long prose take the full container width.",
+      "**Do** declare every composed or aliased token in **both** theme blocks.",
+      "**Do** publish any colour that encodes data as a named light/dark pair in `tokens.json`, and let the guards compare it.",
+      "**Do** time motion from `--duration-fast/base/slow` (150 / 200 / 300ms), alone or as `--transition-*` on `cubic-bezier(0.25, 1, 0.5, 1)`.",
       "**Do** mark AI-generated fields with the EU \"AI GENERATED\" provenance treatment on the label, and open the lede on an ink rule.",
-      "**Do** mix colors `in oklab`, derive primary variants from the seed, and run `npm run check:tokens` before trusting any token name.",
+      "**Do** mix colours `in oklab`, derive primary variants from the seed, build the plate from `--primary-base`, and run `npm run check:tokens` before trusting any token name.",
       "**Do** test any new font against `ḥ ṣ ḍ ṭ ẓ ʿ ā ī ū` before adopting it.",
       "**Do** give every interactive element a visible focus state — `--focus-outline` first — and respect `prefers-reduced-motion`."
     ],
     "donts": [
+      "**Don't** round a corner or lift a panel, card or button with a shadow or glow.",
+      "**Don't** set tracked uppercase anywhere but the nav strip and datelines.",
+      "**Don't** put prose in a capped measure with an empty half beside it.",
       "**Don't** use warm cream or parchment surfaces — wrong register (\"manuscript museum brochure\").",
-      "**Don't** add atmospheric gradients, gradient bars, glassmorphism (outside the sticky header), or colored side-stripes.",
+      "**Don't** add atmospheric gradients, gradient bars, glassmorphism (outside the sticky header), or coloured side-stripes.",
       "**Don't** give a tab or toggle a filled-primary active state, or a pill shape.",
-      "**Don't** fill category badges, color `h2`s, or set running prose in primary — category is a dot, primary is an accent (4.25:1 on sunken as text).",
+      "**Don't** fill category badges, colour headings, or paint washes in the spot blue — category is a dot, blue is a second plate.",
       "**Don't** use cold blue-gray dark surfaces — dark mode is warm (\"lamplit\"), hue ~70–80.",
-      "**Don't** box result rows, filter bars, linked-resource lists, or the AI lede into cards.",
+      "**Don't** box result rows, filter bars, linked-resource lists, page blocks or the AI lede into cards.",
       "**Don't** replace an outline focus indicator with the `--ring-focus` halo for convenience, and never with `outline: none` alone.",
-      "**Don't** use bouncing/elastic easing or hover-triggered hero animations (the one-time Ken Burns settle is the sanctioned exception).",
+      "**Don't** use bouncing/elastic easing or hover-triggered hero animations (the one-time Ken Burns settle is the sanctioned exception; the plate page head has no animation).",
       "**Don't** pair Besley with `tabular-nums` (broken tnum zero) or track it tighter than -0.01em.",
       "**Don't** write an absolute `font-size` literal, inside `clamp()` included, or spell the \"below\" half of a breakpoint pair any way but breakpoint − 1px."
     ]

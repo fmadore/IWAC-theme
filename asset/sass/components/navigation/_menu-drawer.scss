@@ -71,11 +71,11 @@
             border: 0;
             padding: 0;
             cursor: pointer;
-            font-family: inherit;
             color: var(--muted);
             text-decoration: none;
             font-size: var(--text-xs);
             font-weight: 600;
+            font-family: $font__condensed;
             text-transform: uppercase;
             letter-spacing: var(--tracking-wider);
             transition: color var(--transition-fast);
@@ -130,6 +130,7 @@
             > a {
                 font-size: var(--text-sm);
                 font-weight: 600;
+                font-family: $font__condensed;
                 text-transform: uppercase;
                 letter-spacing: var(--tracking-wide);
                 color: var(--ink);

@@ -253,6 +253,7 @@
                 color: var(--ink-light);
                 display: block;
                 text-decoration: none;
+                font-family: $font__condensed;
                 text-transform: uppercase;
                 font-size: var(--text-xs);
                 font-weight: 600;
@@ -415,6 +416,7 @@
                 display: block;
                 white-space: nowrap;
                 text-decoration: none;
+                font-family: $font__condensed;
                 text-transform: uppercase;
                 font-size: var(--text-xs);
                 font-weight: 600;

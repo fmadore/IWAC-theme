@@ -308,6 +308,7 @@
 .carousel__dateline {
     font-size: var(--text-2xs);
     font-weight: 600;
+    font-family: $font__condensed;
     text-transform: uppercase;
     letter-spacing: var(--tracking-wide);
     line-height: var(--line-height-snug);

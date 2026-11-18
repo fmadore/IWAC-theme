@@ -155,7 +155,7 @@
     // Eyebrow: the dateline voice — uppercase, tracked, paper-white.
     &__eyebrow {
         display: inline-block;
-        font-family: $font__body;
+        font-family: $font__condensed;
         font-size: var(--text-xs);
         font-weight: 600;
         letter-spacing: var(--tracking-wider);
