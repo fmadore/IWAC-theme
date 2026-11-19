@@ -54,7 +54,7 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
-#: view/common/resource-page-block-layout/web-archive.phtml:79
+#: view/common/resource-page-block-layout/web-archive.phtml:80
 msgid "Archived web page"
 msgid_plural "Archived web pages"
 msgstr[0] ""
@@ -536,11 +536,11 @@ msgstr ""
 msgid "You are being redirected to the collection search."
 msgstr ""
 
-#: view/common/resource-page-block-layout/video-embeds.phtml:81
+#: view/common/resource-page-block-layout/video-embeds.phtml:86
 msgid "YouTube video"
 msgstr ""
 
-#: view/common/resource-page-block-layout/video-embeds.phtml:80
+#: view/common/resource-page-block-layout/video-embeds.phtml:85
 msgid "YouTube video: %s"
 msgstr ""
 

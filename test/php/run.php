@@ -1325,6 +1325,142 @@ namespace IwacThemeTest {
         same('', trim($fake->render('common/resource-page-block-layout/web-archive.phtml', ['resource' => $none])));
     });
 
+    test('MediaKind assigns each media to one block: web archive, then YouTube, else the viewer', function () {
+        $kind = \OmekaTheme\Helper\MediaKind::class;
+        $media = static fn (string $type, string $renderer) => new class($type, $renderer) {
+            public function __construct(private string $type, private string $renderer)
+            {
+            }
+
+            public function mediaType(): string
+            {
+                return $this->type;
+            }
+
+            public function renderer(): string
+            {
+                return $this->renderer;
+            }
+        };
+        same($kind::VIEWER, $kind::classify($media('image/jpeg', 'file')), 'a JPEG goes to the viewer');
+        same($kind::VIEWER, $kind::classify($media('application/pdf', 'file')), 'a PDF goes to the viewer');
+        same($kind::WEB_ARCHIVE, $kind::classify($media('application/wacz', 'file')), 'a WACZ goes to the web archive block');
+        same($kind::WEB_ARCHIVE, $kind::classify($media('application/warc', 'file')), 'a WARC goes to the web archive block');
+        same($kind::VIDEO, $kind::classify($media('', 'youtube')), 'a youtube-rendered media goes to the video block');
+        same($kind::VIEWER, $kind::classify($media('', 'oembed')), 'oEmbed has no block of its own yet');
+        same($kind::VIEWER, $kind::classify(new class {
+        }), 'a media answering neither question falls to the viewer');
+        same($kind::VIDEO, (new FakeView())->MediaKind($media('', 'youtube')), 'registered under its exact name');
+    });
+
+    test('the three media blocks partition an item\'s media: each is rendered by exactly one', function () {
+        $fake = new FakeView();
+        $sink = new class {
+            public function __call(string $name, array $args)
+            {
+                return $this;
+            }
+        };
+        $fake->helpers['headLink'] = static fn () => $sink;
+        $fake->helpers['headScript'] = static fn () => $sink;
+        $fake->helpers['translatePlural'] = static fn (string $one, string $many, int $n): string => $n === 1 ? $one : $many;
+        // What core gives each block to print: the stored file's URL (what the
+        // web archive player loads), the renderer's markup (what core's media
+        // embed prints) and, for a YouTube ingest, the video id in mediaData.
+        $media = static fn (int $id, string $type, string $renderer, array $data = []) => new class($id, $type, $renderer, $data) {
+            public function __construct(private int $id, private string $type, private string $renderer, private array $data)
+            {
+            }
+
+            public function id(): int
+            {
+                return $this->id;
+            }
+
+            public function mediaType(): string
+            {
+                return $this->type;
+            }
+
+            public function renderer(): string
+            {
+                return $this->renderer;
+            }
+
+            public function mediaData(): array
+            {
+                return $this->data;
+            }
+
+            public function originalUrl(): ?string
+            {
+                return $this->renderer === 'file' ? '/files/original/media-' . $this->id . '.bin' : null;
+            }
+
+            public function value(string $term, array $options = [])
+            {
+                return $options['default'] ?? null;
+            }
+
+            public function render(array $options = []): string
+            {
+                return $this->renderer === 'youtube'
+                    ? '<div class="media-render youtube"><iframe src="https://www.youtube.com/embed/' . ($this->data['id'] ?? '') . '"></iframe></div>'
+                    : '<div class="media-render file"><a href="/files/original/media-' . $this->id . '.bin">media-' . $this->id . '</a></div>';
+            }
+        };
+        $item = static fn (array $media) => new class($media) {
+            public function __construct(private array $media)
+            {
+            }
+
+            public function media(): array
+            {
+                return $this->media;
+            }
+
+            public function displayTitle($default = null): string
+            {
+                return 'Prêche du vendredi';
+            }
+        };
+        $templates = ['media-embeds', 'web-archive', 'video-embeds'];
+        $render = static function (object $resource) use ($fake, $templates): array {
+            $blocks = [];
+            foreach ($templates as $block) {
+                $blocks[$block] = $fake->render("common/resource-page-block-layout/$block.phtml", ['resource' => $resource]);
+            }
+            return $blocks;
+        };
+
+        $blocks = $render($item([
+            $media(1, 'image/jpeg', 'file'),
+            $media(2, 'application/wacz', 'file'),
+            $media(3, '', 'youtube', ['id' => 'R3-2MuTCi7k']),
+        ]));
+        $owners = static fn (string $marker): array => array_keys(array_filter($blocks, static fn (string $html): bool => str_contains($html, $marker)));
+        same(['media-embeds'], $owners('media-1'), 'the JPEG');
+        same(['web-archive'], $owners('media-2'), 'the WACZ');
+        same(['video-embeds'], $owners('R3-2MuTCi7k'), 'the YouTube media');
+
+        // A broken YouTube ingest (no video id) is claimed by the video block
+        // and dropped there: it renders nowhere, rather than as core's frame.
+        foreach ($render($item([$media(4, '', 'youtube')])) as $block => $html) {
+            same('', trim($html), "$block: a YouTube media without an id");
+        }
+
+        // Omeka requires a theme helper's file the first time it is fetched,
+        // so no template may name the class before fetching it (FakeView loads
+        // every helper eagerly and would not notice).
+        foreach ($templates as $block) {
+            $source = (string) file_get_contents(ROOT . "/view/common/resource-page-block-layout/$block.phtml");
+            $fetch = strpos($source, "\$this->plugin('MediaKind')");
+            check($fetch !== false, "$block: does not fetch the MediaKind helper");
+            $static = strpos($source, 'Helper\\MediaKind::');
+            check($static === false || $static > $fetch, "$block: names MediaKind before fetching it");
+        }
+    });
+
     test('the footer gathers childless menu entries into one column of links (T-23)', function () {
         $menuHtml = '<ul class="navigation"><li><a href="/p/parcourir">Parcourir</a><ul><li><a href="/p/benin">Bénin</a></li></ul></li>'
             . '<li><a href="/p/references">Références</a></li><li class="active"><a href="/p/index">Index</a></li>'

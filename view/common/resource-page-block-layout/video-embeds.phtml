@@ -13,11 +13,12 @@
  *
  * Detection is by media renderer, not by resource template id: template ids are
  * per-installation and would silently stop matching after a re-import, whereas
- * `renderer() === 'youtube'` is what actually decides whether Mirador can show
- * the media. Items on other templates that happen to carry a YouTube media are
+ * the `youtube` renderer (MediaKind::VIDEO) is what actually decides whether
+ * Mirador can show the media. Items on other templates that happen to carry a YouTube media are
  * covered for free. To extend this to another embed ingester (Vimeo/SoundCloud
- * arrive as core's `oembed` renderer), add a branch below — do NOT just widen
- * the filter, since the markup here is YouTube-specific.
+ * arrive as core's `oembed` renderer), add a kind to helper/MediaKind.php and a
+ * branch below — do NOT just widen the filter, since the markup here is
+ * YouTube-specific.
  *
  * Like web-archive.phtml, this emits the iframe directly instead of calling
  * $media->render(). Core's Youtube renderer (Omeka\Media\Renderer\Youtube) is
@@ -28,7 +29,9 @@
  * cookie-less youtube-nocookie host, which matters for a ZMO-hosted site.
  *
  * YouTube media are excluded from media-embeds.phtml so the two blocks can
- * never both render a player for the same video.
+ * never both render a player for the same video: helper/MediaKind.php assigns
+ * every media to exactly one block. A YouTube media without a video id (a
+ * broken ingest) is claimed here and then skipped, so it renders nowhere.
  *
  * @var \Laminas\View\Renderer\PhpRenderer $this
  * @var \Omeka\Api\Representation\ItemRepresentation $resource
@@ -40,9 +43,11 @@ $itemTitle = (string) $resource->displayTitle('');
 // Resolve everything up front so an item whose only youtube media is a broken
 // ingest falls through the `return` below rather than emitting an empty
 // wrapper — which is not inert, it carries the block's bottom margin.
+// Which block owns a media is decided in helper/MediaKind.php.
+$mediaKind = $this->plugin('MediaKind');
 $videos = [];
 foreach ($resource->media() as $media) {
-    if ($media->renderer() !== 'youtube') {
+    if ($mediaKind($media) !== $mediaKind::VIDEO) {
         continue;
     }
     $data = $media->mediaData() ?: [];

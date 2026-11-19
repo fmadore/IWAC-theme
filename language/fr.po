@@ -52,7 +52,7 @@ msgstr "Une collection en libre accès de journaux, de publications islamiques, 
 msgid "Apply"
 msgstr "Appliquer"
 
-#: view/common/resource-page-block-layout/web-archive.phtml:79
+#: view/common/resource-page-block-layout/web-archive.phtml:80
 msgid "Archived web page"
 msgid_plural "Archived web pages"
 msgstr[0] "Page web archivée"
@@ -534,11 +534,11 @@ msgstr "Fondation Volkswagen"
 msgid "You are being redirected to the collection search."
 msgstr "Vous êtes redirigé vers la recherche dans la collection."
 
-#: view/common/resource-page-block-layout/video-embeds.phtml:81
+#: view/common/resource-page-block-layout/video-embeds.phtml:86
 msgid "YouTube video"
 msgstr "Vidéo YouTube"
 
-#: view/common/resource-page-block-layout/video-embeds.phtml:80
+#: view/common/resource-page-block-layout/video-embeds.phtml:85
 msgid "YouTube video: %s"
 msgstr "Vidéo YouTube : %s"
 

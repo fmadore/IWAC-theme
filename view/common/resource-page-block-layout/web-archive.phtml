@@ -38,19 +38,20 @@
  * change, check for Content-Encoding on the .wacz first.
  *
  * Web-archive media are excluded from media-embeds.phtml so the two blocks can
- * never both mount a player over the same file. A site that does not enable
- * this block (Admin → Themes → Configure resource pages) renders no captures.
+ * never both mount a player over the same file: helper/MediaKind.php assigns
+ * every media to exactly one block. A site that does not enable this block
+ * (Admin → Themes → Configure resource pages) renders no captures.
  *
  * @var \Laminas\View\Renderer\PhpRenderer $this
  * @var \Omeka\Api\Representation\ItemRepresentation $resource
  */
 
+// Which block owns a media is decided in helper/MediaKind.php (its
+// WEB_ARCHIVE_TYPES mirror WebArchive\Module::MEDIA_TYPES, .wacz and .warc).
+$mediaKind = $this->plugin('MediaKind');
 $archives = [];
 foreach ($resource->media() as $media) {
-    // Mirrors WebArchive\Module::MEDIA_TYPES. The module plays both formats
-    // through the same viewer, so matching only 'application/wacz' would
-    // silently drop a .warc upload.
-    if (in_array($media->mediaType(), ['application/wacz', 'application/warc'], true)) {
+    if ($mediaKind($media) === $mediaKind::WEB_ARCHIVE) {
         $archives[] = $media;
     }
 }

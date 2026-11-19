@@ -2,24 +2,16 @@
 $decoration = $this->themeSetting('image_decoration');
 
 // Two media kinds are rendered by dedicated blocks and skipped here, so an item
-// with both blocks enabled never gets two players over the same source:
-//
-//   web archives  → `webArchive` (web-archive.phtml). Two ReplayWeb.page players
-//                   over one .wacz means two service-worker clients and twice
-//                   the range traffic. Keep the type list in sync with that
-//                   template (both mirror WebArchive\Module::MEDIA_TYPES).
-//   YouTube       → `videoEmbeds` (video-embeds.phtml), which renders a
-//                   responsive, cookie-less frame instead of core's fixed
-//                   420x315 youtube.com iframe.
+// with both blocks enabled never gets two players over the same source: web
+// archives (`webArchive`, web-archive.phtml) and YouTube media (`videoEmbeds`,
+// video-embeds.phtml). Which block owns a media is decided in one place,
+// helper/MediaKind.php; this block keeps the VIEWER kind.
+$mediaKind = $this->plugin('MediaKind');
 $resourceMedia = [];
 foreach ($resource->media() as $media) {
-    if (in_array($media->mediaType(), ['application/wacz', 'application/warc'], true)) {
-        continue;
+    if ($mediaKind($media) === $mediaKind::VIEWER) {
+        $resourceMedia[] = $media;
     }
-    if ($media->renderer() === 'youtube') {
-        continue;
-    }
-    $resourceMedia[] = $media;
 }
 ?>
 <?php if ($resourceMedia): ?>
