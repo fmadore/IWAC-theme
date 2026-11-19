@@ -63,6 +63,15 @@ OMEKA_PATH=/scratch/omeka-s php /scratch/phpstan.phar analyse
 OMEKA_PATH=/scratch/omeka-s php test/php/omeka-compatibility.php
 ```
 
+The discovery test also guards the theme's **overrides of core templates**: every
+`view/**/*.phtml` whose path exists under core's `application/view/` is listed in
+[test/php/core-overrides.json](test/php/core-overrides.json) with the SHA-256 of core's
+file at the recorded Omeka release. After an `OMEKA_S_VERSION` bump the job fails once
+per core template that changed upstream: that list is the worklist of theme copies to
+re-diff. Port what applies, then refresh the manifest from the new release with
+`OMEKA_PATH=… php test/php/omeka-compatibility.php --write-overrides`. Hash only an
+unzipped release: a git checkout of omeka-s with autocrlf hashes differently.
+
 The helpers' PHPDoc names the real representation classes (`SiteRepresentation`,
 `AbstractResourceEntityRepresentation`, …) while the native types stay `object`:
 `test/php/run.php` passes small fakes, so the `method_exists()` guards stay and

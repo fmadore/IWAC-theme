@@ -1,0 +1,30 @@
+{
+  "omeka": "4.2.1",
+  "overrides": {
+    "common/block-layout/asset.phtml": "d32786a2418e80d4a968d0b109a00ce3f9d2b53d5175e079c34e4185ad2cc951",
+    "common/block-layout/browse-preview.phtml": "f8b4b8c0564f69290f41d5953a94b3ce06fcc7abd7baa96c1170b1b765eb0fe3",
+    "common/block-layout/file.phtml": "77ec76d8368a03cd0bdc6d3391c26cdbdc25699453b22dd14450361e44617f0d",
+    "common/block-layout/html.phtml": "6c935682867ceb45703d7fb7b49e859ab324fa50bdafc3c0c142270b36ed2a6d",
+    "common/block-layout/item-with-metadata.phtml": "65b92d43d3ebaef24c73ea1a152fbbce5e3189aacb385e780a4f3c3ab4085367",
+    "common/block-layout/page-title.phtml": "41a7b99d02b43861799de532ddb3b444995fef009f287990bec2f9b133d93f02",
+    "common/linked-resources.phtml": "9129547307fbc5001fdc2641ee337ac79dcfaaa0e42f50c0f6000fa136801e72",
+    "common/pagination.phtml": "79601b1d59c61816eab0ef1b63c1f6defa4f57df67d9118c9c83bb3f83b09933",
+    "common/resource-page-block-layout/linked-resources.phtml": "e8b2f8614089b83aeb1ce04d85822ee580ea763ea2cf939238872b3f42ede2e2",
+    "common/resource-page-block-layout/media-embeds.phtml": "a1b2484e99f88ee7a20add36660f9b4a90bac6de39538ee2d5e7febaa41d29d2",
+    "common/resource-page-block-layout/media-list.phtml": "32d79e849be7f5ee2c99d93c8f384eda15e462fadf594f85a74a6ec4116c6354",
+    "common/resource-page-block-layout/media-render.phtml": "bda985a99c946b5cafd350fbf76b1139650d11d8c631e9d76dbf7fef2c3d38ff",
+    "common/resource-values.phtml": "7a680378ecce6fbd9fc9b1f4e9a20bcac3dcfdde02c1f45f55c00f6c53f234d5",
+    "common/search-form.phtml": "89389a5f3caeba228b0d139acc1d6e620a87a7419e3dbd52d9ab391c21148aa4",
+    "error/404.phtml": "fb95bff59167269bbb475d559224eb9309c09a091f78c54aba1f263b115124d1",
+    "error/index.phtml": "257f74f1df52550b7c65dfd863df24ffad90391aaf90ad16841bbc77b7dc18b5",
+    "layout/layout.phtml": "b076bf3f0c0297c222ac6748f7a22c132486df8fe199674cc4b914a344dce32f",
+    "omeka/site/index/search.phtml": "e97f0b040a946e7015e322f3579f44513475bd1a2c9cec51f941d07d8bd88fa0",
+    "omeka/site/item-set/browse.phtml": "0ba5e4507ecbf67a173bb8a18e4c1375536dd9455859c294ae27e372f08020b7",
+    "omeka/site/item/browse.phtml": "411650997e6de2404ca152cb579d035b4c2970be50dc18e7679f633528b071d1",
+    "omeka/site/item/search.phtml": "20cd391b72860b8661b67da7abdb79e919ec2e71a6be4e4a12f941fac8c531a3",
+    "omeka/site/item/show.phtml": "2bae42bbdca2be48ca1f2241935186fe2e4c50fd7922c0860e4f7e8d8ed7f433",
+    "omeka/site/media/show.phtml": "b8741d8f05657aa7986127cdbd1a347bbf47e9cc92570b30a5df6146ef6ed35a",
+    "omeka/site/page/browse.phtml": "929c125d2f5684d57085567864024987d5d1c46159da792629bda6133d2bccc0",
+    "omeka/site/page/show.phtml": "2b72267d98c6db306be790e57a469ed2668a77b14234431e4566f78c081b8370"
+  }
+}

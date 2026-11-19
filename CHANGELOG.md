@@ -11,6 +11,10 @@ create.
 
 ## [Unreleased]
 
+### Added
+
+- **An upgrade worklist for the theme's copies of Omeka core templates.** `test/php/core-overrides.json` records the 25 core templates the theme overrides, with a hash of each at Omeka S 4.2.1. When CI moves to a newer Omeka S, the compatibility check now names every one of those templates that changed upstream, so the maintainer knows which theme copies to compare and update; `--write-overrides` refreshes the record afterwards.
+
 ### Removed
 
 - **Seven unused social-network icons.** The Facebook, X, LinkedIn, Instagram, YouTube, Mastodon and Bluesky SVG files in `asset/img/` were never loaded: the footer draws its own social icons. The Social Media settings and the footer links are unchanged.
