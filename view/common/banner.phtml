@@ -21,8 +21,8 @@ $bannerDescription = $this->themeSetting('banner_description');
 // The banner_description setting is empty on both live sites, so the hero
 // proved the collection's scale without ever saying what the collection is —
 // the only one-sentence statement of scope sat in the footer. Fall back to it
-// here; an admin value still wins. The value is set before the
-// $bannerHeightProperty and .has-text decisions so both count the dek as text.
+// here; an admin value still wins. So the hero always carries text: it sizes
+// by min-height, never height, and always takes the .has-text scrim.
 if (!$bannerDescription) {
     $bannerDescription = $translate('An open-access collection of newspapers, Islamic publications, archives, audiovisual sources, and academic references on Islam and Muslims in Benin, Burkina Faso, Côte d\'Ivoire, Niger, Nigeria, and Togo.');
 }
@@ -39,8 +39,6 @@ $defaultBannerUrl = $this->assetUrl('img/banner-1400.webp');
 $bannerSrcset = isset($srcset) ? $srcset : '';
 $hasCustomBanner = (bool) $banner;
 
-$bannerHeightProperty = ($bannerEyebrow || $bannerHeading || $bannerDescription) ? 'min-height' : 'height';
-
 // The hero renders on the homepage only (layout.phtml). Section pages open on
 // the plate page head instead, which is their page-title block printed in the
 // same press-plate recipe (common/block-layout/page-title, helper/PageHead.php,
@@ -56,11 +54,11 @@ $imageInlineStyles = '';
 // helper/CssLength.php: one plain length, or null.
 $bannerHeight = $this->CssLength($bannerHeight);
 if ($bannerHeight !== null) {
-    $bannerInlineStyles .= "{$bannerHeightProperty}: {$bannerHeight};";
+    $bannerInlineStyles .= "min-height: {$bannerHeight};";
 } else {
     // Default hero stature: tall enough to carry the display heading,
     // capped so the fold still shows content underneath.
-    $bannerInlineStyles .= "{$bannerHeightProperty}: clamp(20rem, 42vh, 32rem);";
+    $bannerInlineStyles .= "min-height: clamp(20rem, 42vh, 32rem);";
 }
 
 $imageInlineStyles .= "object-position: {$bannerHorizontalPosition} {$bannerVerticalPosition};";
@@ -71,9 +69,9 @@ $class = ['banner'];
 if (in_array($bannerWidth, ['container', 'alignfull'], true)) {
     $class[] = $bannerWidth;
 }
-if ($bannerEyebrow || $bannerHeading || $bannerDescription) {
-    $class[] = 'has-text';
-}
+// Unconditional: the description fallback above means there is always text,
+// and _banner.scss hangs the legibility scrim on .has-text::before.
+$class[] = 'has-text';
 ?>
 
 <?php
@@ -88,10 +86,7 @@ $bannerLandmark = $bannerHeading
 ?>
 <section class="<?php echo $escAttr(implode(' ', $class)); ?>" style="<?php echo $escAttr($bannerInlineStyles); ?>"<?php echo $bannerLandmark; ?>>
 
-    <?php
-    // The hero plate is the homepage's LCP element, preloaded in layout.phtml.
-    $imageFetchPriority = 'high';
-    ?>
+    <?php // The hero plate is the homepage's LCP element, preloaded in layout.phtml: fetchpriority high. ?>
     <?php
     // The image lives in its own clipping layer so the Ken Burns zoom is
     // contained WITHOUT the banner itself having to clip overflow — that
@@ -101,7 +96,7 @@ $bannerLandmark = $bannerHeading
     ?>
     <div class="banner__media">
     <?php if ($hasCustomBanner): ?>
-        <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true', 'fetchpriority' => $imageFetchPriority]); ?>
+        <?php echo $this->thumbnail($banner, 'large', ['style' => $imageInlineStyles, 'role' => 'presentation', 'aria-hidden' => 'true', 'fetchpriority' => 'high']); ?>
     <?php else: ?>
         <img src="<?php echo $escAttr($defaultBannerUrl); ?>"
              <?php if ($bannerSrcset): ?>srcset="<?php echo $escAttr($bannerSrcset); ?>"
@@ -112,7 +107,7 @@ $bannerLandmark = $bannerHeading
              role="presentation"
              aria-hidden="true"
              alt=""
-             fetchpriority="<?php echo $escAttr($imageFetchPriority); ?>">
+             fetchpriority="high">
     <?php endif; ?>
     </div>
 
@@ -203,9 +198,7 @@ $bannerLandmark = $bannerHeading
         <?php if ($bannerHeading): ?>
             <h1 class="banner__heading" id="banner-heading"><?php echo $escHtml($bannerHeading); ?></h1>
         <?php endif; ?>
-        <?php if ($bannerDescription): ?>
-            <p class="banner__description"><?php echo nl2br($escHtml($bannerDescription)); ?></p>
-        <?php endif; ?>
+        <p class="banner__description"><?php echo nl2br($escHtml($bannerDescription)); ?></p>
 
         <?php // Hero search — the instrument, in the fold (finding 1.1). ?>
         <div class="banner__search">

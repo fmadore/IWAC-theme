@@ -11,6 +11,10 @@ create.
 
 ## [Unreleased]
 
+### Removed
+
+- **Seven unused social-network icons.** The Facebook, X, LinkedIn, Instagram, YouTube, Mastodon and Bluesky SVG files in `asset/img/` were never loaded: the footer draws its own social icons. The Social Media settings and the footer links are unchanged.
+
 ## [2.35.0] - 2026-11-18
 
 ### Added
