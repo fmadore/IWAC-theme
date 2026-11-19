@@ -14,7 +14,10 @@ $this->headTitle($translate('Page not found'));
 // which stays the fallback for a site without that page.
 $browseUrl = null;
 if (isset($site)) {
-    $browsePage = $this->SitePageBySlug(['browse', 'parcourir'], $site);
+    // Fetch the helper before naming its constant: Omeka loads the class on
+    // that first fetch.
+    $pageBySlug = $this->plugin('SitePageBySlug');
+    $browsePage = $pageBySlug(\OmekaTheme\Helper\SitePageBySlug::BROWSE, $site);
     $browseUrl = $browsePage ? $browsePage->siteUrl() : $site->url() . '/item';
 }
 ?>

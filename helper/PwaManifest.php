@@ -40,7 +40,10 @@ final class PwaManifest extends AbstractHelper
         // and hero all lead to (/page/browse, /page/parcourir on the French
         // site), not the legacy /item grid; /item only when the site has no
         // such page.
-        $browsePage = $view->SitePageBySlug(['browse', 'parcourir'], $site);
+        // Fetch the helper before naming its constant: Omeka loads the class
+        // on that first fetch, not at bootstrap.
+        $pageBySlug = $view->plugin('SitePageBySlug');
+        $browsePage = $pageBySlug(SitePageBySlug::BROWSE, $site);
         $browseUrl = $browsePage ? (string) $browsePage->siteUrl() : $siteBase . 'item';
         // Alt text for both install-dialog screenshots; they are two crops of
         // one image, so they describe the same thing.

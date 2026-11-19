@@ -132,16 +132,20 @@ $bannerLandmark = $bannerHeading
     // SitePageBySlug degrades to null on any failure: the hero must render
     // whatever the page API does, and an unlinked figure is the degraded
     // state, not a broken homepage.
+    //
+    // The helper is fetched before its constants are named: Omeka loads the
+    // class on that first fetch, not at bootstrap.
+    $pageBySlug = $this->plugin('SitePageBySlug');
     $statPageSlugs = [
-        'items' => ['browse', 'parcourir'],
-        'index' => ['index'],
+        'items' => \OmekaTheme\Helper\SitePageBySlug::BROWSE,
+        'index' => \OmekaTheme\Helper\SitePageBySlug::INDEX,
         // The newspapers figure opens the collection-overview dashboard: its
         // newspaper-coverage panel lists exactly the titles the figure counts.
-        'newspapers' => ['collection-overview', 'vue-d-ensemble'],
+        'newspapers' => \OmekaTheme\Helper\SitePageBySlug::OVERVIEW,
     ];
     $statPageUrls = [];
     foreach ($statPageSlugs as $statKey => $slugs) {
-        $statPage = $this->SitePageBySlug($slugs);
+        $statPage = $pageBySlug($slugs);
         if ($statPage) {
             $statPageUrls[$statKey] = $statPage->siteUrl();
         }

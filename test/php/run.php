@@ -1126,10 +1126,13 @@ namespace IwacThemeTest {
         $fake->helpers['currentSite'] = static fn () => $site;
         $lookup = $fake->helpers['SitePageBySlug'];
 
-        same('parcourir', $lookup(['browse', 'parcourir'])->slug());
-        same('index', $lookup(['index'])->slug());
+        same(['browse', 'parcourir'], \OmekaTheme\Helper\SitePageBySlug::BROWSE);
+        same(['index'], \OmekaTheme\Helper\SitePageBySlug::INDEX);
+        same(['collection-overview', 'vue-d-ensemble'], \OmekaTheme\Helper\SitePageBySlug::OVERVIEW);
+        same('parcourir', $lookup(\OmekaTheme\Helper\SitePageBySlug::BROWSE)->slug());
+        same('index', $lookup(\OmekaTheme\Helper\SitePageBySlug::INDEX)->slug());
         same(null, $lookup(['collection-overview']));
-        same('vue-d-ensemble', $lookup(['collection-overview', 'vue-d-ensemble'], $site)->slug());
+        same('vue-d-ensemble', $lookup(\OmekaTheme\Helper\SitePageBySlug::OVERVIEW, $site)->slug());
         same(1, $loads, 'pages should load once per site per request');
     });
 

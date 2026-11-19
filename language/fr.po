@@ -58,11 +58,11 @@ msgid_plural "Archived web pages"
 msgstr[0] "Page web archivée"
 msgstr[1] "Pages web archivées"
 
-#: view/common/banner.phtml:181
+#: view/common/banner.phtml:185
 msgid "Archives consulted"
 msgstr "Archives consultées"
 
-#: view/common/banner.phtml:183
+#: view/common/banner.phtml:187
 msgid "Audiovisual minutes"
 msgstr "Minutes audiovisuelles"
 
@@ -78,11 +78,11 @@ msgstr "Haut de page"
 msgid "Berlin Senate Department"
 msgstr "Administration du Sénat de Berlin"
 
-#: view/common/breadcrumbs.phtml:66 view/common/page-breadcrumbs.phtml:21
+#: view/common/breadcrumbs.phtml:68 view/common/page-breadcrumbs.phtml:21
 msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
 
-#: helper/PwaManifest.php:97 view/error/404.phtml:39
+#: helper/PwaManifest.php:100 view/error/404.phtml:42
 msgid "Browse items"
 msgstr "Parcourir les documents"
 
@@ -114,7 +114,7 @@ msgstr "Fermer la visionneuse"
 msgid "Collapse the full text"
 msgstr "Réduire le texte intégral"
 
-#: view/common/banner.phtml:212
+#: view/common/banner.phtml:216
 msgid "Collection at a glance"
 msgstr "La collection en un coup d’œil"
 
@@ -134,11 +134,11 @@ msgstr "Copier"
 msgid "Copy failed. Text selected: press Ctrl+C or ⌘C."
 msgstr "Échec de la copie. Texte sélectionné : appuyez sur Ctrl+C ou ⌘C."
 
-#: view/common/banner.phtml:230
+#: view/common/banner.phtml:234
 msgid "Corpus in depth"
 msgstr "Le corpus en détail"
 
-#: view/common/banner.phtml:165
+#: view/common/banner.phtml:169
 msgid "Countries"
 msgstr "Pays"
 
@@ -154,7 +154,7 @@ msgstr "Thème sombre actif. Activer pour passer au thème système."
 msgid "Date"
 msgstr ""
 
-#: view/common/banner.phtml:182
+#: view/common/banner.phtml:186
 msgid "Document types"
 msgstr "Types de documents"
 
@@ -186,7 +186,7 @@ msgstr "Généré par un modèle d’IA. Vérifiez avec la source originale."
 msgid "Go"
 msgstr ""
 
-#: view/error/404.phtml:36 view/error/404.phtml:43 view/error/index.phtml:24 view/error/index.phtml:28
+#: view/error/404.phtml:39 view/error/404.phtml:46 view/error/index.phtml:24 view/error/index.phtml:28
 msgid "Go to homepage"
 msgstr "Aller à la page d’accueil"
 
@@ -218,7 +218,7 @@ msgstr "Image %1 sur %2"
 msgid "Image viewer"
 msgstr "Visionneuse d’images"
 
-#: view/common/banner.phtml:156
+#: view/common/banner.phtml:160
 msgid "Index"
 msgstr "Index"
 
@@ -246,7 +246,7 @@ msgstr ""
 msgid "Item: %s"
 msgstr "Document : %s"
 
-#: view/common/banner.phtml:155 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:49
+#: view/common/banner.phtml:159 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:49
 msgid "Items"
 msgstr ""
 
@@ -254,7 +254,7 @@ msgstr ""
 msgid "Language"
 msgstr "Langue"
 
-#: view/common/banner.phtml:184
+#: view/common/banner.phtml:188
 msgid "Languages"
 msgstr "Langues"
 
@@ -298,11 +298,11 @@ msgstr "Média : %s"
 msgid "Newest first"
 msgstr "Plus récents d’abord"
 
-#: helper/PwaManifest.php:47
+#: helper/PwaManifest.php:50
 msgid "Newspaper covers and archival documents from the collection"
 msgstr "Unes de journaux et documents d’archives de la collection"
 
-#: view/common/banner.phtml:163
+#: view/common/banner.phtml:167
 msgid "Newspapers"
 msgstr "Journaux"
 
@@ -346,7 +346,7 @@ msgstr "Ouverture de la recherche…"
 msgid "Page"
 msgstr ""
 
-#: view/error/404.phtml:10 view/error/404.phtml:28
+#: view/error/404.phtml:10 view/error/404.phtml:31
 msgid "Page not found"
 msgstr "Page non trouvée"
 
@@ -386,7 +386,7 @@ msgstr ""
 msgid "Read the full text — %s more words"
 msgstr "Lire le texte intégral — %s mots restants"
 
-#: view/common/banner.phtml:177
+#: view/common/banner.phtml:181
 msgid "References"
 msgstr "Références"
 
@@ -398,7 +398,7 @@ msgstr "Relation"
 msgid "Reset"
 msgstr ""
 
-#: helper/PwaManifest.php:102 view/common/search-form.phtml:58 view/common/search-form.phtml:66 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
+#: helper/PwaManifest.php:105 view/common/search-form.phtml:58 view/common/search-form.phtml:66 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
 msgid "Search"
 msgstr ""
 
@@ -478,7 +478,7 @@ msgstr "Touchez l’icône Partager, puis « Sur l’écran d’accueil »."
 msgid "Tap to enlarge"
 msgstr "Toucher pour agrandir"
 
-#: view/error/404.phtml:30
+#: view/error/404.phtml:33
 msgid "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable."
 msgstr "La page que vous recherchez a peut-être été supprimée, renommée ou est temporairement indisponible."
 
@@ -498,11 +498,11 @@ msgstr "Titre (A-Z)"
 msgid "Title (Z-A)"
 msgstr "Titre (Z-A)"
 
-#: view/common/banner.phtml:173
+#: view/common/banner.phtml:177
 msgid "Total pages"
 msgstr "Pages totales"
 
-#: view/common/banner.phtml:172
+#: view/common/banner.phtml:176
 msgid "Total words"
 msgstr "Mots totaux"
 

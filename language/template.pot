@@ -60,11 +60,11 @@ msgid_plural "Archived web pages"
 msgstr[0] ""
 msgstr[1] ""
 
-#: view/common/banner.phtml:181
+#: view/common/banner.phtml:185
 msgid "Archives consulted"
 msgstr ""
 
-#: view/common/banner.phtml:183
+#: view/common/banner.phtml:187
 msgid "Audiovisual minutes"
 msgstr ""
 
@@ -80,11 +80,11 @@ msgstr ""
 msgid "Berlin Senate Department"
 msgstr ""
 
-#: view/common/breadcrumbs.phtml:66 view/common/page-breadcrumbs.phtml:21
+#: view/common/breadcrumbs.phtml:68 view/common/page-breadcrumbs.phtml:21
 msgid "Breadcrumb"
 msgstr ""
 
-#: helper/PwaManifest.php:97 view/error/404.phtml:39
+#: helper/PwaManifest.php:100 view/error/404.phtml:42
 msgid "Browse items"
 msgstr ""
 
@@ -116,7 +116,7 @@ msgstr ""
 msgid "Collapse the full text"
 msgstr ""
 
-#: view/common/banner.phtml:212
+#: view/common/banner.phtml:216
 msgid "Collection at a glance"
 msgstr ""
 
@@ -136,11 +136,11 @@ msgstr ""
 msgid "Copy failed. Text selected: press Ctrl+C or ⌘C."
 msgstr ""
 
-#: view/common/banner.phtml:230
+#: view/common/banner.phtml:234
 msgid "Corpus in depth"
 msgstr ""
 
-#: view/common/banner.phtml:165
+#: view/common/banner.phtml:169
 msgid "Countries"
 msgstr ""
 
@@ -156,7 +156,7 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: view/common/banner.phtml:182
+#: view/common/banner.phtml:186
 msgid "Document types"
 msgstr ""
 
@@ -188,7 +188,7 @@ msgstr ""
 msgid "Go"
 msgstr ""
 
-#: view/error/404.phtml:36 view/error/404.phtml:43 view/error/index.phtml:24 view/error/index.phtml:28
+#: view/error/404.phtml:39 view/error/404.phtml:46 view/error/index.phtml:24 view/error/index.phtml:28
 msgid "Go to homepage"
 msgstr ""
 
@@ -220,7 +220,7 @@ msgstr ""
 msgid "Image viewer"
 msgstr ""
 
-#: view/common/banner.phtml:156
+#: view/common/banner.phtml:160
 msgid "Index"
 msgstr ""
 
@@ -248,7 +248,7 @@ msgstr ""
 msgid "Item: %s"
 msgstr ""
 
-#: view/common/banner.phtml:155 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:49
+#: view/common/banner.phtml:159 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:49
 msgid "Items"
 msgstr ""
 
@@ -256,7 +256,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: view/common/banner.phtml:184
+#: view/common/banner.phtml:188
 msgid "Languages"
 msgstr ""
 
@@ -300,11 +300,11 @@ msgstr ""
 msgid "Newest first"
 msgstr ""
 
-#: helper/PwaManifest.php:47
+#: helper/PwaManifest.php:50
 msgid "Newspaper covers and archival documents from the collection"
 msgstr ""
 
-#: view/common/banner.phtml:163
+#: view/common/banner.phtml:167
 msgid "Newspapers"
 msgstr ""
 
@@ -348,7 +348,7 @@ msgstr ""
 msgid "Page"
 msgstr ""
 
-#: view/error/404.phtml:10 view/error/404.phtml:28
+#: view/error/404.phtml:10 view/error/404.phtml:31
 msgid "Page not found"
 msgstr ""
 
@@ -388,7 +388,7 @@ msgstr ""
 msgid "Read the full text — %s more words"
 msgstr ""
 
-#: view/common/banner.phtml:177
+#: view/common/banner.phtml:181
 msgid "References"
 msgstr ""
 
@@ -400,7 +400,7 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: helper/PwaManifest.php:102 view/common/search-form.phtml:58 view/common/search-form.phtml:66 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
+#: helper/PwaManifest.php:105 view/common/search-form.phtml:58 view/common/search-form.phtml:66 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
 msgid "Search"
 msgstr ""
 
@@ -480,7 +480,7 @@ msgstr ""
 msgid "Tap to enlarge"
 msgstr ""
 
-#: view/error/404.phtml:30
+#: view/error/404.phtml:33
 msgid "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable."
 msgstr ""
 
@@ -500,11 +500,11 @@ msgstr ""
 msgid "Title (Z-A)"
 msgstr ""
 
-#: view/common/banner.phtml:173
+#: view/common/banner.phtml:177
 msgid "Total pages"
 msgstr ""
 
-#: view/common/banner.phtml:172
+#: view/common/banner.phtml:176
 msgid "Total words"
 msgstr ""
 

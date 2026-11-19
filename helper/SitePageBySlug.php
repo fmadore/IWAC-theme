@@ -21,9 +21,25 @@ use Throwable;
  *
  * Any failure degrades to null: callers render an unlinked figure or a shorter
  * trail, never a broken page.
+ *
+ * The candidate lists are the constants below. Omeka requires this file only
+ * when the helper is first fetched, so a caller fetches it before naming one:
+ * `$pageBySlug = $this->plugin('SitePageBySlug');`, then
+ * `$pageBySlug(SitePageBySlug::BROWSE)` — never
+ * `$this->SitePageBySlug(SitePageBySlug::BROWSE)`, whose argument is evaluated
+ * before the fetch.
  */
 final class SitePageBySlug extends AbstractHelper
 {
+    /** The items browse page: "browse" on the English site, "parcourir" on the French one. */
+    public const BROWSE = ['browse', 'parcourir'];
+
+    /** The authority index page: "index" on both sites. */
+    public const INDEX = ['index'];
+
+    /** The collection-overview dashboard: "collection-overview" (EN), "vue-d-ensemble" (FR). */
+    public const OVERVIEW = ['collection-overview', 'vue-d-ensemble'];
+
     /** @var array<int,array<string,SitePageRepresentation>> slug => page, per site id */
     private array $pagesBySite = [];
 
