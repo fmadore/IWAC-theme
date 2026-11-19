@@ -10,7 +10,7 @@ msgstr ""
 msgid "%1$s–%2$s of %3$s"
 msgstr "%1$s–%2$s sur %3$s"
 
-#: view/hierarchy/common/block-layout/hierarchy-public.phtml:123 view/hierarchy/common/block-layout/hierarchy-public.phtml:80
+#: view/hierarchy/common/block-layout/hierarchy-public.phtml:128 view/hierarchy/common/block-layout/hierarchy-public.phtml:85
 msgid "%s item"
 msgid_plural "%s items"
 msgstr[0] "%s contenu"
@@ -66,7 +66,7 @@ msgstr "Archives consultées"
 msgid "Audiovisual minutes"
 msgstr "Minutes audiovisuelles"
 
-#: view/common/language-switcher.phtml:49
+#: view/common/language-switcher.phtml:53
 msgid "Available languages"
 msgstr "Langues disponibles"
 
@@ -90,7 +90,7 @@ msgstr "Parcourir les documents"
 msgid "Browse sections"
 msgstr "Parcourir les sections"
 
-#: view/common/language-switcher.phtml:43
+#: view/common/language-switcher.phtml:47
 msgid "Change language"
 msgstr "Changer de langue"
 
@@ -242,15 +242,15 @@ msgstr "Collection"
 msgid "Item sets"
 msgstr ""
 
-#: view/common/block-layout/mapping-block-popup-content.phtml:14
+#: view/common/block-layout/mapping-block-popup-content.phtml:19
 msgid "Item: %s"
 msgstr "Document : %s"
 
-#: view/common/banner.phtml:154 view/common/block-layout/item-carousel.phtml:181 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:49
+#: view/common/banner.phtml:154 view/common/block-layout/item-carousel.phtml:185 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:49
 msgid "Items"
 msgstr ""
 
-#: view/common/language-switcher.phtml:45
+#: view/common/language-switcher.phtml:49
 msgid "Language"
 msgstr "Langue"
 
@@ -290,7 +290,7 @@ msgstr "Navigation principale"
 msgid "Media"
 msgstr ""
 
-#: view/common/block-layout/mapping-block-popup-content.phtml:19
+#: view/common/block-layout/mapping-block-popup-content.phtml:24
 msgid "Media: %s"
 msgstr "Média : %s"
 
@@ -314,7 +314,7 @@ msgstr ""
 msgid "Next image"
 msgstr "Image suivante"
 
-#: view/common/block-layout/item-carousel.phtml:167
+#: view/common/block-layout/item-carousel.phtml:171
 msgid "Next slide"
 msgstr "Diapositive suivante"
 
@@ -374,11 +374,11 @@ msgstr ""
 msgid "Previous image"
 msgstr "Image précédente"
 
-#: view/common/block-layout/item-carousel.phtml:164
+#: view/common/block-layout/item-carousel.phtml:168
 msgid "Previous slide"
 msgstr "Diapositive précédente"
 
-#: view/common/resource-values.phtml:153 view/hierarchy/common/block-layout/hierarchy-public.phtml:84
+#: view/common/resource-values.phtml:153 view/hierarchy/common/block-layout/hierarchy-public.phtml:89
 msgid "Private"
 msgstr ""
 
@@ -438,7 +438,7 @@ msgstr ""
 msgid "Skip to main content"
 msgstr "Aller au contenu principal"
 
-#: view/common/block-layout/item-carousel.phtml:155
+#: view/common/block-layout/item-carousel.phtml:159
 msgid "Slide %1$s of %2$s"
 msgstr "Diapositive %1$s sur %2$s"
 
@@ -450,11 +450,11 @@ msgstr "Une erreur s’est produite"
 msgid "Sort by"
 msgstr "Trier par"
 
-#: view/common/block-layout/item-carousel.phtml:158
+#: view/common/block-layout/item-carousel.phtml:162
 msgid "Start automatic slideshow"
 msgstr "Démarrer le défilement automatique"
 
-#: view/common/block-layout/item-carousel.phtml:159 view/common/block-layout/item-carousel.phtml:160
+#: view/common/block-layout/item-carousel.phtml:163 view/common/block-layout/item-carousel.phtml:164
 msgid "Stop automatic slideshow"
 msgstr "Arrêter le défilement automatique"
 
