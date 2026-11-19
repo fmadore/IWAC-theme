@@ -11,6 +11,8 @@ create.
 
 ## [Unreleased]
 
+## [2.36.0] - 2026-11-19
+
 ### Added
 
 - **An upgrade worklist for the theme's copies of Omeka core templates.** `test/php/core-overrides.json` records the 25 core templates the theme overrides, with a hash of each at Omeka S 4.2.1. When CI moves to a newer Omeka S, the compatibility check now names every one of those templates that changed upstream, so the maintainer knows which theme copies to compare and update; `--write-overrides` refreshes the record afterwards.
@@ -189,7 +191,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.35.0...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.36.0...HEAD
+[2.36.0]: https://github.com/fmadore/IWAC-theme/compare/v2.35.0...v2.36.0
 [2.35.0]: https://github.com/fmadore/IWAC-theme/compare/v2.34.2...v2.35.0
 [2.34.2]: https://github.com/fmadore/IWAC-theme/compare/v2.34.1...v2.34.2
 [2.34.1]: https://github.com/fmadore/IWAC-theme/compare/v2.34.0...v2.34.1
