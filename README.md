@@ -64,14 +64,16 @@ npm install
 
 ### General Settings
 - **Primary Color** - The theme's spot colour (default: `#1C2F9E`, press blue). Every primary variant (hover, active, focus ring, blockquote, the homepage banner ground) and the data-visualization sequential ramps derive from it via `color-mix(in oklab, …)`. Dark mode re-lights it, keeping its hue. The former default `#E64A19` (burnt orange) is read as unset, so a site that once saved its settings gets the blue.
-- **Secondary Color** - A second, **non-brand** color used only for data visualizations — chart series 2 and corpus comparison in the IwacVisualizations module (default: `#394f68`, slate blue). Not used for buttons, links, or focus. See [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md).
+- **Secondary Color** - A second, **non-brand** color used only for data visualizations — chart series 2 and corpus comparison in the IwacVisualizations module (default: `#85253a`, claret). The former default `#394f68` (slate) is read as unset, so a site that once saved its settings gets the claret. Not used for buttons, links, or focus. See [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md).
 - **Enable PWA (installable app)** - Adds the web app manifest, icons, and the footer install button so visitors can install the site as an app. Default on. See [`docs/PWA.md`](docs/PWA.md).
 
-### Top Navigation Depth
-Maximum number of levels to show in the site's top navigation bar. Set to 0 to show all levels.
+### Header
+- **Top Navigation Depth** - Maximum number of levels to show in the site's top navigation bar. Set to 0 or empty to show all levels.
+- **Site title acronym** - Short acronym (e.g. IWAC, CIAO) shown as the masthead wordmark on narrow screens instead of a truncated title, and used as the installed app's short name. Leave empty to keep the full title.
 
 ### Banner
 - Banner image
+- Eyebrow — optional small uppercase label above the heading
 - Heading
 - Description
 - Content position
