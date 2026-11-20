@@ -11,6 +11,8 @@ create.
 
 ## [Unreleased]
 
+## [2.37.0] - 2026-11-20
+
 ### Added
 
 - **Each release carries a checksum and a build provenance attestation.** Beside `IWAC-theme-vX.Y.Z.zip` the release now publishes `IWAC-theme-vX.Y.Z.zip.sha256`, and GitHub keeps a signed record that the release workflow built that archive from the tagged commit (`gh attestation verify <zip> --repo fmadore/IWAC-theme`).
@@ -220,7 +222,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.36.0...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.37.0...HEAD
+[2.37.0]: https://github.com/fmadore/IWAC-theme/compare/v2.36.0...v2.37.0
 [2.36.0]: https://github.com/fmadore/IWAC-theme/compare/v2.35.0...v2.36.0
 [2.35.0]: https://github.com/fmadore/IWAC-theme/compare/v2.34.2...v2.35.0
 [2.34.2]: https://github.com/fmadore/IWAC-theme/compare/v2.34.1...v2.34.2
