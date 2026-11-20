@@ -94,6 +94,40 @@ test('forced colours: the focus outline survives and the icon controls keep a vi
     expect(glyph[0].bg).not.toBe(glyph[0].canvas);
 });
 
+// Core's advanced-search row buttons (application/view/common/advanced-search/
+// properties.phtml:53 and :97 in Omeka S 4.2.1), copied as core prints them:
+// no fixture renders that form, which only appears without IwacSearch.
+const ADVANCED_SEARCH_BUTTONS = '<button type="button" class="add-value o-icon-add button" aria-label="Add new value" title="Add new value"></button>'
+    + '<button type="button" class="o-icon-delete remove-value button" aria-label="Remove value" title="Remove value"></button>';
+
+for (const forcedColors of ['none', 'active']) {
+    test(`advanced search: the add and remove buttons draw a glyph (forced colours ${forcedColors})`, async ({ page, browserName }) => {
+        test.skip(forcedColors === 'active' && browserName !== 'chromium', 'forced-colors emulation is Chromium-only');
+        await page.setViewportSize({ width: 1280, height: 900 });
+        await page.emulateMedia({ forcedColors });
+        await openFixture(page, 'item.en');
+        const glyphs = await page.evaluate((html) => {
+            const host = document.createElement('div');
+            host.innerHTML = html;
+            document.querySelector('main').append(host);
+            return [...host.querySelectorAll('button')].map((button) => {
+                const before = getComputedStyle(button, '::before');
+                return {
+                    mask: before.maskImage || before.webkitMaskImage,
+                    width: parseFloat(before.width),
+                    ink: before.backgroundColor,
+                    ground: getComputedStyle(button).backgroundColor,
+                };
+            });
+        }, ADVANCED_SEARCH_BUTTONS);
+        expect(glyphs.map((glyph) => glyph.mask)).toEqual([expect.stringContaining('plus.svg'), expect.stringContaining('x-close.svg')]);
+        for (const glyph of glyphs) {
+            expect(glyph.width).toBeGreaterThan(0);
+            expect(glyph.ink).not.toBe(glyph.ground);
+        }
+    });
+}
+
 const enlarged = (scale) => ({ html: (html) => html.replace('</head>', `<style>html{font-size:${scale}%}</style></head>`) });
 const masthead = (page) => page.evaluate(() => {
     const top = (selector) => document.querySelector(selector).getBoundingClientRect().top;

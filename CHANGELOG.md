@@ -27,6 +27,7 @@ create.
 
 ### Fixed
 
+- **The add and remove buttons of Omeka's advanced search show their icons again.** Since Font Awesome was removed they were two empty circles. They now show a plus and a cross, also in Windows high-contrast mode. The form only appears on a site without IwacSearch.
 - **Search result totals are grouped like every other count.** The "View all results (… total)" links on Omeka's fulltext search page printed "12345"; they now read "12 345". Every count in the theme now goes through one formatter.
 - **Mooré and Kabyè records keep their language tag if their authority is renamed.** The language codes of those two authority records were found through their titles only; the theme now also reads the name in their alternative title.
 - **`npm run start` regenerates `tokens.json` when the webfont rules change.** The watcher still listened to `layout.phtml`, where the fonts were read from before they were self-hosted, and ignored `asset/sass/base/_fonts.scss`.

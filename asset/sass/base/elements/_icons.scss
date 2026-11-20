@@ -80,3 +80,22 @@
     vertical-align: -0.1em;
     color: var(--muted);
 }
+// Core's advanced-search form (common/advanced-search/properties.phtml) adds
+// and removes property rows with `button.add-value.o-icon-add` and
+// `button.o-icon-delete.remove-value`, whose text _buttons.scss indents out of
+// sight. Without a mask here they were two empty circles. Only reachable when
+// IwacSearch is inactive: with it, /item/search redirects to the module.
+.o-icon-add::before,
+.o-icon-delete::before {
+    content: "";
+    width: var(--text-base);
+    height: var(--text-base);
+}
+
+.o-icon-add::before {
+    @include icon-mask("../img/plus.svg", ButtonText);
+}
+
+.o-icon-delete::before {
+    @include icon-mask("../img/x-close.svg", ButtonText);
+}
