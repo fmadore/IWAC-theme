@@ -49,7 +49,10 @@ foreach ($values as $term => $propertyData):
     }
     ?>
     <?php
-    $isAiGenerated = in_array($term, $aiGeneratedTerms, true);
+    // By property (the AI lede, the template-21 table of contents), or by
+    // value annotation (an AI-drafted authority description): AiGeneratedTerms.
+    $isAiGenerated = in_array($term, $aiGeneratedTerms, true)
+        || \OmekaTheme\Helper\AiGeneratedTerms::marksValues($propertyValues);
     $displayLabel = $rv::displayLabel((string) $propertyLabel, $isAiGenerated);
     ?>
     <div class="property<?php echo $isAiGenerated ? ' property--ai' : ''; ?>" data-property-term="<?php echo $escape($term); ?>">

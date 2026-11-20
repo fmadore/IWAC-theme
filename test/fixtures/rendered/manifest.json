@@ -223,6 +223,24 @@
             "layout/layout.phtml"
         ]
     },
+    "item-authority.en": {
+        "url": "/s/westafrica/item/654",
+        "lang": "en-US",
+        "xhr": false,
+        "templates": [
+            "omeka/site/item/show.phtml",
+            "common/breadcrumbs.phtml",
+            "common/item-dateline.phtml",
+            "common/resource-regions.phtml",
+            "common/resource-values.phtml",
+            "layout/layout.phtml",
+            "common/header.phtml",
+            "common/search-form.phtml",
+            "common/language-switcher.phtml",
+            "common/menu-drawer.phtml",
+            "common/footer.phtml"
+        ]
+    },
     "items-browse.en": {
         "url": "/s/westafrica/item?sort_by=title&sort_order=asc",
         "lang": "en-US",

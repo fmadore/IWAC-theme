@@ -1826,6 +1826,79 @@ namespace IwacThemeTest {
         return $values;
     }
 
+    /** A literal whose value annotation carries $term (an AI provenance link), as core's ValueAnnotationRepresentation answers value(). */
+    function annotatedValue(string $text, string $lang, ?string $term): object
+    {
+        return new class(fakeValue($text, null, $lang), $term) {
+            public function __construct(private object $value, private ?string $term)
+            {
+            }
+
+            public function __call(string $name, array $args)
+            {
+                return $this->value->$name(...$args);
+            }
+
+            public function __toString(): string
+            {
+                return (string) $this->value;
+            }
+
+            public function valueAnnotation()
+            {
+                return $this->term === null ? null : new class($this->term) {
+                    public function __construct(private string $term)
+                    {
+                    }
+
+                    public function id(): int
+                    {
+                        return 1;
+                    }
+
+                    public function value(string $term)
+                    {
+                        return $term === $this->term ? 'Claude Opus 5.0' : null;
+                    }
+
+                    public function displayValues(): string
+                    {
+                        return '';
+                    }
+                };
+            }
+        };
+    }
+
+    test('AiGeneratedTerms marks a row whose every value carries iwac:descriptionModel', function () {
+        $ai = \OmekaTheme\Helper\AiGeneratedTerms::class;
+        $drafted = annotatedValue('Une notice.', 'fr', 'iwac:descriptionModel');
+        same(true, $ai::isAnnotatedAi($drafted));
+        same(true, $ai::marksValues([$drafted, annotatedValue('A note.', 'en', 'iwac:descriptionModel')]));
+        // Another annotation (a summary model on a lede, a curator's note) is not this mark.
+        same(false, $ai::isAnnotatedAi(annotatedValue('Lien.', '', 'iwac:nerModel')));
+        same(false, $ai::isAnnotatedAi(fakeValue('Sans annotation.')));
+        same(false, $ai::isAnnotatedAi(fakeValue('Annotée autrement.', 7)), 'an annotation without value() is no provenance');
+        // A curator's value beside a drafted one: no label mark that would claim both.
+        same(false, $ai::marksValues([$drafted, fakeValue('Notice rédigée.', null, 'en')]));
+        same(false, $ai::marksValues([]));
+    });
+
+    test('an AI-drafted authority description carries the EU mark; a curator-written one does not', function () {
+        $render = static fn (array $list): string => (new FakeView())->render('common/resource-values.phtml', [
+            'values' => valueRows(['dcterms:description' => ['Description', $list, null]]),
+            'resource' => null,
+        ]);
+        $drafted = $render([
+            annotatedValue('Une confrérie soufie.', 'fr', 'iwac:descriptionModel'),
+            annotatedValue('A Sufi brotherhood.', 'en', 'iwac:descriptionModel'),
+        ]);
+        check(str_contains($drafted, 'class="property property--ai" data-property-term="dcterms:description"'), 'AI class missing');
+        check(str_contains($drafted, 'class="property__ai-eu" role="img"'), 'EU mark missing');
+        $written = $render([fakeValue('Une confrérie soufie.', null, 'fr')]);
+        check(!str_contains($written, 'property--ai') && !str_contains($written, 'property__ai-eu'), 'a curator-written description is marked');
+    });
+
     test('the AI lede narrows to the site language and carries the EU provenance mark', function () {
         $values = valueRows([
             'bibo:shortDescription' => ['Short description', [

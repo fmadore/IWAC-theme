@@ -27,6 +27,7 @@ create.
 
 ### Fixed
 
+- **AI-drafted index descriptions carry the EU "AI generated" mark.** About a thousand index records (people, organisations, places…) have a description drafted by an AI model and annotated as such in Omeka, but showed it as if a curator had written it. Their Description row now gets the same mark and treatment as the AI summary on items. A description written by a curator is unchanged, and so is a row mixing both, which shows no mark rather than a label that would claim the curator's text too.
 - **The add and remove buttons of Omeka's advanced search show their icons again.** Since Font Awesome was removed they were two empty circles. They now show a plus and a cross, also in Windows high-contrast mode. The form only appears on a site without IwacSearch.
 - **Search result totals are grouped like every other count.** The "View all results (… total)" links on Omeka's fulltext search page printed "12345"; they now read "12 345". Every count in the theme now goes through one formatter.
 - **Mooré and Kabyè records keep their language tag if their authority is renamed.** The language codes of those two authority records were found through their titles only; the theme now also reads the name in their alternative title.

@@ -221,7 +221,22 @@ function records(string $locale): array
             ->with('dcterms:title', [$title]);
     }
 
-    return ['item' => $tabaski, 'itemSet' => $carrefour, 'articles' => $articles, 'browse' => $browse];
+    // An authority record whose description AI_authority_curation drafted: item
+    // 654 as the live API serves it, both literals annotated
+    // iwac:descriptionModel → the model's authority item.
+    $opus = $r('items', 125262, 'Claude Opus 5.5', 'Software');
+    $drafted = static fn (int $id): Annotation => new Annotation($id, ['iwac:descriptionModel' => [Value::link($opus)]]);
+    $authority = $r('items', 654, 'Comité National d’Organisation du Pèlerinage à la Mecque (Burkina Faso)', 'Organization')
+        ->with('dcterms:title', ['Comité National d’Organisation du Pèlerinage à la Mecque (Burkina Faso)'])
+        ->with('dcterms:type', [Value::link($r('items', 67568, 'Notice d’autorité', 'Concept'))])
+        ->with('dcterms:description', [
+            new Value('Comité d’État burkinabè chargé d’organiser le pèlerinage à la Mecque, installé en décembre 2025 par le ministère de l’Administration territoriale pour les éditions 2026 et 2027. Il remplace le Comité national de suivi du pèlerinage, l’État reprenant l’organisation du hadj, et est présidé par Amadou Sidibé.', 'fr', null, null, $drafted(110401)),
+            new Value('Burkinabè state committee organising the pilgrimage to Mecca, installed in December 2025 by the Ministry of Territorial Administration for the 2026 and 2027 seasons. It replaces the national pilgrimage follow-up committee as the State takes back the organisation of the hajj, and is chaired by Amadou Sidibé.', 'en', null, null, $drafted(110402)),
+        ])
+        ->with('dcterms:isPartOf', [Value::link($r('items', 15834, 'Organisation islamique', 'Concept'))])
+        ->with('dcterms:spatial', [Value::link($r('items', 1287, 'Burkina Faso', 'Place'))]);
+
+    return ['item' => $tabaski, 'itemSet' => $carrefour, 'articles' => $articles, 'browse' => $browse, 'authority' => $authority];
 }
 
 /** What NumericDataTypes prints for an ISO date in the site's locale. */
@@ -487,6 +502,16 @@ function itemPage(string $locale): array
             // IWAC-SEO's "How to cite" block hands its view-model to the theme's partial.
             static fn (FakeView $view): string => $view->partial('common/citation', ['citation' => citation($locale)]),
         ]]],
+    );
+}
+
+/** An authority record (item 654) with an AI-drafted description, on the values block alone. */
+function authorityPage(string $locale): array
+{
+    $records = records($locale);
+    return page($locale, ['en' => '/s/westafrica/item/654', 'fr' => '/s/afrique_ouest/item/654'], [], [],
+        static fn (FakeView $view): string => $view->render('omeka/site/item/show.phtml', ['item' => $records['authority']]),
+        ['blocks' => ['main' => ['IwacThemeTest\Fixtures\valuesBlock']]],
     );
 }
 
@@ -824,6 +849,7 @@ function fixtures(): array
         // ledger's.
         'item-set.xhr-page-2-subject.en' => static fn () => itemSetPage(['page' => '2', 'resource_property' => 'items:3'], true),
         'item-set.xhr-both-page-2.en' => static fn () => itemSetPage(['lr_page' => '2', 'page' => '2'], true),
+        'item-authority.en' => static fn () => authorityPage('en'),
         'items-browse.en' => static fn () => itemsBrowsePage(),
         'page-home.en' => static fn () => homePage(),
         'page-about.en' => static fn () => aboutPage('en'),

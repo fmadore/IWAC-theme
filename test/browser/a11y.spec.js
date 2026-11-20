@@ -14,6 +14,8 @@ const SURFACES = [
     ['item.en', 1280, ['.main-header', '.main-navigation', '#content', '.main-footer']],
     ['item.fr', 390, ['.main-header', '#content']],
     ['items-browse.en', 1280, ['#content']],
+    // An authority record: the EU "AI generated" mark on a drafted description.
+    ['item-authority.en', 1280, ['#content']],
     ['item-set.en', 1280, ['#linked-resources', '#item-set-resources']],
     ['page-about.en', 390, ['#content']],
     ['page-exhibit.en', 1280, ['#content']],

@@ -384,6 +384,8 @@ const PROPERTIES = [
     'dcterms:alternative' => ['Alternative Title', null],
     'bibo:shortDescription' => ['Short Description', 'DescriptionAI'],
     'iwac:summaryModel' => ['AI Model - Summary', null],
+    'dcterms:isPartOf' => ['Is Part Of', null],
+    'iwac:descriptionModel' => ['AI Model - Description', null],
 ];
 
 /** What resource-values.phtml takes: term => property, alternate label, values. */
@@ -408,6 +410,12 @@ final class Annotation
     public function id(): int
     {
         return $this->id;
+    }
+
+    /** Core's value(): the first value of a term, or null. */
+    public function value(string $term): ?Value
+    {
+        return $this->values[$term][0] ?? null;
     }
 
     public function displayValues(): string
