@@ -117,6 +117,45 @@ test('Linked resources: an AJAX page turn keeps keyboard focus in the listing an
     expect(await sameDocument()).toBe(true);
 });
 
+test('Linked resources: the search glyph takes the text colour in dark mode (regression: a black <img>)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await openFixture(page, 'item-set.en');
+    const icon = page.locator('#item-set-resources .linked-resources__search-icon');
+    await expect(icon).toHaveAttribute('aria-hidden', 'true');
+    const { tag, mask, ink, muted } = await icon.evaluate((element) => {
+        const style = getComputedStyle(element);
+        const probe = document.createElement('i');
+        probe.style.color = 'var(--muted)';
+        document.body.append(probe);
+        return {
+            tag: element.tagName,
+            mask: style.maskImage || style.webkitMaskImage,
+            ink: style.backgroundColor,
+            muted: getComputedStyle(probe).color,
+        };
+    });
+    expect(tag).toBe('SPAN');
+    expect(mask).toContain('search.svg');
+    expect(ink).toBe(muted);
+});
+
+test('Linked resources on a phone: meta lines carry no orphan dot, empty cells take no row', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openFixture(page, 'item-set.en');
+    const cells = await page.locator('#item-set-resources .linked-resources-table__cell--type, #item-set-resources .linked-resources-table__cell--date')
+        .evaluateAll((list) => list.map((cell) => ({
+            before: getComputedStyle(cell, '::before').content,
+            empty: cell.children.length === 0,
+            display: getComputedStyle(cell).display,
+        })));
+    expect(cells.length).toBeGreaterThan(0);
+    for (const cell of cells) {
+        expect(cell.before).toBe('none');
+        if (cell.empty) expect(cell.display).toBe('none');
+    }
+});
+
 test('the citation panel: arrow keys move between styles, Copy reports its result', async ({ page, browserName }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await openFixture(page, 'item.en');

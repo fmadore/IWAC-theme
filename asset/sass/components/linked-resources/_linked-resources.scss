@@ -87,12 +87,16 @@
         transform: translateY(-50%);
         width: 18px;
         height: 18px;
-        opacity: 0.55;
+        color: var(--muted);
         pointer-events: none;
+        @include icon-mask("../img/search.svg");
     }
 
     .linked-resources__search-input {
         width: 100%;
+        // The base input margin made the wrapper 8px taller than the field,
+        // so the glyph, centred on the wrapper, sat low in it.
+        margin: 0;
         height: var(--size-control-lg);
         padding: var(--space-2) var(--space-3);
         padding-inline-start: calc(var(--space-3) + 18px + var(--space-2));
@@ -534,7 +538,7 @@
             gap: var(--space-2);
         }
 
-        // Inline meta row (relation · type · date) below the title
+        // Meta lines (relation, type, date) below the title
         .linked-resources-table__cell--relation {
             order: 2;
         }
@@ -548,13 +552,15 @@
             text-align: start;
         }
 
-        // Collapse relation/type/date onto a single meta line using
-        // pseudo-separators ("·") between them.
-        .linked-resources-table__cell--type::before,
-        .linked-resources-table__cell--date::before {
-            content: "·";
-            color: var(--border);
-            margin-inline-end: var(--space-2);
+        // Each meta cell is its own line below the title, with no separator
+        // (a "·" before type and date opened every line with an orphan dot).
+        // A type or date cell with nothing in it — no tag, no date — is
+        // dropped instead of leaving an empty grid row.
+        .linked-resources-table__cell--type,
+        .linked-resources-table__cell--date {
+            &:not(:has(*)) {
+                display: none;
+            }
         }
     }
 }

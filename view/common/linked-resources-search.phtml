@@ -51,10 +51,10 @@ $part = isset($part) ? (string) $part : 'form';
         <input type="hidden" name="<?php echo $escapeAttr($name); ?>" value="<?php echo $escapeAttr($value); ?>" data-requires="<?php echo $escapeAttr($searchName); ?>">
     <?php endforeach; ?>
     <div class="linked-resources__search">
-        <img src="<?php echo $escapeAttr($this->assetUrl('img/search.svg')); ?>"
-             class="linked-resources__search-icon"
-             alt=""
-             aria-hidden="true">
+        <?php // A mask inked with the text colour, like every theme icon: an
+              // <img> of the SVG drew its currentColor stroke in black, which
+              // vanished on the dark surface. ?>
+        <span class="linked-resources__search-icon" aria-hidden="true"></span>
         <input type="search"
                id="<?php echo $escapeAttr($inputId); ?>"
                name="<?php echo $escapeAttr($searchName); ?>"

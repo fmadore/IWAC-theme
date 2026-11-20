@@ -13,6 +13,8 @@ create.
 
 ### Fixed
 
+- **The Linked resources search glyph shows in dark mode.** It was an image of the SVG, whose stroke always drew black and vanished on the dark surface; it is now inked with the muted text colour in both themes and centred in the field.
+- **No stray dots in Linked resources on phones.** In the stacked mobile layout each line under a title started with a "·" separator; the separators are gone, and an empty type or date line no longer leaves a gap.
 - **A malformed search address no longer shows "Array" in the header search box.** A link carrying `?q[]=…` (on any page, since the search box is in the header) made PHP log an "Array to string conversion" warning and filled the field with the word "Array". The field now stays empty.
 
 ## [2.36.0] - 2026-11-19
