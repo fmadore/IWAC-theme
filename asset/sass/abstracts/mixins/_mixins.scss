@@ -280,13 +280,11 @@
         background: var(--selection-bg);
         border-color: var(--primary-hover);
         color: var(--primary-hover);
-        transform: translateY(var(--lift-xxs));
     }
 
     &:active:not(.disabled) {
         background: var(--primary);
         color: var(--ink-on-primary);
-        transform: translateY(0);
     }
 
     &:focus-visible {

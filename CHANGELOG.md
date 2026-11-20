@@ -11,8 +11,23 @@ create.
 
 ## [Unreleased]
 
+### Added
+
+- **Each release carries a checksum and a build provenance attestation.** Beside `IWAC-theme-vX.Y.Z.zip` the release now publishes `IWAC-theme-vX.Y.Z.zip.sha256`, and GitHub keeps a signed record that the release workflow built that archive from the tagged commit (`gh attestation verify <zip> --repo fmadore/IWAC-theme`).
+- **A security policy** (`SECURITY.md`): how to report a vulnerability privately and what counts as one for a theme. CodeQL now scans the scripts and workflows on every push and weekly, and Dependabot lets a GitHub Actions release age five days before proposing it, as it already did for npm packages.
+
+### Changed
+
+- **Outlined buttons no longer lift on hover.** The secondary button style and the previous/next page links still moved up a pixel on hover, the last leftovers from before buttons went flat in 2.33.
+
+### Removed
+
+- **The "Banner width" theme setting.** It never had an effect: the homepage banner is always full width. A value already saved is ignored.
+- **The search redirect page in the theme.** With IwacSearch active, the module has handled old `/item/search` addresses itself since IwacSearch 3.9, so the theme's own redirect page could no longer appear. Without IwacSearch the theme still shows Omeka's advanced search there.
+
 ### Fixed
 
+- **`npm run start` regenerates `tokens.json` when the webfont rules change.** The watcher still listened to `layout.phtml`, where the fonts were read from before they were self-hosted, and ignored `asset/sass/base/_fonts.scss`.
 - **Printed records break across pages normally.** A whole item record (its metadata and transcript) and a whole Linked resources table were each kept on one page, so the browser pushed them to the next page or broke them anywhere. Now only single rows, figures and quotations are kept whole. Printouts also no longer print the site address after every internal link (external links still show theirs), leave out the annotation buttons and the Linked resources search and sort controls, and print in the full light palette from dark mode.
 - **The menu drawer no longer announces closed submenus as expanded.** Closing the drawer folded its open submenus but left their buttons marked "expanded", so a screen reader heard the wrong state on the next visit.
 - **The carousel's Stop button stops on the first click, and a restarted slideshow keeps going.** In Chrome, Edge and Firefox a mouse click on "Stop automatic slideshow" left the carousel running. A slideshow restarted with the button froze for good after the pointer passed over it, while the button still offered "Stop".

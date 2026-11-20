@@ -4,7 +4,7 @@ name: Release
 #
 #     git tag v2.9.5 && git push origin v2.9.5
 #
-# Three jobs, so that nothing ships unchecked and no build code runs with a
+# Four jobs, so that nothing ships unchecked and no build code runs with a
 # write token:
 #
 #   gates    the whole push/PR suite (build.yml, called as a reusable
@@ -22,8 +22,13 @@ name: Release
 #            so an export-ignore mistake would otherwise reach the live site
 #            untested), and uploads it as a run artifact. npm ci and the build run here, with
 #            no write token in reach (persist-credentials: false).
-#   publish  needs both, holds `contents: write`, and does nothing but
-#            download that artifact and attach it to the release. A release
+#   attest   needs both, and signs the archive's build provenance. It alone
+#            holds `id-token: write` + `attestations: write`, and runs nothing
+#            but the download, a checksum and the attest action — the build's
+#            npm code never sees an OIDC token.
+#   publish  needs all three, holds `contents: write`, and does nothing but
+#            download that artifact and attach the archive and its .sha256 to
+#            the release. A release
 #            it has to create gets that version's CHANGELOG.md section as its
 #            notes (extracted by the build job), or GitHub's generated notes
 #            with a warning when the version has none.
@@ -214,6 +219,16 @@ jobs:
 
           echo "$(wc -l < /tmp/list) files, $(du -h "$NAME" | cut -f1)"
 
+      # Published beside the archive, named by the bare file name so that
+      # `sha256sum -c IWAC-theme-vX.Y.Z.zip.sha256` works from the download
+      # folder. The attest and publish jobs check it before using the archive.
+      - name: Checksum the archive
+        env:
+          NAME: ${{ steps.zip.outputs.name }}
+        run: |
+          sha256sum "$NAME" > "$NAME.sha256"
+          echo "$(cat "$NAME.sha256")"
+
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
           php-version: '8.5'
@@ -259,13 +274,43 @@ jobs:
           name: ${{ steps.zip.outputs.name }}
           path: |
             ${{ steps.zip.outputs.name }}
+            ${{ steps.zip.outputs.name }}.sha256
             release-notes.md
           retention-days: 14
           if-no-files-found: error
 
+  # Build provenance: a signed statement, kept by GitHub, that this workflow
+  # built this archive from this commit. `gh attestation verify <zip> --repo
+  # fmadore/IWAC-theme` checks it. Its own job, because the OIDC token the
+  # signature needs is minted for whatever runs in the job holding
+  # `id-token: write`: here only first-party actions and sha256sum, not the
+  # build's npm packages.
+  attest:
+    name: Attest the archive's build provenance
+    needs: [gates, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ needs.build.outputs.zip }}
+
+      - name: The archive is the one the build checked
+        env:
+          NAME: ${{ needs.build.outputs.zip }}
+        run: sha256sum -c "$NAME.sha256"
+
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: ${{ needs.build.outputs.zip }}
+
   publish:
     name: Publish the release
-    needs: [gates, build]
+    needs: [gates, build, attest]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -283,13 +328,14 @@ jobs:
         run: |
           set -euo pipefail
           test -f "$NAME"
+          sha256sum -c "$NAME.sha256"
           # An existing release keeps its notes and just gets the archive.
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$NAME" --clobber
+            gh release upload "$TAG" "$NAME" "$NAME.sha256" --clobber
           elif [ -s release-notes.md ]; then
-            gh release create "$TAG" "$NAME" --title "$TAG" --notes-file release-notes.md --verify-tag
+            gh release create "$TAG" "$NAME" "$NAME.sha256" --title "$TAG" --notes-file release-notes.md --verify-tag
             echo "::notice::Published $TAG with its CHANGELOG.md notes."
           else
             echo "::warning::CHANGELOG.md has no section for $TAG — the release gets generated notes instead."
-            gh release create "$TAG" "$NAME" --title "$TAG" --generate-notes --verify-tag
+            gh release create "$TAG" "$NAME" "$NAME.sha256" --title "$TAG" --generate-notes --verify-tag
           fi

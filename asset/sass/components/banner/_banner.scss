@@ -45,15 +45,6 @@
         }
     }
 
-    // Defeat the optional .container / alignment classes the template can
-    // attach — the hero owns the full viewport width.
-    &.container {
-        padding: 0;
-        margin-inline: 0;
-        width: 100%;
-        max-width: none;
-    }
-
     // Single editorial scrim for text legibility over the duotone — light
     // enough that the press covers stay readable as texture.
     &.has-text::before {

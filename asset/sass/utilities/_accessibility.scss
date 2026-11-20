@@ -11,8 +11,9 @@
     inset-inline-start: var(--space-4);
     // Light theme (dark theme overridden at the foot of this file): in light,
     // --primary-active (28% darkened) keeps white text comfortably past AA —
-    // 8.00:1 with the default seed — even when an admin seeds a lighter
-    // primary; raw --primary sits at 4.78:1 and dips below AA with lighter ones.
+    // 15.55:1 with the default blue seed (#0e1a64) — even when an admin seeds
+    // a much lighter primary, which raw --primary (12.06:1 today) would not
+    // survive.
     background: var(--primary-active);
     color: var(--white);
     padding: var(--space-2) var(--space-4);
@@ -29,16 +30,15 @@
 
 // Dark theme: the plate inverts its ink instead of its colour.
 //
-// The pair above is a light-theme calculation. Dark mode LIGHTENS the brand
-// ramp — `--primary-active` is seed + black 4% there, not seed + black 28% —
-// so the same white-on-active pair lands at 4.31:1 and misses AA (1.4.3) in
-// dark only. Rather than reach for a neutral slab and lose the accent, take
-// the treatment the palette already names for a bright plate: `--ink-on-pastel`
-// ("dark text over tinted chips") on resting `--primary`, which measures
-// 6.10:1 (#0f0a05 on #ec653f) — more headroom than ink-on-active's 4.57:1, and
-// it IMPROVES under a lighter admin seed, since dark `--primary` is seed +
-// white 12%. Geometry, elevation and the no-glow register are untouched; only
-// the two colours swap.
+// The pair above is a light-theme calculation. Dark mode RE-LIGHTS the brand
+// ramp (the seed's lightness pulled to ~78%), so white on dark
+// `--primary-active` lands at 3.13:1 and misses AA (1.4.3) in dark only.
+// Rather than reach for a neutral slab and lose the accent, take the treatment
+// the palette already names for a bright plate: `--ink-on-pastel` ("dark text
+// over tinted chips") on resting `--primary`, which measures 7.92:1 with the
+// default seed (#0f0a05 on #7aa2ff) — more headroom than ink on
+// `--primary-active` (6.29:1). Geometry, elevation and the no-glow register
+// are untouched; only the two colours swap.
 @mixin iwac-skipnav-dark {
     #skipnav {
         background: var(--primary);

@@ -24,7 +24,7 @@ values — `tokens.json` stays normative; when tokens change, refresh `DESIGN.md
 npm run check:tokens   # fast gate: fails if any var(--…) in asset/sass doesn't resolve
 npm run build          # check:tokens → build:tokens → build:i18n → build:js → build:css
 npm run build:css      # just the stylesheet: sass → autoprefixer → cssnano (scripts/build-css.js)
-npm run start          # compile once, then watch: .scss → CSS, variables/layout.phtml → tokens, asset/js → dist
+npm run start          # compile once, then watch: .scss → CSS, variables/_fonts.scss → tokens, asset/js → dist
 npm run bump -- patch  # write every version declaration (patch|minor|major|X.Y.Z)
 npm test               # JS behaviour (node:test + jsdom), on pages rendered from the templates
 npm run test:minified  # the same suite against asset/js/dist/*.min.js
@@ -280,7 +280,8 @@ FakeView prints no `headMeta()`/`headLink()`, so `test/browser/fixtures.js` adds
 charset and the stylesheet link; a page it needs and the renderer does not make is a new
 renderer entry, never hand-written HTML. It found two real bugs on its first run (the
 theme toggle stuck on light without storage; nameless Media-block thumbnail links) and
-one open one (the masthead overflows a phone at 150 %+ text, kept as `test.fixme`).
+a third since fixed (the masthead overflowed a phone at 150 %+ text; the search box now
+takes a row of its own there, and `a11y.spec.js` asserts it at 320 and 390px).
 
 ### The JS tests run on rendered templates — re-render after a template edit
 

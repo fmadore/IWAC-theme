@@ -1,0 +1,66 @@
+# CodeQL: GitHub's static security analysis, on every PR and push to master
+# and once a week (new queries arrive with CodeQL releases, so an unchanged
+# tree can still gain a finding). Results land in the repository's Security
+# tab under Code scanning.
+#
+# Two languages, with the security-extended suite:
+#
+#   javascript-typescript  asset/js (DOM XSS: linked-resources.js swaps fetched
+#                          HTML into the page, citation.js writes to the
+#                          clipboard), the Node build scripts and the tests.
+#   actions                these workflows: untrusted input in run:, missing
+#                          permissions, over-privileged steps.
+#
+# CodeQL has no PHP extractor; PHPStan covers the helpers in build.yml.
+# Neither language needs a build, so this analyses the source as checked out.
+# Modelled on IwacSearch's codeql.yml.
+
+name: CodeQL
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  schedule:
+    - cron: '23 5 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyse (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript, actions]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: github/codeql-action/init@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended
+          # Generated twins and vendored code: findings there are findings in
+          # their sources (asset/js/*.js) or upstream.
+          config: |
+            paths-ignore:
+              - asset/js/dist
+              - asset/js/minimasonry.min.js
+              - node_modules
+
+      - uses: github/codeql-action/analyze@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea # v4.39.4
+        with:
+          category: /language:${{ matrix.language }}

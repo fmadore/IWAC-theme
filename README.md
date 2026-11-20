@@ -31,7 +31,7 @@ This is a customized Omeka S theme for the [Islam West Africa Collection](https:
 - **CSS Custom Properties** - Comprehensive design token system for colors, spacing, typography
 - **OKLCH Color System** - Perceptually-uniform palette derived from a single admin-set brand seed (`--primary-base`) via `color-mix(in oklab, …)`
 - **Display-tier fluid type** - `clamp()` on the largest headings; a fixed `rem` scale for body/UI so labels don't drift between breakpoints
-- **Besley + Source Serif 4 + Public Sans** - three-font system (Clarendon display / long-form serif / UI sans) exposed as `--font-*` tokens for sibling modules to consume
+- **Besley + Source Serif 4 + Public Sans + Fira Sans Condensed** - four-font system (Clarendon display / long-form serif / UI sans / condensed press gothic for the nav strip, datelines and chart labels), self-hosted and exposed as `--font-*` tokens for sibling modules to consume
 - **Logical Properties** - RTL-ready with `margin-inline`, `padding-block`, etc.
 
 ### Additional Features
@@ -77,7 +77,6 @@ npm install
 - Heading
 - Description
 - Content position
-- Banner width
 - Banner height
 - Banner height for mobile devices
 - Banner image vertical position within the wrapper
@@ -125,8 +124,10 @@ For advanced CSS and Sass users, this theme includes variables and mixins for ma
 
 Run these commands within the theme's root directory.
 
-* **npm run start**: Compiles once, then watches: any `.scss` recompiles the CSS, a variable file or `layout.phtml` also regenerates `tokens.json`, and `asset/js/*.js` rebuilds the minified twins. A compile error is reported and the last good stylesheet kept.
-* **npm run build**: Full production build — validates token usage, regenerates `tokens.json` + the DESIGN-SYSTEM.md tables (`build:tokens`), regenerates the i18n catalog (`build:i18n`), then compiles the CSS (`build:css`: `scripts/build-css.js`, Sass → autoprefixer → cssnano). Always use this so the generated artifacts can't drift.
+* **npm run start**: Compiles once, then watches: any `.scss` recompiles the CSS, a variable file or `asset/sass/base/_fonts.scss` also regenerates `tokens.json`, and `asset/js/*.js` rebuilds the minified twins. A compile error is reported and the last good stylesheet kept.
+* **npm run build**: Full production build — validates token usage, regenerates `tokens.json` + the DESIGN-SYSTEM.md tables (`build:tokens`), regenerates the i18n catalog (`build:i18n`), minifies the scripts (`build:js`), compiles the CSS (`build:css`: `scripts/build-css.js`, Sass → autoprefixer → cssnano) and checks it (`check:css`). Always use this so the generated artifacts can't drift.
+* **npm run build:js**: Minifies every `asset/js/<name>.js` into `asset/js/dist/<name>.min.js` with a source map (esbuild). Templates load only these twins; `npm run check:js-dist` fails on a missing, stale or orphaned one.
+* **npm run check:css**: Checks the compiled stylesheet's shape — `@charset` first and once, no stray byte-order mark, a header whose version matches `theme.ini`, no undefined `var()`. The last step of `npm run build`.
 * **npm run build:tokens**: Regenerates this theme's `tokens.json` and the docs tables from `_colors.scss`.
 * **npm run sync:tokens**: Explicitly regenerates tokens and copies them into checked-out sibling IwacSearch/IwacVisualizations repositories.
 * **npm run build:i18n**: Re-extracts `language/template.pot` from the templates, merges `fr.po`, and recompiles `fr.mo`.
@@ -134,6 +135,7 @@ Run these commands within the theme's root directory.
 * **npm run build:fixtures** / **npm run check:fixtures**: Re-render those pages after a template change (needs a `php` binary), or fail if the committed ones are stale.
 * **npm run test:browser**: Runs the rendered pages with the theme's real CSS and scripts in Chromium, Firefox and WebKit — navigation, drawer focus, theme toggle, browse layouts, AJAX paging, citation panel, reduced motion, forced colours, enlarged text and scoped axe checks — with no Omeka or network. Install the browsers once with `npx playwright install chromium firefox webkit`. See `docs/TESTING.md` in the repository.
 * **npm run test:live**: Runs the opt-in Playwright smoke suite against `https://islam.zmo.de/s/westafrica` (override with `IWAC_LIVE_BASE_URL`). The scheduled GitHub workflow runs this weekly; it is intentionally separate from pull-request checks because it tests the deployed site.
+* **npm run test:live:lighthouse**: Measures the live site's key pages with Lighthouse (mobile, slow 4G, median of several runs) and fails when a figure falls below the committed baseline in `e2e/lighthouse-baseline.json`. A weekly workflow runs it too.
 * **npm run build:images** / **npm run build:icons**: Regenerate the responsive banner variants and the PWA icon set.
 * **npm run verify**: Everything the Quality workflow's frontend job runs, in the same order — `check:js`, `lint`, `check:versions`, `npm test`, `test:minified`, `check:js-dist`, `build`, `check:generated` (names any generated file the build changed), `check:php` and `check:audit`. Run it before pushing; the workflow calls this same script.
 * **npm run check:php**: `php -l` over every template and helper, the `theme.ini` parse, `test:php` and `check:fixtures`. Without a `php` on PATH it skips with a message saying so; CI runs it with `--require`, where a missing PHP is fatal.
@@ -280,7 +282,7 @@ deprecated.
 /* Typography */
 --text-2xs, --text-xs, --text-sm, --text-base, --text-lg  /* fixed UI scale; 2xs is the floor */
 --text-xl, --text-2xl, --text-3xl, --text-4xl, --text-5xl /* 3xl-5xl use fluid clamp() */
---font-headings, --font-serif-text, --font-body, --font-mono
+--font-headings, --font-serif-text, --font-body, --font-condensed, --font-mono
 --line-height-tight, --line-height-snug, --line-height-normal, --line-height-relaxed
 --tracking-display, --tracking-tight, --tracking-normal, --tracking-wide, --tracking-wider
 

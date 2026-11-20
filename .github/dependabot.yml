@@ -24,6 +24,11 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # The same reasoning as npm: a compromised action release is usually
+    # pulled within days, and a pinned SHA does not help if Dependabot
+    # proposes the bad one the morning it lands.
+    cooldown:
+      default-days: 5
     # Every action is pinned to a full commit SHA with a `# vX` comment, and
     # the same action carries the same pin in every workflow. One grouped PR
     # moves them all together, so the pins cannot drift apart again.

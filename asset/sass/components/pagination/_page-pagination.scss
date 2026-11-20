@@ -12,9 +12,5 @@
         @include secondary-button;
         font-size: var(--text-xs);
         padding: var(--space-3) var(--space-4);
-
-        &:hover {
-            transform: translateY(var(--lift-xxs));
-        }
     }
 }

@@ -10,7 +10,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { setTimeout: delay } = require('node:timers/promises');
-const { buildCss, watchSources } = require('../scripts/build-css');
+const { buildCss, watchSources, TOKEN_SOURCES } = require('../scripts/build-css');
 
 function fixture(t) {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'iwac-css-test-'));
@@ -53,6 +53,15 @@ test('invalid Sass fails the build without replacing the last good output', asyn
     await assert.rejects(buildCss(f.root), /Expected expression/);
     assert.equal(fs.readFileSync(f.output, 'utf8'), before);
     assert.deepEqual(fs.readdirSync(path.join(f.root, 'asset/css')), ['style.css'], 'no temporary file left');
+});
+
+test('watch mode regenerates tokens from every file build-tokens.js reads (regression: _fonts.scss missed)', () => {
+    for (const name of ['abstracts/variables/_colors.scss', 'abstracts/variables/_tokens.scss', 'base/_fonts.scss']) {
+        assert.ok(TOKEN_SOURCES.test(name), name);
+    }
+    for (const name of ['base/_typography.scss', 'abstracts/variables/nested/_x.scss', 'components/banner/_banner.scss']) {
+        assert.equal(TOKEN_SOURCES.test(name), false, name);
+    }
 });
 
 // The watcher is exercised for real, so its latency is the OS's: a cold

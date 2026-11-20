@@ -31,8 +31,8 @@
  *   - any .scss under asset/sass            → CSS
  *   - asset/sass/abstracts/variables/*.scss → also tokens.json (build-tokens.js),
  *     which publishes every variable file, not just the colours
- *   - view/layout/layout.phtml              → tokens.json (the loaded font
- *     weights are read from it)
+ *   - asset/sass/base/_fonts.scss           → also tokens.json (the loaded
+ *     font weights and fontsCss are read from its @font-face rules)
  *   - asset/js/*.js (not vendored *.min.js) → asset/js/dist/ (build-js.js):
  *     templates load only the minified twins
  */
@@ -183,6 +183,12 @@ function serialTask(label, run, onError) {
  *
  * @returns {() => void} close
  */
+// The Sass files build-tokens.js reads, relative to asset/sass: every variable
+// file, and the @font-face rules (the font weights it publishes). The watcher
+// used to listen to layout.phtml, where the fonts were read from before they
+// were self-hosted, and so missed _fonts.scss.
+const TOKEN_SOURCES = /^(?:abstracts\/variables\/[^/]+|base\/_fonts)\.scss$/;
+
 function watchSources(root = ROOT, {
     log = (message) => console.log(message),
     onError = (label, error) => console.error(`✗ ${label}: ${error.message || error}`),
@@ -213,10 +219,7 @@ function watchSources(root = ROOT, {
         watchDir(path.join(root, 'asset', 'sass'), true, (name) => {
             if (!name.endsWith('.scss')) return;
             css();
-            if (/^abstracts\/variables\/[^/]+\.scss$/.test(name)) tokens();
-        });
-        watchDir(path.join(root, 'view', 'layout'), false, (name) => {
-            if (name === 'layout.phtml') tokens();
+            if (TOKEN_SOURCES.test(name)) tokens();
         });
         watchDir(path.join(root, 'asset', 'js'), false, (name) => {
             if (name.endsWith('.js') && !name.endsWith('.min.js')) js();
@@ -229,11 +232,11 @@ function watchSources(root = ROOT, {
     // Compile once first, so a fresh checkout or a branch switch never serves
     // stale CSS — what `gulp`'s default task did.
     if (initialBuild) void css.now();
-    log('Watching asset/sass, asset/js and view/layout/layout.phtml (Ctrl+C to stop).');
+    log('Watching asset/sass and asset/js (Ctrl+C to stop).');
     return close;
 }
 
-module.exports = { buildCss, watchSources, entries, withHeader };
+module.exports = { buildCss, watchSources, entries, withHeader, TOKEN_SOURCES };
 
 if (require.main === module) {
     const args = process.argv.slice(2);

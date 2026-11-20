@@ -70,9 +70,11 @@ What it covers:
   colour contrast is really asserted by `check:tokens` rule 9 and by WebKit here).
 - **Forced colours** (Chromium only — the emulation is Chromium's): the focus outline
   survives, and the theme toggle's Lucide mask keeps a visible glyph.
-- **200% text** at 768 and 1280px: no horizontal scroll, the h1 inside the viewport.
-  At 390px it is a known failure, kept as `test.fixme`: the masthead's tool row needs
-  more than a phone's width once text is enlarged (13px over at 150%, 131px at 200%).
+- **Enlarged text**: at 200% on 768 and 1280px, no horizontal scroll and the h1 inside
+  the viewport. On phones (125% at 320px, 150% and 200% at 390px, 200% at 600px) no
+  horizontal scroll either: once the masthead's single row no longer fits, the search
+  box takes a row of its own. At the default size phones keep the one row. (This was a
+  known failure until the masthead learned to wrap: 13px over at 150%, 131px at 200%.)
 
 Running it:
 
