@@ -509,6 +509,61 @@ test('print: the plate prints as ink, with no blue band', async ({ page }) => {
     expect(plate.title).not.toBe('rgb(255, 255, 255)');
 });
 
+test('print: a record breaks between rows, internal links print no address, the light set applies from dark mode', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.emulateMedia({ media: 'print', colorScheme: 'dark' });
+    await openFixture(page, 'item-set.en');
+    const sheet = await page.evaluate(() => {
+        const css = (element, property, pseudo) => getComputedStyle(element, pseudo).getPropertyValue(property);
+        const main = document.querySelector('main');
+        const internal = [...main.querySelectorAll('a[href^="/"]')][0];
+        const table = main.querySelector('.linked-resources-table');
+        const probe = document.createElement('i');
+        probe.style.color = 'var(--panel-bg)';
+        document.body.append(probe);
+        const context = document.createElement('canvas').getContext('2d');
+        context.fillStyle = getComputedStyle(probe).color;
+        context.fillRect(0, 0, 1, 1);
+        return {
+            internalAfter: css(internal, 'content', '::after'),
+            tableBreak: css(table, 'break-inside'),
+            rowBreak: css(table.querySelector('tbody tr'), 'break-inside'),
+            controls: [...document.querySelectorAll('.linked-resources__controls')].map((el) => css(el, 'display')),
+            panel: [...context.getImageData(0, 0, 1, 1).data.slice(0, 3)],
+        };
+    });
+    expect(sheet.internalAfter).toBe('none');
+    expect(sheet.tableBreak).toBe('auto');
+    expect(sheet.rowBreak).toBe('avoid');
+    expect(sheet.controls.length).toBeGreaterThan(0);
+    expect(new Set(sheet.controls)).toEqual(new Set(['none']));
+    // --panel-bg composes --surface: on paper it is the light ground, not the lamplit one.
+    expect(Math.min(...sheet.panel), `panel ground rgb(${sheet.panel})`).toBeGreaterThan(240);
+});
+
+test('print: item metadata rows stay whole while the sheet may break, and the annotation buttons are gone', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.emulateMedia({ media: 'print' });
+    await openFixture(page, 'item.en');
+    const sheet = await page.evaluate(() => {
+        const property = document.querySelector('main dl > .property');
+        return {
+            dl: getComputedStyle(property.parentElement).breakInside,
+            property: getComputedStyle(property).breakInside,
+            buttons: [...document.querySelectorAll('.annotation-btn')].map((el) => getComputedStyle(el).display),
+            external: getComputedStyle(document.querySelector('main a[href^="https://"]:not([aria-hidden="true"]):not(.citation__text a)'), '::after').content,
+            // The citation prints its URL as the link text already.
+            cited: getComputedStyle(document.querySelector('.citation__text a[href^="https://"]'), '::after').content,
+        };
+    });
+    expect(sheet.dl).toBe('auto');
+    expect(sheet.property).toBe('avoid');
+    expect(sheet.buttons.length).toBeGreaterThan(0);
+    expect(new Set(sheet.buttons)).toEqual(new Set(['none']));
+    expect(sheet.external).toContain('https://');
+    expect(sheet.cited).toBe('none');
+});
+
 test('the hero ground stays a deep seed blue in dark mode, never the re-lit dark primary', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     for (const theme of ['light', 'dark']) {

@@ -13,6 +13,7 @@ create.
 
 ### Fixed
 
+- **Printed records break across pages normally.** A whole item record (its metadata and transcript) and a whole Linked resources table were each kept on one page, so the browser pushed them to the next page or broke them anywhere. Now only single rows, figures and quotations are kept whole. Printouts also no longer print the site address after every internal link (external links still show theirs), leave out the annotation buttons and the Linked resources search and sort controls, and print in the full light palette from dark mode.
 - **The menu drawer no longer announces closed submenus as expanded.** Closing the drawer folded its open submenus but left their buttons marked "expanded", so a screen reader heard the wrong state on the next visit.
 - **The carousel's Stop button stops on the first click, and a restarted slideshow keeps going.** In Chrome, Edge and Firefox a mouse click on "Stop automatic slideshow" left the carousel running. A slideshow restarted with the button froze for good after the pointer passed over it, while the button still offered "Stop".
 - **The image viewer closes smoothly when asked twice.** Pressing Escape and clicking the backdrop together cut the closing animation short.

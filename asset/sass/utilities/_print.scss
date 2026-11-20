@@ -7,6 +7,7 @@
 // ==========================================================================
 
 @use "../abstracts/variables/colors" as *;
+@use "../abstracts/variables/tokens" as *;
 
 @media print {
     // ----------------------------------------------------------------------
@@ -28,6 +29,10 @@
     body,
     body[data-theme] {
         @include iwac-light-theme;
+        // The tokens composed from those colours (panel ground and border,
+        // focus rings, shadow colours) are redeclared by the dark blocks too,
+        // so they need the light set re-applied here as well.
+        @include iwac-light-tokens;
     }
 
     // Hide non-essential chrome. The masthead, both nav strips, the drawer,
@@ -49,6 +54,8 @@
     .pwa-install,
     .language-switcher,
     [role="search"],
+    .annotation-btn,
+    .linked-resources__controls,
     .citation__styles,
     .citation__actions,
     .citation__downloads {
@@ -89,17 +96,19 @@
         text-decoration: underline;
     }
 
-    // Show link URLs after links in content
-    main a[href]::after {
+    // Spell out where an external link goes. Internal links are left alone:
+    // "(/s/westafrica/item/…)" after every title, subject and crumb is noise
+    // a reader cannot use on paper, and the page's own address is in the
+    // browser's print header. Icon-only links (aria-hidden) carry no text to
+    // annotate, and a citation already prints its URL as the link text.
+    main a[href^="http"]:not([aria-hidden="true"])::after {
         content: " (" attr(href) ")";
         font-size: 0.8em;
         color: var(--ink-light);
     }
 
-    // Don't show URL for internal anchors or javascript links
-    main a[href^="#"]::after,
-    main a[href^="javascript:"]::after {
-        content: "";
+    main .citation__text a[href]::after {
+        content: none;
     }
 
     // Ensure images don't overflow
@@ -114,7 +123,12 @@
         page-break-inside: avoid;
     }
 
-    p, blockquote, ul, ol, dl, table, pre {
+    // Keep the small units whole — one table row, one metadata row, a
+    // figure, a quotation. Never a whole list, table or <dl>: an item's
+    // entire metadata sheet and transcript is one <dl> and its linked
+    // resources one <table>, so "avoid" there pushed the whole record to the
+    // next page, or the engine gave up and broke it anywhere.
+    tr, .property, figure, blockquote, pre {
         page-break-inside: avoid;
     }
 
