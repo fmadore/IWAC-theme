@@ -384,6 +384,11 @@
 		mmDrawer.querySelectorAll( '.expanded' ).forEach( item => {
 			item.classList.remove( 'expanded' );
 		} );
+		// ...and say so on their toggles, or a reopened drawer announces
+		// "expanded" over collapsed lists.
+		mmDrawer.querySelectorAll( '.mobile-dropdown-toggle[aria-expanded="true"]' ).forEach( button => {
+			button.setAttribute( 'aria-expanded', 'false' );
+		} );
 
 		// remove collapsed items from the tabindex
 		mmDrawer.querySelectorAll( 'a' ).forEach( item => {

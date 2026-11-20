@@ -74,6 +74,10 @@
         let current = -1;
         let zoomed = false;
         let plateAnimation = null;
+        // A close in flight: a second close (Escape, then a click on the
+        // scrim) would measure the moving plate and start a new flight,
+        // cancelling the first and closing abruptly.
+        let closing = false;
         let chromeAnimations = [];
 
         plates.forEach(mountTrigger);
@@ -550,9 +554,10 @@
 
         function close() {
             const v = viewer;
-            if (!v || !v.dialog.open) {
+            if (!v || !v.dialog.open || closing) {
                 return;
             }
+            closing = true;
             const plate = plates[current];
             const trigger = plate ? plate.trigger : null;
 
@@ -581,6 +586,7 @@
                     return;
                 }
                 finished = true;
+                closing = false;
                 v.dialog.close();
                 if (trigger) {
                     trigger.focus({ preventScroll: true });

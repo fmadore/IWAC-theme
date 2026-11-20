@@ -244,6 +244,53 @@ test('carousel silences position announcements while the slideshow rotates', () 
     }
 });
 
+test('a slideshow the reader restarts resumes after a hover, and the toggle is never undone by its own focus', () => {
+    const dom = fixtureDom('page-about.en');
+    dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
+    dom.window.IWACUtils = { onReady: (callback) => callback(), debounce: (callback) => callback };
+    dom.window.Element.prototype.scrollIntoView = function () {};
+    const track = dom.window.document.querySelector('[data-carousel-track]');
+    Object.defineProperty(track, 'scrollWidth', { configurable: true, value: 1200 });
+    Object.defineProperty(track, 'clientWidth', { configurable: true, value: 400 });
+    // Count the live autoplay timers.
+    const live = new Set();
+    const setInterval = dom.window.setInterval.bind(dom.window);
+    const clearInterval = dom.window.clearInterval.bind(dom.window);
+    dom.window.setInterval = (fn, ms) => { const id = setInterval(fn, ms); live.add(id); return id; };
+    dom.window.clearInterval = (id) => { live.delete(id); clearInterval(id); };
+
+    try {
+        runAsset(dom, 'carousel.js');
+        const root = dom.window.document.querySelector('[data-carousel]');
+        const toggle = dom.window.document.querySelector('[data-carousel-toggle]');
+        const label = () => toggle.textContent.trim();
+        const fire = (type) => root.dispatchEvent(new dom.window.MouseEvent(type));
+        assert.equal(live.size, 1);
+
+        // A mouse click focuses the button before it activates it: "Stop" stops.
+        toggle.focus();
+        toggle.click();
+        assert.equal(label(), 'Start automatic slideshow');
+        assert.equal(live.size, 0);
+
+        // The reader restarts it, then the pointer crosses the run and leaves.
+        toggle.click();
+        assert.equal(label(), 'Stop automatic slideshow');
+        fire('mouseenter');
+        assert.equal(live.size, 0, 'hover pauses');
+        fire('mouseleave');
+        assert.equal(live.size, 1, 'leaving resumes the run the reader restarted');
+        assert.equal(label(), 'Stop automatic slideshow');
+
+        // Focus moving into the slides is still a reader taking over.
+        dom.window.document.querySelector('[data-carousel-next]').focus();
+        assert.equal(live.size, 0);
+        assert.equal(label(), 'Start automatic slideshow');
+    } finally {
+        dom.window.close();
+    }
+});
+
 test('masonry gutter comes from the stylesheet, not a number in the script', () => {
     const { dom, instances } = browsed((dom) => {
         const style = dom.window.document.createElement('style');

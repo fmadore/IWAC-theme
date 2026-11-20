@@ -76,7 +76,6 @@
         var autoplayMs = parseInt(root.getAttribute('data-carousel-autoplay'), 10) || 0;
         var autoplayTimer = null;
         var autoplayOn = false;
-        var interacted = false;
         var lastIndex = -1;
 
         function isRtl() {
@@ -225,21 +224,18 @@
 
         if (prevBtn) {
             prevBtn.addEventListener('click', function () {
-                interacted = true;
                 stopAutoplay();
                 step(-1);
             });
         }
         if (nextBtn) {
             nextBtn.addEventListener('click', function () {
-                interacted = true;
                 stopAutoplay();
                 step(1);
             });
         }
         if (toggleBtn) {
             toggleBtn.addEventListener('click', function () {
-                interacted = true;
                 if (autoplayOn) {
                     stopAutoplay();
                 } else {
@@ -248,7 +244,16 @@
             });
         }
 
-        track.addEventListener('scroll', render, { passive: true });
+        // render() measures every slide, so run it once a frame at most.
+        var renderQueued = false;
+        track.addEventListener('scroll', function () {
+            if (renderQueued) return;
+            renderQueued = true;
+            window.requestAnimationFrame(function () {
+                renderQueued = false;
+                render();
+            });
+        }, { passive: true });
         window.addEventListener('resize', debounce(render, 150), { passive: true });
 
         // Late-arriving images change scrollWidth, which changes whether the
@@ -274,11 +279,17 @@
                 if (autoplayOn) { window.clearInterval(autoplayTimer); autoplayTimer = null; }
             });
             root.addEventListener('mouseleave', function () {
-                if (autoplayOn && !interacted) { autoplayOn = false; startAutoplay(); }
+                // autoplayOn is the reader's choice; hover only paused the
+                // timer. Testing an "interacted" flag here as well froze a
+                // run the reader had restarted, under a "Stop" label.
+                if (autoplayOn && !autoplayTimer) { autoplayOn = false; startAutoplay(); }
             });
-            // Focus entering the run is a reader working through it deliberately.
-            root.addEventListener('focusin', function () {
-                interacted = true;
+            // Focus entering the run is a reader working through it
+            // deliberately — except on the toggle, which decides for itself:
+            // a click focuses it first, and stopping here made the click that
+            // follows restart a run the reader had just asked to stop.
+            root.addEventListener('focusin', function (event) {
+                if (toggleBtn && toggleBtn.contains(event.target)) return;
                 stopAutoplay();
             });
             document.addEventListener('visibilitychange', function () {

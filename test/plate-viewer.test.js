@@ -124,3 +124,36 @@ test('English fallbacks apply when the template has not shipped its string islan
     assert.equal(dialog.querySelector('[role="status"]').textContent, 'Image 1 of 1. Bibliothèque nationale du Togo');
     dom.window.close();
 });
+
+// Regression: a second close during the 220 ms close flight measured the moving
+// plate and started another flight, cancelling the first — whose oncancel shut
+// the dialog at once instead of letting the plate land.
+test('a second close while the plate flies home does not cut the flight short', () => {
+    const { dom, doc } = aboutPage();
+    const animations = [];
+    dom.window.Element.prototype.animate = function animate() {
+        const animation = {
+            onfinish: null,
+            oncancel: null,
+            cancel() { if (this.oncancel) this.oncancel(); },
+            finish() { if (this.onfinish) this.onfinish(); },
+        };
+        if (this.matches('.plate-viewer *') && this.tagName === 'IMG') animations.push(animation);
+        return animation;
+    };
+    // jsdom does no layout; a flight needs boxes with a size.
+    dom.window.Element.prototype.getBoundingClientRect = () => ({ left: 0, top: 0, width: 100, height: 100 });
+    const trigger = doc.querySelectorAll('.plate-trigger')[0];
+    trigger.click();
+    const dialog = doc.querySelector('dialog.plate-viewer');
+    const cancel = () => dialog.dispatchEvent(new dom.window.Event('cancel', { cancelable: true }));
+
+    cancel();
+    const started = animations.length;
+    cancel();
+    assert.equal(dialog.open, true, 'still flying home');
+    assert.equal(animations.length, started, 'no second flight');
+    animations[animations.length - 1].finish();
+    assert.equal(dialog.open, false);
+    dom.window.close();
+});

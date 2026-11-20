@@ -13,6 +13,9 @@ create.
 
 ### Fixed
 
+- **The menu drawer no longer announces closed submenus as expanded.** Closing the drawer folded its open submenus but left their buttons marked "expanded", so a screen reader heard the wrong state on the next visit.
+- **The carousel's Stop button stops on the first click, and a restarted slideshow keeps going.** In Chrome, Edge and Firefox a mouse click on "Stop automatic slideshow" left the carousel running. A slideshow restarted with the button froze for good after the pointer passed over it, while the button still offered "Stop".
+- **The image viewer closes smoothly when asked twice.** Pressing Escape and clicking the backdrop together cut the closing animation short.
 - **The Linked resources search glyph shows in dark mode.** It was an image of the SVG, whose stroke always drew black and vanished on the dark surface; it is now inked with the muted text colour in both themes and centred in the field.
 - **No stray dots in Linked resources on phones.** In the stacked mobile layout each line under a title started with a "·" separator; the separators are gone, and an empty type or date line no longer leaves a gap.
 - **A malformed search address no longer shows "Array" in the header search box.** A link carrying `?q[]=…` (on any page, since the search box is in the header) made PHP log an "Array to string conversion" warning and filled the field with the word "Array". The field now stays empty.

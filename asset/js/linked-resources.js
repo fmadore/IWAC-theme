@@ -244,7 +244,9 @@
         const params = new URLSearchParams();
         for (const [key, value] of data.entries()) {
             if (value !== '') {
-                params.set(key, String(value));
+                // append, not set: a repeated name (a multi-value filter)
+                // keeps every value.
+                params.append(key, String(value));
             }
         }
         const fragment = root.dataset.fragment ? `#${root.dataset.fragment}` : '';

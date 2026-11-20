@@ -130,3 +130,23 @@ test('the open drawer traps Tab and Shift+Tab, and Escape hands focus back to th
 
     dom.window.close();
 });
+
+test('closing the drawer collapses its submenus and their toggles say so (regression: aria-expanded stayed true)', () => {
+    const { dom, document } = navigated('item.en');
+    const toggle = document.querySelector('.main-navigation__toggle');
+    const backer = document.getElementById('menu-backer');
+
+    toggle.click();
+    const submenu = document.querySelector('#menu-drawer .mobile-dropdown-toggle');
+    submenu.click();
+    assert.equal(submenu.getAttribute('aria-expanded'), 'true');
+    assert.equal(submenu.parentElement.classList.contains('expanded'), true);
+
+    backer.click();
+    toggle.click();
+    assert.equal(submenu.parentElement.classList.contains('expanded'), false);
+    assert.equal(submenu.getAttribute('aria-expanded'), 'false');
+    assert.equal(document.querySelectorAll('#menu-drawer [aria-expanded="true"]').length, 0);
+
+    dom.window.close();
+});
