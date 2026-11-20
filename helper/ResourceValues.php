@@ -66,8 +66,6 @@ final class ResourceValues extends AbstractHelper
     public const TRANSCRIPT_COLLAPSE_MIN = 8000;
     public const TRANSCRIPT_LEDE_MAX = 1200;
 
-    /** U+202F narrow no-break space: locale-neutral digit grouping, as in the homepage stat strip. */
-    public const FIGURE_SEP = "\u{202F}";
 
     /**
      * The settings and languages one render of the values list needs.
@@ -257,12 +255,6 @@ final class ResourceValues extends AbstractHelper
     public static function countWords(string $text): int
     {
         return preg_match_all('/\S+/u', $text) ?: 0;
-    }
-
-    /** "12 345" with the narrow no-break space. */
-    public static function formatCount(int $count): string
-    {
-        return number_format($count, 0, '.', self::FIGURE_SEP);
     }
 
     /**

@@ -124,7 +124,7 @@ foreach ($values as $term => $propertyData):
                                 <span class="transcript__toggle-label transcript__toggle-label--more"><?php
                                     echo $escape(sprintf(
                                         $translate('Read the full text — %s more words'),
-                                        $rv::formatCount($transcriptRestWords)
+                                        $this->Figure($transcriptRestWords)
                                     ));
                                 ?></span>
                                 <span class="transcript__toggle-label transcript__toggle-label--less"><?php

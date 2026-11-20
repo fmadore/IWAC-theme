@@ -10,10 +10,9 @@ $escape      = $this->plugin('escapeHtml');
 $escapeAttr  = $this->plugin('escapeHtmlAttr');
 
 $showLabel    = (bool) $this->siteSetting('hierarchy_show_label');
-// Counts group their thousands with U+202F, the theme's locale-neutral
-// grouping (pagination, the hero figures): number_format()'s default comma
-// reads as a decimal mark to a French reader ("1,234" = one point two three).
-$formatCount = static fn ($n): string => number_format((int) $n, 0, '.', "\u{202F}");
+// Counts grouped as everywhere else (helper/Figure.php): PHP's default
+// thousands comma reads as a decimal mark to a French reader ("1,234").
+$formatCount = $this->plugin('Figure');
 
 // Every node resolved — label, link, count, privacy, cover, category,
 // children — by helper/HierarchyTree.php, which batches the API reads and is

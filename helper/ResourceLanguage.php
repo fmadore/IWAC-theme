@@ -147,17 +147,26 @@ final class ResourceLanguage extends AbstractHelper
         return $this->literalCode(method_exists($value, 'value') ? (string) $value->value() : '');
     }
 
-    /** @param AbstractResourceEntityRepresentation $authority the linked language authority */
+    /**
+     * The authority's code: a `dcterms:alternative` that is a subtag, else one
+     * that is a language name the map knows ("Moore", "Kabiye"), else its title.
+     * Mooré and Kabyè used to resolve through their title alone, so renaming
+     * either record would have silently dropped the tag.
+     *
+     * @param AbstractResourceEntityRepresentation $authority the linked language authority
+     */
     private function authorityCode(object $authority): string
     {
         $alternatives = $authority->value('dcterms:alternative', ['all' => true]);
+        $named = '';
         foreach (is_iterable($alternatives) ? $alternatives : [] as $alternative) {
             $candidate = strtolower(trim((string) $alternative));
             if (preg_match(self::SUBTAG, $candidate)) {
                 return $candidate;
             }
+            $named = $named !== '' ? $named : $this->literalCode((string) $alternative);
         }
-        return $this->literalCode((string) $authority->displayTitle());
+        return $named !== '' ? $named : $this->literalCode((string) $authority->displayTitle());
     }
 
     private function literalCode(string $text): string

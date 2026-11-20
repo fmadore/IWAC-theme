@@ -159,7 +159,6 @@ $bannerLandmark = $bannerHeading
         }
         $stats[] = ['n' => $counts['countries'], 'label' => $translate('Countries')];
     }
-    $thin = "\xE2\x80\xAF"; // U+202F narrow no-break space — locale-neutral digit grouping
 
     $substats = null;
     if ($summary) {
@@ -209,7 +208,7 @@ $bannerLandmark = $bannerHeading
                           // per-link aria-label would only repeat it less precisely, and
                           // the list already carries the group label. ?>
                     <?php if (!empty($stat['url'])): ?><a class="banner__stat-link" href="<?php echo $escAttr($stat['url']); ?>"><?php endif; ?>
-                    <span class="banner__stat-figure"><?php echo $escHtml(number_format((int) $stat['n'], 0, '.', $thin)); ?></span>
+                    <span class="banner__stat-figure"><?php echo $escHtml($this->Figure($stat['n'])); ?></span>
                     <span class="banner__stat-label"><?php echo $escHtml($stat['label']); ?></span>
                     <?php if (!empty($stat['url'])): ?></a><?php endif; ?>
                 </li>
@@ -223,7 +222,7 @@ $bannerLandmark = $bannerHeading
         <ul class="banner__substats banner__substats--n<?php echo count($substats); ?>" aria-label="<?php echo $escAttr($translate('Corpus in depth')); ?>">
             <?php foreach ($substats as $stat): ?>
                 <li class="banner__substat">
-                    <span class="banner__substat-figure"><?php echo $escHtml(number_format((int) $stat['n'], 0, '.', $thin)); ?></span>
+                    <span class="banner__substat-figure"><?php echo $escHtml($this->Figure($stat['n'])); ?></span>
                     <span class="banner__substat-label"><?php echo $escHtml($stat['label']); ?></span>
                 </li>
             <?php endforeach; ?>

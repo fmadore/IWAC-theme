@@ -215,8 +215,27 @@ namespace IwacThemeTest {
         [$ledeU, $restU] = $rv::transcript('bibo:content', 'literal', $unbroken);
         same(1200, mb_strlen($ledeU));
         check(mb_check_encoding($ledeU, 'UTF-8') && mb_check_encoding($restU, 'UTF-8'), 'valid UTF-8 on both sides');
+    });
 
-        same("12\u{202F}345", $rv::formatCount(12345));
+    test('Figure groups thousands with a narrow no-break space, whatever it is given', function () {
+        $figure = (new FakeView())->Figure(...);
+        same("12\u{202F}345", $figure(12345));
+        same("1\u{202F}234\u{202F}567", $figure('1234567'), 'a numeric string, as the API counts arrive');
+        same('999', $figure(999));
+        same('0', $figure(null));
+        same('0', $figure('Array'), 'not a number');
+        same(\OmekaTheme\Helper\Figure::format(42), $figure(42));
+    });
+
+    test('every count in the templates goes through Figure (regression: four copies and an ungrouped total)', function () {
+        foreach (['common/banner.phtml', 'common/pagination.phtml', 'common/resource-values.phtml',
+            'hierarchy/common/block-layout/hierarchy-public.phtml', 'omeka/site/index/search.phtml'] as $template) {
+            $source = (string) file_get_contents(ROOT . '/view/' . $template);
+            check(!str_contains($source, 'number_format('), "$template formats a count itself");
+            check(str_contains($source, 'Figure'), "$template does not use Figure");
+        }
+        $search = (string) file_get_contents(ROOT . '/view/omeka/site/index/search.phtml');
+        check(str_contains($search, "\$this->Figure(\$result['total'])"), 'the fulltext search total is grouped');
     });
 
     test('ResourceValues swaps a square thumbnail for the medium one, escaped or not', function () {
@@ -1757,6 +1776,23 @@ namespace IwacThemeTest {
 
     // ---- AI table of contents and the value list (T-17) ---------------------
 
+    test('AiTableOfContents parses entries without a template', function () {
+        $parse = \OmekaTheme\Helper\AiTableOfContents::class;
+        same([
+            ['pages' => '1-2', 'title' => "L'islam au Togo", 'author' => 'Issa Moussa', 'summary' => 'Un résumé sur deux lignes.'],
+            ['pages' => '3', 'title' => 'Suite du feuilleton (1)', 'author' => null, 'summary' => ''],
+            ['pages' => null, 'title' => 'Éditorial', 'author' => null, 'summary' => 'Texte.'],
+        ], $parse::parse("p. 1-2 : L'islam au Togo (Issa Moussa)\r\nUn résumé\r\nsur deux lignes.\r\n\r\n"
+            . "p. 3 : Suite du feuilleton (1)\n \n\nÉditorial\nTexte."));
+        // "()" holds no letter: not a byline.
+        same('Titre ( )', $parse::parse('p. 4 : Titre ( )')[0]['title']);
+        same([], $parse::parse("  \n\n "));
+        same([], $parse::parse(['not', 'text']));
+        same("a\nb", $parse::normalize(" a\r\nb \n"));
+        // Registered under its exact name, returning the same entries.
+        same($parse::parse('p. 9 : X'), (new FakeView())->AiTableOfContents('p. 9 : X'));
+    });
+
     test('the AI table of contents parses into page / title / byline / summary entries', function () {
         $fake = new FakeView();
         $text = "p. 1-2 : L'islam au Togo (Issa Moussa)\nUn résumé\nsur deux lignes.\r\n\r\n"
@@ -2088,6 +2124,15 @@ namespace IwacThemeTest {
         // Authorities whose alternative is a name, or absent, fall back to the name map.
         $moore = fakeValue('Mooré', null, '', fakeLanguage(8384, 'Mooré', ['Moore']));
         same('mos', $language(fakeRecord(['dcterms:language' => [$moore]])));
+        // The alternative's name is read too, so a renamed authority keeps its tag
+        // (regression: Mooré and Kabyè resolved through their title alone).
+        $renamed = fakeValue('Moore (Burkina Faso)', null, '', fakeLanguage(8384, 'Moore (Burkina Faso)', ['Moore']));
+        same('mos', $language(fakeRecord(['dcterms:language' => [$renamed]])));
+        $kabye = fakeValue('Langue kabyè', null, '', fakeLanguage(8390, 'Langue kabyè', ['Kabiye']));
+        same('kbp', $language(fakeRecord(['dcterms:language' => [$kabye]])));
+        // A real subtag wins over a name, whichever comes first.
+        $both = fakeValue('Dioula', null, '', fakeLanguage(8391, 'Dioula', ['English', 'dyu']));
+        same('dyu', $language(fakeRecord(['dcterms:language' => [$both]])));
         $spanish = fakeValue('Espagnol', null, '', fakeLanguage(26353, 'Espagnol', []));
         same('es', $language(fakeRecord(['dcterms:language' => [$spanish]])));
         // A literal language value reads the same way.

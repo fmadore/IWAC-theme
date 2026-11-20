@@ -71,7 +71,7 @@ if (is_array($decoration) && in_array('media', $decoration)) {
                 <?php endforeach; ?>
             </ul>
                 <?php echo $hyperlink(
-                    sprintf($translate('View all results (%s total)'), $result['total']),
+                    sprintf($translate('View all results (%s total)'), $this->Figure($result['total'])),
                     $url(
                         'site/resource',
                         ['controller' => $resourceControllers[$resourceName], 'action' => 'browse'],

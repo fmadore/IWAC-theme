@@ -2,10 +2,9 @@
 $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
 $escapeAttr = $this->plugin('escapeHtmlAttr');
-// Counts grouped with U+202F, as in the homepage stat strip and the
-// transcript toggle — "1–25 of 12 345", not "of 12345". Locale-neutral, and
-// never a comma a French reader would take for a decimal mark.
-$figure = static fn ($n): string => number_format((int) $n, 0, '.', "\u{202F}");
+// Counts grouped as everywhere else (helper/Figure.php): "1–25 of 12 345",
+// not "of 12345", and never a comma a French reader would take for a decimal mark.
+$figure = $this->plugin('Figure');
 // The query parameter the go-to-page form writes. Core's pagination() helper
 // renders this partial for the page's own listing, which pages through
 // `page`, and passes no $pageParam; the Linked resources block renders it

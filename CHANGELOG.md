@@ -27,6 +27,8 @@ create.
 
 ### Fixed
 
+- **Search result totals are grouped like every other count.** The "View all results (… total)" links on Omeka's fulltext search page printed "12345"; they now read "12 345". Every count in the theme now goes through one formatter.
+- **Mooré and Kabyè records keep their language tag if their authority is renamed.** The language codes of those two authority records were found through their titles only; the theme now also reads the name in their alternative title.
 - **`npm run start` regenerates `tokens.json` when the webfont rules change.** The watcher still listened to `layout.phtml`, where the fonts were read from before they were self-hosted, and ignored `asset/sass/base/_fonts.scss`.
 - **Printed records break across pages normally.** A whole item record (its metadata and transcript) and a whole Linked resources table were each kept on one page, so the browser pushed them to the next page or broke them anywhere. Now only single rows, figures and quotations are kept whole. Printouts also no longer print the site address after every internal link (external links still show theirs), leave out the annotation buttons and the Linked resources search and sort controls, and print in the full light palette from dark mode.
 - **The menu drawer no longer announces closed submenus as expanded.** Closing the drawer folded its open submenus but left their buttons marked "expanded", so a screen reader heard the wrong state on the next visit.
