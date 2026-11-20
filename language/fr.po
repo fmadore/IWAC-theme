@@ -398,7 +398,7 @@ msgstr "Relation"
 msgid "Reset"
 msgstr ""
 
-#: helper/PwaManifest.php:105 view/common/search-form.phtml:58 view/common/search-form.phtml:66 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
+#: helper/PwaManifest.php:105 view/common/search-form.phtml:61 view/common/search-form.phtml:69 view/omeka/site/item/search.phtml:17 view/omeka/site/item/search.phtml:47
 msgid "Search"
 msgstr ""
 
@@ -410,7 +410,7 @@ msgstr "Rechercher par titre…"
 msgid "Search results for “%s”"
 msgstr "Résultats de recherche pour « %s »"
 
-#: view/common/resource-browse.phtml:51 view/common/search-form.phtml:57 view/omeka/site/item/browse.phtml:68
+#: view/common/resource-browse.phtml:51 view/common/search-form.phtml:60 view/omeka/site/item/browse.phtml:68
 msgid "Search the collection"
 msgstr "Rechercher dans la collection"
 
@@ -458,7 +458,7 @@ msgstr "Démarrer le défilement automatique"
 msgid "Stop automatic slideshow"
 msgstr "Arrêter le défilement automatique"
 
-#: view/common/search-form.phtml:67
+#: view/common/search-form.phtml:70
 msgid "Submit"
 msgstr ""
 

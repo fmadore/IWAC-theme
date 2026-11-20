@@ -786,6 +786,40 @@ namespace IwacThemeTest {
         same([['maxDepth' => 1]], $menuCalls);
     });
 
+    test('search form ignores an array q instead of printing "Array" (regression: ?q[]=x on any page)', function () {
+        $render = static function (array $query): array {
+            $fake = new FakeView([], [], $query);
+            $fake->helpers['currentSite'] = static fn () => new class {
+                public function url(): string
+                {
+                    return '/s/westafrica';
+                }
+            };
+            $fake->helpers['getHelperPluginManager'] = static fn () => new class {
+                public function has(string $name): bool
+                {
+                    return false;
+                }
+            };
+            $warnings = [];
+            set_error_handler(static function (int $no, string $msg) use (&$warnings): bool {
+                $warnings[] = $msg;
+                return true;
+            });
+            try {
+                $html = $fake->render('common/search-form.phtml');
+            } finally {
+                restore_error_handler();
+            }
+            return [$html, $warnings];
+        };
+        [$html, $warnings] = $render(['fulltext_search' => ['x']]);
+        same([], $warnings, 'no PHP warning');
+        check(str_contains($html, 'name="fulltext_search" value=""'), 'array query must leave the field empty');
+        [$html] = $render(['fulltext_search' => 'Tabaski']);
+        check(str_contains($html, 'value="Tabaski"'), 'a string query is kept');
+    });
+
     /** One literal value, optionally annotated; valueAnnotation() builds a fresh object per call, as Omeka's does. */
     function fakeValue(string $text, ?int $annotationId = null, string $lang = '', ?object $linked = null): object
     {

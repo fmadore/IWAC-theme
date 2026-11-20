@@ -11,6 +11,10 @@ create.
 
 ## [Unreleased]
 
+### Fixed
+
+- **A malformed search address no longer shows "Array" in the header search box.** A link carrying `?q[]=…` (on any page, since the search box is in the header) made PHP log an "Array to string conversion" warning and filled the field with the word "Array". The field now stays empty.
+
 ## [2.36.0] - 2026-11-19
 
 ### Added

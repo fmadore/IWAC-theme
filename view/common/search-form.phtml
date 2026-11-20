@@ -50,6 +50,9 @@ if ($useModule) {
     $queryName = 'fulltext_search';
     $query     = $this->params()->fromQuery('fulltext_search');
 }
+// Any page can carry ?q[]=x: an array is not a query, and casting it would
+// warn and print "Array" in the field (item/search.phtml guards the same way).
+$query = is_scalar($query) ? (string) $query : '';
 ?>
 <?php
 // Distinguish the two search landmarks on the homepage (masthead + hero).
@@ -63,6 +66,6 @@ $formLabel = $variant === 'hero'
           // name is the placeholder's word, "Search" — the only text a sighted
           // reader sees on the field (it was "Query", which voice control
           // could not match; WCAG 2.5.3). ?>
-    <input type="text" id="<?php echo $escapeAttr($inputId); ?>" name="<?php echo $escapeAttr($queryName); ?>" value="<?php echo $escapeAttr((string) $query); ?>" placeholder="<?php echo $escapeAttr($translate('Search')); ?>" aria-label="<?php echo $escapeAttr($translate('Search')); ?>">
+    <input type="text" id="<?php echo $escapeAttr($inputId); ?>" name="<?php echo $escapeAttr($queryName); ?>" value="<?php echo $escapeAttr($query); ?>" placeholder="<?php echo $escapeAttr($translate('Search')); ?>" aria-label="<?php echo $escapeAttr($translate('Search')); ?>">
     <button id="<?php echo $escapeAttr($submitId); ?>" type="submit" aria-label="<?php echo $escapeAttr($translate('Submit')); ?>" title="<?php echo $escapeAttr($translate('Submit')); ?>"></button>
 </form>
