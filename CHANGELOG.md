@@ -11,6 +11,8 @@ create.
 
 ## [Unreleased]
 
+## [2.38.0] - 2026-11-23
+
 ### Removed
 
 - **Support for the Mapping module.** IwacVisualizations now draws the maps, including the one on each place record, and reads coordinates from `curation:coordinates`. The theme no longer ships the Mapping popup template or its styles. Once this release is installed, uninstall Mapping (Admin → Modules) and take its block out of the resource page settings if it is still listed.
@@ -226,7 +228,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.37.0...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.38.0...HEAD
+[2.38.0]: https://github.com/fmadore/IWAC-theme/compare/v2.37.0...v2.38.0
 [2.37.0]: https://github.com/fmadore/IWAC-theme/compare/v2.36.0...v2.37.0
 [2.36.0]: https://github.com/fmadore/IWAC-theme/compare/v2.35.0...v2.36.0
 [2.35.0]: https://github.com/fmadore/IWAC-theme/compare/v2.34.2...v2.35.0
