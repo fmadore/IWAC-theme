@@ -11,6 +11,10 @@ create.
 
 ## [Unreleased]
 
+### Removed
+
+- **Support for the Mapping module.** IwacVisualizations now draws the maps, including the one on each place record, and reads coordinates from `curation:coordinates`. The theme no longer ships the Mapping popup template or its styles. Once this release is installed, uninstall Mapping (Admin → Modules) and take its block out of the resource page settings if it is still listed.
+
 ## [2.37.0] - 2026-11-20
 
 ### Added

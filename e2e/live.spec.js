@@ -199,15 +199,16 @@ test('each value annotation trigger controls its own panel', async ({ page }) =>
 
 // One visit per page type, so the page-error check above sees every module's
 // scripts at least once — including the ones that only load on one kind of
-// record. Place records are why this exists: they are the only pages that load
-// the Mapping module, and nothing else in the suite opened one.
+// record. Place records are why this exists: they used to be the only pages
+// that loaded the Mapping module (retired in 2.38; IwacVisualizations' place
+// dashboard draws their map now), and nothing else in the suite opened one.
 const PAGE_TYPES = [
     ['home', () => site().home],
     ['browse page', () => site().browse],
     ['item browse', () => 'item'],
     ['item set browse', () => 'item-set'],
     ['article record (Mirador, citation, visualisations)', () => 'item/23365'],
-    ['place record (Mapping)', () => 'item/271'],
+    ['place record (visualisations)', () => 'item/271'],
     ['index search', () => 'index/search?fulltext_search=islam'],
 ];
 
@@ -222,14 +223,20 @@ for (const [label, route] of PAGE_TYPES) {
     });
 }
 
+// The place dashboard's locations map replaced the Mapping module's in 2.38.
+// It loads on view, so scroll to the block first; MapLibre then adds its
+// container class and a canvas.
 test('a place record draws its map', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('item/271', { waitUntil: 'load' });
-    const map = page.locator('#mapping-map');
-    await expect(map).toBeVisible();
-    // Leaflet initialised: the container class is added by L.map(), and at
-    // least one tile was requested into it.
-    await expect(map).toHaveClass(/leaflet-container/);
-    await expect(map.locator('.leaflet-tile').first()).toBeAttached();
+    const block = page.locator('.iwac-vis-entity');
+    await expect(block).toBeAttached();
+    await block.scrollIntoViewIfNeeded();
+    const map = block.locator('.iwac-vis-map');
+    await expect(map).toBeAttached({ timeout: 20_000 });
+    await map.scrollIntoViewIfNeeded();
+    await expect(map).toHaveClass(/maplibregl-map/, { timeout: 20_000 });
+    await expect(map.locator('canvas.maplibregl-canvas')).toBeVisible();
 });
 
 // 2.26 shipped the Masonry template and the jsdom suite passed it: jsdom lays

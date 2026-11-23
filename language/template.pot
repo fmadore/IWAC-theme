@@ -240,10 +240,6 @@ msgstr ""
 msgid "Item sets"
 msgstr ""
 
-#: view/common/block-layout/mapping-block-popup-content.phtml:19
-msgid "Item: %s"
-msgstr ""
-
 #: view/common/banner.phtml:150 view/common/block-layout/item-carousel.phtml:185 view/common/linked-resources.phtml:55 view/omeka/site/index/search.phtml:27 view/omeka/site/item/browse.phtml:11 view/omeka/site/item/browse.phtml:49
 msgid "Items"
 msgstr ""
@@ -286,10 +282,6 @@ msgstr ""
 
 #: helper/ResourceTags.php:44 view/common/block-layout/item-with-metadata.phtml:73 view/common/linked-resources.phtml:57 view/common/resource-page-block-layout/media-list.phtml:8 view/omeka/site/index/search.phtml:29 view/omeka/site/media/browse.phtml:7
 msgid "Media"
-msgstr ""
-
-#: view/common/block-layout/mapping-block-popup-content.phtml:24
-msgid "Media: %s"
 msgstr ""
 
 #: view/common/linked-resources.phtml:154

@@ -178,7 +178,7 @@ sass/
 │   ├── blocks/         # Block-layout styles (carousel, timeline, …)
 │   ├── breadcrumbs, error-page, footer, header
 │   ├── hierarchy, iframe-embed, linked-resources, local-contexts
-│   ├── mapping, metadata, mirador, navigation, pagination
+│   ├── metadata, mirador, navigation, pagination
 │   ├── resources/      # resource-grid, resource-list, browse-controls
 │   └── search-results, uri-dereferencer, user-bar
 ├── generic/            # Box-sizing, normalize
@@ -246,7 +246,6 @@ no theme tokens; the coupling is a shared template.
 ### Other Supported Modules
 
 The theme also includes styling for:
-- **Mapping** - Interactive maps on resource pages
 - **Collecting** - User submission forms
 - **Numeric Data Types** - Date/time and number fields
 - **URI Dereferencer** - External linked data display
