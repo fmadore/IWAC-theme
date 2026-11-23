@@ -11,6 +11,13 @@ create.
 
 ## [Unreleased]
 
+## [2.38.1] - 2026-11-23
+
+### Changed
+
+- The AI-generated description on item pages no longer opens on a thick black rule. Under the previous row's hairline it read as a stray double line in the middle of every record; it is now an ordinary row. Its "Description" label also matches every other field (same colour and weight, in the label column beside the text instead of greyed out above it), with the "AI generated" mark beside it.
+- Footer partner logos on a phone sit in a 2 × 2 grid of equal white plates instead of wrapping three and one.
+
 ## [2.38.0] - 2026-11-23
 
 ### Removed
@@ -228,7 +235,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.38.0...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.38.1...HEAD
+[2.38.1]: https://github.com/fmadore/IWAC-theme/compare/v2.38.0...v2.38.1
 [2.38.0]: https://github.com/fmadore/IWAC-theme/compare/v2.37.0...v2.38.0
 [2.37.0]: https://github.com/fmadore/IWAC-theme/compare/v2.36.0...v2.37.0
 [2.36.0]: https://github.com/fmadore/IWAC-theme/compare/v2.35.0...v2.36.0

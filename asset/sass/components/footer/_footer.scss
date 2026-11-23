@@ -291,6 +291,37 @@
         }
 
         a:hover .main-footer__logo { opacity: 0.8; }
+
+        // Phones: four marks of very different widths wrapped 3 + 1, a ragged
+        // row with the widest logo stranded under the others. A 2 × 2 grid of
+        // equal white plates keeps the footer's left edge and gives the right
+        // one a match; each mark sits centred in its plate at its own
+        // proportions. Left-aligned like the rest of the footer, not centred:
+        // a centred island in a ledger of flush-left text reads as a mistake.
+        @media (max-width: #{$sm - 1px}) {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--space-3);
+            width: 100%;
+
+            a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 4.5rem;
+                padding: var(--space-2) var(--space-3);
+                // The plate moves from the image to the cell, so all four are
+                // the same size.
+                background: var(--white);
+            }
+
+            .main-footer__logo {
+                height: 100%;
+                max-width: 100%;
+                padding: 0;
+                background: none;
+            }
+        }
     }
 
     &__actions {

@@ -215,11 +215,13 @@ body.item-set {
         // stays in the column), and the label floats back into that padding
         // with a negative margin. Floating dd-beside-dt alone broke as soon
         // as content wrapped: continuation lines slid under the label.
-        // The AI lede keeps its own full-width panel layout.
+        // The AI lede sits in it like any other field (2.39; it stacked its
+        // label above the text until then, the one row out of step).
         @media (min-width: $md) {
-            // (bibo:content opts out — the document body gets the
-            // full-width treatment below instead of the label column.)
-            > dl > .property:not(.property--ai):not([data-property-term="bibo:content"]) {
+            // (bibo:content and the parsed AI table of contents opt out —
+            // they get full-width treatments of their own instead of the
+            // label column.)
+            > dl > .property:not([data-property-term="dcterms:tableOfContents"].property--ai):not([data-property-term="bibo:content"]) {
                 padding-inline-start: 10.5rem; // 168px — fits two-word FR labels
 
                 // Contain a label taller than its values.
@@ -349,32 +351,25 @@ body.item-set {
         // `.property dt/dd` column rules — with equal specificity the float
         // cascade was a source-order coin-flip.
         // Shared provenance marking: the dt carries the field label plus the
-        // EU "AI GENERATED" mark. The short DescriptionAI lede reads as prose
-        // in an info-tinted panel (below); the template-21 table of contents
+        // EU "AI GENERATED" mark. The short DescriptionAI lede is a ledger row
+        // set in the reading serif (below); the template-21 table of contents
         // is parsed into its own structured index (see _ai-toc.scss), so it
         // needs no box and supplies its own typography.
         > dl > .property.property--ai {
+            // The label itself is styled like every other field's (the base
+            // `> dt` rule): ink, --text-sm, 600. Through 2.38 it was muted
+            // --ink-light and stacked above the text, so the one AI row read
+            // in a different voice from the ledger around it. Flex only to
+            // seat the EU mark beside the term, wrapping under it when the
+            // 168px label column is too narrow for both.
             > dt {
                 display: flex;
                 align-items: center;
                 flex-wrap: wrap;
-                gap: var(--space-2);
-                color: var(--ink-light);
-                font-size: var(--text-sm);
-                font-weight: 600;
-
-                @media (min-width: $md) {
-                    float: none;
-                    width: auto;
-                    margin-block-end: var(--space-3);
-                }
+                gap: var(--space-1) var(--space-2);
             }
 
             > dd {
-                @media (min-width: $md) {
-                    margin-inline-start: 0;
-                }
-
                 // Reading serif, not the Clarendon — AI prose, not a fact row.
                 font-family: $font__serif-text;
                 font-size: var(--text-lg);
@@ -386,17 +381,22 @@ body.item-set {
             .field-term { display: none; }
         }
 
-        // The DescriptionAI lede — short and featured. "Rules, not boxes":
-        // it opens on the same 2px ink rule the design uses to start sections
-        // (masthead close, footer top, h1.title, KPI figures) instead of the
-        // old info-blue panel — boxes are reserved for true panels (charts).
-        // Provenance is carried by the EU "AI GENERATED" mark on the dt (a
-        // label), not a borrowed info-blue tint. Scoped to the term so longer
-        // AI fields (the parsed table of contents) don't inherit the rule.
+        // The parsed table of contents (template 21) is an index, not a
+        // value: its label stays on a line of its own above it.
+        > dl > .property.property--ai[data-property-term="dcterms:tableOfContents"] > dt {
+            margin-block-end: var(--space-3);
+        }
+
+        // The DescriptionAI lede — a row of the ledger like the rest, set
+        // apart by its type (the reading serif, full width) and by the EU
+        // "AI GENERATED" mark on its label, not by chrome. Through 2.38 it
+        // opened on a 2px ink rule with a gap above: under the previous
+        // row's hairline that read as a stray double line mid-record, on
+        // every item. A 2px rule opens a section; this is not one.
+        // Scoped to the term so longer AI fields (the parsed table of
+        // contents) keep their own spacing.
         > dl > .property.property--ai[data-property-term="bibo:shortDescription"] {
-            margin-block: var(--space-6);
-            padding-block-start: var(--space-4);
-            border-block-start: 2px solid var(--ink-strong);
+            padding-block-start: var(--space-5);
 
             // A short summary set as a newspaper sets a short story: balanced
             // columns across the full width at wide viewports, instead of a
