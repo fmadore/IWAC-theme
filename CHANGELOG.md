@@ -11,6 +11,8 @@ create.
 
 ## [Unreleased]
 
+## [2.38.2] - 2026-11-24
+
 ### Fixed
 
 - Card titles on browse pages, in the browse-preview block and in site search results are the card's heading again: 16px, in the ink colour, clamped to three lines in the grid. Their styles targeted a wrapper the templates never print, so titles came out at 13px, the size of the description under them. In the grid the title also lines up with the tags above it instead of sitting 16px further in.
@@ -243,7 +245,8 @@ Releases before 2.25.0 are described in their
 [GitHub release notes](https://github.com/fmadore/IWAC-theme/releases) and the commit
 history.
 
-[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.38.1...HEAD
+[Unreleased]: https://github.com/fmadore/IWAC-theme/compare/v2.38.2...HEAD
+[2.38.2]: https://github.com/fmadore/IWAC-theme/compare/v2.38.1...v2.38.2
 [2.38.1]: https://github.com/fmadore/IWAC-theme/compare/v2.38.0...v2.38.1
 [2.38.0]: https://github.com/fmadore/IWAC-theme/compare/v2.37.0...v2.38.0
 [2.37.0]: https://github.com/fmadore/IWAC-theme/compare/v2.36.0...v2.37.0
