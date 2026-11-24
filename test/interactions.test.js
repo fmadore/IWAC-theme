@@ -230,7 +230,7 @@ test('carousel silences position announcements while the slideshow rotates', () 
     const dom = fixtureDom('page-about.en');
     dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
     dom.window.IWACUtils = { onReady: (callback) => callback(), debounce: (callback) => callback };
-    dom.window.Element.prototype.scrollIntoView = function () {};
+    dom.window.Element.prototype.scrollBy = function () {};
     const track = dom.window.document.querySelector('[data-carousel-track]');
     Object.defineProperty(track, 'scrollWidth', { configurable: true, value: 1200 });
     Object.defineProperty(track, 'clientWidth', { configurable: true, value: 400 });
@@ -262,7 +262,7 @@ test('a slideshow the reader restarts resumes after a hover, and the toggle is n
     const dom = fixtureDom('page-about.en');
     dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
     dom.window.IWACUtils = { onReady: (callback) => callback(), debounce: (callback) => callback };
-    dom.window.Element.prototype.scrollIntoView = function () {};
+    dom.window.Element.prototype.scrollBy = function () {};
     const track = dom.window.document.querySelector('[data-carousel-track]');
     Object.defineProperty(track, 'scrollWidth', { configurable: true, value: 1200 });
     Object.defineProperty(track, 'clientWidth', { configurable: true, value: 400 });
@@ -296,10 +296,64 @@ test('a slideshow the reader restarts resumes after a hover, and the toggle is n
         assert.equal(live.size, 1, 'leaving resumes the run the reader restarted');
         assert.equal(label(), 'Stop automatic slideshow');
 
+        // A hidden tab pauses the timer; showing it again resumes exactly one,
+        // and a visible event with the timer still live adds no second one.
+        let hidden = false;
+        Object.defineProperty(dom.window.document, 'hidden', { configurable: true, get: () => hidden });
+        const visibility = () => dom.window.document.dispatchEvent(new dom.window.Event('visibilitychange'));
+        hidden = true;
+        visibility();
+        assert.equal(live.size, 0, 'hidden pauses');
+        hidden = false;
+        visibility();
+        assert.equal(live.size, 1, 'visible resumes');
+        visibility();
+        assert.equal(live.size, 1, 'a live timer is not doubled');
+        assert.equal(label(), 'Stop automatic slideshow');
+
         // Focus moving into the slides is still a reader taking over.
         dom.window.document.querySelector('[data-carousel-next]').focus();
         assert.equal(live.size, 0);
         assert.equal(label(), 'Start automatic slideshow');
+    } finally {
+        dom.window.close();
+    }
+});
+
+test('carousel steps scroll the track by the measured delta, never an ancestor (regression: #37)', () => {
+    const dom = fixtureDom('page-about.en');
+    dom.window.matchMedia = () => ({ matches: false, addEventListener() {} });
+    dom.window.IWACUtils = { onReady: (callback) => callback(), debounce: (callback) => callback };
+    const calls = [];
+    dom.window.Element.prototype.scrollBy = function (options) { calls.push({ element: this, options }); };
+    // scrollIntoView scrolls the document too; the script must not reach for it.
+    dom.window.Element.prototype.scrollIntoView = function () { throw new Error('scrollIntoView called'); };
+    const track = dom.window.document.querySelector('[data-carousel-track]');
+    Object.defineProperty(track, 'scrollWidth', { configurable: true, value: 1200 });
+    Object.defineProperty(track, 'clientWidth', { configurable: true, value: 400 });
+    const slides = [...track.querySelectorAll('[data-carousel-slide]')];
+    assert.ok(slides.length > 2);
+    // Lay the slides out 300px apart from a track at x = 50.
+    const rect = (left, width) => () => ({ left, right: left + width, top: 0, bottom: 100, width, height: 100 });
+    track.getBoundingClientRect = rect(50, 400);
+    slides.forEach((slide, i) => { slide.getBoundingClientRect = rect(50 + i * 300, 280); });
+
+    try {
+        runAsset(dom, 'carousel.js');
+        dom.window.document.querySelector('[data-carousel-next]').click();
+        assert.equal(calls.length, 1);
+        assert.equal(calls[0].element, track);
+        assert.equal(calls[0].options.left, 300);
+        assert.equal(calls[0].options.behavior, 'smooth');
+
+        // Right to left: the run advances leftward, so the delta is negative.
+        track.style.direction = 'rtl';
+        track.getBoundingClientRect = rect(50, 400);
+        slides.forEach((slide, i) => { slide.getBoundingClientRect = rect(170 - i * 300, 280); });
+        dom.window.document.querySelector('[data-carousel-next]').click();
+        assert.equal(calls.length, 2);
+        assert.equal(calls[1].element, track);
+        assert.equal(calls[1].options.left, -300);
     } finally {
         dom.window.close();
     }

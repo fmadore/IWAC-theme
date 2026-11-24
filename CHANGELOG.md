@@ -17,6 +17,7 @@ create.
 - Grid browse cards no longer pile up on top of each other when the masonry script is blocked or fails to load, or when the page is printed: without it the cards lay out as a plain grid.
 - A carousel or "How to cite this page" block further down a page opens on one rule instead of two parallel rules 24px apart.
 - An image block inside a block group no longer leaves 48px of empty space under the image.
+- An automatic slideshow (the About page's carousel) no longer pulls the page back up to itself every few seconds once you have scrolled past it. Each step now moves the carousel's own strip and nothing else. Hiding and reshowing the browser tab also no longer risks leaving two timers advancing the slideshow.
 
 ## [2.38.1] - 2026-11-23
 

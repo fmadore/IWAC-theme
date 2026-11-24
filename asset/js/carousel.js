@@ -14,14 +14,18 @@
  * wide screen showing four at a time gets no arrows, no counter and no rule —
  * not disabled ones.
  *
- * WHY scrollIntoView AND NOT scrollTo. Stepping by a measured slide width
+ * WHY A MEASURED DELTA AND NOT A SLIDE WIDTH. Stepping by a fixed slide width
  * accumulates error: the track's gap, the fractional peek width below 600px and
  * sub-pixel layout all drift, and after eight steps the run sits between snap
- * points. Scrolling the *target element* into view delegates the arithmetic to
- * the engine, which lands on the snap point exactly. `block: 'nearest'` is
- * load-bearing — without it the browser also scrolls the page vertically to
- * bring the carousel into view, which on a long page yanks the reader away from
- * whatever they were reading.
+ * points. Each step instead measures the target slide's start edge against the
+ * track's (the track has no inline padding, so that edge is the snap edge) and
+ * scrolls by exactly that difference; scroll-snap absorbs any sub-pixel rest.
+ *
+ * WHY NOT scrollIntoView. It scrolls every scrollable ancestor, the document
+ * included. `block: 'nearest'` only spares the page while the slide is already
+ * in the viewport: once the reader had scrolled past an autoplaying carousel,
+ * every tick pulled the page back up to it (issue #37). scrollBy on the track
+ * moves the track and nothing else.
  *
  * THE INDEX IS READ FROM SCROLL, NOT COUNTED. There is no "current slide" state
  * to keep in sync, because the reader can move the track by six means this file
@@ -118,14 +122,23 @@
             return best;
         }
 
+        // Scroll the track, and only the track, until slide `index` leads.
+        // Same measurement as leadingIndex(): in RTL the run advances leftward,
+        // so a slide further along sits left of the start edge and needs a
+        // negative scrollBy.
+        function scrollToSlide(index) {
+            var origin = track.getBoundingClientRect();
+            var box = slides[index].getBoundingClientRect();
+            var left = isRtl() ? (box.right - origin.right) : (box.left - origin.left);
+            track.scrollBy({
+                left: left,
+                behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+            });
+        }
+
         function step(direction) {
             var index = leadingIndex() + direction;
-            index = Math.max(0, Math.min(slides.length - 1, index));
-            slides[index].scrollIntoView({
-                behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-                block: 'nearest',
-                inline: 'start'
-            });
+            scrollToSlide(Math.max(0, Math.min(slides.length - 1, index)));
         }
 
         function render() {
@@ -188,11 +201,7 @@
                 // Wrap at the end rather than stalling: an unattended slideshow
                 // that stops on the last slide has simply ended.
                 if (position() >= 1 - 0.001) {
-                    slides[0].scrollIntoView({
-                        behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-                        block: 'nearest',
-                        inline: 'start'
-                    });
+                    scrollToSlide(0);
                 } else {
                     step(1);
                 }
@@ -295,8 +304,11 @@
             document.addEventListener('visibilitychange', function () {
                 if (document.hidden) {
                     if (autoplayTimer) { window.clearInterval(autoplayTimer); autoplayTimer = null; }
-                } else if (autoplayOn) {
-                    autoplayTimer = null;
+                } else if (autoplayOn && !autoplayTimer) {
+                    // As on mouseleave: hiding paused only the timer. A handle
+                    // that is still live is left running, never orphaned by a
+                    // second interval.
+                    autoplayOn = false;
                     startAutoplay();
                 }
             });
