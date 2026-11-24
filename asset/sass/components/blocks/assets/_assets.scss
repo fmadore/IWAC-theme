@@ -5,7 +5,9 @@
 // Block for displaying asset collections with inline layout option
 // ==========================================================================
 
-.assets,
+// The space under the block lives on the block alone. It used to sit on both
+// .block-asset and its child .assets, so a block group resetting the block's
+// margin still left the child's 48px under the image.
 .block-asset {
     margin-block-end: var(--space-12);
 

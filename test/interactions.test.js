@@ -211,6 +211,20 @@ test('browse layout preference does not add history entries and cleans up Masonr
     dom.window.close();
 });
 
+test('without MiniMasonry the browse grid keeps its static layout and the toggle still works', () => {
+    const { dom } = browsed((dom) => { delete dom.window.MiniMasonry; });
+    const document = dom.window.document;
+    const resources = document.querySelector('.resources');
+    // [data-masonry-ready] is what positions the cards absolutely.
+    assert.equal(resources.dataset.masonryReady, undefined);
+    document.querySelector('[data-view="list"]').click();
+    assert.equal(resources.classList.contains('resource-list'), true);
+    document.querySelector('[data-view="grid"]').click();
+    assert.equal(resources.classList.contains('resource-grid'), true);
+    assert.equal(resources.dataset.masonryReady, undefined);
+    dom.window.close();
+});
+
 test('carousel silences position announcements while the slideshow rotates', () => {
     // The About page's conference carousel, which auto-advances every 5s.
     const dom = fixtureDom('page-about.en');

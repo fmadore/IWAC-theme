@@ -14,18 +14,37 @@
     list-style: none;
     padding-inline-start: 0;
     position: relative;
-    // The masonry gutter. The cards are absolutely positioned by MiniMasonry,
-    // so this gap is never laid out by CSS — browse.js reads its resolved px
-    // value and hands it to the script. Declared here so the gutter is on the
-    // spacing scale and owned by the stylesheet (it was a bare `27` in JS).
+    // The gutter. browse.js reads its resolved px value and hands it to
+    // MiniMasonry, so the spacing scale stays the single source (it was a
+    // bare `27` in JS). Without the script the same gap spaces the grid below.
     column-gap: var(--space-6);
+    // Un-enhanced layout — no JS, a blocked or failed masonry script, the
+    // first paint before browse.js runs, and print. The columns match
+    // MiniMasonry's default 255px base width, so the switch to masonry moves
+    // cards vertically, not sideways. Cards start at the top of their row
+    // rather than stretching to its tallest neighbour.
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(255px, 100%), 1fr));
+    row-gap: var(--space-6);
+    align-items: start;
+
+    // browse.js sets [data-masonry-ready] when MiniMasonry takes over: it
+    // positions every card absolutely (inline width + transform) and sets the
+    // container's height. Same scoping as the Media block's masonry wall
+    // (_media-embed.scss).
+    &[data-masonry-ready] {
+        display: block;
+
+        > .resource {
+            position: absolute;
+        }
+    }
 
     .resource {
         background: var(--panel-bg);
         border: var(--panel-border);
         border-radius: var(--radius-md);
         box-shadow: var(--panel-shadow);
-        position: absolute;
         overflow: hidden;
         @include card-hover;
 
@@ -48,13 +67,16 @@
             padding: var(--space-3) var(--space-4);
         }
 
+        // .resource__content already pads the card; the meta block adds none
+        // of its own, so the title lines up with the tags above it.
         &__meta {
-            padding: 0 var(--space-4) var(--space-3);
             font-size: var(--text-xs);
             color: var(--muted);
         }
 
-        .title a {
+        // The heading is the record link printed straight into the meta block
+        // (resource-card.phtml); there is no .title wrapper.
+        &__meta > a {
             @include title-link;
             font-size: var(--text-base);
             line-height: 1.35;
@@ -63,6 +85,21 @@
             line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+        }
+    }
+}
+
+@media print {
+    // A page break through absolutely positioned cards drops them; paper gets
+    // the stylesheet's grid back.
+    .resource-grid[data-masonry-ready] {
+        display: grid;
+        height: auto !important;
+
+        > .resource {
+            position: static;
+            width: auto !important;
+            transform: none !important;
         }
     }
 }

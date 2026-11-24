@@ -13,6 +13,10 @@ create.
 
 ### Fixed
 
+- Card titles on browse pages, in the browse-preview block and in site search results are the card's heading again: 16px, in the ink colour, clamped to three lines in the grid. Their styles targeted a wrapper the templates never print, so titles came out at 13px, the size of the description under them. In the grid the title also lines up with the tags above it instead of sitting 16px further in.
+- Grid browse cards no longer pile up on top of each other when the masonry script is blocked or fails to load, or when the page is printed: without it the cards lay out as a plain grid.
+- A carousel or "How to cite this page" block further down a page opens on one rule instead of two parallel rules 24px apart.
+- An image block inside a block group no longer leaves 48px of empty space under the image.
 - An automatic slideshow (the About page's carousel) no longer pulls the page back up to itself every few seconds once you have scrolled past it. Each step now moves the carousel's own strip and nothing else. Hiding and reshowing the browser tab also no longer risks leaving two timers advancing the slideshow.
 
 ## [2.38.1] - 2026-11-23
