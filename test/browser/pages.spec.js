@@ -4,7 +4,7 @@
 // panel and the carousel, laid out by a real engine with the real stylesheet.
 
 const { test, expect } = require('@playwright/test');
-const { openFixture, hasNoHorizontalScroll } = require('./fixtures');
+const { openFixture, serveFixture, hasNoHorizontalScroll } = require('./fixtures');
 
 /** Boxes of the visible elements matching `selector`. */
 function boxes(page, selector) {
@@ -64,6 +64,55 @@ test('browse fits a phone without horizontal scroll', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
     await openFixture(page, 'items-browse.en');
     expect(await hasNoHorizontalScroll(page)).toBe(true);
+    expect(overlaps(await boxes(page, '.resources .resource'))).toBeNull();
+});
+
+test('browse card titles are the cards\' heading: larger than the description, aligned with the tags (regression: styled through a .title that is never printed)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openFixture(page, 'items-browse.en');
+    for (const view of ['grid', 'list']) {
+        if (view === 'list') {
+            await page.locator('[data-view="list"]').click();
+            await expect(page.locator('.resources')).toHaveClass(/resource-list/);
+        }
+        const cards = await page.locator('.resources .resource:has(.resource__meta > .description)').evaluateAll((elements) => elements.map((card) => {
+            const title = card.querySelector('.resource__meta > a');
+            const description = card.querySelector('.resource__meta > .description');
+            const tags = card.querySelector('.resource__content > :first-child:not(.resource__meta)');
+            return {
+                title: parseFloat(getComputedStyle(title).fontSize),
+                description: parseFloat(getComputedStyle(description).fontSize),
+                titleX: Math.round(title.getBoundingClientRect().left),
+                tagsX: tags ? Math.round(tags.getBoundingClientRect().left) : null,
+            };
+        }));
+        expect(cards.length, view).toBeGreaterThan(0);
+        for (const card of cards) {
+            expect(card.title, view).toBeGreaterThan(card.description);
+            if (card.tagsX !== null) expect(card.titleX, view).toBe(card.tagsX);
+        }
+    }
+});
+
+test('browse grid cards do not overlap when the masonry script is blocked', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    const served = await serveFixture(page, 'items-browse.en');
+    // Registered after serveFixture's catch-all, so it wins for this file.
+    await page.route('**/minimasonry.min.js', (route) => route.abort());
+    await page.goto(served.url, { waitUntil: 'load' });
+    const resources = page.locator('.resources');
+    await expect(resources).toHaveClass(/resource-grid/);
+    expect(await resources.getAttribute('data-masonry-ready')).toBeNull();
+    const gridBoxes = await boxes(page, '.resources .resource');
+    expect(gridBoxes.length).toBeGreaterThan(1);
+    expect(overlaps(gridBoxes)).toBeNull();
+    expect(new Set(gridBoxes.map((box) => Math.round(box.x))).size).toBeGreaterThan(1);
+    // The list toggle still works without it, and back.
+    await page.locator('[data-view="list"]').click();
+    await expect(resources).toHaveClass(/resource-list/);
+    expect(new Set((await boxes(page, '.resources .resource')).map((box) => Math.round(box.x))).size).toBe(1);
+    await page.locator('[data-view="grid"]').click();
+    await expect(resources).toHaveClass(/resource-grid/);
     expect(overlaps(await boxes(page, '.resources .resource'))).toBeNull();
 });
 
@@ -298,6 +347,24 @@ test('page blocks are ruled sections on one flat surface, not cards', async ({ p
     });
     expect(ground.body).toBe(ground.surface);
     expect(ground.main).toBe('rgba(0, 0, 0, 0)');
+});
+
+test('a carousel further down a page opens on one rule, not two (regression: section rule + its own)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openFixture(page, 'page-about.en');
+    const rules = await page.locator('.blocks-inner > .block-carousel:not(:first-child)').evaluateAll((elements) => elements.map((block) => ({
+        block: getComputedStyle(block).borderTopWidth,
+        carousel: getComputedStyle(block.querySelector(':scope > .carousel')).borderTopWidth,
+    })));
+    expect(rules.length).toBeGreaterThan(0);
+    for (const rule of rules) {
+        expect(rule.block).toBe('2px');
+        expect(rule.carousel).toBe('0px');
+    }
+    // The space under an asset block is the block's alone.
+    const assetMargins = await page.locator('.block-asset > .assets').evaluateAll((elements) => elements.map((element) => getComputedStyle(element).marginBottom));
+    expect(assetMargins.length).toBeGreaterThan(0);
+    for (const margin of assetMargins) expect(margin).toBe('0px');
 });
 
 test('inner pages open on the breadcrumb under the masthead; the hero is the homepage\'s alone', async ({ page }) => {

@@ -18,9 +18,13 @@
             };
 
             const initMasonryGrid = () => {
+                // Without MiniMasonry (blocked, failed to load) the grid keeps
+                // the stylesheet's static layout: [data-masonry-ready] is what
+                // switches the cards to absolute positioning, so it is set only
+                // once the script is there to place them.
+                if (typeof MiniMasonry === 'undefined') return;
                 if (resourcesSet.classList.contains('resource-grid') && !masonry) {
-                    // Masonry
-                    resourcesSet.dataset.masonryReady = true;
+                    resourcesSet.dataset.masonryReady = 'true';
                     const gutter = readGutter();
                     const instance = new MiniMasonry({
                         container: resourcesSet,
