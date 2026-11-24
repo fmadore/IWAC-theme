@@ -202,6 +202,34 @@ test('the carousel does not rotate on its own under reduced motion', async ({ br
     }
 });
 
+test('an autoplay tick moves the carousel track, never the page (regression: #37)', async ({ page }) => {
+    // The fixture rotates every 5s; Playwright's clock fires the tick without
+    // waiting it out. The smooth scroll itself still runs in real time.
+    await page.clock.install();
+    await page.setViewportSize({ width: 390, height: 600 });
+    await openFixture(page, 'page-about.en');
+    const toggle = page.locator('.carousel [data-label-play] .carousel__btn-label');
+    await expect(toggle).toHaveText('Stop automatic slideshow');
+    const track = page.locator('[data-carousel-track]');
+    expect(await track.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
+    expect(await track.evaluate((element) => element.scrollLeft)).toBe(0);
+
+    // Read past the carousel: its bottom edge above the top of the viewport.
+    // The fixture ends soon after it, so give the page room to scroll.
+    await page.evaluate(() => { document.body.style.paddingBottom = '200vh'; });
+    const below = await track.evaluate((element) => element.getBoundingClientRect().bottom + window.scrollY + 200);
+    await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), below);
+    const scrollY = await page.evaluate(() => window.scrollY);
+    expect(scrollY).toBeGreaterThan(0);
+    expect(await track.evaluate((element) => element.getBoundingClientRect().bottom)).toBeLessThan(0);
+
+    await page.clock.runFor(5000);
+    await expect.poll(() => track.evaluate((element) => Math.abs(element.scrollLeft))).toBeGreaterThan(0);
+    // Let the smooth scroll finish before reading the page position.
+    await page.waitForTimeout(800);
+    expect(await page.evaluate(() => window.scrollY)).toBe(scrollY);
+});
+
 // ---- 2.33: ruled sections, prose columns, no compact band ----------------------
 
 /** Distinct left edges of the visible lines' boxes — one per column. */

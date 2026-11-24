@@ -11,6 +11,10 @@ create.
 
 ## [Unreleased]
 
+### Fixed
+
+- An automatic slideshow (the About page's carousel) no longer pulls the page back up to itself every few seconds once you have scrolled past it. Each step now moves the carousel's own strip and nothing else. Hiding and reshowing the browser tab also no longer risks leaving two timers advancing the slideshow.
+
 ## [2.38.1] - 2026-11-23
 
 ### Changed
