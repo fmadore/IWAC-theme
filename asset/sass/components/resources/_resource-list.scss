@@ -79,20 +79,17 @@
             font-variant-numeric: tabular-nums;
         }
 
-        .title {
-            margin: 0;
-
-            a {
-                @include title-link;
-                font-size: var(--text-base);
-                line-height: var(--line-height-snug);
-                display: block;
-            }
+        // The heading is the record link printed straight into the meta block
+        // (resource-card.phtml, index/search.phtml); there is no .title wrapper.
+        &__meta > a {
+            @include title-link;
+            font-size: var(--text-base);
+            line-height: var(--line-height-snug);
+            display: block;
         }
 
         // Description / snippet beneath title — clamp to two lines for density
-        .description,
-        .resource-description {
+        .description {
             margin-block-start: var(--space-1);
             font-size: var(--text-sm);
             line-height: var(--line-height-normal);
